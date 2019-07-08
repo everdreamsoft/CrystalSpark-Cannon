@@ -1,0 +1,111 @@
+<?php
+
+namespace CsCanon;
+
+
+
+
+use CsCanon\Blockchains\BlockchainEventFactory;
+use CsCanon\Blockchains\Counterparty\XcpBlockchain;
+
+class BlockchainRouting
+{
+
+
+    public static function getSupportedBlockchains(){
+
+        $supported[] = new XcpBlockchain();
+        $supported[] = new EthereumBlockchain();
+
+        return $supported ;
+
+    }
+
+   public static function blockchainFromAddress($address){
+
+        //as for today 0x means ethereum
+       if(substr( $address, 0, 2 ) === "0x"){
+
+           $blockchainList['eth'] = $address ;
+           $blockchain = new EthereumBlockchain();
+
+
+       }
+
+       else if (substr( $address, 0, 2 ) === "3P"){
+
+           $blockchainList['waves'] = $address;
+           $blockchain = new WavesBlockchain();
+
+       }
+
+
+   else{
+
+           $blockchainList['xcp'] = $address;
+           $blockchain = new XcpBlockchain();
+
+       }
+
+       return $blockchain ;
+
+
+   }
+
+    public static function getAddressFactory($deducable){
+
+
+        $blockchain = self::blockchainFromAddress($deducable);
+
+
+        return  $blockchain->getAddressFactory() ;
+
+
+    }
+
+    public static function getContractFactory($deducable){
+
+
+        $blockchain = self::blockchainFromAddress($deducable);
+
+        return  $blockchain->getContractFactory() ;
+
+
+    }
+
+    public static function getEventFactory($deducable):BlockchainEventFactory {
+
+
+        $blockchain = self::blockchainFromAddress($deducable);
+
+        return  $blockchain->getEventFactory() ;
+
+
+    }
+
+
+    public static function getDataPath($blockchain,$type){
+
+
+       switch  ($blockchain) {
+
+           case 'xcp' :
+               $path['eventFile'] = 'btcBlockchainEventFile';
+               $path['eventIs_a'] = 'btcBlockchainEvent';
+               $path['addressFile'] = 'btcAddressFile';
+               $path['addressIs_a'] = 'btcAddress';
+
+               break ;
+
+
+
+       }
+
+        if (isset($path[$type]))
+            return $path[$type] ;
+
+       return null ;
+
+    }
+
+}

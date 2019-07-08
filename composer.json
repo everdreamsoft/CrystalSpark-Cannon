@@ -1,0 +1,22 @@
+{
+    "name": "shaban/crystal-spark-canon",
+    "description": "Syndicated interface for multiple blockchains",
+    "type": "library",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "shaban shaame",
+            "email": "shaban@everdreamsoft.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "everdreamsoft/sandra": "dev-master"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "CsCanon": "src/"
+        }
+    }
+}
