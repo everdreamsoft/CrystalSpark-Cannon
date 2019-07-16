@@ -30,7 +30,6 @@ use SandraCore\System;
     const EVENT_DESTINATION_VERB = 'hasSingleDestination';
      const EVENT_CONTRACT = 'blockchainContract';
      const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
-   // const EVENT_SINGLE_DESTINATION_TARGET = 'singleDestinationAddress';
     public static $messagePool = array();
 
 
@@ -117,10 +116,6 @@ use SandraCore\System;
          $dataArray['timestamp'] = $timestamp ;
 
 
-
-
-
-         //if( !$this->localVerifyIntegrity($dataArray, $linArray)) return null ;
 
 
          /** @var BlockchainContractFactory $contractFactory */
