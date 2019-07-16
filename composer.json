@@ -2,7 +2,7 @@
     "name": "everdreamsoft/crystal-spark-canon",
     "description": "Syndicated interface for multiple blockchains",
     "type": "library",
-    "license": "GPL",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "shaban shaame",
