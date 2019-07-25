@@ -15,6 +15,7 @@ use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
 use SandraCore\CommonFunctions;
@@ -165,10 +166,8 @@ class EthereumAddress extends BlockchainAddress
     }
 
 
-
-
-
-
-
-
+    public function getBlockchain(): Blockchain
+    {
+        return new EthereumBlockchain();
+    }
 }
