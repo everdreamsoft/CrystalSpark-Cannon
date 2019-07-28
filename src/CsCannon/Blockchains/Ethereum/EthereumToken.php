@@ -9,9 +9,12 @@
 namespace CsCannon\Ethereum;
 
 
-use CsCannon\Token;
 
-class EthereumToken extends Token
+
+use CsCannon\Blockchains\BlockchainToken;
+
+
+class EthereumToken extends BlockchainToken
 {
 
 }

@@ -18,6 +18,7 @@ use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
 use SandraCore\ForeignEntityAdapter;
@@ -56,7 +57,7 @@ class EthereumAddress extends BlockchainAddress
         $system = SandraManager::getSandra();
         $collectionContractsArray = array();
 
-        $collectionFactory = new AssetCollectionFactory();
+        $collectionFactory = new AssetCollectionFactory($system);
         $collectionFactory->populateLocal();
 
         $collectionAssetCount = array();
