@@ -29,4 +29,12 @@ class SandraManager
 
     }
 
+    public static function setSandra(System $sandra){
+
+        self::$instanceSandra = $sandra ;
+
+        return self::$instanceSandra ;
+
+    }
+
 }
