@@ -146,6 +146,7 @@ abstract class  BlockchainAddress extends Entity
                     $reponse['collections'][$collection->id]['id']=  $collection->id ;
                     $reponse['collections'][$collection->id]['name']=  $collection->name ;
                     $reponse['collections'][$collection->id]['description']=  $collection->description ;
+                    $reponse['collections'][$collection->id]['image']=  $collection->imageUrl ;
                     if(isset( $reponse['collections'][$collection->id]['assetCount'])) {
                         $reponse['collections'][$collection->id]['assetCount']++;
                     }
