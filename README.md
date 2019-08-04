@@ -1,3 +1,7 @@
 # Crystal Spark Cannon
-![Image of Yaktocat](resources/cscannonBanner.jpg)
+<p align="center">
+
+![Banner of CS Cannon](resources/cscannonBanner.jpg)
+</p>
+
 
