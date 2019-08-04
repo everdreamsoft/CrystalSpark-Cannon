@@ -1,5 +1,7 @@
 # Crystal Spark Cannon
 <p align="center">
+<img src="resources/cscannonBanner.jpg">
+
 ![Banner of CS Cannon](resources/cscannonBanner.jpg)
 </p>
 
