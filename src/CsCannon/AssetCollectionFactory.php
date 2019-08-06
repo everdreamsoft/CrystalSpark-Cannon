@@ -11,6 +11,7 @@ namespace CsCannon;
 
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use SandraCore\displayer\DisplayType;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -93,7 +94,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function getDisplay($a,$b=null,$c=null){
+    public function getDisplay($a,$b=null,$c=null,DisplayType $displayType=null){
 
 
         //There is an issue here there is unclarity between the vocabulary. In fact vocabulary is to map foreign to local
@@ -111,7 +112,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $todisplay = array_keys($assetVocabulary);
 
-       return parent::getDisplay('array',$todisplay,$assetVocabulary);
+       return parent::getDisplay('array',$todisplay,$assetVocabulary,$displayType);
 
 
 

@@ -8,6 +8,7 @@ namespace CsCannon;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
+use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 
 class BlockchainRouting
 {
@@ -36,7 +37,7 @@ class BlockchainRouting
        else if (substr( $address, 0, 2 ) === "3P"){
 
            $blockchainList['waves'] = $address;
-           $blockchain = new WavesBlockchain();
+           //$blockchain = new Waves();
 
        }
 

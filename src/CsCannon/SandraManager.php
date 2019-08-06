@@ -20,10 +20,18 @@ class SandraManager
 
         if (is_null(self::$instanceSandra)){
 
-            self::$instanceSandra = new System('xcpRush4',true);
+            self::$instanceSandra = new System('',true);
 
 
         }
+
+        return self::$instanceSandra ;
+
+    }
+
+    public static function setSandra(System $sandra){
+
+        self::$instanceSandra = $sandra ;
 
         return self::$instanceSandra ;
 
