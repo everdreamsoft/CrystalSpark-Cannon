@@ -32,7 +32,7 @@ abstract class BlockchainImporter
 
     public $dataImportOffset = 0 ;
 
-    public  abstract function getEvents($contract,$dataSource = 'default',$limit=null,$offset=null) ;
+
 
 
     public  function eventImport($dataSource = 'default'){
@@ -42,18 +42,18 @@ abstract class BlockchainImporter
 
 
 
-}
+    }
     public function __construct(System $sandra)
     {
 
-      $this->sandra = $sandra ;
-      $this->blockchain = new $this->blockchain();
+        $this->sandra = $sandra ;
+        $this->blockchain = new $this->blockchain();
 
     }
 
     public function getDataSource($dataSource): BlockchainDataSource{
 
-        if ($dataSource == 'default'){
+        if ($dataSource == 'default' or $dataSource === null){
 
             $this->dataSource = new $this->defaultDataSource($this->sandra);
 
@@ -64,106 +64,106 @@ abstract class BlockchainImporter
 
 
 
-}
+    }
 
 
-public function saveEvents(ForeignEntityAdapter $foreignAdapter,
-                           Blockchain $blockchain,
-                           $contractFactory,
-                           BlockchainAddressFactory $addressFactory,
-                           BlockchainBlockFactory $blockfactory ){
+    public function saveEvents(ForeignEntityAdapter $foreignAdapter,
+                               Blockchain $blockchain,
+                               $contractFactory,
+                               BlockchainAddressFactory $addressFactory,
+                               BlockchainBlockFactory $blockfactory ){
 
 
-    /** @var BlockchainEventFactory $populateEventFactory */
+        /** @var BlockchainEventFactory $populateEventFactory */
 
 
 
-    $run_time_start = microtime(true);
+        $run_time_start = microtime(true);
 
-       $eventFactory = clone $blockchain->getEventFactory();
+        $eventFactory = clone $blockchain->getEventFactory();
         $populateEventFactory = clone $blockchain->getEventFactory(); //we populate a factory with existing events
 
-       //find existing events
+        //find existing events
 
-    $txToFindArray = array();
+        $txToFindArray = array();
 
-    foreach ($foreignAdapter->entityArray as $entity) {
+        foreach ($foreignAdapter->entityArray as $entity) {
 
-        /** @var BlockchainEventFactory $eventFactory */
-        $txToFind = $entity->get(Blockchain::$txidConceptName) ;
-        $txToFindArray[] = $txToFind ;
+            /** @var BlockchainEventFactory $eventFactory */
+            $txToFind = $entity->get(Blockchain::$txidConceptName) ;
+            $txToFindArray[] = $txToFind ;
 
-    }
+        }
 
-    //how many address in the map ?
-    $countTotalEntities = count($txToFindArray);
+        //how many address in the map ?
+        $countTotalEntities = count($txToFindArray);
 
-    $txidConceptUnid = $this->sandra->systemConcept->get(Blockchain::$txidConceptName);
-    $fileUnid = $this->sandra->systemConcept->get(BlockchainEventFactory::$file);
+        $txidConceptUnid = $this->sandra->systemConcept->get(Blockchain::$txidConceptName);
+        $fileUnid = $this->sandra->systemConcept->get(BlockchainEventFactory::$file);
 
-    $conceptsArray = DatabaseAdapter::searchConcept($txToFindArray,$txidConceptUnid,$this->sandra,'',$fileUnid);
-    $populateEventFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
+        $conceptsArray = DatabaseAdapter::searchConcept($txToFindArray,$txidConceptUnid,$this->sandra,'',$fileUnid);
+        $populateEventFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
 
-    $matchingEntities = 0 ;
+        $matchingEntities = 0 ;
 
-    if(!empty($conceptsArray)) {
-        $populateEventFactory->populateLocal();
+        if(!empty($conceptsArray)) {
+            $populateEventFactory->populateLocal();
 
-    }
-    else {
-        //this takes a lot of time
-        $populateEventFactory->populateLocal(1,0,null);
+        }
+        else {
+            //this takes a lot of time
+            $populateEventFactory->populateLocal(1,0,null);
 
-    }
-    $matchingEntities = count($addressFactory->entityArray);
-
-
-
-    $time_end = microtime(true);
-    $searchTime = $time_end - $run_time_start;
-
-    $run_time_start = microtime(true);
+        }
+        $matchingEntities = count($addressFactory->entityArray);
 
 
-    foreach ($foreignAdapter->entityArray as $fentity){
 
-        $foundEntity = $populateEventFactory->first(Blockchain::$txidConceptName,$fentity->get(Blockchain::$txidConceptName)) ;
+        $time_end = microtime(true);
+        $searchTime = $time_end - $run_time_start;
 
-        if (is_null($foundEntity)){
+        $run_time_start = microtime(true);
 
-            $sourceAddress = $addressFactory->get($fentity->get(BlockchainEventFactory::EVENT_SOURCE_ADDRESS));
-            $destination = $addressFactory->get($fentity->get('destinationAddress'));
-            $tx = $fentity->get(Blockchain::$txidConceptName);
 
-            $contract = $contractFactory->get($fentity->get('contract'));
-            $blockTime = $fentity->get('blockTime');
-            $block = $blockfactory->get($fentity->get(BlockchainBlockFactory::INDEX_SHORTNAME)); //to verify
+        foreach ($foreignAdapter->entityArray as $fentity){
 
-            $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,null);
+            $foundEntity = $populateEventFactory->first(Blockchain::$txidConceptName,$fentity->get(Blockchain::$txidConceptName)) ;
+
+            if (is_null($foundEntity)){
+
+                $sourceAddress = $addressFactory->get($fentity->get(BlockchainEventFactory::EVENT_SOURCE_ADDRESS));
+                $destination = $addressFactory->get($fentity->get(BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB));
+                $tx = $fentity->get(Blockchain::$txidConceptName);
+
+                $contract = $contractFactory->get($fentity->get(BlockchainEventFactory::EVENT_CONTRACT));
+                $blockTime = $fentity->get('blockTime');
+                $block = $blockfactory->get($fentity->get(BlockchainBlockFactory::INDEX_SHORTNAME)); //to verify
+
+                $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,null);
+
+
+            }
 
 
         }
 
+        $time_end = microtime(true);
+        $insertTime = $time_end - $run_time_start;
+
+        $responseArray['new'] = $countTotalEntities - $matchingEntities ;
+        $responseArray['existing'] =  $matchingEntities ;
+        $responseArray['total'] =  $countTotalEntities ;
+        $responseArray['time']['insert']['total'] =  $insertTime ;
+        $responseArray['time']['search']['total'] =  $searchTime ;
+
+        $this->responseArray['events'] = $responseArray ;
+
+        $this->dataImportOffset = count($foreignAdapter->entityArray);
+
+
+
 
     }
-
-    $time_end = microtime(true);
-    $insertTime = $time_end - $run_time_start;
-
-    $responseArray['new'] = $countTotalEntities - $matchingEntities ;
-    $responseArray['existing'] =  $matchingEntities ;
-    $responseArray['total'] =  $countTotalEntities ;
-    $responseArray['time']['insert']['total'] =  $insertTime ;
-    $responseArray['time']['search']['total'] =  $searchTime ;
-
-    $this->responseArray['events'] = $responseArray ;
-
-    $this->dataImportOffset = count($foreignAdapter->entityArray);
-
-
-
-
-}
 
 
 
@@ -174,7 +174,7 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
 
         $run_time_start = microtime(true);
 
-    /** @var Blockchain $blockchain */
+        /** @var Blockchain $blockchain */
         $blockchain = $this->blockchain ;
         $addressFactory = clone $blockchain->getAddressFactory();
         /** @var BlockchainAddressFactory $addressFactory */
@@ -227,10 +227,10 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
         $responseArray['total'] =  $countTotalAddress ;
 
 
-            foreach ($addressList as $addressString){
+        foreach ($addressList as $addressString){
 
-                $foundAddress = $addressFactory->get($addressString,true);
-            }
+            $foundAddress = $addressFactory->get($addressString,true);
+        }
 
         $time_end = microtime(true);
         $insertTime = $time_end - $run_time_start;
@@ -261,9 +261,9 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
 
         /** @var BlockchainContractFactory $contractFactory */
 
-       $response= $this->getFactoryAndCreateEntities($foreignAdapter,BlockchainContractFactory::TOKENID,$contractFactory,$trackerIdentifier);
+        $response= $this->getFactoryAndCreateEntities($foreignAdapter,BlockchainContractFactory::TOKENID,$contractFactory,$trackerIdentifier);
 
-       $this->responseArray['contracts'] = $response ;
+        $this->responseArray['contracts'] = $response ;
 
         return  $contractFactory;
 
@@ -290,9 +290,9 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
             $entityToFindArray[] = $blockIndexToFind ;
             //each addressTracker might have multiple address
 
-                $blockList[$blockIndexToFind]['blockIndex'] = $blockIndexToFind ;
-                $blockList[$blockIndexToFind][self::TRACKER_BLOCKTIME] = $entity->get($blockTime)  ;
-                $blockRawList[] = $blockIndexToFind ;
+            $blockList[$blockIndexToFind]['blockIndex'] = $blockIndexToFind ;
+            $blockList[$blockIndexToFind][self::TRACKER_BLOCKTIME] = $entity->get($blockTime)  ;
+            $blockRawList[] = $blockIndexToFind ;
 
         }
 
@@ -303,6 +303,8 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
 
         //we search concepts with existing addresses
         $conceptsArray = DatabaseAdapter::searchConcept($blockRawList,$identifierUnid,$this->sandra,'',$fileUnid);
+
+        //Missing preloading
 
         if(!empty($conceptsArray)) {
             $blockFactory->populateLocal();
@@ -323,8 +325,8 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
 
             /** @var BlockchainBlockFactory $blockFactory */
 
-           $newBlock =  $blockFactory->getOrCreateFromRef(BlockchainBlockFactory::INDEX_SHORTNAME,$blockData['blockIndex']);
-           $newBlock->createOrUpdateRef('timestamp',$blockData[self::TRACKER_BLOCKTIME]);
+            $newBlock =  $blockFactory->getOrCreateFromRef(BlockchainBlockFactory::INDEX_SHORTNAME,$blockData['blockIndex']);
+            $newBlock->createOrUpdateRef('timestamp',$blockData[self::TRACKER_BLOCKTIME]);
 
         }
 
@@ -389,7 +391,7 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
             //$foundEntity =$entityFactory->first($entityIdentifier,$entityIdentifierString);
 
             //if (is_null($foundEntity)){
-              //  $entityFactory->getOrCreateFromRef('tokenId', $entityIdentifierString);
+            //  $entityFactory->getOrCreateFromRef('tokenId', $entityIdentifierString);
 
             //}
 
@@ -399,6 +401,39 @@ public function saveEvents(ForeignEntityAdapter $foreignAdapter,
 
 
         return  $response ;
+
+
+    }
+
+    public function getEvents($contract,$dataSource = 'default',$limit=null,$offset=null,$address = null){
+
+        $dataSource = $this->getDataSource($dataSource);
+
+
+
+        $foreignEntityEventsFactory = $dataSource->getEvents('default',$limit,$offset,$address);
+
+        $structure = $foreignEntityEventsFactory->return2dArray();
+        $totalResponses['structure'] = reset($structure);
+
+
+
+        $blockFactory = $this->getPopulatedBlockFactory($foreignEntityEventsFactory);
+        // die();
+
+        $addressFactory = $this->getPopulatedAddressFactory($foreignEntityEventsFactory);
+        $contractFactory = $this->getPopulatedContractFactory($foreignEntityEventsFactory);
+
+
+
+        $this->saveEvents($foreignEntityEventsFactory,$this->blockchain,$contractFactory,$addressFactory,$blockFactory);
+
+
+        // $newAddress = count($addressFactory->newEntities);
+
+        $totalResponses['data'] = $this->responseArray ;
+        return $totalResponses ;
+
 
 
     }
