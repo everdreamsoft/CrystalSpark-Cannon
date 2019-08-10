@@ -49,7 +49,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
     public static function getStaticCollection(): AssetCollectionFactory{
 
         if (self::$staticInstance == null) {
-            self::$staticInstance = new AssetCollectionFactory();
+            self::$staticInstance = new AssetCollectionFactory(SandraManager::getSandra());
             self::$staticInstance->populateLocal();
         }
 
