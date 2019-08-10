@@ -85,6 +85,7 @@ class BlockchainEvent extends Entity
     public function getTokenId(){
 
         $tokenId = $this->getBrotherReference(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
+        if(!is_array($tokenId)) { return null ;}
         $tokenId = reset($tokenId);
 
 
