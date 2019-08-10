@@ -128,6 +128,8 @@ class EthereumAddress extends BlockchainAddress
             $return['collections'][$collection->id]['description'] = $collection->description ;
             $return['collections'][$collection->id]['contracts'] = $collectionContractsArray[$contractAddress] ;
             $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
+            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
+            $return['collections'][$collection->id]['image']=  $collection->imageUrl ;
 
 
             $return['collections'][$collection->id]['assets'][] = $assetEntity ;

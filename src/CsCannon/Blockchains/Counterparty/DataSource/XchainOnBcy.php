@@ -24,7 +24,7 @@ class XchainOnBcy extends BlockchainDataSource
 
 
 
-    public function getEvents($contract,$batchMax=1000,$offset=0):ForeignEntityAdapter
+    public function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
     {
 
 
@@ -76,7 +76,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
                 "quantity" => $quantity,
                 Blockchain::$txidConceptName => $hash,
                 BlockchainEventFactory::EVENT_SOURCE_ADDRESS => $result['source_address'],
-                "destinationAddress" => $result['destination_address'],
+                BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB => $result['destination_address'],
                 "tokenId" => $result['asset'],
                 "blockIndex" => $result['block_index'],
                 "blockTime" => $result['block_time'],

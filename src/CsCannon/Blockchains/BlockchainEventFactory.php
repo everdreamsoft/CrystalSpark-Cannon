@@ -107,12 +107,14 @@ use SandraCore\System;
                             $txid,
                             $timestamp,
                             BlockchainBlock $block,
-                            $tokenId = null
+                            $tokenId = null,
+                            $quantity = 1
 
  )
      {
 
          $dataArray[Blockchain::$txidConceptName] = $txid ;
+         $dataArray[Blockchain::$txidConceptName] = $quantity ;
          $dataArray['timestamp'] = $timestamp ;
 
 
@@ -317,4 +319,7 @@ use SandraCore\System;
      }
 
 
+
+
 }
+
