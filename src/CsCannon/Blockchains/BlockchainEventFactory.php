@@ -30,6 +30,7 @@ use SandraCore\System;
     const EVENT_DESTINATION_VERB = 'hasSingleDestination';
      const EVENT_CONTRACT = 'blockchainContract';
      const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
+     const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
     public static $messagePool = array();
 
 

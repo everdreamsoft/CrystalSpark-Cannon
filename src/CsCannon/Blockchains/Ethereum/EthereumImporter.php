@@ -23,7 +23,7 @@ class EthereumImporter extends BlockchainImporter
 
 
 
-    public function getEvents($contract,$dataSource = 'default',$limit=null,$offset=null){
+    public function getEvents($contract,$dataSource = 'default',$limit=null,$offset=null,$address=null){
 
 
 

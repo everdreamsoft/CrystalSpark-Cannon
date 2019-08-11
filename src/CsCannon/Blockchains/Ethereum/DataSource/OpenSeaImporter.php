@@ -43,7 +43,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
         if (!is_null($address)) $addressFilter = "&account_address=$address";
 
-        $sandra =  app('Sandra')->getSandra();
+        $sandra =  SandraManager::getSandra();
         /** @var System $sandra */
         $openSeaEvents = 'https://api.opensea.io/api/v1/events/?event_type=transfer'.$addressFilter;
 

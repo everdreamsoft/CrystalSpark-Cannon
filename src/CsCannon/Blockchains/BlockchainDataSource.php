@@ -11,10 +11,12 @@ namespace CsCannon\Blockchains;
 
 use SandraCore\ForeignEntityAdapter;
 
-class BlockchainDataSource
+abstract class BlockchainDataSource
 {
 
     public $sandra ;
+
+    public abstract function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter ;
 
     public function __construct($sandra)
     {
@@ -23,14 +25,6 @@ class BlockchainDataSource
 
     }
 
-    public function getEvents($contract,$limit,$offset):ForeignEntityAdapter{
-
-
-
-        $eventAdapter = new ForeignEntityAdapter($this->sandra,'',$this->sandra);
-        return $eventAdapter ;
-
-    }
 
     public function getBalance($contract,$limit,$offset):ForeignEntityAdapter{
 
