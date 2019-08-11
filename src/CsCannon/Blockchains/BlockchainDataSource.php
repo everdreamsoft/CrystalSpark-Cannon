@@ -30,8 +30,8 @@ abstract class BlockchainDataSource
 
 
 
-        $eventAdapter = new ForeignEntityAdapter($this->sandra,'',$this->sandra);
-        return $eventAdapter ;
+       // $eventAdapter = new ForeignEntityAdapter($this->sandra,'',$this->sandra);
+        return null ;
 
     }
 

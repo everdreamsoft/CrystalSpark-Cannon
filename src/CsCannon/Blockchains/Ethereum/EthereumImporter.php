@@ -23,44 +23,7 @@ class EthereumImporter extends BlockchainImporter
 
 
 
-    public function getEvents($contract,$dataSource = 'default',$limit=null,$offset=null,$address=null){
 
-
-
-        $dataSource = $this->getDataSource($dataSource);
-
-        $dataSource->getBalance('default',$limit,$offset);
-
-
-
-        $foreignEntityEventsFactory = $dataSource->getEvents('default',$limit,$offset);
-        echo"hello";
-        die("was not me");
-
-        $structure = $foreignEntityEventsFactory->return2dArray();
-        $totalResponses['structure'] = reset($structure);
-
-
-
-        $blockFactory = $this->getPopulatedBlockFactory($foreignEntityEventsFactory);
-       // die();
-
-        $addressFactory = $this->getPopulatedAddressFactory($foreignEntityEventsFactory);
-        $contractFactory = $this->getPopulatedContractFactory($foreignEntityEventsFactory);
-
-
-
-        $this->saveEvents($foreignEntityEventsFactory,$this->blockchain,$contractFactory,$addressFactory,$blockFactory);
-
-
-       // $newAddress = count($addressFactory->newEntities);
-
-        $totalResponses['data'] = $this->responseArray ;
-        return $totalResponses ;
-
-
-
-    }
 
 
 

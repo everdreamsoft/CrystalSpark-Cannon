@@ -8,6 +8,7 @@ use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\SandraManager;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use phpDocumentor\Reflection\Types\Self_;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
@@ -31,6 +32,7 @@ use SandraCore\System;
      const EVENT_CONTRACT = 'blockchainContract';
      const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
      const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
+         const EVENT_QUANTITY = 'quantity' ;
     public static $messagePool = array();
 
 
@@ -115,7 +117,7 @@ use SandraCore\System;
      {
 
          $dataArray[Blockchain::$txidConceptName] = $txid ;
-         $dataArray[Blockchain::$txidConceptName] = $quantity ;
+         $dataArray[self::EVENT_QUANTITY] = $quantity ;
          $dataArray['timestamp'] = $timestamp ;
 
 
@@ -127,6 +129,7 @@ use SandraCore\System;
          $triplets[self::EVENT_DESTINATION_VERB] = $destinationAddressConcept ;
 
          $triplets[self::ON_BLOCKCHAIN_EVENT] = $blockchain::NAME ;
+         $triplets[self::EVENT_BLOCK] = $block ;
 
          //does the contract has a token id ?
          if (!is_null($tokenId)){
