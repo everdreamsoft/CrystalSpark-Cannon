@@ -104,7 +104,10 @@ class OpenSeaImporter extends BlockchainDataSource
             $value[BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB ] =  $destination  ;
             $value[BlockchainEventFactory::EVENT_CONTRACT] =  $contract  ;
 
-            $value[BlockchainEventFactory::EVENT_BLOCK_TIME] =  $value['timestamp']  ;
+
+
+            $value[BlockchainEventFactory::EVENT_BLOCK_TIME] =   date("U",strtotime($value['timestamp']));
+            $value['timestamp'] = date("U",strtotime($value['timestamp']));
 
             //todo add blocktime
 
