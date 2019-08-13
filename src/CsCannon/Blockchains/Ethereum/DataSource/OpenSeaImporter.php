@@ -104,7 +104,7 @@ class OpenSeaImporter extends BlockchainDataSource
             $value[BlockchainEventFactory::EVENT_DESTINATION_VERB] = $destination ;
             $value[BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB ] =  $destination  ;
             $value[BlockchainEventFactory::EVENT_CONTRACT] =  $contract  ;
-            $value[BlockchainContractFactory::TOKENID] =  $value['asset']['token_id']  ;
+            $value[BlockchainContractFactory::TOKENID] =  $value['f:asset.token_id']  ;
 
 
 
