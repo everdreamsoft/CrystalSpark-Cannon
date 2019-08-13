@@ -34,7 +34,7 @@ use SandraCore\System;
      const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
          const EVENT_QUANTITY = 'quantity' ;
          const EVENT_BLOCK = 'onBlock';
-         const EVENT_BLOCKTIME = 'blocktime';
+         const EVENT_BLOCK_TIME = 'blocktime';
     public static $messagePool = array();
 
 
