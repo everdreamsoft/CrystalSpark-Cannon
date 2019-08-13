@@ -136,7 +136,7 @@ abstract class BlockchainImporter
                 $tx = $fentity->get(Blockchain::$txidConceptName);
 
                 $contract = $contractFactory->get($fentity->get(BlockchainEventFactory::EVENT_CONTRACT));
-                $blockTime = $fentity->get('blockTime');
+                $blockTime = $fentity->get(BlockchainEventFactory::BLOCK_TIME);
                 $block = $blockfactory->get($fentity->get(BlockchainBlockFactory::INDEX_SHORTNAME)); //to verify
 
                 $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,null);

@@ -33,8 +33,9 @@ use SandraCore\System;
      const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
      const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
          const EVENT_QUANTITY = 'quantity' ;
-         const EVENT_BLOCK = 'onBlock'
-;    public static $messagePool = array();
+         const EVENT_BLOCK = 'onBlock';
+         const EVENT_BLOCKTIME = 'blocktime';
+    public static $messagePool = array();
 
 
     private $genericAddressFactory = EntityFactory::class ;
