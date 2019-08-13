@@ -40,7 +40,7 @@ class EthereumAddress extends BlockchainAddress
         $finalArray = array();
 
         //Xchain
-        $foreignAdapter = new ForeignEntityAdapter("https://api.opensea.io/api/v1/assets/?format=json&order_by=current_price&order_direction=a&owner=".$this->getAddress(),'assets',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter("https://api.opensea.io/api/v1/assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$this->getAddress(),'assets',SandraManager::getSandra());
 
         $assetVocabulary = array('image_url'=>'image',
             'assetName'=>'assetName',
