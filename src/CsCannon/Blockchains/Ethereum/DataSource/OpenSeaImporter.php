@@ -4,6 +4,7 @@ namespace CsCannon\Blockchains\Ethereum\DataSource;
 
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
@@ -103,6 +104,7 @@ class OpenSeaImporter extends BlockchainDataSource
             $value[BlockchainEventFactory::EVENT_DESTINATION_VERB] = $destination ;
             $value[BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB ] =  $destination  ;
             $value[BlockchainEventFactory::EVENT_CONTRACT] =  $contract  ;
+            $value[BlockchainContractFactory::TOKENID] =  $value['asset']['token_id']  ;
 
 
 
