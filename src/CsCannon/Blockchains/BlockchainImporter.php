@@ -141,7 +141,9 @@ abstract class BlockchainImporter
 
                 $tokenId = $fentity->get(BlockchainContractFactory::TOKENID);
 
-                $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,$tokenId);
+                if($fentity->get(BlockchainEventFactory::Q))
+
+                $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,$tokenId,$quantity);
 
 
             }

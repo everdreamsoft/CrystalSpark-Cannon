@@ -11,6 +11,8 @@ namespace CsCannon;
 
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\Blockchains\Ethereum\EthereumContract;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use SandraCore\displayer\DisplayType;
 use SandraCore\Entity;
 use SandraCore\System;
@@ -68,7 +70,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
 
-    public function createFromOpenSeaEntity(Entity $openSeaEntity){
+    public function createFromOpenSeaEntity(Entity $openSeaEntity, EthereumContract $contract){
 
         $data['name'] = $openSeaEntity->get('contract.name');
         $data['symbol'] = $openSeaEntity->get('contract.symbol');
@@ -82,7 +84,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         //$links['hasContract'] = 'openSea'; //TODO important
 
 
-        return $this->createNew($data,null);
+        return $this->createNew($data);
 
 
 

@@ -36,8 +36,14 @@ class EthereumContract extends EthereumAddress
 
         if($collectionEntity instanceof AssetCollection) {
 
+            $hostName = $_SERVER['HTTP_HOST'];
+            $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https://'?'https://':'http://';
 
-          return array("image"=>"https://apidev.bitcrystals.com/api/v1/$address/image/$tokenId");
+
+
+
+
+            return array("image"=>"$protocol$hostName/api/v1/$address/image/$tokenId");
             return $collectionEntity->getDefaultDisplay();
         }
 

@@ -87,7 +87,12 @@ class EthereumAddress extends BlockchainAddress
 
                if (is_null($collection)){
 
-                   $collection = $collectionFactory->createFromOpenSeaEntity($entity);
+                   $contractFactory = new EthereumContractFactory();
+                   $contractEntity = $contractFactory->get($contractAddress,true);
+
+
+
+                   $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
 
                }
                 $collectionArray[$contractAddress] = $collection;

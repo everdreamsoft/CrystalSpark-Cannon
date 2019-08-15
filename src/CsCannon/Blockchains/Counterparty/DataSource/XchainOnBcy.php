@@ -30,7 +30,7 @@ class XchainOnBcy extends BlockchainDataSource
 
         $foreignEntityAdapter = new ForeignEntityAdapter(null,'',$this->sandra);
 
-        $blockSucker = new PdoConnexionWrapper('eds.alwaysdata.net', 'eds2_counterparty', 'eds2', 'staffZ4Vm');
+        $blockSucker = new PdoConnexionWrapper('eds.alwaysdata.net', 'eds2_counterparty', '', '');
         $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends 
 JOIN index_transactions ON sends.`tx_index` = index_transactions.id
 JOIN index_addresses s ON sends.`source_id` = s.id

@@ -17,12 +17,7 @@ abstract class  BlockchainContract extends BlockchainAddress
 {
 
 
-    public function resolveMetaData (){
-
-
-        return 'helloMeta';
-
-    }
+    abstract public function resolveMetaData ($tokenId = null);
 
 
 
