@@ -10,8 +10,7 @@
 Crystal Spark Cannon (CSCannon) is a PHP library designed to easily map blockchain tokens onto images assets.
 
 
-CSCanon is build on top of  [EverdreamSoft 
-extend database
+CSCanon is build on top of  [EverdreamSoft Sandra](https://github.com/everdreamsoft/sandra)
 
 
 
