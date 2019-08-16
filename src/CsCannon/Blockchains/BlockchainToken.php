@@ -25,7 +25,9 @@ abstract class BlockchainToken extends Entity
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
 
-        $this->tokenId = $sandraReferencesArray[BlockchainTokenFactory::$mainIdentifier] ;
+        if(isset($sandraReferencesArray[BlockchainTokenFactory::$mainIdentifier])) {
+            $this->tokenId = $sandraReferencesArray[BlockchainTokenFactory::$mainIdentifier];
+        }
 
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
     }

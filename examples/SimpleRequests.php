@@ -6,11 +6,18 @@
  * Time: 20:17
  */
 
-//ethereum address
+
+namespace CsCannon ;
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+
+
 use CsCannon ;
+
+
+
+
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
 

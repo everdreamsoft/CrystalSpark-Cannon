@@ -124,8 +124,8 @@ class EthereumAddress extends BlockchainAddress
             $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
 
 
-            $balance->addContractToken($contractEntity,$entity->get('token_id'),1,1);
-            die($balance->get());
+           // $balance->addContractToken($contractEntity,$entity->get('token_id'),1,1);
+            //die($balance->get());
 
 
 
