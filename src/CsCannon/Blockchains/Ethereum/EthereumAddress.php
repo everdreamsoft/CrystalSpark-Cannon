@@ -14,10 +14,12 @@ use CsCannon\Asset;
 use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
+use CsCannon\Balance;
 use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Ethereum\EthereumToken;
 use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
@@ -49,6 +51,8 @@ class EthereumAddress extends BlockchainAddress
 
 
         );
+
+        $balance = new Balance();
 
         $foreignAdapter->flatSubEntity('asset_contract','contract');
         $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
@@ -118,6 +122,14 @@ class EthereumAddress extends BlockchainAddress
 
             $assetEntity['image'] = $entity->get('image');
             $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
+
+
+            $balance->addContractToken($contractEntity,$entity->get('token_id'),1,1);
+            die($balance->get());
+
+
+
+
             $assetEntity['name'] = $entity->get('name');
             $assetEntity['balance'] = 1;
 

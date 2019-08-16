@@ -12,6 +12,7 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\Asset;
 use SandraCore\Entity;
+use SandraCore\System;
 
 abstract class BlockchainToken extends Entity
 {
@@ -19,6 +20,15 @@ abstract class BlockchainToken extends Entity
    protected $name ;
     protected static $isa ;
     protected static $file ;
+    public $tokenId ;
+
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
+    {
+
+        $this->tokenId = $sandraReferencesArray[BlockchainTokenFactory::$mainIdentifier] ;
+
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+    }
 
 
     public function bindToAsset(Asset $asset){
@@ -31,6 +41,13 @@ abstract class BlockchainToken extends Entity
     public function getJoinedAssets(Asset $asset){
 
        // $this->getJoined(BlockchainTokenFactory::$joinAssetVerb);
+
+
+    }
+
+    public function getId(){
+
+        return $this->name ;
 
 
     }

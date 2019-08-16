@@ -16,6 +16,8 @@ namespace CsCannon\Blockchains;
 abstract class  BlockchainContract extends BlockchainAddress
 {
 
+    public abstract  function getId() ;
+
 
     abstract public function resolveMetaData ($tokenId = null);
 

@@ -106,8 +106,6 @@ abstract class  BlockchainAddress extends Entity
 
             $count = 0;
 
-            //echo $token->getJoined(BlockchainTokenFactory::$joinAssetVerb,'tokenId');
-           //
 
             if ($token->getJoinedEntities(BlockchainTokenFactory::$joinAssetVerb)) {
                 $array = $token->getJoinedEntities(BlockchainTokenFactory::$joinAssetVerb);
@@ -176,6 +174,7 @@ abstract class  BlockchainAddress extends Entity
         }
 
         $reponse['assets'] = $tokenFactory->return2dArray() ;
+        $reponse['tokens'] = $unavailableEntities ;
         //$reponse['tokens'] = $unavailableEntities ;
 
         return $reponse ;

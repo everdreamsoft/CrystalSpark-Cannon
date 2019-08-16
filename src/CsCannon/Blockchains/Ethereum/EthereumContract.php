@@ -53,6 +53,12 @@ class EthereumContract extends EthereumAddress
 
     }
 
+    public function getId(){
+
+        return $this->address ;
+
+    }
+
 
 
 
