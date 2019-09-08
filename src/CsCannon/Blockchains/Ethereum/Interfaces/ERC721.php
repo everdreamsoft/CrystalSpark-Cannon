@@ -3,6 +3,7 @@
 namespace CsCannon\Blockchains\Ethereum\Interfaces;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 
 /**
  * Created by EverdreamSoft.
@@ -10,9 +11,18 @@ use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
  * Date: 21.05.19
  * Time: 14:40
  */
-class ERC721 extends EthereumContractFactory
+class ERC721 extends EthereumContractStandard
 {
 
+    public $specificatorArray = ['tokenId'];
+
+
+
+
+    public function getStandardName()
+    {
+       return "ERC721";
+    }
 
 
 }
