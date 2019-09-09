@@ -22,7 +22,7 @@ class EthereumContract extends EthereumAddress
 {
 
     protected static $isa = 'ethContract';
-    protected static $file = 'blockchainContractFile';
+
     protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumContract' ;
 
 

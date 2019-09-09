@@ -13,13 +13,12 @@ namespace CsCannon\Blockchains;
 
 
 
-abstract class  BlockchainContract extends BlockchainAddress
+use SandraCore\Entity;
+
+class  BlockchainContract extends Entity
 {
 
-    public abstract  function getId() ;
 
-
-    abstract public function resolveMetaData ($tokenId = null);
 
 
 

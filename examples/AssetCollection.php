@@ -22,10 +22,13 @@ SandraManager::setSandra($system);
 
 $assetCollection = new AssetCollectionFactory(SandraManager::getSandra());
 
+$contractFactory = new CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+$contractFactory->populateLocal();
+
 
 $assetCollection->populateLocal();
 
-print_r($assetCollection->return2dArray());
+print_r($contractFactory->dumpMeta());
 
 
 
