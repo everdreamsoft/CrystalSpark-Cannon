@@ -1,9 +1,11 @@
 <?php
 
 namespace CsCannon\Blockchains\Ethereum\Interfaces;
+use CsCannon\AssetSolvers\DefaultEthereumSolver;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
+use CsCannon\Orb;
 
 /**
  * Created by EverdreamSoft.
@@ -14,7 +16,22 @@ use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 class ERC721 extends EthereumContractStandard
 {
 
+    public $tokenId = null ;
     public $specificatorArray = ['tokenId'];
+
+    public function __construct()
+    {
+        $this->solver = DefaultEthereumSolver::class ;
+        $this->tokenId = $this->specificatorArray['tokenId'];
+
+
+
+
+    }
+
+
+
+
 
 
 
@@ -22,6 +39,18 @@ class ERC721 extends EthereumContractStandard
     public function getStandardName()
     {
        return "ERC721";
+    }
+
+    public function getSolver()
+    {
+
+    }
+
+    public function resolveAsset(Orb $orb)
+    {
+
+       $return = DefaultEthereumSolver::resolveAsset($orb,$this);
+       return $return ;
     }
 
 

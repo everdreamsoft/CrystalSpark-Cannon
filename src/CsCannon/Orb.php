@@ -10,22 +10,27 @@ namespace CsCannon;
 
 
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractStandard;
 
 class Orb
 {
 
     public $contract = null ;
-    public $tokenPath = null ;
+    public $tokenSpecifier = null ;
+    public $assetCollection = null ;
 
-    public function __construct(BlockchainContract $contract,$tokenPath,$forceInterface = false)
+    public function __construct(BlockchainContract $contract,BlockchainContractStandard $specifier,AssetCollection $assetCollection,$forceInterface = false)
     {
 
 
         $this->contract = $contract ;
-        $this->tokenPath = $tokenPath ;
+        $this->tokenSpecifier = $specifier ;
+        $this->assetCollection = $assetCollection ;
     }
 
     public function getAsset(){
+
+        return $this->tokenSpecifier->resolveAsset($this);
 
 
 

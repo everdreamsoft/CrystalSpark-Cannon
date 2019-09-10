@@ -12,7 +12,8 @@ namespace CsCannon\Blockchains\Ethereum;
 
 
 
-use CsCannon\Blockchains\BlockchainAddressFactory;
+
+
 use CsCannon\Blockchains\BlockchainContractFactory;
 
 class EthereumContractFactory extends BlockchainContractFactory

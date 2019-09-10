@@ -18,7 +18,7 @@ use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContract;
 use SandraCore\ForeignEntityAdapter;
 
-class EthereumContract extends EthereumAddress
+class EthereumContract extends BlockchainContract
 {
 
     protected static $isa = 'ethContract';

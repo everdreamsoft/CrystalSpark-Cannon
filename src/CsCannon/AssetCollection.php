@@ -9,6 +9,7 @@
 
 namespace CsCannon;
 
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\System;
@@ -57,6 +58,14 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
         // $this->id = $sandraReferencesArray[$system->systemConcept->get($this->id)];
 
         return $this->displayArray ;
+
+    }
+
+    public function getOrbFromSpecifier(BlockchainContractStandard $specifier)
+    {
+
+       $orbFactory = new OrbFactory();
+       $orbs = $orbFactory->getOrbsFromContractPath($this,1,1);
 
     }
 

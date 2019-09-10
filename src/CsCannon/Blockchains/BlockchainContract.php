@@ -18,6 +18,14 @@ use SandraCore\Entity;
 class  BlockchainContract extends Entity
 {
 
+    public function getCollections(){
+
+
+        return $this->getJoinedEntities(BlockchainContractFactory::JOIN_COLLECTION);
+
+
+    }
+
 
 
 

@@ -61,7 +61,9 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function get($id){
+    public function get($id):?AssetCollection{
+
+
 
         return $this->first($this->id,$id);
 
