@@ -19,7 +19,7 @@ const TOKENID = 'tokenId';
 protected static $file = 'blockchainContractFile';
 protected static $isa = null;
 protected static $className = 'CsCannon\BlockchainContract';
-protected const  MAIN_IDENTIFIER = 'id';
+public const  MAIN_IDENTIFIER = 'id';
 public  const JOIN_COLLECTION = 'inCollection';
 
     public function __construct(){
@@ -29,6 +29,7 @@ public  const JOIN_COLLECTION = 'inCollection';
 
 
         $this->generatedEntityClass = static::$className ;
+
 
 
 

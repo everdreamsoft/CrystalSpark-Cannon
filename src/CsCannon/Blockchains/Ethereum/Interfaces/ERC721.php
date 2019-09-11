@@ -22,7 +22,7 @@ class ERC721 extends EthereumContractStandard
     public function __construct()
     {
         $this->solver = DefaultEthereumSolver::class ;
-        $this->tokenId = $this->specificatorArray['tokenId'];
+
 
 
 
@@ -32,7 +32,20 @@ class ERC721 extends EthereumContractStandard
 
 
 
+    public function setTokenId($tokenId)
+    {
+        $this->setTokenPath(array('tokenId'=>$tokenId));
 
+    }
+
+    //ovveride the method to catch tokenId
+    public function setTokenPath($tokenPath){
+
+        $this->tokenId = $tokenPath['tokenId'];
+
+       parent::setTokenPath($tokenPath);
+
+    }
 
 
 
@@ -51,6 +64,14 @@ class ERC721 extends EthereumContractStandard
 
        $return = DefaultEthereumSolver::resolveAsset($orb,$this);
        return $return ;
+    }
+
+
+    public function getDisplayStructure()
+    {
+
+       $return = 'tokenId-'.$this->tokenId ;
+        return $return ;
     }
 
 

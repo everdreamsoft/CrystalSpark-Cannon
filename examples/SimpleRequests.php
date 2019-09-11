@@ -43,6 +43,7 @@ $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($ethereumAddress
 $addressEntity = $addressFactory->get($ethereumAddress);
 
 $balance = $addressEntity->getBalance();
+print_r($addressEntity->balance->getTokenBalance());
 
 print_r($balance);
 

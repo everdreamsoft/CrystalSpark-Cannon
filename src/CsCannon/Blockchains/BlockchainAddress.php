@@ -14,19 +14,30 @@ namespace CsCannon\Blockchains;
 use CsCannon\Asset;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
+use CsCannon\Balance;
 use CsCannon\SandraManager;
 use CsCannon\Token;
 use SandraCore\Entity;
 use SandraCore\ForeignEntityAdapter;
+use SandraCore\System;
 
 abstract class  BlockchainAddress extends Entity
 {
 
    protected $address ;
    public $assetList = array();
+   public $balance ;
 
     abstract public function getBalance();
     abstract public function getBlockchain():Blockchain;
+
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
+    {
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+
+        $this->balance = new Balance();
+
+    }
 
     public function setAddress($address){
 

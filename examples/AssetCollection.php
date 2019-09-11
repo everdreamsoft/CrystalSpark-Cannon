@@ -33,9 +33,16 @@ $assetCollection->populateLocal();
 
 // I want to get the first cryptokitties
 
+
+
 $ck = $assetCollection->get('0x06012c8cf97bead5deae237070f9587f8e7a266d');
 $specifier = new CsCannon\Blockchains\Ethereum\Interfaces\ERC721();
-$specifier->setToken(array('tokenId2'=>1));
+$specifier->setTokenId(1);
+$specifier->getFlatTokenPath();
+
+
+
+
 
 $contractFactory = new CsCannon\Blockchains\Ethereum\EthereumContractFactory();
 $contract = $contractFactory->get('0x06012c8cf97bead5deae237070f9587f8e7a266d');
@@ -44,7 +51,7 @@ $orbFactory = new OrbFactory();
 $orb = OrbFactory::getOrbFromSpecifier($specifier,$contract,$ck);
 $orb->getAsset();
 
-echo"finish ".print_r($orb->getAsset());
+
 
 
 

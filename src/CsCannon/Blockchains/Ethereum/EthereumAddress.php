@@ -19,6 +19,7 @@ use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Ethereum\EthereumToken;
 use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
@@ -31,6 +32,7 @@ class EthereumAddress extends BlockchainAddress
     protected static $isa = 'ethAddress';
     protected static $file = 'ethAddressFile';
     protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumAddress' ;
+
 
 
 
@@ -52,7 +54,7 @@ class EthereumAddress extends BlockchainAddress
 
         );
 
-        $balance = new Balance();
+        $balance = $this->balance ;
 
         $foreignAdapter->flatSubEntity('asset_contract','contract');
         $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
@@ -74,7 +76,7 @@ class EthereumAddress extends BlockchainAddress
 
            /** @var Entity $entity */
             //dd($entity->get('image'));
-            $random = CommonFunctions::somethingToConcept('random',$system);
+
 
           //  $assetEntity = new Asset($random,$entity->entityRefs,$foreignAdapter,$entity->entityId,$assetFactory->entityReferenceContainer,$assetFactory->entityContainedIn,SandraManager::getSandra());
 
@@ -93,6 +95,7 @@ class EthereumAddress extends BlockchainAddress
 
                    $contractFactory = new EthereumContractFactory();
                    $contractEntity = $contractFactory->get($contractAddress,true);
+
 
 
 
@@ -122,6 +125,15 @@ class EthereumAddress extends BlockchainAddress
 
             $assetEntity['image'] = $entity->get('image');
             $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
+
+            $ethContractFactory = new EthereumContractFactory();
+            $ethContract = $ethContractFactory->get($contractAddress);
+
+            $standard = new ERC721();
+            $standard->setTokenId($entity->get('token_id'));
+
+
+            $balance->addContractToken($ethContract,$standard,1);
 
 
            // $balance->addContractToken($contractEntity,$entity->get('token_id'),1,1);
@@ -163,6 +175,8 @@ class EthereumAddress extends BlockchainAddress
         }
 
         $return['collections']  = $finalArray;
+
+        $this->balance = $balance ;
 
 
         return $return ;

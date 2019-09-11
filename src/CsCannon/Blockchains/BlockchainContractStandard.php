@@ -19,6 +19,7 @@ abstract class BlockchainContractStandard
     public $specificatorData = array();
     public abstract function resolveAsset(Orb $orb) ;
     public abstract function getStandardName() ;
+    public abstract function getDisplayStructure() ;
 
 
 
@@ -48,11 +49,13 @@ abstract class BlockchainContractStandard
 
     }
 
-    public function setToken($tokenPath){
+    public function setTokenPath($tokenPath){
 
         $this->verifyTokenPath($tokenPath);
 
     }
+
+
 
 
 }

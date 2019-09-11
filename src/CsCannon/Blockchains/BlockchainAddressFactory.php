@@ -18,6 +18,7 @@ abstract class BlockchainAddressFactory extends EntityFactory
     public $foreignAdapterX ;
     protected static $className = 'CsCannon\XcpAddress' ;
     const ADDRESS_SHORTNAME = 'address' ;
+    public $balance = null ;
 
 
 
