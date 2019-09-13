@@ -19,6 +19,7 @@ class Balance
 
     public $tokens ;
     public $contracts ;
+    private $contractMap ;
 
 
 
@@ -29,15 +30,19 @@ class Balance
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['quantity'] = $quantity;
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;
 
+        $this->contractMap[$contract->getId()] = $contract ;
+
     }
 
     public function getTokenBalance(){
 
       foreach($this->contracts as $chain){
 
-
-
           foreach($chain as $contractId =>$contracts){
+
+              $newContract = null ;
+              $newContract['contract'] = $contractId ;
+
               foreach($contracts as $tokenComposedId =>$token) {
 
                   //get the token object
@@ -49,20 +54,29 @@ class Balance
                   $newToken['quantity'] = $token['quantity'];
 
 
-                  $output[$contractId][] = $newToken ;
-
+                  $newContract['tokens'][] = $newToken ;
 
               }
+              $output[] = $newContract ;
           }
 
-
-
-
       }
-
-
-
         return $output ;
+    }
+
+    public function getObs(){
+
+        $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
+        $collectionFactory->populateLocal();
+
+        //a cleaner way would use a filter to the request to point only toward active contracts
+
+
+
+
+
+
+
     }
 
 
