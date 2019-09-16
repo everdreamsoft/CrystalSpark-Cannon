@@ -65,7 +65,7 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
     {
 
        $orbFactory = new OrbFactory();
-       $orbs = $orbFactory->getOrbsFromContractPath($this,1,1);
+       $orbs = $orbFactory->getOrbsFromContractPath($this,$specifier);
 
     }
 

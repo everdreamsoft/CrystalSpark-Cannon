@@ -69,6 +69,11 @@ class EthereumAddress extends BlockchainAddress
         $collectionAssetCount = array();
         $return['collections'] = array();
 
+        $contractFactory = new EthereumContractFactory();
+        //careful here we are loading all contract onto memory
+        //todo fix this
+        $contractFactory->populateLocal();
+
         //dd($collectionFactory->getAllWith('collectionId','0x2aea4add166ebf38b63d09a75de1a7b94aa24163'));
 
         //I'm  tired so I manualy parse the array because the displayer downs't work
@@ -93,7 +98,7 @@ class EthereumAddress extends BlockchainAddress
 
                if (is_null($collection)){
 
-                   $contractFactory = new EthereumContractFactory();
+
                    $contractEntity = $contractFactory->get($contractAddress,true);
 
 
@@ -126,8 +131,8 @@ class EthereumAddress extends BlockchainAddress
             $assetEntity['image'] = $entity->get('image');
             $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
 
-            $ethContractFactory = new EthereumContractFactory();
-            $ethContract = $ethContractFactory->get($contractAddress);
+
+            $ethContract = $contractFactory->get($contractAddress);
 
             $standard = new ERC721();
             $standard->setTokenId($entity->get('token_id'));

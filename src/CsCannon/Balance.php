@@ -30,6 +30,7 @@ class Balance
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['quantity'] = $quantity;
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;
 
+
         $this->contractMap[$contract->getId()] = $contract ;
 
     }
@@ -66,13 +67,56 @@ class Balance
 
     public function getObs(){
 
+        //Has my contract a collection of collections ?
+
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
+        $orbs = array();
+
+        //is the contract part of a collection ?
+        $orbFactory = new OrbFactory();
+
+        foreach($this->contracts as $chain){
+
+            foreach($chain as $contractId =>$contracts){
+
+                $newContract = null ;
+                $newContract['contract'] = $contractId ;
+                $contractEntity = $this->contractMap[$contractId] ;
+                $collections = $contractEntity->getCollections();
+
+
+
+                foreach($contracts as $tokenComposedId =>$token) {
+
+
+                        /** @var AssetCollection $collectionEntity */
+
+                        $tokenObject = $token['token'] ;
+                        //have we found an orb ?
+                        if($orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject)){
+
+                            $orbArray = $orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject);
+
+
+                            $orbs[] = $orbArray ;
+                        }
+
+
+
+
+                }
+
+
+                }
+            }
 
         //a cleaner way would use a filter to the request to point only toward active contracts
 
 
+echo"hello";
 
+return $orbs ;
 
 
 

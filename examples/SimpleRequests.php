@@ -44,6 +44,7 @@ $addressEntity = $addressFactory->get($ethereumAddress);
 
 $balance = $addressEntity->getBalance();
 print_r($addressEntity->balance->getTokenBalance());
+$addressEntity->balance->getObs();
 
 print_r($balance);
 

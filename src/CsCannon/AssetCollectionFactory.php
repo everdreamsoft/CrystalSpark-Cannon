@@ -9,6 +9,7 @@
 
 namespace CsCannon;
 
+use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContract;
@@ -85,8 +86,12 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         //$links['source'] = 'openSea';
         //$links['hasContract'] = 'openSea'; //TODO important
 
+        $newCollection = $this->createNew($data);
 
-        return $this->createNew($data);
+        $contract->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$newCollection,null);
+
+
+        return $newCollection ;
 
 
 

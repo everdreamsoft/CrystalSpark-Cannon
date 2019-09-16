@@ -20,7 +20,7 @@ class SandraManager
 
         if (is_null(self::$instanceSandra)){
 
-            self::$instanceSandra = new System('',true);
+            self::$instanceSandra = new System('delta',true);
 
 
         }

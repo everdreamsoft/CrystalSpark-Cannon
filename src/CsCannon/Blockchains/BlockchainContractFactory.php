@@ -55,9 +55,12 @@ public  const JOIN_COLLECTION = 'inCollection';
         $return = $this->first(self::MAIN_IDENTIFIER,$identifier);
         /** @var BlockchainContract $return */
 
+
+
         $identifierName = self::MAIN_IDENTIFIER;
         $entity = $this->first($identifierName,$identifier);
 
+        //need to fix that asap
         $foreignAdapter = new ForeignEntityAdapter('http://www.google.com','',SandraManager::getSandra());
 
 
@@ -65,6 +68,19 @@ public  const JOIN_COLLECTION = 'inCollection';
             $refConceptId = CommonFunctions::somethingToConceptId(static::$isa,SandraManager::getSandra());
             $entity = new static::$className("foreignContract:$identifier",array($identifierName => $identifier),$foreignAdapter,$this->entityReferenceContainer, $this->entityContainedIn, "foreign$identifier",$this->system);
             $this->addNewEtities($entity,array($refConceptId=>$entity));
+
+            //dd($entity);
+
+        }
+
+        if(is_null($entity) && $autoCreate){
+
+            if(empty($identifier)){
+                die("empty identifier");
+
+            }
+
+            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier));
 
             //dd($entity);
 
