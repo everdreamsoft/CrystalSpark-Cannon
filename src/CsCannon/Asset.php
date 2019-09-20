@@ -11,9 +11,25 @@ namespace CsCannon;
 
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use SandraCore\System;
 
 class Asset extends \SandraCore\Entity
 {
+
+    public $metaDataUrl;
+    public $imageUrl;
+    public $id ;
+
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
+    {
+
+
+        $this->imageUrl = $sandraReferencesArray['imageUrl'];
+        $this->id = $sandraReferencesArray['id'];
+        $this->metaDataUrl = $sandraReferencesArray['metaDataUrl'];
+
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+    }
 
     public $displayable = array(
         'id'=>'id',

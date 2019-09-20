@@ -20,6 +20,8 @@ class Balance
     public $tokens ;
     public $contracts ;
     private $contractMap ;
+    public $orbFactory ;
+    private $orbBuilt = false ;
 
 
 
@@ -65,7 +67,7 @@ class Balance
         return $output ;
     }
 
-    public function getObs(){
+    public function getObs():OrbFactory{
 
         //Has my contract a collection of collections ?
 
@@ -76,8 +78,10 @@ class Balance
         //is the contract part of a collection ?
         $orbFactory = new OrbFactory();
 
+        //for each blockchain
         foreach($this->contracts as $chain){
 
+            //for each contract
             foreach($chain as $contractId =>$contracts){
 
                 $newContract = null ;
@@ -86,7 +90,7 @@ class Balance
                 $collections = $contractEntity->getCollections();
 
 
-
+                //foreach token
                 foreach($contracts as $tokenComposedId =>$token) {
 
 
@@ -102,26 +106,81 @@ class Balance
                             $orbs[] = $orbArray ;
                         }
 
-
-
-
                 }
 
 
                 }
             }
 
-        //a cleaner way would use a filter to the request to point only toward active contracts
 
+$this->orbFactory = $orbFactory ;
 
-echo"hello";
-
-return $orbs ;
+return $this->orbFactory ;
 
 
 
 
     }
+
+    public function returnObsByCollections():array{
+
+
+      $factory = $this->getObs();
+      $output = array();
+
+       foreach ($factory->instanceCollectionMap as $collectionId => $orbs){
+
+           /** @var Orb $firstOrb */
+           $firstOrb = reset($orbs);
+           $collection = $firstOrb->assetCollection->getDefaultDisplay();
+
+
+           foreach ($orbs as $index => $orb) {
+
+               /** @var BlockchainContract $contract */
+               $contract = $orb->contract ;
+
+               /** @var BlockchainContractStandard $token */
+               $token = $orb->tokenSpecifier ;
+
+               /** @var Asset $asset */
+               $asset = $orb->asset ;
+
+               $contractChain = $contract->getBlockchain();
+
+               $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
+
+               /** @var Orb $orb */
+               $orbDisplay['contract'] = $contract->getId();
+               $orbDisplay['chain'] = $contractChain::NAME;
+
+               $orbDisplay['token'] = $token->specificatorData ;
+               $orbDisplay['token']['standard'] = $token->getStandardName();
+               $orbDisplay['quantity'] = $quantity ;
+               $orbDisplay['asset']['image'] = $asset->imageUrl ;
+
+
+
+               $collection['orbs'][] = $orbDisplay ;
+           }
+
+           $output['collections'][] = $collection ;
+
+           }
+
+       die(print_r(json_encode($output)));
+
+        return $output ;
+
+       }
+
+
+
+
+
+
+
+
 
 
 

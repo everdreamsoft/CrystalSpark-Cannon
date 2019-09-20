@@ -43,13 +43,13 @@ $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($ethereumAddress
 $addressEntity = $addressFactory->get($ethereumAddress);
 
 $balance = $addressEntity->getBalance();
-print_r($addressEntity->balance->getTokenBalance());
-$addressEntity->balance->getObs();
+//print_r($addressEntity->balance->getTokenBalance());
+print_r($addressEntity->balance->returnObsByCollections());
 
-print_r($balance);
+//print_r($balance);
 
-$assetCollectionFactory = new CsCannon\AssetCollectionFactory(CsCannon\SandraManager::getSandra());
-print_r($assetCollectionFactory->getDisplay('a'));
+//$assetCollectionFactory = new CsCannon\AssetCollectionFactory(CsCannon\SandraManager::getSandra());
+//print_r($assetCollectionFactory->getDisplay('a'));
 
 
 
