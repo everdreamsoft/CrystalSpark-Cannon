@@ -28,7 +28,7 @@ abstract class  BlockchainAddress extends Entity
    public $assetList = array();
    public $balance ;
 
-    abstract public function getBalance();
+    abstract public function getBalance():Balance;
     abstract public function getBlockchain():Blockchain;
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
@@ -46,7 +46,7 @@ abstract class  BlockchainAddress extends Entity
 
     }
 
-    protected function getAddress(){
+    public function getAddress(){
 
         return $this->address ;
 

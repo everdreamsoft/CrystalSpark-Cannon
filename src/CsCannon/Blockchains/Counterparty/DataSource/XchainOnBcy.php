@@ -2,10 +2,15 @@
 
 namespace CsCannon\Blockchains\Counterparty\DataSource;
 
+use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
+use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
+use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\SandraManager;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\PdoConnexionWrapper;
@@ -107,7 +112,34 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     }
 
 
+    public function getBalance(BlockchainAddress $address, $limit, $offset): Balance
+    {
+
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
+
+        $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
+            'quantity'=>'balance'));
+        $foreignAdapter->populate();
+
+        //load all counterparty contracts onto memory
+        $cpContracts = new XcpContractFactory();
+        $cpContracts->populateLocal();
+
+        $balance = new Balance();
+
+        foreach ($foreignAdapter->entityArray as $entity) {
+
+            /** @var ForeignEntity $entity */
+            $contract = $cpContracts->get($entity->get('contractId'),true);
+
+
+            $balance->addContractToken($contract,new CounterpartyAsset(),$entity->get('balance'));
+
+        }
+
+        return $balance;
 
 
 
+    }
 }

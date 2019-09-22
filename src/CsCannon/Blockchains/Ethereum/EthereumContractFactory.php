@@ -19,8 +19,8 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 class EthereumContractFactory extends BlockchainContractFactory
 {
 
-    public static $isa = 'ethAddress';
-    public static $file = 'blockchainAddressFile';
+    public static $isa = 'ethContract';
+
     protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumContract' ;
 
 

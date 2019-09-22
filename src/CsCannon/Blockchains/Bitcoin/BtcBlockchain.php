@@ -18,6 +18,7 @@ use CsCannon\Blockchains\Blockchain;
 {
 
    protected $name = 'btc';
+     const NAME = 'bitcoin';
 
 
 

@@ -19,6 +19,7 @@ use CsCannon\Blockchains\Bitcoin\BtcBlockchain;
    const NAME = 'counterparty';
 
 
+
    public function __construct()
    {
 

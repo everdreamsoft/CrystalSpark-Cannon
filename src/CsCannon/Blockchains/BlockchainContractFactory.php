@@ -21,16 +21,13 @@ protected static $isa = null;
 protected static $className = 'CsCannon\BlockchainContract';
 public const  MAIN_IDENTIFIER = 'id';
 public  const JOIN_COLLECTION = 'inCollection';
+public  const JOIN_ASSET = 'joinAsset';
 
     public function __construct(){
 
         parent::__construct(static::$isa,static::$file,SandraManager::getSandra());
 
-
-
         $this->generatedEntityClass = static::$className ;
-
-
 
 
     }

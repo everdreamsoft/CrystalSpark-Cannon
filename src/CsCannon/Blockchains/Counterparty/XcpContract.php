@@ -15,12 +15,13 @@ use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\ForeignEntityAdapter;
 
-class XcpContract extends XcpToken
+class XcpContract extends BlockchainContract
 {
 
     public static $isa = 'xcpContract';
@@ -72,9 +73,8 @@ class XcpContract extends XcpToken
     }
 
 
-
-
-
-
-
+    function getBlockchain(): Blockchain
+    {
+        return new XcpBlockchain();
+    }
 }

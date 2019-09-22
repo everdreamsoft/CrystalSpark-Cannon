@@ -21,7 +21,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     protected static $className = 'CsCannon\Asset' ;
     public static $isa = 'blockchainizableAsset';
     public static $file = 'blockchainizableAssets';
-    public static $tokenJoinVerb = 'bindToToken';
+    public static $tokenJoinVerb = 'bindToContract';
     public static $collectionJoinVerb = 'bindToCollection';
 
 

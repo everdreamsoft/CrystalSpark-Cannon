@@ -28,6 +28,9 @@ class Balance
     public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){
 
         $contractChain = $contract->getBlockchain();
+        print_r($quantity);
+
+        echo"<br> \n getting contract ID  ".$contract->getId(). $quantity;
 
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['quantity'] = $quantity;
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;
@@ -35,10 +38,15 @@ class Balance
 
         $this->contractMap[$contract->getId()] = $contract ;
 
+
+
     }
 
     public function getTokenBalance(){
 
+
+//print_r($this->contractMap);
+//die("deado");
       foreach($this->contracts as $chain){
 
           foreach($chain as $contractId =>$contracts){
@@ -68,6 +76,8 @@ class Balance
     }
 
     public function getObs():OrbFactory{
+
+
 
         //Has my contract a collection of collections ?
 
@@ -168,11 +178,45 @@ return $this->orbFactory ;
 
            }
 
-       die(print_r(json_encode($output)));
+       //die(print_r(json_encode($output)));
 
         return $output ;
 
        }
+
+    function print_array($array,$depth=1,$indentation=0){
+        if (is_array($array)){
+            echo "Array(\n";
+            foreach ($array as $key=>$value){
+                if(is_array($value)){
+                    if($depth){
+                        echo "max depth reached.";
+                    }
+                    else{
+                        for($i=0;$i<$indentation;$i++){
+                            echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                        }
+                        echo $key."=Array(";
+                        $this->print_array($value,$depth-1,$indentation+1);
+                        for($i=0;$i<$indentation;$i++){
+                            echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                        }
+                        echo ");";
+                    }
+                }
+                else{
+                    for($i=0;$i<$indentation;$i++){
+                        echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    }
+                    echo $key."=>".$value."\n";
+                }
+            }
+            echo ");\n";
+        }
+        else{
+            echo "It is not an array\n";
+        }
+    }
 
 
 

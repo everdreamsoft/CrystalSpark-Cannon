@@ -9,30 +9,28 @@
 namespace CsCannon\Blockchains;
 
 
+use CsCannon\AssetCollection;
+use CsCannon\AssetCollectionFactory;
+use CsCannon\Balance;
 use SandraCore\ForeignEntityAdapter;
 
 abstract class BlockchainDataSource
 {
 
     public $sandra ;
+    protected $localCollections = null ;
 
     public abstract function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter ;
 
-    public function __construct($sandra)
+    public function __construct($sandra, AssetCollectionFactory $localCollections = null)
     {
 
         $this->sandra = $sandra ;
+        $this->localCollections = $localCollections ;
 
     }
 
 
-    public function getBalance($contract,$limit,$offset):ForeignEntityAdapter{
-
-
-
-       // $eventAdapter = new ForeignEntityAdapter($this->sandra,'',$this->sandra);
-        return null ;
-
-    }
+    public abstract function getBalance(BlockchainAddress $address,$limit,$offset):Balance ;
 
 }

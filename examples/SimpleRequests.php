@@ -29,9 +29,11 @@ $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($xcpAddress);
 $addressEntity = $addressFactory->get($xcpAddress);
 
 $balance = $addressEntity->getBalance();
+print_r($addressEntity->balance->getTokenBalance());
+print_r($addressEntity->balance->returnObsByCollections());
 
-print_r($balance);
-
+//print_r($balance);
+die();
 
 $defaultEthereumAddress = '0x7f7eed1fcbb2c2cf64d055eed1ee051dd649c8e7';
 

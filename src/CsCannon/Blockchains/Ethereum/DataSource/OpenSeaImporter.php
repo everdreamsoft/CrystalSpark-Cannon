@@ -3,11 +3,16 @@
 namespace CsCannon\Blockchains\Ethereum\DataSource;
 
 
+use CsCannon\AssetCollection;
+use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\SandraManager;
 use Ethereum\DataType\Block;
 use Ethereum\DataType\EthB;
@@ -31,11 +36,6 @@ class OpenSeaImporter extends BlockchainDataSource
 {
 
     public $sandra ;
-
-
-
-
-
 
 
 
@@ -184,12 +184,119 @@ class OpenSeaImporter extends BlockchainDataSource
 
     }
 
+    public function getBalance(BlockchainAddress $address, $limit, $offset): Balance
+    {
+
+        $foreignAdapter = new ForeignEntityAdapter("https://api.opensea.io/api/v1/assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$address->getAddress(),'assets',SandraManager::getSandra());
+
+        $assetVocabulary = array('image_url'=>'image',
+            'assetName'=>'assetName',
+            'name'=>'name',
+        );
+
+        $foreignAdapter->flatSubEntity('asset_contract','contract');
+        $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
+        $foreignAdapter->populate();
+       // $foreignAdapter->dumpMeta();
+        $contractFactory = new EthereumContractFactory();
+
+        $collectionFactory = $this->localCollections ;
+        $balance = new Balance();
+
+        //opensea API ruleset
+
+        foreach ($foreignAdapter->entityArray as $entity){
+
+            /** @var ForeignEntity $entity */
+
+            $contractAddress = $entity->get('contract.address');
+
+
+            //on opensea one contract = 1 collection
+            if(!isset($collectionArray[$contractAddress])){
+
+                $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
+
+                if (is_null($collection)){
+
+                    $contractEntity = $contractFactory->get($contractAddress,true);
+                    $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
+
+                }
+                $collectionArray[$contractAddress] = $collection;
+
+            }
+            $collection = $collectionArray[$contractAddress] ;
+
+            if(!isset( $collectionContractsArray[$contractAddress])){
+                $contract['address'] = $contractAddress;
+                $collectionContractsArray[$contractAddress][] = $contract;
+            }
+
+
+            //$contract['address'] = $contractAddress;
+            if(!isset($collectionAssetCount[$contractAddress])){
+                $collectionAssetCount[$contractAddress] = 0;
+            }
+            $collectionAssetCount[$contractAddress]++;
+
+            /** @var AssetCollection $collection */
+
+
+
+         //   $assetEntity['image'] = $entity->get('image');
+           // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
+
+
+            $ethContract = $contractFactory->get($contractAddress);
+
+            $standard = new ERC721();
+
+            $standard->setTokenId($entity->get('token_id'));
+            $balance->addContractToken($ethContract,$standard,1);
+
+
+
+            /*
+
+            $assetEntity['name'] = $entity->get('name');
+            $assetEntity['balance'] = 1;
+
+            $tokenContainer['tokenId'] =  $entity->get('token_id');
+            $tokenContainer['contract'] =  $contractAddress ;
+            $tokenContainer['balance'] =  1 ;
+
+            $assetEntity['tokens'] = $tokenContainer ;
+
+
+            $return['collections'][$collection->id]['id'] =$contractAddress ;
+            $return['collections'][$collection->id]['name'] = $collection->name ;
+            $return['collections'][$collection->id]['description'] = $collection->description ;
+            $return['collections'][$collection->id]['contracts'] = $collectionContractsArray[$contractAddress] ;
+            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
+            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
+            $return['collections'][$collection->id]['image']=  $collection->imageUrl ;
+
+            */
 
 
 
 
 
 
+        }
+        return $balance ;
+
+    }
+
+    public function createCollectionFromOS($openseaEntity){
+
+
+
+
+
+
+    }
 
 
 }

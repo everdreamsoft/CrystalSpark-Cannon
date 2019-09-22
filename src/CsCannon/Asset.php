@@ -9,6 +9,7 @@
 
 namespace CsCannon;
 
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\System;
@@ -38,9 +39,12 @@ class Asset extends \SandraCore\Entity
 
     );
 
-    public function bindToToken(BlockchainToken $token){
+    public function bindToContract(BlockchainContract $token){
+
+
 
         $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$token,null);
+
 
 
 

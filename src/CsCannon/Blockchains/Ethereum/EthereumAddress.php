@@ -19,6 +19,7 @@ use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Ethereum\EthereumToken;
 use CsCannon\SandraManager;
@@ -36,10 +37,12 @@ class EthereumAddress extends BlockchainAddress
 
 
 
-    public function getBalance(){
+    public function getBalance():Balance{
 
 
        // dd($this->getAddress());
+
+
 
         $finalArray = array();
 
@@ -53,6 +56,8 @@ class EthereumAddress extends BlockchainAddress
 
 
         );
+
+
 
         $balance = $this->balance ;
 
@@ -71,120 +76,23 @@ class EthereumAddress extends BlockchainAddress
 
         $contractFactory = new EthereumContractFactory();
         //careful here we are loading all contract onto memory
+
         //todo fix this
         $contractFactory->populateLocal();
 
-        //dd($collectionFactory->getAllWith('collectionId','0x2aea4add166ebf38b63d09a75de1a7b94aa24163'));
+        echo"Coming to the importer".$contractFactory->dumpMeta();
 
-        //I'm  tired so I manualy parse the array because the displayer downs't work
-        foreach ($foreignAdapter->entityArray as $entity){
+        //we are using open sea
+        $openSeaImporter = new OpenSeaImporter(SandraManager::getSandra(),$collectionFactory);
+        $balance = $openSeaImporter->getBalance($this,100,0);
 
-           /** @var Entity $entity */
-            //dd($entity->get('image'));
-
-
-          //  $assetEntity = new Asset($random,$entity->entityRefs,$foreignAdapter,$entity->entityId,$assetFactory->entityReferenceContainer,$assetFactory->entityContainedIn,SandraManager::getSandra());
-
-           // dd($assetEntity);
-
-            //$unit['image'] = $value['f:image_url'];
-            $displayArray[] = $entity->dumpMeta(); ;
-
-            $contractAddress = $entity->get('contract.address');
-
-            if(!isset($collectionArray[$contractAddress])){
-
-               $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
-
-               if (is_null($collection)){
-
-
-                   $contractEntity = $contractFactory->get($contractAddress,true);
-
-
-
-
-                   $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
-
-               }
-                $collectionArray[$contractAddress] = $collection;
-
-            }
-            $collection = $collectionArray[$contractAddress] ;
-
-            if(!isset( $collectionContractsArray[$contractAddress])){
-                $contract['address'] = $contractAddress;
-                $collectionContractsArray[$contractAddress][] = $contract;
-            }
-
-
-            //$contract['address'] = $contractAddress;
-            if(!isset($collectionAssetCount[$contractAddress])){
-                $collectionAssetCount[$contractAddress] = 0;
-            }
-            $collectionAssetCount[$contractAddress]++;
-
-            /** @var AssetCollection $collection */
-
-
-
-            $assetEntity['image'] = $entity->get('image');
-            $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
-
-
-            $ethContract = $contractFactory->get($contractAddress);
-
-            $standard = new ERC721();
-            $standard->setTokenId($entity->get('token_id'));
-
-
-            $balance->addContractToken($ethContract,$standard,1);
-
-
-           // $balance->addContractToken($contractEntity,$entity->get('token_id'),1,1);
-            //die($balance->get());
-
-
-
-
-            $assetEntity['name'] = $entity->get('name');
-            $assetEntity['balance'] = 1;
-
-            $tokenContainer['tokenId'] =  $entity->get('token_id');
-            $tokenContainer['contract'] =  $contractAddress ;
-            $tokenContainer['balance'] =  1 ;
-
-            $assetEntity['tokens'] = $tokenContainer ;
-
-
-            $return['collections'][$collection->id]['id'] =$contractAddress ;
-            $return['collections'][$collection->id]['name'] = $collection->name ;
-            $return['collections'][$collection->id]['description'] = $collection->description ;
-            $return['collections'][$collection->id]['contracts'] = $collectionContractsArray[$contractAddress] ;
-            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
-            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
-            $return['collections'][$collection->id]['image']=  $collection->imageUrl ;
-
-
-            $return['collections'][$collection->id]['assets'][] = $assetEntity ;
-
-
-
-        }
-
-        //put now in correct structure remove the key
-        foreach ($return['collections'] as $value){
-
-            $finalArray[] = $value ;
-
-        }
 
         $return['collections']  = $finalArray;
 
         $this->balance = $balance ;
 
 
-        return $return ;
+        return $balance ;
 
 
 
