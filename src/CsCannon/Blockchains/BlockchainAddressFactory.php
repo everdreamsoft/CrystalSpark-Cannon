@@ -30,7 +30,7 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
      $this->generatedEntityClass = static::$className ;
 
-     $foreignAdapter = new ForeignEntityAdapter('http://www.google.com','',SandraManager::getSandra());
+     $foreignAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
      $this->foreignAdapterX = $foreignAdapter ;
 
    }

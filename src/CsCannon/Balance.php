@@ -17,7 +17,7 @@ use SandraCore\Entity;
 class Balance
 {
 
-    public $tokens ;
+
     public $contracts ;
     private $contractMap ;
     public $orbFactory ;
@@ -218,7 +218,11 @@ return $this->orbFactory ;
         }
     }
 
+public function getContractMap(){
 
+        return $this->contractMap ;
+
+}
 
 
 
