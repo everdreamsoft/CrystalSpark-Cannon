@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 
 
-final class AddressTest extends TestCase
+final class AddressTestEth extends TestCase
 {
 
     public function testAddressTestXcp()
