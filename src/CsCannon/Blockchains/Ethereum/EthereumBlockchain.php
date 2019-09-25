@@ -19,6 +19,7 @@ class EthereumBlockchain extends Blockchain
    protected $name = 'ethereum';
    const NAME = 'ethereum';
     protected $nameShort = 'eth';
+    private static $staticBlockchain ;
 
     public function __construct()
     {
@@ -26,6 +27,18 @@ class EthereumBlockchain extends Blockchain
         $this->addressFactory = new EthereumAddressFactory();
         $this->contractFactory = new EthereumContractFactory();
         $this->eventFactory = new EthereumEventFactory();
+
+    }
+
+    public static function getStatic()
+    {
+
+        if (is_null(self::$staticBlockchain)){
+            self::$staticBlockchain = new EthereumBlockchain();
+
+        }
+
+        return self::$staticBlockchain ;
 
     }
 

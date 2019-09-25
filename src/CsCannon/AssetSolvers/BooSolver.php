@@ -22,32 +22,55 @@ use SandraCore\ForeignEntityAdapter;
 class BooSolver extends AssetSolver
 {
 
+    private static $assetInCollections ;
+
     public static function resolveAsset(Orb $orb, BlockchainContractStandard $specifier){
 
-        $contract = $orb->contract ;
-        $collection = $orb->assetCollection ;
+        //we get target collection
+
+       if (!isset(self::$assetInCollections[$orb->assetCollection->getId()])) {
+
+           $assetFactory = new AssetFactory();
+           $assetFactory->setFilter(0, $orb->assetCollection);
+           $assetFactory->populateLocal();
+           $assetFactory->getTriplets();
+           $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
+           $entities = $assetFactory->entityArray ;
+
+           self::$assetInCollections[$orb->assetCollection->getId()] = $assetFactory ;
+
+           echo"reading db";
+
+       }
+
+      $assetCollectionList  = self::$assetInCollections[$orb->assetCollection->getId()];
+
+       //sub optimal there should be a map for that
+
+        foreach ($assetCollectionList->entityArray as $assetEntity)
+        {
+            /** @var Asset $assetEntity */
+
+           $contractArray =  $assetEntity->getBrotherEntity(AssetFactory::$tokenJoinVerb);
+
+                //linked contract =
+            if (isset($contractArray[$orb->contract->subjectConcept->idConcept])) {
+
+                //$assetEntity = $entities[$orb->contract->subjectConcept->idConcept] ;
+                return $assetEntity;
+            }
 
 
-        if($collection instanceof AssetCollection) {
 
-            $hostName = $_SERVER['HTTP_HOST'];
-            $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https://'?'https://':'http://';
-
-            $foreignAssetFactory = new ForeignEntityAdapter(null,null,SandraManager::getSandra());
-            $assetConcept = new ForeignConcept($collection->id.$specifier->specificatorData['tokenId'],SandraManager::getSandra());
-
-            $id = $protocol.$hostName."/api/v1/$collection->id/image/".$specifier->specificatorData['tokenId'] ;
-
-            $data = array("imageUrl"=>"$protocol$hostName/api/v1/$collection->id/image/".$specifier->specificatorData['tokenId'],
-            "metaDataUrl"=>"http://www.metadata.com","id"=>"$id"
-            );
-
-
-            $asset = new Asset($assetConcept,$data,$foreignAssetFactory,$id,AssetFactory::$isa,AssetFactory::$file,SandraManager::getSandra());
-
-            return $asset ;
 
         }
+
+
+
+        return null ;
+
+
+
 
 
 

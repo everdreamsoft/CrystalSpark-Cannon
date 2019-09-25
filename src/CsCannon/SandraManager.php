@@ -20,7 +20,7 @@ class SandraManager
 
         if (is_null(self::$instanceSandra)){
 
-            self::$instanceSandra = new System('gamma',true);
+            self::$instanceSandra = new System('romeo',true);
 
 
         }

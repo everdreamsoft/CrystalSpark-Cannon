@@ -38,8 +38,8 @@ class DefaultEthereumSolver extends AssetSolver
 
             $id = $protocol.$hostName."/api/v1/$collection->id/image/".$specifier->specificatorData['tokenId'] ;
 
-            $data = array("imageUrl"=>"$protocol$hostName/api/v1/$collection->id/image/".$specifier->specificatorData['tokenId'],
-            "metaDataUrl"=>"http://www.metadata.com","id"=>"$id"
+            $data = array(AssetFactory::IMAGE_URL=>"$protocol$hostName/api/v1/$collection->id/image/".$specifier->specificatorData['tokenId'],
+            AssetFactory::METADATA_URL=>"http://www.metadata.com",AssetFactory::ID=>"$id"
             );
 
 

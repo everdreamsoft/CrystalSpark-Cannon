@@ -58,7 +58,7 @@ class EthereumContract extends BlockchainContract
 
     public function getBlockchain():Blockchain
     {
-        return new EthereumBlockchain();
+        return EthereumBlockchain::getStatic();
     }
 
 

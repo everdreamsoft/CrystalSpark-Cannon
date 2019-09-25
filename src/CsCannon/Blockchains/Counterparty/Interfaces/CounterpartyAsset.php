@@ -1,6 +1,7 @@
 <?php
 
 namespace CsCannon\Blockchains\Counterparty\Interfaces;
+use CsCannon\AssetSolvers\BooSolver;
 use CsCannon\AssetSolvers\DefaultEthereumSolver;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
@@ -22,7 +23,7 @@ class CounterpartyAsset extends BlockchainContractStandard
 
     public function __construct()
     {
-        $this->solver = DefaultEthereumSolver::class ;
+        $this->solver = BooSolver::class ;
 
 
 
@@ -63,7 +64,7 @@ class CounterpartyAsset extends BlockchainContractStandard
     public function resolveAsset(Orb $orb)
     {
 
-       $return = DefaultEthereumSolver::resolveAsset($orb,$this);
+       $return = BooSolver::resolveAsset($orb,$this);
        return $return ;
     }
 

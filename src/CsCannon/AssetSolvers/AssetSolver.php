@@ -9,6 +9,8 @@
 namespace CsCannon\AssetSolvers;
 
 
+use CsCannon\AssetCollection;
+use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
 
@@ -17,5 +19,14 @@ abstract class AssetSolver
 
 
 public abstract static function resolveAsset(Orb $orb, BlockchainContractStandard $specifier) ;
+
+public static function loadContractsAssets(BlockchainContractFactory $contractFactory){
+
+
+
+
+
+
+}
 
 }

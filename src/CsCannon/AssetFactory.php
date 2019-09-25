@@ -23,6 +23,9 @@ class AssetFactory extends \SandraCore\EntityFactory
     public static $file = 'blockchainizableAssets';
     public static $tokenJoinVerb = 'bindToContract';
     public static $collectionJoinVerb = 'bindToCollection';
+    public const ID = "assetId";
+    public const IMAGE_URL = "imgURL";
+    public const METADATA_URL = "metaDataURL";
 
 
 

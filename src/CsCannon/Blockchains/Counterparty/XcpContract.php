@@ -75,6 +75,6 @@ class XcpContract extends BlockchainContract
 
     function getBlockchain(): Blockchain
     {
-        return new XcpBlockchain();
+        return  XcpBlockchain::getStatic();
     }
 }

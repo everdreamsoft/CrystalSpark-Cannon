@@ -16,6 +16,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon ;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use InnateSkills\LearnFromWeb\LearnFromWeb;
+use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
 //$system = new System('',true);
@@ -142,9 +143,9 @@ $orb->getAsset();
         $collectionCode = $collectionEntity->get('envCode');
 
         $vocabulary = array(
-            'image' => 'image',
+            'image' => AssetFactory::IMAGE_URL,
             'assetName'=> 'assetName',
-            'id'=> 'id',
+            'id'=> AssetFactory::ID,
             'Divisible'=> 'divisible',
         );
 
@@ -152,11 +153,16 @@ $orb->getAsset();
         $counterpartyLearnerUrl = "http://sandradev.everdreamsoft.com/activateTrigger.php?trigger=gameCenterApi&action=getEnvironment&env=$collectionCode&responseType=JSON&apik=18a48545-96cd-4e56-96aa-c8fcae302bfd&apiv=3&dev=3";
         echo"creating learner BooLearner_".$collectionCode."\n";
 
+        $foreignFacotry = new ForeignEntityAdapter($counterpartyLearnerUrl,'Environements/$first/Assets',$system);
+        $foreignFacotry->adaptToLocalVocabulary($vocabulary);
+        $foreignFacotry->populate();
+        $myCollection = $foreignFacotry;
 
 
-        $learner = $weblearner->createOrUpdate("BooLearner_".$collectionCode,$vocabulary, $counterpartyLearnerUrl, 'Environements/$first/Assets', "booCollectionItem_$collectionCode", "BooCollectionFile_$collectionCode", 'assetName', 'assetName');
-        $learner->factory->className = 'CsCannon\Asset' ;
-        $myCollection = $weblearner->learn($learner,'CsCannon\Asset');
+
+        //$learner = $weblearner->createOrUpdate("BooLearner_".$collectionCode,$vocabulary, $counterpartyLearnerUrl, 'Environements/$first/Assets', "booCollectionItem_$collectionCode", "BooCollectionFile_$collectionCode", 'assetName', 'assetName');
+        //$learner->factory->className = 'CsCannon\Asset' ;
+       // $myCollection = $weblearner->learn($learner);
      //   print_r($myCollection);
 
 
@@ -204,24 +210,31 @@ $orb->getAsset();
 
             }
             //does the asset exists ?
-            $currentAsset =  $assetFactory->first('assetId',"$collectionCode-$contractId");
+            $currentAsset =  $assetFactory->first(AssetFactory::ID,"$collectionCode-$contractId");
             // $entityAsset->createOrUpdateRef('assetIdx',"$collectionCode-$assetName");
             if (!$currentAsset) {
                 echo "creating new asset  $collectionCode-$contractId \n";
+
+               // entityAsset->entityRefs[]
+
+                //hardcoding meta data
+
 
 
                 //$dataArray['name']
 
                 $currentAsset = $assetFactory->createNew($entityAsset->entityRefs, array(AssetFactory::$collectionJoinVerb => $collectionEntity));
-                $currentAsset->createOrUpdateRef('assetId',"$collectionCode-$contractId");
-                $currentAsset->dumpMeta();
-            }
-            if($entityAsset instanceof Asset) {
-
-                $currentAsset->bindToContract($entityToken);
-
+                $currentAsset->createOrUpdateRef(AssetFactory::ID,"$collectionCode-$contractId");
 
             }
+
+
+
+                $currentAsset->setBrotherEntity(AssetFactory::$tokenJoinVerb,$entityToken,null);
+                echo" asset : ".$currentAsset->subjectConcept->idConcept ." bindeded to contract:". $entityToken->subjectConcept->idConcept ."\n";
+
+
+
             if($entityToken instanceof CsCannon\Blockchains\BlockchainContract && $currentAsset instanceof Asset) {
                 echo "binding contract".$entityToken->getId();
                 $entityToken->bindToAsset($currentAsset);

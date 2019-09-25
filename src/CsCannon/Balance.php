@@ -28,9 +28,9 @@ class Balance
     public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){
 
         $contractChain = $contract->getBlockchain();
-        print_r($quantity);
+        //print_r($quantity);
 
-        echo"<br> \n getting contract ID  ".$contract->getId(). $quantity;
+        //echo"<br> \n getting contract ID  ".$contract->getId(). $quantity;
 
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['quantity'] = $quantity;
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;

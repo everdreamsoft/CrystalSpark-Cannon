@@ -16,17 +16,19 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon ;
 use SandraCore\System;
 
-$system = new System('alpha');
-SandraManager::setSandra($system);
+//$system = new System('alpha');
+SandraManager::getSandra();
 
 
 
-$xcpTokenFactory = new CsCannon\Blockchains\Counterparty\XcpContractFactory();
-$xcpTokenFactory->populateLocal();
-$xcpTokenFactory->return2dArray();
+$assetFactory = new AssetFactory(SandraManager::getSandra());
 
-print_r($xcpTokenFactory->dumpMeta());
-echo"meme";
+$assetFactory->populateLocal();
+
+$xcpContractFactory = new CsCannon\Blockchains\Counterparty\XcpContractFactory();
+//$xcpContractFactory->get
+
+
 
 
 

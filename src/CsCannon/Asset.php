@@ -12,6 +12,7 @@ namespace CsCannon;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
 class Asset extends \SandraCore\Entity
@@ -24,10 +25,24 @@ class Asset extends \SandraCore\Entity
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
 
+        //if the factory is foreign we map data to correct concepts ids
 
-        $this->imageUrl = $sandraReferencesArray['imageUrl'];
-        $this->id = $sandraReferencesArray['id'];
-        $this->metaDataUrl = $sandraReferencesArray['metaDataUrl'];
+        if ($factory instanceof ForeignEntityAdapter){
+
+           $this->imageUrl = $sandraReferencesArray['imageUrl'];
+            $this->id = $sandraReferencesArray['assetId'];
+            $this->metaDataUrl = $sandraReferencesArray['metaDataUrl'];
+
+        }
+        else{
+
+            $this->imageUrl = $sandraReferencesArray[$system->systemConcept->get(AssetFactory::IMAGE_URL)];
+            $this->id = $sandraReferencesArray[$system->systemConcept->get(AssetFactory::ID)];
+            $this->metaDataUrl = $sandraReferencesArray[$system->systemConcept->get(AssetFactory::METADATA_URL)];
+
+        }
+
+
 
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
     }

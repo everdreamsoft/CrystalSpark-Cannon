@@ -17,6 +17,7 @@ use CsCannon\Blockchains\Bitcoin\BtcBlockchain;
 {
 
    const NAME = 'counterparty';
+   private static $staticBlockchain ;
 
 
 
@@ -28,6 +29,18 @@ use CsCannon\Blockchains\Bitcoin\BtcBlockchain;
        $this->contractFactory = new XcpContractFactory();
 
    }
+
+     public static function getStatic()
+     {
+
+       if (is_null(self::$staticBlockchain)){
+           self::$staticBlockchain = new XcpBlockchain();
+
+       }
+
+       return self::$staticBlockchain ;
+
+     }
 
 
 
