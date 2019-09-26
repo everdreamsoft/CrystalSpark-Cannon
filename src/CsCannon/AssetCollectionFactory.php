@@ -34,6 +34,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     const IMAGE_EXTENSION = 'imageExtension';
     const MAIN_IMAGE = 'imageUrl';
+    const MAIN_NAME = 'name';
 
 
 
@@ -62,6 +63,27 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
+    public function create($id,$dataArray):?AssetCollection{
+
+        $sandra = SandraManager::getSandra() ;
+
+        //first we verify if this id is taken
+
+        $collectionFactoryControl = new AssetCollectionFactory(SandraManager::getSandra());
+
+        $verif = $collectionFactoryControl->get($id);
+
+        if (isset($verif))  SandraManager::dispatchError($sandra,1,3,'collectionExists',$this);
+
+
+        $dataToSave = $dataArray ;
+        $dataToSave[$this->id] = $id ;
+
+        return $this->createNew($dataToSave);
+
+
+    }
+
     public function get($id):?AssetCollection{
 
 
@@ -70,6 +92,9 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
     }
+
+
+
 
 
 

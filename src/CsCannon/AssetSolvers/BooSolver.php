@@ -39,7 +39,7 @@ class BooSolver extends AssetSolver
 
            self::$assetInCollections[$orb->assetCollection->getId()] = $assetFactory ;
 
-           echo"reading db";
+
 
        }
 
@@ -51,10 +51,14 @@ class BooSolver extends AssetSolver
         {
             /** @var Asset $assetEntity */
 
-           $contractArray =  $assetEntity->getBrotherEntity(AssetFactory::$tokenJoinVerb);
+            $sandra = SandraManager::getSandra();
+
+            if (!isset($assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)])) continue ;
+
+           $contractArray =  $assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)];
 
                 //linked contract =
-            if (isset($contractArray[$orb->contract->subjectConcept->idConcept])) {
+            if (in_array($orb->contract->subjectConcept->idConcept,$contractArray)) {
 
                 //$assetEntity = $entities[$orb->contract->subjectConcept->idConcept] ;
                 return $assetEntity;

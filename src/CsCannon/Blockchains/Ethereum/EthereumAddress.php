@@ -80,7 +80,7 @@ class EthereumAddress extends BlockchainAddress
         //todo fix this
         $contractFactory->populateLocal();
 
-        echo"Coming to the importer".$contractFactory->dumpMeta();
+
 
         //we are using open sea
         $openSeaImporter = new OpenSeaImporter(SandraManager::getSandra(),$collectionFactory);

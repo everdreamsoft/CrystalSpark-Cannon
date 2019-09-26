@@ -36,10 +36,9 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
     $this->imageUrl = $this->get($this->imageUrl);
     $this->description = $this->get($this->description);
 
-    $this->displayArray['id'] = $this->id ;
-    $this->displayArray['name'] =  $this->get('name');
-    $this->displayArray['description'] = $this->description ;
-    $this->displayArray['imageUrl'] = $this->imageUrl ;
+    $this->createDisplay();
+
+
 
 }
 
@@ -51,6 +50,18 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
         return $this->id ;
 
     }
+
+    public function createDisplay()
+    {
+
+        // $this->id = $sandraReferencesArray[$system->systemConcept->get($this->id)];
+
+        $this->displayArray['id'] = $this->id ;
+        $this->displayArray['name'] =  $this->get('name');
+        $this->displayArray['description'] = $this->description ;
+        $this->displayArray['imageUrl'] = $this->imageUrl ;
+    }
+
 
     public function getDefaultDisplay($simple = false)
     {
@@ -66,6 +77,30 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
 
        $orbFactory = new OrbFactory();
        $orbs = $orbFactory->getOrbsFromContractPath($this,$specifier);
+
+    }
+
+    public function setImageUrl($url){
+
+    $this->createOrUpdateRef(AssetCollectionFactory::MAIN_IMAGE,$url);
+        $this->imageUrl = $url ;
+
+
+    }
+
+    public function setName($name){
+
+        $this->createOrUpdateRef(AssetCollectionFactory::MAIN_NAME,$name);
+        $this->name = $name ;
+
+
+    }
+
+    public function setDescription($description){
+
+        $this->setStorage($description);
+        $this->description = $description;
+
 
     }
 

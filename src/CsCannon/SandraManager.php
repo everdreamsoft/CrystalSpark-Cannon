@@ -9,6 +9,7 @@
 namespace CsCannon;
 
 
+use phpDocumentor\Reflection\Types\Object_;
 use SandraCore\System;
 
 class SandraManager
@@ -34,6 +35,21 @@ class SandraManager
         self::$instanceSandra = $sandra ;
 
         return self::$instanceSandra ;
+
+    }
+
+    public static function dispatchError(System $sandra,$code,$level,$message,Object $sender){
+
+        self::$instanceSandra = $sandra ;
+
+        $callerClass = get_class ( $sender  ) ;
+
+        $sandra->systemError($code,$callerClass,$level,$message);
+
+
+        //Code 1 collection exists
+        //Code 2 Asset exists
+
 
     }
 

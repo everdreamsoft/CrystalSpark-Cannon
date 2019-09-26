@@ -35,7 +35,7 @@ final class AddressTest extends TestCase
 
 
        $this->assertInstanceOf(\CsCannon\Blockchains\Counterparty\XcpAddress::class,$addressEntity,
-           "blockchain Manager didnt return a counterparty instance for $testAddress");
+           "blockchain Router didnt return a counterparty instance for $testAddress");
 
        //this method shouldn't save the address
         $localAddressListControl = $addressFactoryControl->populateLocal();

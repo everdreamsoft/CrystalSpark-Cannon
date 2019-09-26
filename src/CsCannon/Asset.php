@@ -25,6 +25,8 @@ class Asset extends \SandraCore\Entity
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
 
+
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
         //if the factory is foreign we map data to correct concepts ids
 
         if ($factory instanceof ForeignEntityAdapter){
@@ -36,15 +38,15 @@ class Asset extends \SandraCore\Entity
         }
         else{
 
-            $this->imageUrl = $sandraReferencesArray[$system->systemConcept->get(AssetFactory::IMAGE_URL)];
-            $this->id = $sandraReferencesArray[$system->systemConcept->get(AssetFactory::ID)];
-            $this->metaDataUrl = $sandraReferencesArray[$system->systemConcept->get(AssetFactory::METADATA_URL)];
+            $this->imageUrl = $this->get(AssetFactory::IMAGE_URL);
+            $this->id = $this->get(AssetFactory::ID);
+            $this->metaDataUrl =  $this->get(AssetFactory::METADATA_URL);
 
         }
 
 
 
-        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+
     }
 
     public $displayable = array(
@@ -57,14 +59,28 @@ class Asset extends \SandraCore\Entity
     public function bindToContract(BlockchainContract $token){
 
 
-
         $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$token,null);
 
+    }
+
+    public function getContracts(){
 
 
-
+        $this->factory->getTriplets();
+        //$this->factory->populateBrotherEntities()
+        return $this->getJoinedEntities(AssetFactory::$tokenJoinVerb);
 
     }
+
+    public function getCollections(){
+
+        $this->factory->getTriplets();
+        return $this->getJoinedEntities(AssetFactory::$collectionJoinVerb);
+
+    }
+
+
+
 
     public function joinCollection(BlockchainToken $token){
 

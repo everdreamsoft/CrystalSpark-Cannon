@@ -20,7 +20,9 @@ class TestManager
     public  const XCP_TOKEN_QUANTITY = 2; //The quantity should be this
 
 
-    public  const ETHEREUM_TEST_ADDRESS = '0xe047fdff3d2a9b3af6834aecd67b30a16d3cb14f';
+    public  const ETHEREUM_TEST_ADDRESS = '0x7f7EED1fcBb2C2cf64d055eED1Ee051DD649C8e7';
+    public  const ETHEREUM_TOKEN_AVAIL = '0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe'; //contract address
+    public  const ETHEREUM_TOKEN_ID = '47225'; //contract address
 
 
     public static function initTestDatagraph(){

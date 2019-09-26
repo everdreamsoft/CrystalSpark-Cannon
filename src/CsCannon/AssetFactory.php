@@ -11,6 +11,7 @@ namespace CsCannon;
 
 
 
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\System;
 
@@ -49,9 +50,66 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     }
 
+    public function joinContract (BlockchainTokenFactory $factory){
+
+        $this->joinFactory(AssetFactory::$tokenJoinVerb,$factory);
+
+
+    }
+
     public function joinCollection (AssetCollectionFactory $factory){
 
         $this->joinFactory(AssetFactory::$collectionJoinVerb,$factory);
+
+
+    }
+
+    public function get($id):?Asset{
+
+        return $this->first(AssetFactory::ID,$id);
+
+
+    }
+
+
+    public function create($id, Array $metaData,$collections=null,$contracts=null){
+
+
+
+        //Id should be unique in collection
+        $verifyFactory = new AssetFactory(SandraManager::getSandra());
+        $verifyFactory->populateLocal();
+        $verif = $verifyFactory->get($id);
+
+        if (isset($verif)) {
+            SandraManager::dispatchError(SandraManager::getSandra(), 2, 3, 'Asset 
+        with id $id already exists', $this);
+            return $verif ;
+
+        }
+
+        $metaData[self::ID] = $id ;
+
+
+
+        $newEntity = $this->createNew($metaData,array(self::$tokenJoinVerb =>($contracts),self::$collectionJoinVerb =>($collections)));
+
+
+
+        return $newEntity ;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
