@@ -12,9 +12,10 @@ namespace CsCannon;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
+use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
 
-class Balance
+class Balance Implements Displayable
 {
 
 
@@ -22,7 +23,14 @@ class Balance
     private $contractMap ;
     public $orbFactory ;
     private $orbBuilt = false ;
+    public $display ;
 
+    public function __construct()
+    {
+
+        $this->display = new DisplayManager($this);
+
+    }
 
 
     public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){

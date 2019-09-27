@@ -16,10 +16,11 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
 use SandraCore\System;
 
-class BlockchainEvent extends Entity
+class BlockchainEvent extends Entity implements Displayable
 {
 
    protected $name ;
