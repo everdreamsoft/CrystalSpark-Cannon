@@ -20,7 +20,7 @@ use CsCannon ;
 
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
-$defaultXcpAddress = '1mzm8NqodUuuxip3uSoDrXraCXkmmwDcq';
+//$defaultXcpAddress = '1mzm8NqodUuuxip3uSoDrXraCXkmmwDcq';
 
 $xcpAddress = $defaultXcpAddress;
 

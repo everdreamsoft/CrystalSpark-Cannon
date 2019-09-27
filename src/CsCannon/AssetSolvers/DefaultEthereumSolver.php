@@ -54,5 +54,8 @@ class DefaultEthereumSolver extends AssetSolver
     }
 
 
-
+    public static function updateSolver()
+    {
+        return ;
+    }
 }

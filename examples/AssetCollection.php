@@ -23,8 +23,8 @@ use SandraCore\System;
 //SandraManager::setSandra($system);
 
 
-$assetCollection = new AssetCollectionFactory(SandraManager::getSandra());
-createLearner();
+CsCannon\AssetSolvers\BooSolver::update();
+//createLearner();
 die();
 
 //$contractFactory = new CsCannon\Blockchains\Ethereum\EthereumContractFactory()

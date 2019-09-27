@@ -72,7 +72,7 @@ class XcpEventFactory extends BlockchainEventFactory
 
 
         //on counterparty we join the asset factory to the contract
-        $contractFactory->joinAsset($assetFactory);
+        //$contractFactory->joinAsset($assetFactory);
         $contractFactory->joinPopulate();
 
 

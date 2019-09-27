@@ -21,7 +21,7 @@ class XcpImporter extends BlockchainImporter
 
 
 
-    public function getEvents($contract,$dataSource = 'default',$limit=null,$offset=null,$address=null){
+    public function getEvents($contract=null,$dataSource = 'default',$limit=null,$offset=null,$address=null){
 
         $dataSource = $this->getDataSource($dataSource);
 

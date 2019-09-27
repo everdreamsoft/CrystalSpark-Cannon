@@ -138,6 +138,8 @@ return $this->orbFactory ;
       $factory = $this->getObs();
       $output = array();
 
+      if (!is_array($factory->instanceCollectionMap)) return $output ;
+
        foreach ($factory->instanceCollectionMap as $collectionId => $orbs){
 
            /** @var Orb $firstOrb */
