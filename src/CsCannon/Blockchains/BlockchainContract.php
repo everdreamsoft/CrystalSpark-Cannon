@@ -15,11 +15,32 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\Asset;
 use SandraCore\Entity;
+use SandraCore\System;
 
 abstract class  BlockchainContract extends Entity
 {
 
     abstract  function getBlockchain():Blockchain;
+    public $id ;
+
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system){
+
+        /** @var System $system */
+
+        if (!isset($sandraReferencesArray[BlockchainContractFactory::MAIN_IDENTIFIER]) &&
+            !isset($sandraReferencesArray[$system->systemConcept->get( BlockchainContractFactory::MAIN_IDENTIFIER)])){
+        $system->systemError(1,self::class,3,"contract must have an id");
+
+        }
+
+
+
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+
+         $this->id = $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
+
+
+    }
 
     public function getCollections(){
 

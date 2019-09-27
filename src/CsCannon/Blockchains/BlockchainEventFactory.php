@@ -108,7 +108,7 @@ use SandraCore\System;
      public function create(Blockchain $blockchain,
                             BlockchainAddress $sourceAddressConcept,
                             BlockchainAddress $destinationAddressConcept,
-                            Entity $contract,
+                            BlockchainContract $contract,
                             $txid,
                             $timestamp,
                             BlockchainBlock $block,

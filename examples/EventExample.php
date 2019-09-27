@@ -1,7 +1,12 @@
 <?php
 namespace CsCannon ;
 
+use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainAddressFactory;
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainEventFactory;
+use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\Blockchains\Counterparty\XcpEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpImporter;
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
@@ -9,12 +14,17 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
 
-$xcpEventImporter = new XcpImporter(SandraManager::getSandra());
-$xcpEventImporter->getEvents();
-die();
+//$xcpEventImporter = new XcpImporter(SandraManager::getSandra());
+//$xcpEventImporter->getEvents();
+//die();
+
+//$xcpContractFactory = new XcpContractFactory();
+//$xcpContractFactory->populateLocal();
+//print_r($xcpContractFactory->getDisplay('array'))
+  //  die();
 
 
-$address = $defaultXcpAddress ;
+//$address = $defaultXcpAddress ;
 
 $addressArray = null;
 
@@ -49,7 +59,23 @@ if (is_array($addressArray)) {
 
 
     }
+
+
 }
+else {
+
+    //all events requested
+
+
+    //$blockchainEventFactory = new EthereumEventFactory();
+    //$allTransactionsArray += $this->getEventsSegment($blockchainEventFactory, $limit, $offset, $address,$filter);
+
+    $blockchainEventFactory = new XcpEventFactory();
+    $allTransactionsArray += getEventsSegment($blockchainEventFactory, $limit, $offset, $address,$filter);
+
+}
+
+print_r($allTransactionsArray);
 
 
  function getEventsSegment($eventFactory, $limit, $offset, $addressEntity = null, $filters = array())
@@ -85,12 +111,13 @@ if (is_array($addressArray)) {
         $source = $eventEntity->getSourceAddress();
         try {
             $contract = $eventEntity->getBlockchainContract();
-            if ($contract instanceof BlockchainContract or $contract instanceof BlockchainToken  or $contract instanceof \CsCannon\Blockchains\BlockchainAddress) {
+            if ($contract instanceof BlockchainContract or $contract) {
                 $contractAdress = $contract->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
 
                 // removed this because if we load image for each token ist too heavy
                 // $eventData['asset'] = $contract->resolveMetaData($eventEntity->getTokenId());
                 $eventData['asset'] = $contract->resolveMetaData();
+                $collection = $contract->getCollections();
             }
 
 
