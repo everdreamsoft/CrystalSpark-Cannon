@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/everdreamsoft/sandra.git",
-                "reference": "cddb3a87f2e125944470d716642b856f8de07fac"
+                "reference": "bccd00bffb6ae2dbf4608e5632238479d8056e8b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/cddb3a87f2e125944470d716642b856f8de07fac",
-                "reference": "cddb3a87f2e125944470d716642b856f8de07fac",
+                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/bccd00bffb6ae2dbf4608e5632238479d8056e8b",
+                "reference": "bccd00bffb6ae2dbf4608e5632238479d8056e8b",
                 "shasum": ""
             },
             "require-dev": {
@@ -38,7 +38,7 @@
                 "MIT"
             ],
             "description": "Sandra Ontologic Datagraph",
-            "time": "2019-09-25T14:42:52+00:00"
+            "time": "2019-09-27T12:17:04+00:00"
         }
     ],
     "packages-dev": [
@@ -723,12 +723,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8fdb4a65381e656c342af209f7548f1128fe33e8"
+                "reference": "5dbaa128fcd8a80220cf58f5290b628c5ed03b8b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8fdb4a65381e656c342af209f7548f1128fe33e8",
-                "reference": "8fdb4a65381e656c342af209f7548f1128fe33e8",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5dbaa128fcd8a80220cf58f5290b628c5ed03b8b",
+                "reference": "5dbaa128fcd8a80220cf58f5290b628c5ed03b8b",
                 "shasum": ""
             },
             "require": {
@@ -798,7 +798,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-09-19T06:17:16+00:00"
+            "time": "2019-09-27T16:29:07+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

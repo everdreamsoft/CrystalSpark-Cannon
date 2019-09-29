@@ -6,7 +6,7 @@
  * Time: 14:42
  */
 
-namespace CsCannon\Blockchains\Ethereum;
+namespace CsCannon\Blockchains\Ethereum\Sidechains\Matic;
 
 
 
@@ -20,32 +20,25 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\Ethereum\DataSource\BlockscoutAPI;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
+use CsCannon\Blockchains\Ethereum\EthereumAddress;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Ethereum\MaticBlockchain;
 use CsCannon\Ethereum\EthereumToken;
 use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
 use SandraCore\ForeignEntityAdapter;
 
-class EthereumAddress extends BlockchainAddress
+class MaticAddress extends EthereumAddress //update relevant parent
 {
 
     protected static $isa = 'ethAddress';
     protected static $file = 'ethAddressFile';
-    protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumAddress' ;
-    protected static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
+    protected static  $className = 'CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticAddress' ; //Update relevant path
 
 
-
-
-
-
-
-    public function getBlockchain(): Blockchain
-    {
-        return EthereumBlockchain::getStatic();
-    }
 
 
 
@@ -53,6 +46,16 @@ class EthereumAddress extends BlockchainAddress
     {
 
 
-       return  new OpenSeaImporter();
+        return  new BlockscoutAPI();
     }
+
+
+    public function getBlockchain(): Blockchain
+    {
+        return MaticBlockchain::getStatic();
+    }
+
+
+
+
 }

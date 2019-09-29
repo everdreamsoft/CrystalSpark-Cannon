@@ -131,8 +131,6 @@ final class OrbTest extends TestCase
     {
 
 
-
-
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
         $collectionEntity = $assetCollectionFactory->get(self::COLLECTION_CODE);
 
@@ -144,10 +142,6 @@ final class OrbTest extends TestCase
 
 
         $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
-
-
-
-
 
 
 

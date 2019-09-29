@@ -50,7 +50,7 @@ class Balance Implements Displayable
 
     }
 
-    public function getTokenBalance(){
+    public function getTokenBalance():array {
 
 
 //print_r($this->contractMap);
@@ -70,7 +70,9 @@ class Balance Implements Displayable
                   /** @var BlockchainContractStandard $tokenObject */
 
                   $newToken =  $tokenObject->specificatorData;
+                  $newToken['standard'] = $tokenObject->getStandardName();
                   $newToken['quantity'] = $token['quantity'];
+
 
 
                   $newContract['tokens'][] = $newToken ;

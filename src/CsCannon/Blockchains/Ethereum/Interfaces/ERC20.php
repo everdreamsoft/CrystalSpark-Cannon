@@ -2,6 +2,7 @@
 
 namespace CsCannon\Blockchains\Ethereum\Interfaces;
 use CsCannon\AssetSolvers\DefaultEthereumSolver;
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
@@ -13,15 +14,15 @@ use CsCannon\Orb;
  * Date: 21.05.19
  * Time: 14:40
  */
-class ERC721 extends EthereumContractStandard
+class ERC20 extends EthereumContractStandard
 {
 
     public $tokenId = null ;
-    public $specificatorArray = ['tokenId'];
+    public $specificatorArray = null ;
 
     public function __construct()
     {
-        $this->solver = DefaultEthereumSolver::class ;
+        $this->solver = LocalSolver::class ;
 
     }
 
@@ -47,7 +48,7 @@ class ERC721 extends EthereumContractStandard
 
     public function getStandardName()
     {
-       return "ERC721";
+       return "ERC20";
     }
 
     public function getSolver()
@@ -66,7 +67,7 @@ class ERC721 extends EthereumContractStandard
     public function getDisplayStructure()
     {
 
-       $return = 'tokenId-'.$this->tokenId ;
+       $return = null ;
         return $return ;
     }
 

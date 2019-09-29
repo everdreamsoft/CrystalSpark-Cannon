@@ -24,18 +24,18 @@ use SandraCore\PdoConnexionWrapper;
 class XchainOnBcy extends BlockchainDataSource
 {
 
-    public $sandra ;
+
 
     public static $dbHost, $db, $dbpass, $dbUser ;
 
 
 
 
-    public function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    public static function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
     {
 
 
-        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',$this->sandra);
+        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
         $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends 
@@ -101,7 +101,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
             $transactionData = $transactionData + $trackedArray ;
 
-            $entityArray[] = $entity = new ForeignEntity($hash, $transactionData, $foreignEntityAdapter, $hash, $this->sandra);
+            $entityArray[] = $entity = new ForeignEntity($hash, $transactionData, $foreignEntityAdapter, $hash, SandraManager::getSandra());
 
 
         }
@@ -112,7 +112,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     }
 
 
-    public function getBalance(BlockchainAddress $address, $limit, $offset): Balance
+    public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
 
         $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
