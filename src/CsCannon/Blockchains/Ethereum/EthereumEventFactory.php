@@ -20,7 +20,7 @@ class EthereumEventFactory extends BlockchainEventFactory
 {
 
 
-    protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumEvent' ;
+    protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumEvent' ; //Update to relevant class
 
 
 
@@ -28,14 +28,11 @@ class EthereumEventFactory extends BlockchainEventFactory
 
         //Verify data validity
 
-
         parent::__construct();
 
         $this->generatedEntityClass = static::$className ;
 
-        $this->setFilter(self::ON_BLOCKCHAIN_EVENT,EthereumBlockchain::NAME);
-
-
+        $this->setFilter(self::ON_BLOCKCHAIN_EVENT,EthereumBlockchain::NAME); //Update relevant chain name
 
 
 
@@ -44,11 +41,7 @@ class EthereumEventFactory extends BlockchainEventFactory
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
     {
 
-
-
         $return = parent::populateLocal($limit, $offset, $asc);
-
-
 
         $addressFactory = new EthereumAddressFactory();
         $contractFactory = new EthereumContractFactory();

@@ -420,7 +420,7 @@ abstract class BlockchainImporter
 
 
 
-        $foreignEntityEventsFactory = $dataSource->getEvents('default',$limit,$offset,$address);
+        $foreignEntityEventsFactory = $dataSource::getEvents('default',$limit,$offset,$address);
 
         $structure = $foreignEntityEventsFactory->return2dArray();
         $totalResponses['structure'] = reset($structure);

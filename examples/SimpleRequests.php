@@ -17,7 +17,7 @@ use CsCannon ;
 
 
 
-
+echo"stop";
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
 //$defaultXcpAddress = '1mzm8NqodUuuxip3uSoDrXraCXkmmwDcq';
@@ -31,10 +31,10 @@ $addressEntity = $addressFactory->get($xcpAddress);
 
 $balance = $addressEntity->getBalance();
 //print_r($addressEntity->balance->getTokenBalance());
-print_r($addressEntity->balance->returnObsByCollections());
+$federatedBalance = $addressEntity->balance->getTokenBalance();
 
 //print_r($balance);
-die();
+
 
 $defaultEthereumAddress = '0x7f7eed1fcbb2c2cf64d055eed1ee051dd649c8e7';
 
@@ -46,8 +46,27 @@ $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($ethereumAddress
 $addressEntity = $addressFactory->get($ethereumAddress);
 
 $balance = $addressEntity->getBalance();
-print_r($addressEntity->balance->getTokenBalance());
-print_r($addressEntity->balance->returnObsByCollections());
+//print_r($addressEntity->balance->getTokenBalance());
+//print_r($addressEntity->balance->returnObsByCollections());
+$erc721Balance = $addressEntity->balance->getTokenBalance();
+$federatedBalance =  array_merge($federatedBalance,$erc721Balance) ;
+
+//matic
+
+
+
+$ethereumAddress = $defaultEthereumAddress;
+
+
+$addressFactory = new CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticAddressFactory();
+
+$addressEntity = $addressFactory->get($ethereumAddress);
+
+ $addressEntity->getBalance();
+ $federatedBalance2 = $addressEntity->balance->getTokenBalance();
+ $federatedBalance2 = $addressEntity->balance->returnObsByCollections();
+print_r($federatedBalance);
+print_r($federatedBalance2);
 
 
 

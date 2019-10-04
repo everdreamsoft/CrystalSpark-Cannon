@@ -47,7 +47,8 @@ public static function update($onlyIfOlderThanSec = null){
 
 
     $entity = self::getEntity();
-    $entity->createOrUpdateRef([self::LAST_UPDATE_SHORTNAME],$now);
+    $entity->createOrUpdateRef(self::LAST_UPDATE_SHORTNAME,$now);
+    self::$solverEntity = $entity;
 
 
 
@@ -68,7 +69,7 @@ public static function update($onlyIfOlderThanSec = null){
 
         $solverFactory = new EntityFactory(self::ISA, self::FILE, SandraManager::getSandra());
         $solverFactory->populateLocal();
-        self::$solverEntity = $solverFactory->createOrUpdateOnReference(self::INDEX, self::class,null);
+        self::$solverEntity = $solverFactory->getOrCreateFromRef(self::INDEX, self::class);
 
     }
 

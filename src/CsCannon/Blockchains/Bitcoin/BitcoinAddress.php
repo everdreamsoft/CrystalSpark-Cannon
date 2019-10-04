@@ -12,6 +12,7 @@ namespace CsCannon\Blockchains\Bitcoin;
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\BlockchainDataSource;
 use SandraCore\System;
 
 class BitcoinAddress extends BlockchainAddress
@@ -28,10 +29,7 @@ class BitcoinAddress extends BlockchainAddress
     }
 
 
-    public function getBalance():Balance
-    {
-        // TODO: Implement getBalance() method.
-    }
+
 
     public function createForeign(){
 
@@ -44,4 +42,8 @@ class BitcoinAddress extends BlockchainAddress
     }
 
 
+    public function getDefaultDataSource(): BlockchainDataSource
+    {
+        return null ;
+    }
 }

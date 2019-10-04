@@ -4,6 +4,7 @@ namespace CsCannon\Blockchains\Ethereum\DataSource;
 
 
 use CsCannon\AssetCollection;
+use CsCannon\AssetCollectionFactory;
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
@@ -13,6 +14,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\SandraManager;
 use Ethereum\DataType\Block;
 use Ethereum\DataType\EthB;
@@ -39,7 +41,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
 
 
-    public function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter{
+    public static function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter{
 
 
         if (!is_null($address)) $addressFilter = "&account_address=$address";
@@ -121,7 +123,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
             $transactionData = $trackedArray + $other ;
 
-            $entityArray[] = $entity = new ForeignEntity($txHash, $transactionData, $foreignEntityAdapter, $txHash, $this->sandra);
+            $entityArray[] = $entity = new ForeignEntity($txHash, $transactionData, $foreignEntityAdapter, $txHash,SandraManager::getSandra());
 
         }
 
@@ -184,7 +186,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
     }
 
-    public function getBalance(BlockchainAddress $address, $limit, $offset): Balance
+    public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
 
         $foreignAdapter = new ForeignEntityAdapter("https://api.opensea.io/api/v1/assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$address->getAddress(),'assets',SandraManager::getSandra());
@@ -200,7 +202,10 @@ class OpenSeaImporter extends BlockchainDataSource
        // $foreignAdapter->dumpMeta();
         $contractFactory = new EthereumContractFactory();
 
-        $collectionFactory = $this->localCollections ;
+        $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
+        $collectionFactory->populateLocal();
+
+         self::$localCollections = $collectionFactory ;
         $balance = new Balance();
 
         //opensea API ruleset
@@ -210,6 +215,11 @@ class OpenSeaImporter extends BlockchainDataSource
             /** @var ForeignEntity $entity */
 
             $contractAddress = $entity->get('contract.address');
+            $standard = $entity->get('contract.schema_name');
+            //die("standard $standard");
+            $contractStandard = new UnknownStandard();
+
+            if ($standard == "ERC721") $contractStandard = new ERC721();
 
 
             //on opensea one contract = 1 collection
@@ -219,7 +229,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
                 if (is_null($collection)){
 
-                    $contractEntity = $contractFactory->get($contractAddress,true);
+                    $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
                     $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
 
                 }

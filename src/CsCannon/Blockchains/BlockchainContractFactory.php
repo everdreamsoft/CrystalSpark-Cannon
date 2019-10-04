@@ -5,6 +5,7 @@ namespace CsCannon\Blockchains;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
@@ -22,6 +23,7 @@ protected static $className = 'CsCannon\BlockchainContract';
 public const  MAIN_IDENTIFIER = 'id';
 public  const JOIN_COLLECTION = 'inCollection';
 public  const JOIN_ASSET = 'joinAsset';
+public  const CONTRACT_STANDARD = 'contractStandard';
 
     public function __construct(){
 
@@ -40,13 +42,16 @@ public  const JOIN_ASSET = 'joinAsset';
 
         $collectionFactory = AssetCollectionFactory::getStaticCollection();
 
+        $this->populateBrotherEntities(self::CONTRACT_STANDARD);
+
+
         $this->joinFactory(static::JOIN_COLLECTION,$collectionFactory);
         $this->joinPopulate();
 
 
     }
 
-    public function get($identifier,$autoCreate=false):?BlockchainContract
+    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
 
         $return = $this->first(self::MAIN_IDENTIFIER,$identifier);
@@ -57,8 +62,15 @@ public  const JOIN_ASSET = 'joinAsset';
         $identifierName = self::MAIN_IDENTIFIER;
         $entity = $this->first($identifierName,$identifier);
 
-        //need to fix that asap
-        $foreignAdapter = new ForeignEntityAdapter('http://www.google.com','',SandraManager::getSandra());
+        $contStandardClass = UnknownStandard::class;
+
+        if (is_null(!$contractStandard)){
+
+            $contStandardClass = get_class($contractStandard) ;
+        }
+
+
+        $foreignAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
 
 
         if(is_null($entity) && !$autoCreate){
@@ -77,7 +89,9 @@ public  const JOIN_ASSET = 'joinAsset';
 
             }
 
-            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier));
+            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier,self::CONTRACT_STANDARD => $contStandardClass),
+                [self::CONTRACT_STANDARD => $contStandardClass]
+                );
 
             //dd($entity);
 

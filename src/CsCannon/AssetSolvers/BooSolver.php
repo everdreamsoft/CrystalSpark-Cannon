@@ -26,59 +26,19 @@ use SandraCore\EntityFactory;
 use SandraCore\ForeignConcept;
 use SandraCore\ForeignEntityAdapter;
 
-class BooSolver extends AssetSolver
+class BooSolver extends LocalSolver
 {
 
-    private static $assetInCollections ;
+
 
     public static function resolveAsset(Orb $orb, BlockchainContractStandard $specifier){
 
         //if was never initialized
-        if (self::getLastUpdate() == null)self::updateSolver();
+        if (self::getLastUpdate() == null)self::update();
+
+        return parent::resolveAsset($orb,  $specifier);
 
 
-        //we get target collection
-
-       if (!isset(self::$assetInCollections[$orb->assetCollection->getId()])) {
-
-           $assetFactory = new AssetFactory();
-           $assetFactory->setFilter(0, $orb->assetCollection);
-           $assetFactory->populateLocal();
-           $assetFactory->getTriplets();
-           $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
-           $entities = $assetFactory->entityArray ;
-
-           self::$assetInCollections[$orb->assetCollection->getId()] = $assetFactory ;
-
-
-
-       }
-
-      $assetCollectionList  = self::$assetInCollections[$orb->assetCollection->getId()];
-
-       //sub optimal there should be a map for that
-
-        foreach ($assetCollectionList->entityArray as $assetEntity)
-        {
-            /** @var Asset $assetEntity */
-
-            $sandra = SandraManager::getSandra();
-
-            if (!isset($assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)])) continue ;
-
-           $contractArray =  $assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)];
-
-                //linked contract =
-            if (in_array($orb->contract->subjectConcept->idConcept,$contractArray)) {
-
-                //$assetEntity = $entities[$orb->contract->subjectConcept->idConcept] ;
-                return $assetEntity;
-            }
-
-
-        }
-
-        return null ;
 
 
     }
