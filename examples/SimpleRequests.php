@@ -17,7 +17,7 @@ use CsCannon ;
 
 
 
-
+echo"stop";
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
 //$defaultXcpAddress = '1mzm8NqodUuuxip3uSoDrXraCXkmmwDcq';
@@ -53,7 +53,7 @@ $federatedBalance =  array_merge($federatedBalance,$erc721Balance) ;
 
 //matic
 
-$defaultEthereumAddress = '0x7f7eed1fcbb2c2cf64d055eed1ee051dd649c8e7';
+
 
 $ethereumAddress = $defaultEthereumAddress;
 

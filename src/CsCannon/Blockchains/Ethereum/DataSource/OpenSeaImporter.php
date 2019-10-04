@@ -14,6 +14,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\SandraManager;
 use Ethereum\DataType\Block;
 use Ethereum\DataType\EthB;
@@ -214,6 +215,11 @@ class OpenSeaImporter extends BlockchainDataSource
             /** @var ForeignEntity $entity */
 
             $contractAddress = $entity->get('contract.address');
+            $standard = $entity->get('contract.schema_name');
+            //die("standard $standard");
+            $contractStandard = new UnknownStandard();
+
+            if ($standard == "ERC721") $contractStandard = new ERC721();
 
 
             //on opensea one contract = 1 collection
@@ -223,7 +229,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
                 if (is_null($collection)){
 
-                    $contractEntity = $contractFactory->get($contractAddress,true);
+                    $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
                     $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
 
                 }

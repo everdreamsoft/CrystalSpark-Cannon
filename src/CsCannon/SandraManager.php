@@ -21,7 +21,7 @@ class SandraManager
 
         if (is_null(self::$instanceSandra)){
 
-            self::$instanceSandra = new System('romeo',true);
+            self::$instanceSandra = new System('sierra',true);
 
 
         }

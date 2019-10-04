@@ -15,6 +15,8 @@ namespace CsCannon\Blockchains\Counterparty;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainContractStandard;
+use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 
 class XcpContractFactory extends BlockchainContractFactory
 {
@@ -24,15 +26,14 @@ class XcpContractFactory extends BlockchainContractFactory
     protected static $className = 'CsCannon\Blockchains\Counterparty\XcpContract' ;
 
 
-    // On counterparty a contract is the token itself
-    public function get($tokenName,$autoCreate = false):?BlockchainContract{
+    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    {
 
+        //for counterparty we force counterparty contract standard
+        $contractStandard = new CounterpartyAsset();
 
-        $entityToken = $this->getOrCreateFromRef(BlockchainContractFactory::MAIN_IDENTIFIER, $tokenName);
+        return parent::get($identifier,$autoCreate, $contractStandard);
 
-
-
-        return $entityToken ;
 
     }
 

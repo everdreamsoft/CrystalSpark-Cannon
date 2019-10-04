@@ -108,6 +108,8 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $data['collectionId'] = $openSeaEntity->get('contract.address');
 
+
+
         //$links['source'] = 'openSea';
         //$links['hasContract'] = 'openSea'; //TODO important
 
