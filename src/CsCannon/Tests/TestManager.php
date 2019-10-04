@@ -10,6 +10,7 @@ namespace CsCannon\Tests;
 
 
 use CsCannon\SandraManager;
+use SandraCore\EntityFactory;
 use SandraCore\System;
 
 class TestManager
@@ -30,9 +31,42 @@ class TestManager
         $sandraToFlush = new System('phpUnit_', true);
         \SandraCore\Setup::flushDatagraph($sandraToFlush);
         $system = new System('phpUnit_',true);
+        $system->registerStructure = true ;
 
 
         SandraManager::setSandra($system);
+
+
+    }
+
+    public static function registerDataStructure(){
+
+return ;
+        $sandraTest = SandraManager::getSandra();
+        $factoryArray = $sandraTest->registerFactory ;
+
+        if(!is_array($factoryArray)) return ;
+
+        $defaultSandra =  $sandraTest = SandraManager::getDefaultSandra();
+        SandraManager::setSandra($defaultSandra);
+
+    foreach ($factoryArray as $factory){
+
+        /** @var EntityFactory $factory */
+
+        $factoryClass = get_class($factory);
+        $factoryToCreateView = new $factoryClass();
+
+        $name = (new \ReflectionClass($factoryToCreateView))->getShortName();
+        /** @var EntityFactory $factoryToCreateView */
+        $factoryToCreateView->populateLocal();
+        $factoryToCreateView->createViewTable($name);
+
+
+    }
+
+    //Swith back to the default sandra
+        SandraManager::setSandra($sandraTest);
 
 
     }

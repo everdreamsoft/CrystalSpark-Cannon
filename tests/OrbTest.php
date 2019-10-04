@@ -75,7 +75,7 @@ final class OrbTest extends TestCase
         $balance = $addressEntity->getBalance();
         $balance->getObs();
 
-
+        \CsCannon\Tests\TestManager::registerDataStructure();
 
 
 
@@ -120,6 +120,8 @@ final class OrbTest extends TestCase
 
        // $getJoinedContract->dumpMeta();
 
+        \CsCannon\Tests\TestManager::registerDataStructure();
+
 
 
 
@@ -144,6 +146,8 @@ final class OrbTest extends TestCase
 
 
         $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
+
+        \CsCannon\Tests\TestManager::registerDataStructure();
 
 
 

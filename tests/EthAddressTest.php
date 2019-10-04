@@ -57,6 +57,8 @@ final class EthAddressTest extends TestCase
         $this->assertInstanceOf(\CsCannon\Blockchains\Ethereum\EthereumAddress::class,
             reset($localAddressListControl),"locally saved address is not an Ethereum Address object");
 
+        \CsCannon\Tests\TestManager::registerDataStructure();
+
 
     }
 
@@ -94,6 +96,8 @@ final class EthAddressTest extends TestCase
         $theToken = $balanceObject->contracts[$blockchain::NAME][\CsCannon\Tests\TestManager::ETHEREUM_TOKEN_AVAIL];
         $this->assertEquals($theToken[$contractSandard->getDisplayStructure()]['quantity'],1
             ,"Balance doens't return counterparty contracts");
+
+        \CsCannon\Tests\TestManager::registerDataStructure();
 
     }
 

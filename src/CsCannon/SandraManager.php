@@ -17,11 +17,20 @@ class SandraManager
 
     private static $instanceSandra ;
 
+    public static function getDefaultSandra(){
+
+
+
+            $sandra = new System('romeo',true);
+        return $sandra ;
+
+    }
+
     public static function getSandra(){
 
         if (is_null(self::$instanceSandra)){
 
-            self::$instanceSandra = new System('romeo',true);
+            self::$instanceSandra = self::getDefaultSandra();
 
 
         }
