@@ -41,13 +41,13 @@ class TestManager
 
     public static function registerDataStructure(){
 
-return ;
+
         $sandraTest = SandraManager::getSandra();
         $factoryArray = $sandraTest->registerFactory ;
 
         if(!is_array($factoryArray)) return ;
 
-        $defaultSandra =  $sandraTest = SandraManager::getDefaultSandra();
+        $defaultSandra  = SandraManager::getDefaultSandra();
         SandraManager::setSandra($defaultSandra);
 
     foreach ($factoryArray as $factory){
@@ -55,7 +55,7 @@ return ;
         /** @var EntityFactory $factory */
 
         $factoryClass = get_class($factory);
-        $factoryToCreateView = new $factoryClass();
+        $factoryToCreateView = new $factoryClass($defaultSandra);
 
         $name = (new \ReflectionClass($factoryToCreateView))->getShortName();
         /** @var EntityFactory $factoryToCreateView */

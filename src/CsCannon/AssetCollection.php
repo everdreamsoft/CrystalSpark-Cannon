@@ -9,6 +9,7 @@
 
 namespace CsCannon;
 
+use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
@@ -48,6 +49,13 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
         // $this->id = $sandraReferencesArray[$system->systemConcept->get($this->id)];
 
         return $this->id ;
+
+    }
+
+    public function setSolver(AssetSolver $assetSolver)
+    {
+
+        $this->setBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB,$assetSolver,null);
 
     }
 
@@ -100,6 +108,14 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
 
         $this->setStorage($description);
         $this->description = $description;
+
+
+    }
+
+    public function getSolver(){
+
+        $this->factory->getTriplets();
+
 
 
     }

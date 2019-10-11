@@ -82,8 +82,8 @@ class AssetFactory extends \SandraCore\EntityFactory
         $verif = $verifyFactory->get($id);
 
         if (isset($verif)) {
-            SandraManager::dispatchError(SandraManager::getSandra(), 2, 3, 'Asset 
-        with id $id already exists', $this);
+            SandraManager::dispatchError(SandraManager::getSandra(), 2, 2, "Asset 
+        with id $id already exists", $this);
             return $verif ;
 
         }

@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/everdreamsoft/sandra.git",
-                "reference": "33c219050b94090ce85bf1c24f254897edc65d6e"
+                "reference": "626d767ed71f10ac43eb6586098c9ef0f806f1d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/33c219050b94090ce85bf1c24f254897edc65d6e",
-                "reference": "33c219050b94090ce85bf1c24f254897edc65d6e",
+                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/626d767ed71f10ac43eb6586098c9ef0f806f1d2",
+                "reference": "626d767ed71f10ac43eb6586098c9ef0f806f1d2",
                 "shasum": ""
             },
             "require-dev": {
@@ -38,7 +38,7 @@
                 "MIT"
             ],
             "description": "Sandra Ontologic Datagraph",
-            "time": "2019-10-04T09:37:06+00:00"
+            "time": "2019-10-10T15:38:11+00:00"
         }
     ],
     "packages-dev": [
@@ -466,12 +466,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "aa0d179a13284c7420fc281fc32750e6cc7c9e2f"
+                "reference": "78cd2a6bbca64901a0a39e4cbd2e723a09e8501b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/aa0d179a13284c7420fc281fc32750e6cc7c9e2f",
-                "reference": "aa0d179a13284c7420fc281fc32750e6cc7c9e2f",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/78cd2a6bbca64901a0a39e4cbd2e723a09e8501b",
+                "reference": "78cd2a6bbca64901a0a39e4cbd2e723a09e8501b",
                 "shasum": ""
             },
             "require": {
@@ -521,7 +521,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-09-17T06:24:36+00:00"
+            "time": "2019-10-09T11:58:34+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -669,12 +669,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "995192df77f63a59e47f025390d2d1fdf8f425ff"
+                "reference": "36bdcb91de0484f77e256fd3d6119dcf7171c164"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/995192df77f63a59e47f025390d2d1fdf8f425ff",
-                "reference": "995192df77f63a59e47f025390d2d1fdf8f425ff",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/36bdcb91de0484f77e256fd3d6119dcf7171c164",
+                "reference": "36bdcb91de0484f77e256fd3d6119dcf7171c164",
                 "shasum": ""
             },
             "require": {
@@ -710,7 +710,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2019-09-17T06:23:10+00:00"
+            "time": "2019-10-05T05:20:56+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -718,12 +718,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c4fea52b5ef3f3c9033216da95b14e3d2c8b16c0"
+                "reference": "cba1d157d7338e06e9e7b7d08f0dede7f79d16ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c4fea52b5ef3f3c9033216da95b14e3d2c8b16c0",
-                "reference": "c4fea52b5ef3f3c9033216da95b14e3d2c8b16c0",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/cba1d157d7338e06e9e7b7d08f0dede7f79d16ca",
+                "reference": "cba1d157d7338e06e9e7b7d08f0dede7f79d16ca",
                 "shasum": ""
             },
             "require": {
@@ -793,7 +793,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-04T08:55:32+00:00"
+            "time": "2019-10-08T04:47:53+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

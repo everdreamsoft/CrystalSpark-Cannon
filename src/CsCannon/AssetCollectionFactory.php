@@ -9,6 +9,8 @@
 
 namespace CsCannon;
 
+use CsCannon\AssetSolvers\AssetSolver;
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
@@ -31,6 +33,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
     const METADATASOLVER_TARGET = 'metaDataSolver';
 
     public static $staticInstance = null ;
+    public static $staticSolvers = null ;
 
     const IMAGE_EXTENSION = 'imageExtension';
     const MAIN_IMAGE = 'imageUrl';
@@ -63,7 +66,22 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function create($id,$dataArray):?AssetCollection{
+    private static function getSolverData (){
+
+        $actualSandra = SandraManager::getSandra() ;
+
+        if (self::$staticSolvers == null or $actualSandra->instanceId != self::$staticSolvers->system->instanceId) {
+            self::$staticSolvers = new MetadataSolverFactory(SandraManager::getSandra());
+
+        }
+
+
+
+        return self::$staticSolvers ;
+
+    }
+
+    public function create($id,$dataArray,$assetSolver = null):?AssetCollection{
 
         $sandra = SandraManager::getSandra() ;
 
@@ -79,7 +97,12 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         $dataToSave = $dataArray ;
         $dataToSave[$this->id] = $id ;
 
-        return $this->createNew($dataToSave);
+        if ($assetSolver == null){
+
+            $assetSolver = LocalSolver::getEntity();
+        }
+
+        return $this->createNew($dataToSave,[self::METADATASOLVER_VERB=>$assetSolver]);
 
 
     }
@@ -89,6 +112,38 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
         return $this->first($this->id,$id);
+
+
+    }
+
+    public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC')
+    {
+        $output = parent::populateLocal($limit, $offset, $asc);
+
+        $this->getTriplets();
+        $this->joinFactory(self::METADATASOLVER_VERB,self::getSolverData());
+        $this->joinPopulate();
+    }
+
+
+
+
+
+    public function getOrCreate($collectionId, AssetSolver $assetSolver = null):AssetCollection{
+
+        if ($assetSolver == null){
+
+            $assetSolver = LocalSolver::getEntity();
+        }
+
+        $enity  = $this->getOrCreateFromRef($this->id,$collectionId);
+
+        /** @var AssetCollection $enity */
+        $enity->setSolver($assetSolver);
+
+        return $enity ;
+
+
 
 
     }
@@ -123,7 +178,6 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
         //$this->createNew()
-
 
 
 

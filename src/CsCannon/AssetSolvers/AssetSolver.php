@@ -12,16 +12,17 @@ namespace CsCannon\AssetSolvers;
 use CsCannon\AssetCollection;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
+use CsCannon\MetadataSolverFactory;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
 
-abstract class AssetSolver
+abstract class AssetSolver extends Entity
 {
     const ISA = 'assetSolver';
     const FILE = 'assetSolverFile';
-    const INDEX = 'classIndex';
+
     const LAST_UPDATE_SHORTNAME = 'updateTimestamp';
     public static $lastUpdate = null ;
     public static $solverEntity = null ;
@@ -67,9 +68,9 @@ public static function update($onlyIfOlderThanSec = null){
 
     if( is_null(self::$solverEntity)) {
 
-        $solverFactory = new EntityFactory(self::ISA, self::FILE, SandraManager::getSandra());
+        $solverFactory = new MetadataSolverFactory(SandraManager::getSandra());
         $solverFactory->populateLocal();
-        self::$solverEntity = $solverFactory->getOrCreateFromRef(self::INDEX, self::class);
+        self::$solverEntity = $solverFactory->getOrCreateFromRef('class_name', static::class);
 
     }
 

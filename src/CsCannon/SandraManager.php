@@ -10,6 +10,7 @@ namespace CsCannon;
 
 
 use phpDocumentor\Reflection\Types\Object_;
+use SandraCore\EntityFactory;
 use SandraCore\System;
 
 class SandraManager
@@ -29,6 +30,7 @@ class SandraManager
     public static function getSandra(){
 
         if (is_null(self::$instanceSandra)){
+
 
             self::$instanceSandra = self::getDefaultSandra();
 
@@ -58,6 +60,35 @@ class SandraManager
 
         //Code 1 collection exists
         //Code 2 Asset exists
+
+
+    }
+
+    public static function registerDataStructure(System $sandra){
+
+
+       ;
+        $factoryArray = $sandra->registerFactory ;
+
+        if(!is_array($factoryArray)) return ;
+
+
+
+        foreach ($factoryArray as $factory){
+
+            /** @var EntityFactory $factory */
+
+            $factoryClass = get_class($factory);
+            $factoryToCreateView = new $factoryClass();
+
+            $name = (new \ReflectionClass($factoryToCreateView))->getShortName();
+            /** @var EntityFactory $factoryToCreateView */
+            $factoryToCreateView->populateLocal();
+            $factoryToCreateView->createViewTable($name);
+
+
+        }
+
 
 
     }

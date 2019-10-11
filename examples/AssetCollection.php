@@ -24,13 +24,14 @@ use SandraCore\System;
 
 
 CsCannon\AssetSolvers\BooSolver::update();
+
 //createLearner();
-die();
+
 
 //$contractFactory = new CsCannon\Blockchains\Ethereum\EthereumContractFactory()
 //$contractFactory->populateLocal();
 
-
+die();
 $assetCollection->populateLocal();
 //print_r($assetCollection->dumpMeta());
 //die();
