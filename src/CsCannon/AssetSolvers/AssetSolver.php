@@ -10,6 +10,7 @@ namespace CsCannon\AssetSolvers;
 
 
 use CsCannon\AssetCollection;
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\MetadataSolverFactory;
@@ -28,7 +29,7 @@ abstract class AssetSolver extends Entity
     public static $solverEntity = null ;
 
 
-public abstract static function resolveAsset(Orb $orb, BlockchainContractStandard $specifier) ;
+public abstract static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array ;
 protected abstract static function updateSolver() ;
 
 

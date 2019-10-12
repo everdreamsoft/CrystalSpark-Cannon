@@ -94,6 +94,8 @@ class AssetFactory extends \SandraCore\EntityFactory
 
         $newEntity = $this->createNew($metaData,array(self::$tokenJoinVerb =>($contracts),self::$collectionJoinVerb =>($collections)));
 
+        //bind the contract to collection
+
 
 
         return $newEntity ;

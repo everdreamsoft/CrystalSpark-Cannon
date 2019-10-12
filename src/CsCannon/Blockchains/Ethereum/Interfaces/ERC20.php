@@ -17,7 +17,7 @@ use CsCannon\Orb;
 class ERC20 extends EthereumContractStandard
 {
 
-    public $tokenId = null ;
+
     public $specificatorArray = null ;
 
     public function __construct()
@@ -29,11 +29,7 @@ class ERC20 extends EthereumContractStandard
 
 
 
-    public function setTokenId($tokenId)
-    {
-        $this->setTokenPath(array('tokenId'=>$tokenId));
 
-    }
 
     //ovveride the method to catch tokenId
     public function setTokenPath($tokenPath){

@@ -14,6 +14,7 @@ namespace CsCannon\Blockchains;
 
 
 use CsCannon\Asset;
+use CsCannon\AssetCollection;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -53,6 +54,13 @@ abstract class  BlockchainContract extends Entity
     public function bindToAsset(Asset $asset){
 
         $this->setBrotherEntity(BlockchainContractFactory::JOIN_ASSET,$asset,null);
+
+
+    }
+
+    public function bindToCollection(AssetCollection $collection){
+
+        $this->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$collection,null);
 
 
     }

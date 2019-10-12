@@ -9,6 +9,7 @@
 namespace CsCannon;
 
 
+use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 
@@ -36,13 +37,22 @@ class OrbFactory
 
        foreach ($collectionArray as $collection){
            /** @var AssetCollection $collection */
+           if (!$collection instanceof AssetCollection) continue ;
 
+            //first we get the specifier
+           $solvers = $collection->getSolvers();
+           foreach ($solvers ? $solvers : array() as $solver) {
+                /** @var AssetSolver $solver  */
+                if (!$solver instanceof AssetSolver) continue ;
+                $assets = $solver::resolveAsset($collection,$path,$contract);
+               foreach ($assets ? $assets : array() as $asset) {
 
+                   $orb = new Orb($contract, $path, $collection, $asset);
+                   self::mapOrb($orb, $this);
 
-           $orb = new Orb($contract,$path,$collection);
-           self::mapOrb($orb,$this);
-
-           $orbArray[] = $orb ;
+                   $orbArray[] = $orb;
+               }
+           }
 
 
        }

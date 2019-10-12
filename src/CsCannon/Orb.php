@@ -9,6 +9,7 @@
 namespace CsCannon;
 
 
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 
@@ -22,7 +23,7 @@ class Orb
     public $orbCode = null ;
     public $asset = null ;
 
-    public function __construct(BlockchainContract $contract,BlockchainContractStandard $specifier,AssetCollection $assetCollection,$forceInterface = false)
+    public function __construct(BlockchainContract $contract,BlockchainContractStandard $specifier,AssetCollection $assetCollection,Asset $asset)
     {
 
 
@@ -35,7 +36,9 @@ class Orb
         $this->orbCode = OrbFactory::generateOrbCode($this);
         $this->orbId = $this->orbCode ;
         /**@var \CsCannon\Asset $asset **/
-        $this->asset = $specifier->resolveAsset($this);
+        $this->asset = $asset ;
+
+
 
     }
 

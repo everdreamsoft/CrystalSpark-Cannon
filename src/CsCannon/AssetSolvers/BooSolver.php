@@ -31,12 +31,12 @@ class BooSolver extends LocalSolver
 
 
 
-    public static function resolveAsset(Orb $orb, BlockchainContractStandard $specifier){
+    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array{
 
         //if was never initialized
         if (self::getLastUpdate() == null)self::update();
 
-        return parent::resolveAsset($orb,  $specifier);
+        return parent::resolveAsset($assetCollection,  $specifier,  $contract);
 
 
 

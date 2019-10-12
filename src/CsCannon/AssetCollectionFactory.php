@@ -123,6 +123,15 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         $this->getTriplets();
         $this->joinFactory(self::METADATASOLVER_VERB,self::getSolverData());
         $this->joinPopulate();
+
+        //set the solvers
+        foreach ($this->entityArray ? $this->entityArray : array() as $collectionEntity) {
+
+            /** @var AssetCollection $collectionEntity */
+            //$solvers = $collectionEntity->getJoinedEntities(self::METADATASOLVER_VERB);
+            //$collectionEntity->setSolvers($solvers);
+
+        }
     }
 
 

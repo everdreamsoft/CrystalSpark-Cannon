@@ -31,27 +31,27 @@ class LocalSolver extends AssetSolver
 
     private static $assetInCollections ;
 
-    public static function resolveAsset(Orb $orb, BlockchainContractStandard $specifier){
+    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array{
 
 
         //we get target collection
 
-       if (!isset(self::$assetInCollections[$orb->assetCollection->getId()])) {
+       if (!isset(self::$assetInCollections[$assetCollection->getId()])) {
 
            $assetFactory = new AssetFactory();
-           $assetFactory->setFilter(0, $orb->assetCollection);
+           $assetFactory->setFilter(0, $assetCollection);
            $assetFactory->populateLocal();
            $assetFactory->getTriplets();
            $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
            $entities = $assetFactory->entityArray ;
 
-           self::$assetInCollections[$orb->assetCollection->getId()] = $assetFactory ;
+           self::$assetInCollections[$assetCollection->getId()] = $assetFactory ;
 
 
 
        }
 
-      $assetCollectionList  = self::$assetInCollections[$orb->assetCollection->getId()];
+      $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
 
        //sub optimal there should be a map for that
 
@@ -66,10 +66,10 @@ class LocalSolver extends AssetSolver
            $contractArray =  $assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)];
 
                 //linked contract =
-            if (in_array($orb->contract->subjectConcept->idConcept,$contractArray)) {
+            if (in_array($contract->subjectConcept->idConcept,$contractArray)) {
 
                 //$assetEntity = $entities[$orb->contract->subjectConcept->idConcept] ;
-                return $assetEntity;
+                return array($assetEntity);
             }
 
 

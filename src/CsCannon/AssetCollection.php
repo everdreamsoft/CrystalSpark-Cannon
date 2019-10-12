@@ -112,9 +112,9 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
 
     }
 
-    public function getSolver(){
+    public function getSolvers(){
 
-        $this->factory->getTriplets();
+        return $this->getJoinedEntities(AssetCollectionFactory::METADATASOLVER_VERB);
 
 
 

@@ -55,14 +55,18 @@ class Balance Implements Displayable
 
 //print_r($this->contractMap);
 //die("deado");
-      foreach($this->contracts as $chain){
+        $output = array();
 
-          foreach($chain as $contractId =>$contracts){
+          foreach($this->contracts ? $this->contracts : array() as $chain){
+
+
+              foreach($chain ? $chain : array() as $contractId =>$contracts){
 
               $newContract = null ;
               $newContract['contract'] = $contractId ;
 
-              foreach($contracts as $tokenComposedId =>$token) {
+
+                  foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
 
                   //get the token object
                   $tokenObject = $token['token'] ;

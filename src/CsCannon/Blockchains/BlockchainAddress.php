@@ -104,6 +104,14 @@ abstract class  BlockchainAddress extends Entity
         return $this->dataSource ;
     }
 
+    public function setDataSource(BlockchainDataSource $dataSource)
+    {
+
+        $this->dataSource = $dataSource ;
+
+        return $this ;
+    }
+
 
 
 
