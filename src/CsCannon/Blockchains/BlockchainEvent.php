@@ -16,6 +16,7 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\SandraManager;
 use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
 use SandraCore\System;
@@ -67,7 +68,7 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getBlockchainContract(){
+    public function getBlockchainContract():?BlockchainContract{
 
         $contract= $this->getJoinedEntities(BlockchainEventFactory::EVENT_CONTRACT);
         $contract = reset($contract); //take the first destination
@@ -75,7 +76,7 @@ class BlockchainEvent extends Entity implements Displayable
 
         if (is_null($contract)){
 
-            dd('null contract');
+            SandraManager::dispatchError($this->system,4,3,"Event  has no contract",$this);
         }
         //$fullContract = $contract->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
 
@@ -83,14 +84,27 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getTokenId(){
+    public function getSpecifier(){
 
-        $tokenId = $this->getBrotherReference(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
-        if(!is_array($tokenId)) { return null ;}
-        $tokenId = reset($tokenId);
+        $tokenData = $this->getBrotherReference(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
+        if(!is_array($tokenData)) { return null ;}
+        ;
+
+        $contract = $this->getBlockchainContract();
+        $standards = $contract->getStandard();
+        $firstStandard = reset($standards);
+        /** @var BlockchainContractStandard $standard */
+
+        if (isset($firstStandard)){
+            /** @var BlockchainContractStandard $instance */
+            $instance = new $firstStandard();
+            $instance->specificatorData = $tokenData ;
+            return  $instance ;
+
+        }
 
 
-        return $tokenId;
+        return null;
 
     }
 

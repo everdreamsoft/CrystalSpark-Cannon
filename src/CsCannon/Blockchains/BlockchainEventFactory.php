@@ -112,7 +112,7 @@ use SandraCore\System;
                             $txid,
                             $timestamp,
                             BlockchainBlock $block,
-                            $tokenId = null,
+                            BlockchainContractStandard $token = null,
                             $quantity = 1
 
  )
@@ -134,8 +134,11 @@ use SandraCore\System;
          $triplets[self::EVENT_BLOCK] = $block ;
 
          //does the contract has a token id ?
-         if (!is_null($tokenId)){
-             $triplets[self::EVENT_CONTRACT] = array($contract->subjectConcept->idConcept=>array(BlockchainContractFactory::TOKENID=>$tokenId));
+         if (!is_null($token)){
+             $stucture = $token->getSpecifierData();
+
+
+             $triplets[self::EVENT_CONTRACT] = array($contract->subjectConcept->idConcept=>$stucture);
 
          }
 

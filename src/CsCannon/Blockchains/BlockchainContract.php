@@ -43,6 +43,15 @@ abstract class  BlockchainContract extends Entity
 
     }
 
+    public function getStandard(){
+
+
+        return $this->getJoinedEntities(BlockchainContractFactory::CONTRACT_STANDARD);
+
+
+
+    }
+
     public function getCollections(){
 
 

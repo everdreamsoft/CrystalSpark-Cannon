@@ -44,7 +44,7 @@ class EthereumEventFactory extends BlockchainEventFactory
         $return = parent::populateLocal($limit, $offset, $asc);
 
         $addressFactory = new EthereumAddressFactory();
-        $contractFactory = new EthereumContractFactory();
+        $contractFactory = new EthereumContractFactory(); //todo should be static
 
         $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$addressFactory);
         $this->joinFactory(self::EVENT_DESTINATION_VERB,$addressFactory);

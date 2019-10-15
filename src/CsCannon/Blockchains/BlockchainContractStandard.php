@@ -55,6 +55,12 @@ abstract class BlockchainContractStandard
 
     }
 
+    public function getSpecifierData(){
+
+        return $this->specificatorData ;
+
+    }
+
 
 
 

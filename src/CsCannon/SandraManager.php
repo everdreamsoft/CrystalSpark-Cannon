@@ -61,6 +61,8 @@ class SandraManager
         //Code 1 collection exists
         //Code 2 Asset exists
 
+        //SandraManager::dispatchError($this->system,4,3,'Event has no contract');
+
 
     }
 
