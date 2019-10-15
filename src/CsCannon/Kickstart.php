@@ -6,6 +6,8 @@
  * Time: 11:27
  */
 
+namespace CsCannon;
+
 class Kickstart
 {
 
