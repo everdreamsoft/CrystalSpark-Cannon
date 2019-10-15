@@ -13,7 +13,7 @@ use SandraCore\System;
 class Kickstart
 {
 
-    public static function createViews(System $sandra){
+    public static function createViews(){
 
         $sandra = SandraManager::getSandra();
 
