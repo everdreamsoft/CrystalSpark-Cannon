@@ -111,7 +111,7 @@ class Balance Implements Displayable
                 $newContract = null ;
                 $newContract['contract'] = $contractId ;
                 $contractEntity = $this->contractMap[$contractId] ;
-                $collections = $contractEntity->getCollections();
+                //$collections = $contractEntity->getCollections();
 
 
                 //foreach token

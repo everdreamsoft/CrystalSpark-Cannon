@@ -17,7 +17,7 @@ use CsCannon ;
 
 
 
-echo"stop";
+/*
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
 //$defaultXcpAddress = '1mzm8NqodUuuxip3uSoDrXraCXkmmwDcq';
@@ -34,7 +34,7 @@ $balance = $addressEntity->getBalance();
 $federatedBalance = $addressEntity->balance->getTokenBalance();
 
 //print_r($balance);
-
+*/
 
 $defaultEthereumAddress = '0x7f7eed1fcbb2c2cf64d055eed1ee051dd649c8e7';
 
@@ -48,8 +48,10 @@ $addressEntity = $addressFactory->get($ethereumAddress);
 $balance = $addressEntity->getBalance();
 //print_r($addressEntity->balance->getTokenBalance());
 //print_r($addressEntity->balance->returnObsByCollections());
-$erc721Balance = $addressEntity->balance->getTokenBalance();
-$federatedBalance =  array_merge($federatedBalance,$erc721Balance) ;
+//$erc721Balance = $addressEntity->balance->getTokenBalance();
+//$federatedBalance =  array_merge($federatedBalance,$erc721Balance) ;
+
+die(print_r($balance->returnObsByCollections()));
 
 //matic
 

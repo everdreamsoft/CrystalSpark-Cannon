@@ -65,7 +65,7 @@ public static function update($onlyIfOlderThanSec = null){
 
     }
 
-    public static function getEntity():Entity{
+    public static function getEntity():self {
 
     if( is_null(self::$solverEntity)) {
 

@@ -31,9 +31,9 @@ class Asset extends \SandraCore\Entity
 
         if ($factory instanceof ForeignEntityAdapter){
 
-           $this->imageUrl = $sandraReferencesArray['imageUrl'];
+           $this->imageUrl = $sandraReferencesArray[AssetFactory::IMAGE_URL];
             $this->id = $sandraReferencesArray['assetId'];
-            $this->metaDataUrl = $sandraReferencesArray['metaDataUrl'];
+            $this->metaDataUrl = $sandraReferencesArray[AssetFactory::METADATA_URL];
 
         }
         else{

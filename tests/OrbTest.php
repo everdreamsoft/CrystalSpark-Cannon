@@ -9,6 +9,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use CsCannon\AssetSolvers\LocalSolver;
 use PHPUnit\Framework\TestCase;
 
 
@@ -34,7 +35,7 @@ final class OrbTest extends TestCase
         $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
-        $collection = $assetCollectionFactory->create(self::COLLECTION_CODE,null);
+        $collection = $assetCollectionFactory->create(self::COLLECTION_CODE,null, \CsCannon\AssetSolvers\BooSolver::getEntity());
 
         /** @var \CsCannon\AssetCollection $collection */
 
@@ -135,15 +136,18 @@ final class OrbTest extends TestCase
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
         $collectionEntity = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        \CsCannon\AssetSolvers\BooSolver::update();
 
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
         $contract = $contractFactory->get(self::COLLECTION_CONTRACT);
 
-        $orb = new \CsCannon\Orb($contract,new \CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset(),$collectionEntity);
-        $asset = $orb->getAsset();
+        $myOrbFactory = new \CsCannon\OrbFactory();
+        $myOrbFactory->getOrbsFromContractPath($contract,new \CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset());
 
 
-        $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
+
+
+        //$this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
 
         \CsCannon\Tests\TestManager::registerDataStructure();
 

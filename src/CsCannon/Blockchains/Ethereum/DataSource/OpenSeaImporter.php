@@ -257,37 +257,13 @@ class OpenSeaImporter extends BlockchainDataSource
          //   $assetEntity['image'] = $entity->get('image');
            // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
 
-
+            $contractFactory->populateLocal();
             $ethContract = $contractFactory->get($contractAddress);
 
             $standard = new ERC721();
 
             $standard->setTokenId($entity->get('token_id'));
             $balance->addContractToken($ethContract,$standard,1);
-
-
-
-            /*
-
-            $assetEntity['name'] = $entity->get('name');
-            $assetEntity['balance'] = 1;
-
-            $tokenContainer['tokenId'] =  $entity->get('token_id');
-            $tokenContainer['contract'] =  $contractAddress ;
-            $tokenContainer['balance'] =  1 ;
-
-            $assetEntity['tokens'] = $tokenContainer ;
-
-
-            $return['collections'][$collection->id]['id'] =$contractAddress ;
-            $return['collections'][$collection->id]['name'] = $collection->name ;
-            $return['collections'][$collection->id]['description'] = $collection->description ;
-            $return['collections'][$collection->id]['contracts'] = $collectionContractsArray[$contractAddress] ;
-            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
-            $return['collections'][$collection->id]['assetCount'] = $collectionAssetCount[$contractAddress] ;
-            $return['collections'][$collection->id]['image']=  $collection->imageUrl ;
-
-            */
 
 
 

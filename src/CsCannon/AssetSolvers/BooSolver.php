@@ -113,9 +113,7 @@ class BooSolver extends LocalSolver
 
                     $links['hasSource'] = 'BookOfOrbs';
 
-                    //dd($data);
-
-                    $collectionFactory->createNew($data,$links);
+                    $collectionFactory->create($envCode,$data,BooSolver::getEntity());
 
                 }
 

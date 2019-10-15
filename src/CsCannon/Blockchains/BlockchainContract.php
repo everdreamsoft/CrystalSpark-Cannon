@@ -49,6 +49,7 @@ abstract class  BlockchainContract extends Entity
         return $this->getJoinedEntities(BlockchainContractFactory::JOIN_COLLECTION);
 
 
+
     }
 
     public function bindToAsset(Asset $asset){

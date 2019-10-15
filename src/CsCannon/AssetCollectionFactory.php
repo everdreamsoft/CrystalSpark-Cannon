@@ -10,6 +10,7 @@
 namespace CsCannon;
 
 use CsCannon\AssetSolvers\AssetSolver;
+use CsCannon\AssetSolvers\DefaultEthereumSolver;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainToken;
@@ -178,8 +179,10 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         //$links['hasContract'] = 'openSea'; //TODO important
 
         $newCollection = $this->createNew($data);
+        /** @var AssetCollection $newCollection */
 
         $contract->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$newCollection,null);
+       $newCollection->setSolver(DefaultEthereumSolver::getEntity());
 
 
         return $newCollection ;
