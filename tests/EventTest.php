@@ -22,13 +22,19 @@ final class EventTest extends TestCase
     public function testSaveEvent()
     {
 
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        \CsCannon\Tests\TestManager::initTestDatagraph();
+
 
         $testAddress = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
         $testContract = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
 
         $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressFactoryControl = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
-        $addressEntity = $addressFactory->get($testAddress);
+        $addressEntity = $addressFactory->get($testAddress,1);
 
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
         $contract = $contractFactory->get($testContract,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
@@ -36,7 +42,8 @@ final class EventTest extends TestCase
         $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
 
         $Erc721 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
-        $Erc721->setTokenId('1');
+        $erc20 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init();
+        $Erc721->setTokenId('111');
 
         $eventFactory = new \CsCannon\Blockchains\Ethereum\EthereumEventFactory();
         $event = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
@@ -51,7 +58,36 @@ final class EventTest extends TestCase
 
         );
 
+        $event = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
+            $addressEntity,
+            $addressEntity,
+            $contract,
+            'BARTX',
+            "123343555",
+            $currentBlock,
+            $tokenId = $Erc721,
+            $quantity = 999
+
+        );
+
+
+
         $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainEvent::class,$event);
+
+        $event2 = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
+            $addressEntity,
+            $addressEntity,
+            $contractFactory->get('anotherFooContract',true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init()),
+            'fooTX EWRC 20',
+            "123343555",
+            $currentBlock,
+            $tokenId = $erc20,
+            $quantity = 100
+
+        );
+
+
+
 
 
     }
@@ -73,13 +109,21 @@ final class EventTest extends TestCase
            $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainAddress::class,$event->getSourceAddress());
            $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainAddress::class,$event->getDestinationAddress());
 
-            \CsCannon\Tests\TestManager::registerDataStructure();
+           // \CsCannon\Tests\TestManager::registerDataStructure();
+
+
 
 
 
 
 
         }
+
+        $output[] = $eventFactory->display()->html()->return();
+
+        print_r($output);
+
+        $this->assertEquals(1,1);
 
 
 

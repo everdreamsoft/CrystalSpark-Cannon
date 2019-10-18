@@ -83,7 +83,7 @@ abstract class BlockchainContractStandard extends Entity
 
 
             static::$entityClassArray[static::class] = $standardFactory->getOrCreateFromRef('class_name', static::class);
-            $standardFactory->createViewTable("temporay");
+
             $localEntity =  static::$entityClassArray[static::class];
 
         }

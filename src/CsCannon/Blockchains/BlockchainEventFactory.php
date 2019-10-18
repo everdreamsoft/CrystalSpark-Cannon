@@ -5,7 +5,9 @@ namespace CsCannon\Blockchains;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
+use CsCannon\Displayable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use phpDocumentor\Reflection\Types\Self_;
@@ -16,7 +18,7 @@ use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
- class BlockchainEventFactory extends EntityFactory
+ class BlockchainEventFactory extends EntityFactory implements Displayable
 {
     public $blockchain ;
     public static $isa = 'blockchainEvent' ;
@@ -43,6 +45,8 @@ use SandraCore\System;
     const EVENT_TRANSFER = 'transfer';
 
     public $contractAddress = '';
+
+     public $displayManager ;
 
 
 
@@ -264,20 +268,25 @@ use SandraCore\System;
 
     }
 
-     public function getArray(){
+     public function returnArray($displayManager){
 
 
-         foreach ($this->entityArray as $eventEntity){
+         foreach ($this->entityArray ? $this->entityArray : array() as $eventEntity){
+
+
 
              $contractAdress = null ;
 
              /** @var BlockchainEvent $eventEntity */
+             $output[] = $eventEntity->display()->return();
+             continue ;
+
              $source = $eventEntity->getSourceAddress();
              try {
                  $contract = $eventEntity->getBlockchainContract();
                  if($contract instanceof BlockchainContract or $contract instanceof BlockchainToken) {
                      $contractAdress = $contract->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
-                     $eventData['asset'] = $contract->resolveMetaData($eventEntity->getTokenId());
+                    // $eventData['asset'] = $contract->resolveMetaData($eventEntity->getTokenId());
                  }
 
 
@@ -320,12 +329,28 @@ use SandraCore\System;
 
          }
 
+        // $displayManager = new DisplayManager($this);
+        // $displayManager->pushData($returnArray);
 
-         return $returnArray ;
+
+         return $output ;
 
 
 
      }
+
+     public function display():DisplayManager{
+
+       if (!isset($this->displayManager)){
+           $this->displayManager = new DisplayManager($this);
+       }
+
+       return $this->displayManager ;
+
+
+     }
+
+
 
 
 

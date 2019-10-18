@@ -15,7 +15,7 @@ use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
 
-class Balance Implements Displayable
+class Balance
 {
 
 
@@ -28,7 +28,7 @@ class Balance Implements Displayable
     public function __construct()
     {
 
-        $this->display = new DisplayManager($this);
+       // $this->display = new DisplayManager($this);
 
     }
 
@@ -115,7 +115,7 @@ class Balance Implements Displayable
 
 
                 //foreach token
-                foreach($contracts as $tokenComposedId =>$token) {
+                foreach($contracts ? $contracts : array() as $tokenComposedId =>$token) {
 
 
                         /** @var AssetCollection $collectionEntity */

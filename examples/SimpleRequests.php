@@ -15,9 +15,13 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 
 use CsCannon ;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 
-/*
+
+
 
 $defaultXcpAddress = '186nXV8gY3LC1fjoTDGcieJqhk7ETgmPNM';
 //$defaultXcpAddress = '1mzm8NqodUuuxip3uSoDrXraCXkmmwDcq';
@@ -34,7 +38,7 @@ $balance = $addressEntity->getBalance();
 $federatedBalance = $addressEntity->balance->getTokenBalance();
 
 //print_r($balance);
-*/
+
 
 $defaultEthereumAddress = '0x7f7eed1fcbb2c2cf64d055eed1ee051dd649c8e7';
 

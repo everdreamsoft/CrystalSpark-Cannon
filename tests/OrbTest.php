@@ -76,7 +76,7 @@ final class OrbTest extends TestCase
         $balance = $addressEntity->getBalance();
         $balance->getObs();
 
-        \CsCannon\Tests\TestManager::registerDataStructure();
+     //   \CsCannon\Tests\TestManager::registerDataStructure();
 
 
 

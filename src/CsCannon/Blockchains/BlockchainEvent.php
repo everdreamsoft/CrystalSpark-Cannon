@@ -16,8 +16,9 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
-use CsCannon\Tests\Displayable;
+use CsCannon\Displayable;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -27,6 +28,12 @@ class BlockchainEvent extends Entity implements Displayable
    protected $name ;
     protected static $isa ;
     protected static $file ;
+    public $displayManager ;
+
+    const DISPLAY_TXID = 'txId';
+    const DISPLAY_SOURCE_ADDRESS = 'source';
+    const DISPLAY_DESTINATION_ADDRESS = 'destination';
+    const DISPLAY_CONTRACT = 'contract';
 
 
 
@@ -118,17 +125,22 @@ class BlockchainEvent extends Entity implements Displayable
     }
 
 
+    public function returnArray($displayManager)
+    {
+        $return[self::DISPLAY_TXID] = $this->get(Blockchain::$txidConceptName);
+        $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
+        $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
+        $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
 
+        return $return ;
+    }
 
+    public function display(): DisplayManager
+    {
+        if (!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
 
-
-
-
-
-
-
-
-
-
-
+        return $this->displayManager ;
+    }
 }

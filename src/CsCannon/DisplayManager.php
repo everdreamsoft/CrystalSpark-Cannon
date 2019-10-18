@@ -9,13 +9,17 @@
 namespace CsCannon;
 
 
-use CsCannon\Tests\Displayable;
+use CsCannon\Blockchains\BlockchainEventFactory;
+use CsCannon\Displayable;
 
 class DisplayManager
 {
 
     public $displayable ;
     public $outputFormat = 'json';
+    public $returnData = array();
+    public $dataStore = array();
+
 
     public function __construct(Displayable $displayable)
     {
@@ -25,22 +29,50 @@ class DisplayManager
 
     }
 
-    public  function html(){
+    public  function html():self{
 
 
 
         $this->outputFormat = 'html' ;
+        return $this ;
 
     }
 
-    public  function json(){
+    public  function buildHeaders(){
+
+
+
+
+
+    }
+
+
+    public  function json():self{
 
         $this->outputFormat = 'json' ;
+        return $this ;
 
 
     }
 
-    public  function return(){
+    public  function pushData(array $data){
+
+        $this->returnData =$this->returnData + $data;
+        return $this ;
+
+
+    }
+
+
+
+
+    public  function return() {
+
+        $this->returnData = $this->displayable->returnArray($this);
+
+
+
+        return $this->returnData ;
 
 
 

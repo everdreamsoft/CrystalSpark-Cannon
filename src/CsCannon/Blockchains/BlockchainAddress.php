@@ -16,13 +16,15 @@ use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\Balance;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
+use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
+use CsCannon\Displayable;
 use CsCannon\Token;
 use SandraCore\Entity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
-abstract class  BlockchainAddress extends Entity
+abstract class  BlockchainAddress extends Entity implements Displayable
 {
 
    protected $address ;
@@ -31,6 +33,8 @@ abstract class  BlockchainAddress extends Entity
     public $dataSource ;
 
     abstract public function getDefaultDataSource():BlockchainDataSource;
+
+
 
      public function getBalance():Balance{
 
@@ -56,6 +60,8 @@ abstract class  BlockchainAddress extends Entity
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+
+        $this->address = $this->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
 
         $this->balance = new Balance();
 
@@ -110,6 +116,22 @@ abstract class  BlockchainAddress extends Entity
         $this->dataSource = $dataSource ;
 
         return $this ;
+    }
+
+    public function returnArray($displayManager)
+    {
+
+
+        return $this->getAddress() ;
+    }
+
+    public function display(): DisplayManager
+    {
+        if (!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
+
+        return $this->displayManager ;
     }
 
 

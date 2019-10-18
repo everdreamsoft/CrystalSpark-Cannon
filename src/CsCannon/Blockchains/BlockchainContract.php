@@ -15,14 +15,19 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\Asset;
 use CsCannon\AssetCollection;
+use CsCannon\Displayable;
+use CsCannon\DisplayManager;
 use SandraCore\Entity;
 use SandraCore\System;
 
-abstract class  BlockchainContract extends Entity
+abstract class  BlockchainContract extends Entity Implements Displayable
 {
 
     abstract  function getBlockchain():Blockchain;
     public $id ;
+    public $displayManager ;
+
+    const DISPLAY_ID = 'contract';
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system){
 
@@ -83,6 +88,44 @@ abstract class  BlockchainContract extends Entity
         return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
 
 
+    }
+
+    public function returnArray($displayManager)
+    {
+        $return = $this->getId();
+
+
+        //In case we specified a specifier for the contract like tokenId = 1
+        if ($displayManager->dataStore['specifier']){
+
+            $return = array();
+
+            $token = $displayManager->dataStore['specifier'];
+
+            /** @var BlockchainContractStandard $token */
+
+            $return['address'] = $this->getId();
+            $return['standard'] = $token->getStandardName() ;
+
+            $return['token'] = $token->specificatorData ;
+
+        }
+
+
+
+
+        return $return ;
+    }
+
+    public function display($specifier = null): DisplayManager
+    {
+        if (!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
+
+        $this->displayManager->dataStore['specifier'] = $specifier;
+
+        return $this->displayManager ;
     }
 
 
