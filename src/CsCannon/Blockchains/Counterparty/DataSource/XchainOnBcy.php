@@ -126,7 +126,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         $cpContracts->populateLocal();
 
         $balance = new Balance();
-        $conterpartyAsset = new CounterpartyAsset();
+        $conterpartyAsset = CounterpartyAsset::init();
 
         foreach ($foreignAdapter->entityArray as $entity) {
 

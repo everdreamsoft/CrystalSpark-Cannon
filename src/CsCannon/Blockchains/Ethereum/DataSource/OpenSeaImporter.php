@@ -217,9 +217,9 @@ class OpenSeaImporter extends BlockchainDataSource
             $contractAddress = $entity->get('contract.address');
             $standard = $entity->get('contract.schema_name');
             //die("standard $standard");
-            $contractStandard = new UnknownStandard();
+            $contractStandard =  UnknownStandard::init();
 
-            if ($standard == "ERC721") $contractStandard = new ERC721();
+            if ($standard == "ERC721") $contractStandard =  ERC721::init();
 
 
             //on opensea one contract = 1 collection
@@ -260,7 +260,7 @@ class OpenSeaImporter extends BlockchainDataSource
             $contractFactory->populateLocal();
             $ethContract = $contractFactory->get($contractAddress);
 
-            $standard = new ERC721();
+            $standard =  ERC721::init();
 
             $standard->setTokenId($entity->get('token_id'));
             $balance->addContractToken($ethContract,$standard,1);

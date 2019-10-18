@@ -31,11 +31,11 @@ final class EventTest extends TestCase
         $addressEntity = $addressFactory->get($testAddress);
 
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
-        $contract = $contractFactory->get($testContract,true);
+        $contract = $contractFactory->get($testContract,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
         $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain());
         $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
 
-        $Erc721 = new \CsCannon\Blockchains\Ethereum\Interfaces\ERC721();
+        $Erc721 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
         $Erc721->setTokenId('1');
 
         $eventFactory = new \CsCannon\Blockchains\Ethereum\EthereumEventFactory();
@@ -66,11 +66,22 @@ final class EventTest extends TestCase
         foreach ($eventList ? $eventList : array() as $event){
             /** @var \CsCannon\Blockchains\BlockchainEvent $event */
 
-            $event->getSpecifier();
+           $specifier = $event->getSpecifier();
+           $eventContract = $event->getBlockchainContract();
+
+           $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainEvent::class,$event);
+           $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainAddress::class,$event->getSourceAddress());
+           $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainAddress::class,$event->getDestinationAddress());
+
+            \CsCannon\Tests\TestManager::registerDataStructure();
+
+
 
 
 
         }
+
+
 
 
 

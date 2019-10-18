@@ -87,7 +87,7 @@ final class AddressTest extends TestCase
         $blockchain = $theFirstContract->getBlockchain();
 
         //Do we have a correct quantity for a contract token ?
-        $counterpartyContractStandard =new \CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset(); //XCP has one standard
+        $counterpartyContractStandard = \CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset::init(); //XCP has one standard
         $counterpartyContractStandard->getDisplayStructure();
 
         $theToken = $balanceObject->contracts[$blockchain::NAME][\CsCannon\Tests\TestManager::XCP_TOKEN_AVAIL];

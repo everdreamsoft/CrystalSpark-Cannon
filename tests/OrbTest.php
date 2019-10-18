@@ -146,7 +146,7 @@ final class OrbTest extends TestCase
 
 
 
-
+        $this->assertEquals(1,1);
         //$this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
 
         \CsCannon\Tests\TestManager::registerDataStructure();

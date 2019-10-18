@@ -7,6 +7,7 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 use CsCannon\Orb;
+use SandraCore\System;
 
 /**
  * Created by EverdreamSoft.
@@ -20,9 +21,11 @@ class ERC20 extends EthereumContractStandard
 
     public $specificatorArray = null ;
 
-    public function __construct()
+    public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
     {
         $this->solver = LocalSolver::class ;
+
+        parent::__construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget, $system);
 
     }
 

@@ -30,7 +30,7 @@ class XcpContractFactory extends BlockchainContractFactory
     {
 
         //for counterparty we force counterparty contract standard
-        $contractStandard = new CounterpartyAsset();
+        $contractStandard = CounterpartyAsset::init();
 
         return parent::get($identifier,$autoCreate, $contractStandard);
 

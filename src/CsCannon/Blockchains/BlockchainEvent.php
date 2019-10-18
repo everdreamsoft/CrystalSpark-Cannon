@@ -44,27 +44,28 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-     public function getSourceAddress(){
+     public function getSourceAddress():?BlockchainAddress{
 
         $source= $this->getJoinedEntities(BlockchainEventFactory::EVENT_SOURCE_ADDRESS);
-         if (is_null($source)) return 'null';
+         if (is_null($source)) return null;
         $source = reset($source); //take the first source
-        /** @var Entity $source */
-        $address = $source->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
+        /** @var BlockchainAddress $source */
+         return $source;
 
-         return $address;
+
+
 
      }
 
     public function getDestinationAddress(){
 
         $destination= $this->getJoinedEntities(BlockchainEventFactory::EVENT_DESTINATION_VERB);
-        if (is_null($destination)) return 'null';
+        if (is_null($destination)) return null;
         $destination = reset($destination); //take the first destination
-        /** @var Entity $source */
-        $address = $destination->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
+        /** @var BlockchainAddress $source */
 
-        return $address;
+
+        return $destination;
 
     }
 
@@ -97,7 +98,7 @@ class BlockchainEvent extends Entity implements Displayable
 
         if (isset($firstStandard)){
             /** @var BlockchainContractStandard $instance */
-            $instance = new $firstStandard();
+            $instance = $firstStandard::init();
             $instance->specificatorData = $tokenData ;
             return  $instance ;
 

@@ -8,6 +8,7 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 use CsCannon\Orb;
+use SandraCore\System;
 
 /**
  * Created by EverdreamSoft.
@@ -21,9 +22,11 @@ class CounterpartyAsset extends BlockchainContractStandard
     public $tokenId = null ;
     public $specificatorArray = ['tokenId'];
 
-    public function __construct()
+    public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
     {
         $this->solver = BooSolver::class ;
+
+        parent::__construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget, $system);
 
 
 

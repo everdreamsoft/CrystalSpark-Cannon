@@ -89,7 +89,7 @@ final class EthAddressTest extends TestCase
         $blockchain = $theFirstContract->getBlockchain();
 
         //Do we have a correct quantity for a contract token ?
-        $contractSandard =new \CsCannon\Blockchains\Ethereum\Interfaces\ERC721();
+        $contractSandard = \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
         $contractSandard->tokenId = \CsCannon\Tests\TestManager::ETHEREUM_TOKEN_ID ;
         $contractSandard->getDisplayStructure();
 

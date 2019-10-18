@@ -3,9 +3,11 @@
 namespace CsCannon\Blockchains;
 
 use CsCannon\AssetCollectionFactory;
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
+use CsCannon\BlockchainStandardFactory;
 use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
@@ -40,13 +42,17 @@ public  const CONTRACT_STANDARD = 'contractStandard';
 
         $return = parent::populateLocal($limit, $offset, $asc);
 
+        $standardFactory = new BlockchainStandardFactory(SandraManager::getSandra());
         $collectionFactory = AssetCollectionFactory::getStaticCollection();
 
         $this->populateBrotherEntities(self::CONTRACT_STANDARD);
 
 
         $this->joinFactory(static::JOIN_COLLECTION,$collectionFactory);
+        $this->joinFactory(self::CONTRACT_STANDARD,$standardFactory);
         $this->joinPopulate();
+
+        return $return ;
 
 
     }
@@ -62,12 +68,16 @@ public  const CONTRACT_STANDARD = 'contractStandard';
         $identifierName = self::MAIN_IDENTIFIER;
         $entity = $this->first($identifierName,$identifier);
 
-        $contStandardClass = UnknownStandard::class;
 
-        if (is_null(!$contractStandard)){
 
-            $contStandardClass = get_class($contractStandard) ;
+        if ($contractStandard == null){
+
+            $contractStandard = UnknownStandard::init();
         }
+
+        $contractStandardEnt = $contractStandard::getEntity();
+
+
 
 
         $foreignAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
@@ -89,9 +99,11 @@ public  const CONTRACT_STANDARD = 'contractStandard';
 
             }
 
-            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier,self::CONTRACT_STANDARD => $contStandardClass),
-                [self::CONTRACT_STANDARD => $contStandardClass]
+            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier,"crazyMe"),
+                [self::CONTRACT_STANDARD => $contractStandardEnt]
                 );
+
+
 
             //dd($entity);
 
