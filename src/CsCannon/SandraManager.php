@@ -22,7 +22,7 @@ class SandraManager
 
 
 
-            $sandra = new System('romeo',true);
+            $sandra = new System('',true);
         return $sandra ;
 
     }

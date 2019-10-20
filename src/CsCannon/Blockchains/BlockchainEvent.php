@@ -94,9 +94,9 @@ class BlockchainEvent extends Entity implements Displayable
 
     public function getSpecifier(){
 
-        $tokenData = $this->getBrotherReference(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
-        if(!is_array($tokenData)) { return null ;}
-        ;
+        $tokenData = $this->getBrotherRefwerence(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
+        //if(!is_array($tokenData)) { return null ;}
+        //;
 
         $contract = $this->getBlockchainContract();
         $standards = $contract->getStandard();
