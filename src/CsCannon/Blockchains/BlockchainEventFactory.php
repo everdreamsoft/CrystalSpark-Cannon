@@ -232,6 +232,7 @@ use SandraCore\System;
 
      public function returnArray($displayManager){
 
+         $output = array();
 
          foreach ($this->entityArray ? $this->entityArray : array() as $eventEntity){
 
