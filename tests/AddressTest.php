@@ -70,7 +70,7 @@ final class AddressTest extends TestCase
         $addressEntity = $addressFactory->get($testAddress);
 
 
-        $balanceObject = $addressEntity->getBalance();
+        $balanceObject = $addressEntity->getBalance($addressEntity);
 
         $this->assertInstanceOf(\CsCannon\Balance::class,
             $balanceObject,"Get Balance not returning an object balance");
@@ -93,6 +93,19 @@ final class AddressTest extends TestCase
         $theToken = $balanceObject->contracts[$blockchain::NAME][\CsCannon\Tests\TestManager::XCP_TOKEN_AVAIL];
         $this->assertEquals($theToken[$counterpartyContractStandard->getDisplayStructure()]['quantity'],2
             ,"Balance doens't return counterparty contracts");
+
+
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain());
+        $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
+
+        $balanceObject->saveToDatagraph($currentBlock);
+
+        $newBalance = $balanceObject->loadFromDatagraph();
+
+        $this->assertInstanceOf(\CsCannon\Balance::class,
+            $balanceObject,"Get Balance not returning an object balance");
+
+
 
     }
 

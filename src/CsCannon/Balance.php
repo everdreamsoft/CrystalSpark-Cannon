@@ -9,11 +9,16 @@
 namespace CsCannon;
 
 
+use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
+use SandraCore\EntityFactory;
 
 class Balance
 {
@@ -24,11 +29,18 @@ class Balance
     public $orbFactory ;
     private $orbBuilt = false ;
     public $display ;
+    public $address ;
 
-    public function __construct()
+    const LINKED_ADDRESS = 'belongsToAddress';
+    const ON_CONTRACT = 'onContract';
+    const LAST_BLOCK_UPDATE = 'lastBlockUpdate';
+    const BALANCE_ITEM_ID = 'id';
+
+
+    public function __construct(BlockchainAddress $addressEntity = null)
     {
 
-       // $this->display = new DisplayManager($this);
+       $this->address = $addressEntity ;
 
     }
 
@@ -239,6 +251,135 @@ public function getContractMap(){
         return $this->contractMap ;
 
 }
+
+    public function getLocalFactory():EntityFactory{
+
+
+
+        $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
+        $factory->setFilter(self::LINKED_ADDRESS,$this->address);
+
+
+
+        return $factory ;
+
+
+    }
+
+    public function loadFromDatagraph(){
+
+
+
+        $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
+        $factory->setFilter(self::LINKED_ADDRESS,$this->address);
+
+        $factory->populateLocal();
+
+        $contractFactory = $this->address->getBlockchain()->getContractFactory();
+        $factory->joinFactory(self::ON_CONTRACT,$contractFactory);
+        $factory->joinPopulate();
+
+        $balanceEntities = $factory->getEntities();
+
+        foreach ($balanceEntities ? $balanceEntities : array() as $balanceEntity){
+
+            /** @var BlockchainContract $contract */
+            $contract = $balanceEntity->getJoinedEntities(self::ON_CONTRACT);
+            $contract = reset($contract);
+            $quantity =$balanceEntity->get('quantity');
+            $token = $contract->getStandard();
+            $token->setTokenPath($balanceEntity->entityRefs);
+
+
+
+
+            $this->addContractToken($contract,$token,$quantity);
+
+
+
+        }
+
+
+
+        return $factory ;
+
+
+    }
+
+    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate){
+
+
+
+      $factory = $this->getLocalFactory();
+
+        $factory->populateLocal(100000); //we might have issue if a user has more contract balance than this num
+
+        foreach($this->contracts ? $this->contracts : array() as $chain){
+
+
+            foreach($chain ? $chain : array() as $contractId =>$contracts){
+
+                $newContract = null ;
+                $newContract['contract'] = $contractId ;
+
+
+                foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
+
+                    $triplets = [self::LINKED_ADDRESS=>$this->address,
+                        self::ON_CONTRACT=>$this->contractMap[$contractId],
+                        self::LAST_BLOCK_UPDATE=>$lastBlockUpdate
+                        ];
+
+
+
+                    //get the token object
+                    $tokenObject = $token['token'] ;
+
+                    /** @var BlockchainContractStandard $tokenObject */
+
+                    $newToken =  $tokenObject->specificatorData;
+                    $newToken['quantity'] = $token['quantity'];
+                    $newToken[self::BALANCE_ITEM_ID] = $this->balanceUniqueId($this->contractMap[$contractId],$tokenObject) ;
+
+                    //does the balance exists in the datagraph ?
+                    $existEntity = $factory->first(self::BALANCE_ITEM_ID,$this->balanceUniqueId($this->contractMap[$contractId],$tokenObject));
+                    if(!$existEntity){
+
+                        $existEntity = $factory->createNew($newToken,$triplets);
+                    }
+                    else{
+
+                        $factory->update($existEntity,$newToken);
+
+                        //TODO missing last block
+
+                    }
+
+
+
+
+
+
+                    $newContract['tokens'][] = $newToken ;
+
+                }
+                $output[] = $newContract ;
+            }
+
+        }
+
+
+
+        return $factory ;
+
+
+    }
+
+    public function balanceUniqueId(BlockchainContract $contract, BlockchainContractStandard $standard){
+
+        return $contract->getId().'-'.$standard->getDisplayStructure();
+
+    }
 
 
 

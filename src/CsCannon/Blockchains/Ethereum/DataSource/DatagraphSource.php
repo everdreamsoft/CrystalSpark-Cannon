@@ -21,7 +21,7 @@ use SandraCore\PdoConnexionWrapper;
  * Date: 06.06.19
  * Time: 09:53
  */
-class XchainOnBcy extends BlockchainDataSource
+class DatagraphSource extends BlockchainDataSource
 {
 
 
@@ -115,6 +115,8 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
 
+
+
         $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
 
         $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
@@ -125,7 +127,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         $cpContracts = new XcpContractFactory();
         $cpContracts->populateLocal();
 
-        $balance = new Balance($address);
+        $balance = new Balance();
         $conterpartyAsset = CounterpartyAsset::init();
 
         foreach ($foreignAdapter->entityArray as $entity) {
