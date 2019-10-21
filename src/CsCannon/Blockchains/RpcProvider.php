@@ -21,5 +21,6 @@ abstract class RpcProvider
     }
 
     public abstract function getHostUrl();
+    public abstract function getBlockchain();
 
 }
