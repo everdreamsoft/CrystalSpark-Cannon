@@ -20,6 +20,9 @@ class EthereumContractFactory extends BlockchainContractFactory
 {
 
     public static $isa = 'ethContract';
+    const ABI_VERB = 'has';
+    const ABI_TARGET = 'abi';
+
 
     protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumContract' ;
 
