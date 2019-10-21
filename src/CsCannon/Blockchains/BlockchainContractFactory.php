@@ -99,7 +99,7 @@ public  const CONTRACT_STANDARD = 'contractStandard';
 
             }
 
-            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier,"crazyMe"),
+            $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier),
                 [self::CONTRACT_STANDARD => $contractStandardEnt]
                 );
 
