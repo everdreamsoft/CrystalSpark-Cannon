@@ -155,45 +155,7 @@ use SandraCore\System;
          return parent::createNew($dataArray, $triplets);
      }
 
-   public function legacyToDelete($dataArray, $linArray = null)
-   {
 
-       /* legacy */
-
-
-      if( !$this->localVerifyIntegrity($dataArray, $linArray)) return null ;
-
-
-        $blockchain = $linArray['blockchain'] ;
-        /** @var Blockchain $blockchain */
-
-
-
-      //address
-       $addressFactory = BlockchainRouting::getAddressFactory($linArray[BlockchainEventFactory::EVENT_SOURCE_ADDRESS]);
-       $contractFactory = $blockchain->getContractFactory();
-
-       $tokenId = $dataArray['tokenId'];
-
-       /** @var BlockchainAddressFactory $addressFactory */
-
-       $address = $addressFactory->get($linArray[BlockchainEventFactory::EVENT_SOURCE_ADDRESS],true);
-       $addressDestination = $addressFactory->get($linArray[BlockchainEventFactory::EVENT_DESTINATION_VERB],true);
-       if (is_null($contractFactory)) {
-         return ;
-       }
-
-
-       /** @var BlockchainContractFactory $contractFactory */
-       $contract = $contractFactory->get($linArray[BlockchainEventFactory::EVENT_CONTRACT], true);
-       $triplets[self::EVENT_SOURCE_ADDRESS] = $address ;
-       $triplets[self::EVENT_DESTINATION_VERB] = $addressDestination ;
-       $triplets[self::EVENT_CONTRACT] = array($contract->subjectConcept->idConcept=>array(BlockchainContractFactory::TOKENID=>$tokenId));
-       $triplets[self::ON_BLOCKCHAIN_EVENT] = $dataArray[Blockchain::$blockchainConceptName];
-
-
-       return parent::createNew($dataArray, $triplets);
-   }
 
     public function localVerifyIntegrity($dataArray,$linkArray)
     {

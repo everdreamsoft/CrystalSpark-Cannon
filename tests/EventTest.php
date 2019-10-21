@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 final class EventTest extends TestCase
 {
 
+    const FIRSTTX = "FooTX1";
+    const ERC20_QUANTITY = "200";
+
     public function testSaveEvent()
     {
 
@@ -50,29 +53,19 @@ final class EventTest extends TestCase
             $addressEntity,
             $addressEntity,
             $contract,
-            'fooTX',
+            self::FIRSTTX,
             "123343555",
             $currentBlock,
-                            $tokenId = $Erc721,
-                            $quantity = 1
+                            $tokenId = $Erc721
+
 
         );
-
-        $event = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
-            $addressEntity,
-            $addressEntity,
-            $contract,
-            'BARTX',
-            "123343555",
-            $currentBlock,
-            $tokenId = $Erc721,
-            $quantity = 999
-
-        );
-
-
 
         $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainEvent::class,$event);
+
+
+
+
 
         $event2 = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
             $addressEntity,
@@ -82,7 +75,7 @@ final class EventTest extends TestCase
             "123343555",
             $currentBlock,
             $tokenId = $erc20,
-            $quantity = 100
+            $quantity = self::ERC20_QUANTITY
 
         );
 
@@ -112,18 +105,14 @@ final class EventTest extends TestCase
            // \CsCannon\Tests\TestManager::registerDataStructure();
 
 
-
-
-
-
-
         }
 
-        $output[] = $eventFactory->display()->html()->return();
+        $output = $eventFactory->display()->html()->return();
 
-        print_r($output);
 
-        $this->assertEquals(1,1);
+
+        $this->assertEquals(self::FIRSTTX,$output[0][\CsCannon\Blockchains\BlockchainEvent::DISPLAY_TXID]);
+        $this->assertEquals(self::ERC20_QUANTITY,$output[1][\CsCannon\Blockchains\BlockchainEvent::DISPLAY_QUANTITY]);
 
 
 

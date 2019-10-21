@@ -44,7 +44,18 @@ class ERC721 extends EthereumContractStandard
     //ovveride the method to catch tokenId
     public function setTokenPath($tokenPath){
 
-        $this->tokenId = $tokenPath['tokenId'];
+       $tokenIdUnid = $this->system->systemConcept->get('tokenId');
+
+        //we check if we got a raw value or a reference
+
+        if (isset ($tokenPath[$tokenIdUnid])){
+            $this->tokenId = $tokenPath[$tokenIdUnid];
+        }
+
+        if (isset ($tokenPath['tokenId'])){
+            $this->tokenId = $tokenPath['tokenId'];
+        }
+
 
        parent::setTokenPath($tokenPath);
 

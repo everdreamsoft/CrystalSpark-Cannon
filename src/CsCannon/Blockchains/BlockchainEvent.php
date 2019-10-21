@@ -34,6 +34,7 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_SOURCE_ADDRESS = 'source';
     const DISPLAY_DESTINATION_ADDRESS = 'destination';
     const DISPLAY_CONTRACT = 'contract';
+    const DISPLAY_QUANTITY = 'quantity';
 
 
 
@@ -94,9 +95,20 @@ class BlockchainEvent extends Entity implements Displayable
 
     public function getSpecifier(){
 
-        $tokenData = $this->getBrotherRefwerence(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
+        //$tokenData = $this->getBrotherRefwerence(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
         //if(!is_array($tokenData)) { return null ;}
         //;
+        $tokenData = null ;
+
+        $brotherEntArray = $this->getBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT);
+
+
+        if (!is_null($brotherEntArray)) {
+            $tokenDataEntity  = end($brotherEntArray);
+            $tokenData = $tokenDataEntity->entityRefs;
+
+        }
+
 
         $contract = $this->getBlockchainContract();
         $standards = $contract->getStandard();
@@ -106,7 +118,7 @@ class BlockchainEvent extends Entity implements Displayable
         if (isset($firstStandard)){
             /** @var BlockchainContractStandard $instance */
             $instance = $firstStandard::init();
-            $instance->specificatorData = $tokenData ;
+            $instance->setTokenPath($tokenData);
             return  $instance ;
 
         }
@@ -131,6 +143,7 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
+        $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
 
         return $return ;
     }

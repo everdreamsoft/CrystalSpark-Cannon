@@ -15,6 +15,7 @@ use CsCannon\MetadataSolverFactory;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
 use SandraCore\Entity;
+use SandraCore\Reference;
 
 abstract class BlockchainContractStandard extends Entity
 {
@@ -34,16 +35,30 @@ abstract class BlockchainContractStandard extends Entity
 
         try {
 
-            foreach ($this->specificatorArray as $key => $value) {
+            foreach ($this->specificatorArray ? $this->specificatorArray :array() as $key => $value) {
 
-                if( !isset($tokenPath[$value])) {
+
+
+                $pathItemUnid = $this->system->systemConcept->get($value);
+
+
+
+                if( !isset($tokenPath[$value]) and !isset($tokenPath[$pathItemUnid])) {
                     throw new \Exception("" .$this->getStandardName() ." token require $value for contract");
 
 
 
                 }
 
-                $this->specificatorData[$value] = $tokenPath[$value] ;
+                if (isset($tokenPath[$pathItemUnid])) $pathValue = $tokenPath[$pathItemUnid] ;
+                if (isset($tokenPath[$value])) $pathValue = $tokenPath[$value] ;
+
+                if ($pathValue instanceof Reference){
+                    $pathValue = $pathValue->refValue;
+                }
+
+
+                $this->specificatorData[$value] = $pathValue ;
 
             }
         }
