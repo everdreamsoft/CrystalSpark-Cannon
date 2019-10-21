@@ -9,6 +9,7 @@
 namespace CsCannon\Blockchains\Klaytn;
 
 
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\RpcProvider;
@@ -23,7 +24,7 @@ class OfficialProvider extends RpcProvider
         return self::HOST_URL;
     }
 
-    public function getBlockchain()
+    public function getBlockchain():Blockchain
     {
         return new EthereumBlockchain();
     }

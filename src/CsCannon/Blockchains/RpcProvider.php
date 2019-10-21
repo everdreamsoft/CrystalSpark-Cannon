@@ -12,15 +12,18 @@ namespace CsCannon\Blockchains;
 abstract class RpcProvider
 {
 
+    public $apiKey;
+
 
 
     public function __construct($apiKey = null)
     {
+        $this->apiKey = $apiKey;
 
 
     }
 
     public abstract function getHostUrl();
-    public abstract function getBlockchain();
+    public abstract function getBlockchain():Blockchain;
 
 }
