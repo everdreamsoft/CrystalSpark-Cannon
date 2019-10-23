@@ -301,7 +301,7 @@ public function getContractMap(){
 
 
 
-        return $factory ;
+        return $this ;
 
 
     }

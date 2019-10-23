@@ -20,7 +20,7 @@ class CounterpartyAsset extends BlockchainContractStandard
 {
 
     public $tokenId = null ;
-    public $specificatorArray = ['tokenId'];
+    public $specificatorArray = [];
 
     public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
     {
@@ -46,7 +46,7 @@ class CounterpartyAsset extends BlockchainContractStandard
     //ovveride the method to catch tokenId
     public function setTokenPath($tokenPath){
 
-        $this->tokenId = $tokenPath['tokenId'];
+
 
        parent::setTokenPath($tokenPath);
 

@@ -103,7 +103,7 @@ final class AddressTest extends TestCase
         $newBalance = $balanceObject->loadFromDatagraph();
 
         $this->assertInstanceOf(\CsCannon\Balance::class,
-            $balanceObject,"Get Balance not returning an object balance");
+            $newBalance,"Get Balance not returning an object balance");
 
 
 
