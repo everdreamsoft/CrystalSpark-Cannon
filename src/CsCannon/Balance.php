@@ -115,10 +115,10 @@ class Balance
         $orbFactory = new OrbFactory();
 
         //for each blockchain
-        foreach($this->contracts as $chain){
+        foreach($this->contracts ? $this->contracts :array() as $chain){
 
             //for each contract
-            foreach($chain as $contractId =>$contracts){
+            foreach($chain ? $chain :array() as $contractId =>$contracts){
 
                 $newContract = null ;
                 $newContract['contract'] = $contractId ;

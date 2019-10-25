@@ -37,7 +37,7 @@ class ERC20 extends EthereumContractStandard
     //ovveride the method to catch tokenId
     public function setTokenPath($tokenPath){
 
-        $this->tokenId = $tokenPath['tokenId'];
+
 
        parent::setTokenPath($tokenPath);
 

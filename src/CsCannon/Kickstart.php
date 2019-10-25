@@ -8,6 +8,10 @@
 
 namespace CsCannon;
 
+use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
+use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
 use SandraCore\System;
 
 class Kickstart
@@ -17,13 +21,21 @@ class Kickstart
 
         $sandra = SandraManager::getSandra();
 
-        $ethContractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $ethContractFactory = new EthereumContractFactory();
         $ethContractFactory->populateLocal();
         $ethContractFactory->createViewTable("EthereumContracts");
 
-        $factory = new \CsCannon\Blockchains\Ethereum\EthereumAddressFactory();
+        $factory = new EthereumAddressFactory();
         $factory->populateLocal();
         $factory->createViewTable("EthereumAddress");
+
+        $ethContractFactory = new KlaytnContractFactory();
+        $ethContractFactory->populateLocal();
+        $ethContractFactory->createViewTable("KlatnContracts");
+
+        $factory = new KlaytnAddressFactory();
+        $factory->populateLocal();
+        $factory->createViewTable("KlaytnAddress");
 
         $factory = new \CsCannon\AssetCollectionFactory($sandra);
         $factory->populateLocal();
