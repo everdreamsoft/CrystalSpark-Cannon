@@ -17,6 +17,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\Ethereum\KlaytnContractFactory;
 use SandraCore\ForeignEntityAdapter;
 
 class KlaytnContract extends BlockchainContract

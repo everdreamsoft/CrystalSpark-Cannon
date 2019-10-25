@@ -11,6 +11,7 @@ namespace CsCannon\Blockchains\Klaytn;
 
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\Ethereum\KlaytnContractFactory;
 
 
 class KlaytnBlockchain extends Blockchain

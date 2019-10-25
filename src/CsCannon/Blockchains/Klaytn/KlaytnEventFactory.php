@@ -15,7 +15,7 @@ namespace CsCannon\Blockchains\Klaytn;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Ethereum\EthereumEvent;
-use CsCannon\Blockchains\Ethereum\KlaytnAddressFactory;
+use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
 use CsCannon\Blockchains\Ethereum\KlaytnContractFactory;
 
 class KlaytnEventFactory extends BlockchainEventFactory
@@ -61,12 +61,6 @@ class KlaytnEventFactory extends BlockchainEventFactory
 
         return $return ;
     }
-
-
-
-
-
-
 
 
 

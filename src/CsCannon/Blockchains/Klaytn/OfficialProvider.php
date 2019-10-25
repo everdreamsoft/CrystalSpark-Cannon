@@ -27,12 +27,9 @@ class OfficialProvider extends RpcProvider
         return self::HOST_URL;
     }
 
-    public function getBalance(BlockchainContract $contract, BlockchainAddress, $address, BlockchainContractStandard $standard)
-    {
+    public function getBalance(BlockchainContract $contract, BlockchainAddress $address, BlockchainContractStandard $standard){
 
         return 1 ;
-
-
 
     }
 
