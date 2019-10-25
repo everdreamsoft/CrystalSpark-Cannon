@@ -70,7 +70,7 @@ final class AddressTest extends TestCase
         $addressEntity = $addressFactory->get($testAddress);
 
 
-        $balanceObject = $addressEntity->getBalance($addressEntity);
+        $balanceObject = $addressEntity->getBalance();
 
         $this->assertInstanceOf(\CsCannon\Balance::class,
             $balanceObject,"Get Balance not returning an object balance");

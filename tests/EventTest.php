@@ -39,17 +39,17 @@ final class EventTest extends TestCase
         $addressFactoryControl = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressEntity = $addressFactory->get($testAddress,1);
 
-        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contractFactory = new \CsCannon\Blockchains\Klaytn\KlaytnContractFactory();
         $contract = $contractFactory->get($testContract,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
-        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain());
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain());
         $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
 
         $Erc721 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
         $erc20 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init();
         $Erc721->setTokenId('111');
 
-        $eventFactory = new \CsCannon\Blockchains\Ethereum\EthereumEventFactory();
-        $event = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
+        $eventFactory = new \CsCannon\Blockchains\Klaytn\KlaytnEventFactory();
+        $event = $eventFactory->create(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain(),
             $addressEntity,
             $addressEntity,
             $contract,
@@ -67,7 +67,7 @@ final class EventTest extends TestCase
 
 
 
-        $event2 = $eventFactory->create(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain(),
+        $event2 = $eventFactory->create(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain(),
             $addressEntity,
             $addressEntity,
             $contractFactory->get('anotherFooContract',true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init()),
@@ -88,7 +88,7 @@ final class EventTest extends TestCase
     public function testGetEvent()
     {
 
-        $eventFactory = new \CsCannon\Blockchains\Ethereum\EthereumEventFactory();
+        $eventFactory = new \CsCannon\Blockchains\Klaytn\KlaytnEventFactory();
         $eventFactory->populateLocal();
         $eventList = $eventFactory->getEntities();
 

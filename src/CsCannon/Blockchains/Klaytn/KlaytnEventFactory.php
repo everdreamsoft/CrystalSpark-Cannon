@@ -16,7 +16,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Ethereum\EthereumEvent;
 use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
-use CsCannon\Blockchains\Ethereum\KlaytnContractFactory;
+use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
 
 class KlaytnEventFactory extends BlockchainEventFactory
 {
