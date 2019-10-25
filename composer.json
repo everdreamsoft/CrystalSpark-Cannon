@@ -11,8 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "everdreamsoft/sandra": "dev-master",
-        "symfony/process": "^5.0@dev"
+        "everdreamsoft/sandra": "dev-master"
     },
 
     "autoload": {

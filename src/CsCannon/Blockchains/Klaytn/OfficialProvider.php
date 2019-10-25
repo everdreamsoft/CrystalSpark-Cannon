@@ -35,16 +35,7 @@ class OfficialProvider extends RpcProvider
 
 
         $cmd = "node public/caver/index.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()."";
-        $process = new Process($cmd);
-        try {
-            $process->mustRun();
-            $response = $process->getOutput();
-        } catch (ProcessFailedException $e) {
-            $response = $e->getMessage();
-        }
-
-        //echo PHP_EOL;
-        echo $response;
+        return  exec($cmd);
 
     }
 
