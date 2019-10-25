@@ -17,7 +17,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContract;
-use CsCannon\Blockchains\Ethereum\KlaytnContractFactory;
+use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
 use SandraCore\ForeignEntityAdapter;
 
 class KlaytnContract extends BlockchainContract
@@ -25,7 +25,7 @@ class KlaytnContract extends BlockchainContract
 
     protected static $isa = 'klaytnContract';
 
-    protected static  $className = 'CsCannon\Blockchains\Ethereum\KlaytnContract' ;
+    protected static  $className = 'CsCannon\Blockchains\Klaytn\KlaytnContract' ;
 
 
 

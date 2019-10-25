@@ -6,7 +6,7 @@
  * Time: 12:24
  */
 
-namespace CsCannon\Blockchains\Ethereum;
+namespace CsCannon\Blockchains\Klaytn;
 
 
 
