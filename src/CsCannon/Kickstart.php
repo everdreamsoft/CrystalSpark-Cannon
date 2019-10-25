@@ -8,6 +8,7 @@
 
 namespace CsCannon;
 
+use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
@@ -36,6 +37,10 @@ class Kickstart
         $factory = new KlaytnAddressFactory();
         $factory->populateLocal();
         $factory->createViewTable("KlaytnAddress");
+
+        $factory = new BlockchainEventFactory();
+        $factory->populateLocal();
+        $factory->createViewTable("Events");
 
         $factory = new \CsCannon\AssetCollectionFactory($sandra);
         $factory->populateLocal();
