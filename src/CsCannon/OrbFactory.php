@@ -67,11 +67,10 @@ class OrbFactory
         //in order to know find relevant asset we need to get the collection list
 
 
-            $orb = new Orb($contract,$specifier,$collection);
-            self::mapOrb($orb,$this);
+          $orbs =  $this->getOrbsFromContractPath($contract,$specifier);
 
 
-        return $orb ;
+        return $orbs ;
 
 
 
