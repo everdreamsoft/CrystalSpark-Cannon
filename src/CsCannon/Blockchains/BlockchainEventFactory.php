@@ -36,7 +36,8 @@ use SandraCore\System;
      const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
          const EVENT_QUANTITY = 'quantity' ;
          const EVENT_BLOCK = 'onBlock';
-         const EVENT_BLOCK_TIME = 'blocktime';
+        // const EVENT_BLOCK_TIME = 'blocktime';
+         const EVENT_BLOCK_TIME = 'timestamp';
     public static $messagePool = array();
 
 
@@ -65,7 +66,7 @@ use SandraCore\System;
     public function getRequired(){
 
          $this->requirementAbstractArray = array(Blockchain::$blockchainConceptName,
-             'timestamp',
+             self::EVENT_BLOCK_TIME,
              Blockchain::$txidConceptName,
 
           );
@@ -126,7 +127,7 @@ use SandraCore\System;
 
          $dataArray[Blockchain::$txidConceptName] = $txid ;
          $dataArray[self::EVENT_QUANTITY] = $quantity ;
-         $dataArray['timestamp'] = $timestamp ;
+         $dataArray[self::EVENT_BLOCK_TIME] = $timestamp ;
 
 
 
@@ -270,7 +271,7 @@ use SandraCore\System;
              /** @var BlockchainContract $contract */
 
 
-             $timestamp = $eventEntity->get('timestamp');
+             $timestamp = $eventEntity->get(self::EVENT_BLOCK_TIME);
              $arrayKey = $timestamp.'.'.$eventEntity->get(Blockchain::$txidConceptName);
 
              $eventData['tokenId'] =  $eventEntity->getTokenId();
@@ -278,7 +279,7 @@ use SandraCore\System;
              $eventData['source'] =  $source ;
              $eventData['destination'] =   $eventEntity->getDestinationAddress();
              $eventData['quantity'] =   $eventEntity->get('quantity');
-             $eventData['timestamp'] =   $eventEntity->get('timestamp');
+             $eventData['timestamp'] =   $eventEntity->get(self::EVENT_BLOCK_TIME);
 
              $eventData['contract'] =   $contractAdress;
 
