@@ -44,7 +44,7 @@ class Orb
 
     public function getAsset(){
 
-        return $this->tokenSpecifier->resolveAsset($this);
+        return $this->asset ;
 
 
  }

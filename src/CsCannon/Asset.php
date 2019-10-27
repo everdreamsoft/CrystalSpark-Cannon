@@ -66,16 +66,33 @@ class Asset extends \SandraCore\Entity
     public function getContracts(){
 
 
+
+        $contracts = null ;
         $this->factory->getTriplets();
+        $entitiesArray = $this->getJoinedEntities(AssetFactory::$tokenJoinVerb);
+        //we keep only contract entities
+        foreach($entitiesArray ? $entitiesArray : array() as $entity){
+            if ($entity instanceof BlockchainContract) $contracts[] = $entity ;
+
+        }
+
         //$this->factory->populateBrotherEntities()
-        return $this->getJoinedEntities(AssetFactory::$tokenJoinVerb);
+        return $contracts;
 
     }
 
     public function getCollections(){
 
+        $collectionEntities = null ;
         $this->factory->getTriplets();
-        return $this->getJoinedEntities(AssetFactory::$collectionJoinVerb);
+        $entitiesArray = $this->getJoinedEntities(AssetFactory::$collectionJoinVerb);
+        //we keep only collections entities
+        foreach($entitiesArray ? $entitiesArray : array() as $entity){
+            if ($entity instanceof AssetCollection) $collectionEntities[] = $entity ;
+
+        }
+
+        return $collectionEntities;
 
     }
 

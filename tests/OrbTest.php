@@ -9,7 +9,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use CsCannon\Asset;
+use CsCannon\AssetSolvers\BooSolver;
 use CsCannon\AssetSolvers\LocalSolver;
+use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC20;
+use CsCannon\Orb;
+use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
 
 
@@ -29,13 +35,8 @@ final class OrbTest extends TestCase
 
         \CsCannon\Tests\TestManager::initTestDatagraph();
 
-
-        $testAddress = \CsCannon\Tests\TestManager::XCP_TEST_ADDRESS;
-
-        $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
-
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
-        $collection = $assetCollectionFactory->create(self::COLLECTION_CODE,null, \CsCannon\AssetSolvers\BooSolver::getEntity());
+        $collection = $assetCollectionFactory->create(self::COLLECTION_CODE,null, \CsCannon\AssetSolvers\LocalSolver::getEntity());
 
         /** @var \CsCannon\AssetCollection $collection */
 
@@ -44,14 +45,12 @@ final class OrbTest extends TestCase
         $collection->setName($collectionName);
         $collection->setImageUrl("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png");
         $collection->setDescription("My collection is fantastic");
+        $collection->setSolver(LocalSolver::getEntity());
 
         $this->assertInstanceOf(\CsCannon\AssetCollection::class,$collection,"Collection Factory
         Does not return valid collection object");
 
         $this->assertEquals($collectionName,$collection->name,"Collection name not pass");
-
-
-
 
         $assetCollectionControl = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
         $assetCollectionControl->populateLocal();
@@ -61,27 +60,11 @@ final class OrbTest extends TestCase
         $this->assertCount(1,$assetCollectionControl->entityArray,"Collection not saved");
         $this->assertEquals($collectionName,$collection->name,"Collection name not pass");
 
+        //$addressEntity = $addressFactory->get($testAddress);
+        //$balance = $addressEntity->getBalance();
 
-
-
-        //$assetCollectionFactory->create('myFirstCOllection',null);
-
-        //First we create an Asset
-
-        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
-
-
-
-        $addressEntity = $addressFactory->get($testAddress);
-        $balance = $addressEntity->getBalance();
-        $balance->getObs();
 
      //   \CsCannon\Tests\TestManager::registerDataStructure();
-
-
-
-
-
 
     }
 
@@ -95,6 +78,7 @@ final class OrbTest extends TestCase
         //create a contract
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
         $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true);
+        $contract->bindToCollection($collectionEntity);
 
 
        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
@@ -105,8 +89,8 @@ final class OrbTest extends TestCase
 
        $asset = $assetFactory->create('hello',$metaData, [$collectionEntity],[$contract]);
 
-        $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
 
+        $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
 
 
        $getJoinedContract = $asset->getContracts();
@@ -115,16 +99,25 @@ final class OrbTest extends TestCase
         foreach (($getJoinedContract ? $getJoinedContract : array()) as $contract)
         $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainContract::class,$contract,"Asset contract is not a contract");
 
-        foreach (($getJoinedCollection ? $getJoinedCollection : array()) as $contract)
-            $this->assertInstanceOf(\CsCannon\AssetCollection::class,$contract,"Asset collection is not a collection");
+        foreach (($getJoinedCollection ? $getJoinedCollection : array()) as $collection)
+            $this->assertInstanceOf(\CsCannon\AssetCollection::class,$collection,"Asset collection is not a collection");
        // $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
 
        // $getJoinedContract->dumpMeta();
 
+        $myOrbFactory = new \CsCannon\OrbFactory();
+        $orbs = $myOrbFactory->getOrbsFromContractPath($contract,ERC20::getEntity());
+
+        $this->assertInstanceOf(Orb::class,$orbs[0],"Orb couldn't be retreived");
+
+        //we look if the local asset solver works
+        $orb = reset($orbs);
+        /**@var Orb $orb*/
+        $orbAsset = $orb->getAsset();
+
+        $this->assertInstanceOf(Asset::class,$orbAsset,"Orbs asset is not an asset");
+
         \CsCannon\Tests\TestManager::registerDataStructure();
-
-
-
 
 
     }
@@ -135,21 +128,23 @@ final class OrbTest extends TestCase
 
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
-        $collectionEntity = $assetCollectionFactory->get(self::COLLECTION_CODE);
-        \CsCannon\AssetSolvers\BooSolver::update();
+        //$collectionEntity = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        //BooSolver::update();
 
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
         $contract = $contractFactory->get(self::COLLECTION_CONTRACT);
 
         $myOrbFactory = new \CsCannon\OrbFactory();
-        $myOrbFactory->getOrbsFromContractPath($contract,new \CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset());
+       $orbs = $myOrbFactory->getOrbsFromContractPath($contract,CounterpartyAsset::getEntity());
+
+
 
 
 
         $this->assertEquals(1,1);
         //$this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
 
-        \CsCannon\Tests\TestManager::registerDataStructure();
+       // \CsCannon\Tests\TestManager::registerDataStructure();
 
 
 
@@ -158,6 +153,15 @@ final class OrbTest extends TestCase
 
 
 
+
+
+}
+
+class myEasyBooSolver extends BooSolver {
+
+    public static $hardLimit = 5 ;
+    public static $limitToTokens = array(TestManager::XCP_TOKEN_AVAIL);
+    public static $limitCollection = array(TestManager::LIMIT_TO_COLLECTIONS);
 
 
 
