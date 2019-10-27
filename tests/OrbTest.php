@@ -13,6 +13,9 @@ use CsCannon\Asset;
 use CsCannon\AssetSolvers\BooSolver;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
+use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC20;
 use CsCannon\Orb;
 use CsCannon\Tests\TestManager;
@@ -145,6 +148,51 @@ final class OrbTest extends TestCase
         //$this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
 
        // \CsCannon\Tests\TestManager::registerDataStructure();
+
+
+
+    }
+
+    public function testGetOrbEvent()
+    {
+
+        $testAddress = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
+        $testContract = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
+
+        $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
+
+        $addressEntity = $addressFactory->get($testAddress,1);
+
+        $contractFactory = new EthereumContractFactory();
+
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new EthereumBlockchain());
+        $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
+
+
+        $erc20 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init();
+
+        $eventFactory = new EthereumEventFactory();
+
+
+
+        $event2 = $eventFactory->create(new EthereumBlockchain(),
+            $addressEntity,
+            $addressEntity,
+            $contractFactory->get(self::COLLECTION_CONTRACT,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init()),
+            'fooTX EWRC 20',
+            "123343555",
+            $currentBlock,
+            $tokenId = $erc20,
+            $quantity = 10
+
+        );
+
+        $eventFactory = new EthereumEventFactory();
+        $eventFactory->populateLocal();
+        $eventList = $eventFactory->getEntities();
+
+
+        $output = $eventFactory->display()->html()->return();
 
 
 

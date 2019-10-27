@@ -15,12 +15,14 @@ use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
-class Asset extends \SandraCore\Entity
+class Asset extends \SandraCore\Entity implements Displayable
 {
 
     public $metaDataUrl;
     public $imageUrl;
     public $id ;
+
+    public const IMAGE_URL = 'imageUrl';
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
@@ -140,4 +142,19 @@ class Asset extends \SandraCore\Entity
     }
 
 
+    public function returnArray(\CsCannon\DisplayManager $display)
+    {
+
+        $assetData[self::IMAGE_URL] = $this->imageUrl ;
+        return $assetData ;
+    }
+
+    public function display(): DisplayManager
+    {
+        if (!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
+
+        return $this->displayManager ;
+    }
 }

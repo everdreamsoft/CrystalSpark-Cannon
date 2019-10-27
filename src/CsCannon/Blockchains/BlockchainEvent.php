@@ -160,15 +160,10 @@ class BlockchainEvent extends Entity implements Displayable
 
             foreach ($orbArray ? $orbArray : array() as $orb) {
                 /**@var Orb $orb */
-                $return['orbs'][] = $orb->getAsset();
+                $return['orbs'][] = $orb->getAsset()->display()->return();
 
             }
         }
-
-
-
-
-
 
         return $return ;
     }
