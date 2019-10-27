@@ -9,6 +9,7 @@ use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
 class BlockchainRouting
 {
@@ -30,6 +31,15 @@ class BlockchainRouting
 
            $blockchainList['eth'] = $address ;
            $blockchain = new EthereumBlockchain();
+
+
+       }
+
+       //as for today 0x means ethereum
+       if(substr( $address, 0, 2 ) === "0x"){
+
+           $blockchainList['eth'] = $address ;
+           $blockchain = new KlaytnBlockchain();
 
 
        }

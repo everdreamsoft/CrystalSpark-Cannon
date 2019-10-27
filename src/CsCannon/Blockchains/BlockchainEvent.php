@@ -17,7 +17,7 @@ use CsCannon\Asset;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
-use CsCannon\Blockchains\BlockchainEventFactory;
+
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use CsCannon\DisplayManager;
