@@ -14,7 +14,6 @@ use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 class BlockchainRouting
 {
 
-
     public static function getSupportedBlockchains(){
 
         $supported[] = new XcpBlockchain();
