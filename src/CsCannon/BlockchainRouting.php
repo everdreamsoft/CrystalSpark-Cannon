@@ -35,10 +35,10 @@ class BlockchainRouting
 
        }
 
-       //as for today 0x means ethereum
+       //as Force klaytn
        if(substr( $address, 0, 2 ) === "0x"){
 
-           $blockchainList['eth'] = $address ;
+           $blockchainList['klay'] = $address ;
            $blockchain = new KlaytnBlockchain();
 
 
