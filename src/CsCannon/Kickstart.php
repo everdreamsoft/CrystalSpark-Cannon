@@ -13,6 +13,7 @@ use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
+use SandraCore\EntityFactory;
 use SandraCore\System;
 
 class Kickstart
@@ -37,6 +38,11 @@ class Kickstart
         $factory = new KlaytnAddressFactory();
         $factory->populateLocal();
         $factory->createViewTable("KlaytnAddress");
+
+        $ethContractFactory = new EntityFactory("balanceItem",'balanceFile',$sandra);
+        $ethContractFactory->populateLocal();
+        $ethContractFactory->createViewTable("balances");
+
 
         $factory = new BlockchainEventFactory();
         $factory->populateLocal();
