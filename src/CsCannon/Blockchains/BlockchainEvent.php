@@ -1,4 +1,7 @@
 <?php
+
+use CsCannon\Orb;
+
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -14,9 +17,11 @@ use CsCannon\Asset;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
+
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use CsCannon\DisplayManager;
+use CsCannon\OrbFactory;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
 use SandraCore\Entity;
@@ -35,6 +40,7 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_DESTINATION_ADDRESS = 'destination';
     const DISPLAY_CONTRACT = 'contract';
     const DISPLAY_QUANTITY = 'quantity';
+    const DISPLAY_TIMESTAMP = 'timestamp';
 
 
 
@@ -112,12 +118,12 @@ class BlockchainEvent extends Entity implements Displayable
 
         $contract = $this->getBlockchainContract();
         $standards = $contract->getStandard();
-        $firstStandard = reset($standards);
+
         /** @var BlockchainContractStandard $standard */
 
-        if (isset($firstStandard)){
+        if (isset($standards)){
             /** @var BlockchainContractStandard $instance */
-            $instance = $firstStandard::init();
+            $instance = $standards::init();
             $instance->setTokenPath($tokenData);
             return  $instance ;
 
@@ -144,6 +150,23 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
+        $return[self::DISPLAY_TIMESTAMP] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
+
+       $contract =  $this->getBlockchainContract();
+       $collections = $contract->getCollections();
+        $sp = $this->getSpecifier();
+
+       //here we are building to much factories
+        if(is_array($collections)) {
+            $orbFactory = new OrbFactory();
+            $orbArray = $orbFactory->getOrbFromSpecifier($this->getSpecifier(), $contract, reset($collections));
+
+            foreach ($orbArray ? $orbArray : array() as $orb) {
+                /**@var Orb $orb */
+                $return['orbs'][] = $orb->getAsset()->display()->return();
+
+            }
+        }
 
         return $return ;
     }

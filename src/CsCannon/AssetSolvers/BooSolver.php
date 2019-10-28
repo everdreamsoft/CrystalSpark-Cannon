@@ -21,6 +21,7 @@ use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
+use CsCannon\Tests\TestManager;
 use InnateSkills\LearnFromWeb\LearnFromWeb;
 use SandraCore\EntityFactory;
 use SandraCore\ForeignConcept;
@@ -28,6 +29,10 @@ use SandraCore\ForeignEntityAdapter;
 
 class BooSolver extends LocalSolver
 {
+
+    public static $hardLimit = 0 ;
+    public static $limitToTokens = null ;
+    public static $limitCollection = null ;
 
 
 
@@ -43,7 +48,7 @@ class BooSolver extends LocalSolver
 
     }
 
-    protected static function updateSolver(){
+    protected static function updateSolver($hardLimit = 0){
 
 
 
@@ -92,6 +97,10 @@ class BooSolver extends LocalSolver
             //we build the collection list
             foreach ($factory->entityArray as $booCollection){
 
+                if ($tokenCreated > static::$hardLimit &&  static::$hardLimit != 0){
+                    continue ;
+                }
+
                 $envCode = $booCollection->get('envCode');
                 $collectionEntity = $collectionFactory->first('collectionId',$envCode);
 
@@ -123,6 +132,10 @@ class BooSolver extends LocalSolver
 
             foreach ($factory->entityArray as $collectionEntity) {
 
+                if ($tokenCreated > static::$hardLimit &&  static::$hardLimit != 0){
+                    continue ;
+                }
+
 
                 $collectionCode = $collectionEntity->get('envCode');
 
@@ -150,12 +163,24 @@ class BooSolver extends LocalSolver
                 foreach ($myCollection->entityArray as $entityAsset){
 
 
-                    $tokenCreated++ ;
+
+
+                   ;
                     $contractId = $entityAsset->get('assetName');
 
                     echo" - \n ".  $entityAsset->get('assetName');
 
+                    //If we put a limit in the token we want to save
+                    if (!empty(static::$limitToTokens) && !in_array($contractId,static::$limitToTokens ))
+                    {
+                        $val = static::$limitToTokens;
+                        continue ;
+
+                    }
+
                     if (!$contractId) continue ;
+
+                    $tokenCreated++ ;
 
 
                     $collectionEntity = $collectionFactory->first('collectionId',$collectionCode);

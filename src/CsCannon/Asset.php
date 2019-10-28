@@ -15,12 +15,14 @@ use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
-class Asset extends \SandraCore\Entity
+class Asset extends \SandraCore\Entity implements Displayable
 {
 
     public $metaDataUrl;
     public $imageUrl;
     public $id ;
+
+    public const IMAGE_URL = 'imageUrl';
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
@@ -66,16 +68,33 @@ class Asset extends \SandraCore\Entity
     public function getContracts(){
 
 
+
+        $contracts = null ;
         $this->factory->getTriplets();
+        $entitiesArray = $this->getJoinedEntities(AssetFactory::$tokenJoinVerb);
+        //we keep only contract entities
+        foreach($entitiesArray ? $entitiesArray : array() as $entity){
+            if ($entity instanceof BlockchainContract) $contracts[] = $entity ;
+
+        }
+
         //$this->factory->populateBrotherEntities()
-        return $this->getJoinedEntities(AssetFactory::$tokenJoinVerb);
+        return $contracts;
 
     }
 
     public function getCollections(){
 
+        $collectionEntities = null ;
         $this->factory->getTriplets();
-        return $this->getJoinedEntities(AssetFactory::$collectionJoinVerb);
+        $entitiesArray = $this->getJoinedEntities(AssetFactory::$collectionJoinVerb);
+        //we keep only collections entities
+        foreach($entitiesArray ? $entitiesArray : array() as $entity){
+            if ($entity instanceof AssetCollection) $collectionEntities[] = $entity ;
+
+        }
+
+        return $collectionEntities;
 
     }
 
@@ -123,4 +142,19 @@ class Asset extends \SandraCore\Entity
     }
 
 
+    public function returnArray(\CsCannon\DisplayManager $display)
+    {
+
+        $assetData[self::IMAGE_URL] = $this->imageUrl ;
+        return $assetData ;
+    }
+
+    public function display(): DisplayManager
+    {
+        if (!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
+
+        return $this->displayManager ;
+    }
 }

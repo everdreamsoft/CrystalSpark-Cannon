@@ -15,6 +15,7 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\Asset;
 use CsCannon\AssetCollection;
+use CsCannon\AssetFactory;
 use CsCannon\Displayable;
 use CsCannon\DisplayManager;
 use SandraCore\Entity;
@@ -63,8 +64,18 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     public function getCollections(){
 
+        $collectionEntities = null ;
+        $this->factory->getTriplets();
+        $entitiesArray = $this->getJoinedEntities(BlockchainContractFactory::JOIN_COLLECTION);
+        //we keep only collections entities
+        foreach($entitiesArray ? $entitiesArray : array() as $entity){
+            if ($entity instanceof AssetCollection) $collectionEntities[] = $entity ;
 
-        return $this->getJoinedEntities(BlockchainContractFactory::JOIN_COLLECTION);
+        }
+
+        return $collectionEntities;
+
+
 
 
 

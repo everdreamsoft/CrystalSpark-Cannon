@@ -9,10 +9,10 @@ use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
 class BlockchainRouting
 {
-
 
     public static function getSupportedBlockchains(){
 
@@ -30,6 +30,15 @@ class BlockchainRouting
 
            $blockchainList['eth'] = $address ;
            $blockchain = new EthereumBlockchain();
+
+
+       }
+
+       //as Force klaytn
+       if(substr( $address, 0, 2 ) === "0x"){
+
+           $blockchainList['klay'] = $address ;
+           $blockchain = new KlaytnBlockchain();
 
 
        }
