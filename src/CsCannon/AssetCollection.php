@@ -18,30 +18,30 @@ use SandraCore\System;
 class AssetCollection extends \SandraCore\Entity
 {
 
-   public $id = 'collectionId' ;
+    public $id = 'collectionId' ;
     public $name = 'name';
     public $imageUrl = 'imageUrl';
     public $description = 'description';
 
     private $displayArray = array();
 
-public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
-{
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
+    {
 
-   // $this->id = $sandraReferencesArray[$system->systemConcept->get($this->id)];
+        // $this->id = $sandraReferencesArray[$system->systemConcept->get($this->id)];
 
-    parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
 
-    $this->id = $this->get($this->id);
-    $this->name = $this->get($this->name);
-    $this->imageUrl = $this->get($this->imageUrl);
-    $this->description = $this->get($this->description);
+        $this->id = $this->get($this->id);
+        $this->name = $this->get($this->name);
+        $this->imageUrl = $this->get($this->imageUrl);
+        $this->description = $this->get($this->description);
 
-    $this->createDisplay();
+        $this->createDisplay();
 
 
 
-}
+    }
 
     public function getId()
     {
@@ -83,14 +83,14 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
     public function getOrbFromSpecifier(BlockchainContractStandard $specifier)
     {
 
-       $orbFactory = new OrbFactory();
-       $orbs = $orbFactory->getOrbsFromContractPath($this,$specifier);
+        $orbFactory = new OrbFactory();
+        $orbs = $orbFactory->getOrbsFromContractPath($this,$specifier);
 
     }
 
     public function setImageUrl($url){
 
-    $this->createOrUpdateRef(AssetCollectionFactory::MAIN_IMAGE,$url);
+        $this->createOrUpdateRef(AssetCollectionFactory::MAIN_IMAGE,$url);
         $this->imageUrl = $url ;
 
 
@@ -107,6 +107,7 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
     public function setDescription($description){
 
         $this->setStorage($description);
+        $this->createOrUpdateRef(AssetCollectionFactory::DESCRIPTION,$description);
         $this->description = $description;
 
 

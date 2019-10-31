@@ -36,7 +36,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
         if (!isset($sandraReferencesArray[BlockchainContractFactory::MAIN_IDENTIFIER]) &&
             !isset($sandraReferencesArray[$system->systemConcept->get( BlockchainContractFactory::MAIN_IDENTIFIER)])){
-        $system->systemError(1,self::class,3,"contract must have an id");
+            $system->systemError(1,self::class,3,"contract must have an id");
 
         }
 
@@ -44,7 +44,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
 
-         $this->id = $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
+        $this->id = $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
 
 
     }
@@ -58,6 +58,12 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
         return $return ;
 
+
+    }
+
+    public function setStandard(BlockchainContractStandard $standard){
+
+        $this->setBrotherEntity(BlockchainContractFactory::CONTRACT_STANDARD,$standard,null);
 
 
     }
