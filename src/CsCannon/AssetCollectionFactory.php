@@ -39,6 +39,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
     const IMAGE_EXTENSION = 'imageExtension';
     const MAIN_IMAGE = 'imageUrl';
     const MAIN_NAME = 'name';
+    const DESCRIPTION = 'description';
 
 
 

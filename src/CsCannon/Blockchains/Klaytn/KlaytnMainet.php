@@ -32,8 +32,6 @@ class KlaytnMainet extends RpcProvider
 
     public function getBalance(BlockchainContract $contract, BlockchainAddress $address, BlockchainContractStandard $standard){
 
-
-
         $cmd = "node public/caver/index.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()."";
         return  exec($cmd);
 

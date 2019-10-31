@@ -107,6 +107,7 @@ public function __construct($sandraConcept, $sandraReferencesArray, $factory, $e
     public function setDescription($description){
 
         $this->setStorage($description);
+        $this->createOrUpdateRef(AssetCollectionFactory::DESCRIPTION,$description);
         $this->description = $description;
 
 
