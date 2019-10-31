@@ -349,7 +349,7 @@ public function getContractMap(){
                     }
                     else{
 
-                        $factory->update($existEntity,$newToken);
+                        $existEntity->createOrUpdateRef('quantity',$token['quantity']);
 
                         //TODO missing last block
 
