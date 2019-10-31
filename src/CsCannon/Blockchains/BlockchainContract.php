@@ -65,6 +65,8 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
         $this->setBrotherEntity(BlockchainContractFactory::CONTRACT_STANDARD,$standard,null);
 
+        return $this ;
+
 
     }
 
