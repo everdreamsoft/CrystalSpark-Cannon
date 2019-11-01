@@ -34,7 +34,7 @@ class KlaytnCypress extends RpcProvider
 
 
 
-        $cmd = "node public/caver/index.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()."";
+        $cmd = "node public/caver/cypressBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()."";
         return  exec($cmd);
 
     }
