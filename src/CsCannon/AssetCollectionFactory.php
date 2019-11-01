@@ -39,6 +39,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
     const IMAGE_EXTENSION = 'imageExtension';
     const MAIN_IMAGE = 'imageUrl';
     const MAIN_NAME = 'name';
+    const DESCRIPTION = 'description';
 
 
 
@@ -182,7 +183,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         /** @var AssetCollection $newCollection */
 
         $contract->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$newCollection,null);
-       $newCollection->setSolver(DefaultEthereumSolver::getEntity());
+        $newCollection->setSolver(DefaultEthereumSolver::getEntity());
 
 
         return $newCollection ;
@@ -214,7 +215,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $todisplay = array_keys($assetVocabulary);
 
-       return parent::getDisplay('array',$todisplay,$assetVocabulary,$displayType);
+        return parent::getDisplay('array',$todisplay,$assetVocabulary,$displayType);
 
 
 
