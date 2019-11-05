@@ -25,6 +25,7 @@ abstract class Blockchain
     public  $contractFactory ;
     public  $eventFactory ;
     public  $blockFactory ;
+    public static $network = array("null"=>array("explorer_tx"=>'null'));
 
     public function getAddressFactory()
     {
@@ -53,6 +54,20 @@ abstract class Blockchain
        return new BlockchainBlockFactory($this);
 
     }
+
+    public static function getNetworkData($network,$data)
+    {
+
+        if (isset(static::$network[$network][$data])){
+
+            return static::$network[$network][$data] ;
+        }
+
+        return null ;
+
+
+    }
+
 
 
 

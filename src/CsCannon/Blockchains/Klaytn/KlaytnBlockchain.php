@@ -20,7 +20,9 @@ class KlaytnBlockchain extends Blockchain
    const NAME = 'klaytn';
     protected $nameShort = 'klay';
     private static $staticBlockchain ;
-
+    public static $network = array("cypress"=>array("explorer_tx"=>'https://scope.klaytn.com/tx/'),
+    "baobab"=>array("explorer_tx"=>'https://baobab.scope.klaytn.com/tx/')
+    );
     public function __construct()
     {
 
@@ -29,6 +31,7 @@ class KlaytnBlockchain extends Blockchain
         $this->eventFactory = new KlaytnEventFactory();
 
     }
+
 
     public static function getStatic()
     {
