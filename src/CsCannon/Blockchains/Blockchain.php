@@ -19,6 +19,7 @@ abstract class Blockchain
    public static $provider_opensea_enventId = 'openSeaId' ;
 
     const NAME = 'genericBlockchain';
+    const NETWORK_NAME = 'main';
 
    public  $addressFactory ;
     public  $contractFactory ;
