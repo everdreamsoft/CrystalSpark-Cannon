@@ -17,6 +17,7 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 use CsCannon\Blockchains\Klaytn\KlaytnEventFactory;
 use CsCannon\Blockchains\RpcProvider;
+use SandraCore\Concept;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -36,6 +37,13 @@ class KlaytnCypress extends RpcProvider
 
         $cmd = "node public/caver/cypressBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()."";
         return  exec($cmd);
+
+    }
+
+    public function transform(Concept $concept, $value){
+
+
+
 
     }
 

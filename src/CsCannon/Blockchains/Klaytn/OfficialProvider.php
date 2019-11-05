@@ -17,6 +17,7 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 use CsCannon\Blockchains\Klaytn\KlaytnEventFactory;
 use CsCannon\Blockchains\RpcProvider;
+use SandraCore\Concept;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -43,5 +44,19 @@ class OfficialProvider extends RpcProvider
     public function getBlockchain():Blockchain
     {
         return new KlaytnBlockchain();
+    }
+
+    public function transform(Concept $concept, $value)
+    {
+        $sandra = $concept->system;
+        $tixIdConcept = $sandra->conceptFactory->getConceptFromShortnameOrId(Blockchain::$txidConceptName);
+
+        if ($tixIdConcept->idConcept == $concept->idConcept){
+
+            return "$value";
+        }
+
+
+
     }
 }
