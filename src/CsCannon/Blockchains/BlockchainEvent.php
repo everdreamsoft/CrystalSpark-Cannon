@@ -13,13 +13,7 @@ namespace CsCannon\Blockchains;
 
 
 
-use CsCannon\Asset;
-use CsCannon\Blockchains\BlockchainAddressFactory;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\BlockchainEventFactory;
 
-use CsCannon\Blockchains\BlockchainToken;
-use CsCannon\Blockchains\BlockchainTokenFactory;
 use CsCannon\DisplayManager;
 use CsCannon\OrbFactory;
 use CsCannon\SandraManager;
@@ -41,6 +35,8 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_CONTRACT = 'contract';
     const DISPLAY_QUANTITY = 'quantity';
     const DISPLAY_TIMESTAMP = 'timestamp';
+    const DISPLAY_BLOCKCHAIN = 'blockchain';
+    const DISPLAY_BLOCKCHAIN_NETWORK = 'network_name';
 
 
 
@@ -151,6 +147,7 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
         $return[self::DISPLAY_TIMESTAMP] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
+        $return[self::DISPLAY_BLOCKCHAIN] = $this->getBlockchainContract()->getBlockchain()::NAME ;
 
        $contract =  $this->getBlockchainContract();
        $collections = $contract->getCollections();

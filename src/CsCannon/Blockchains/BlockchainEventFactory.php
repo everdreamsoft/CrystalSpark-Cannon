@@ -18,7 +18,7 @@ use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
- class BlockchainEventFactory extends EntityFactory implements Displayable
+class BlockchainEventFactory extends EntityFactory implements Displayable
 {
     public $blockchain ;
     public static $isa = 'blockchainEvent' ;
@@ -31,13 +31,13 @@ use SandraCore\System;
     const EVENT_TYPE = 'eventType';
     const EVENT_SOURCE_ADDRESS = 'source';
     const EVENT_DESTINATION_VERB = 'hasSingleDestination';
-     const EVENT_CONTRACT = 'blockchainContract';
-     const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
-     const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
-         const EVENT_QUANTITY = 'quantity' ;
-         const EVENT_BLOCK = 'onBlock';
-        // const EVENT_BLOCK_TIME = 'blocktime';
-         const EVENT_BLOCK_TIME = 'timestamp';
+    const EVENT_CONTRACT = 'blockchainContract';
+    const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
+    const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
+    const EVENT_QUANTITY = 'quantity' ;
+    const EVENT_BLOCK = 'onBlock';
+    // const EVENT_BLOCK_TIME = 'blocktime';
+    const EVENT_BLOCK_TIME = 'timestamp';
     public static $messagePool = array();
 
 
@@ -47,41 +47,41 @@ use SandraCore\System;
 
     public $contractAddress = '';
 
-     public $displayManager ;
+    public $displayManager ;
 
 
 
-   public function __construct(){
+    public function __construct(){
 
-     parent::__construct(static::$isa,static::$file,SandraManager::getSandra());
-
-
-
-     $this->generatedEntityClass = static::$className ;
+        parent::__construct(static::$isa,static::$file,SandraManager::getSandra());
 
 
-   }
+
+        $this->generatedEntityClass = static::$className ;
+
+
+    }
 
 
     public function getRequired(){
 
-         $this->requirementAbstractArray = array(Blockchain::$blockchainConceptName,
-             self::EVENT_BLOCK_TIME,
-             Blockchain::$txidConceptName,
+        $this->requirementAbstractArray = array(Blockchain::$blockchainConceptName,
+            self::EVENT_BLOCK_TIME,
+            Blockchain::$txidConceptName,
 
-          );
+        );
 
-         return $this->requirementAbstractArray ;
+        return $this->requirementAbstractArray ;
 
     }
 
-     public function filterBySender($senderEntity){
+    public function filterBySender($senderEntity){
 
         $this->setFilter(BlockchainEventFactory::EVENT_SOURCE_ADDRESS,$senderEntity);
 
-         return $this ;
+        return $this ;
 
-     }
+    }
 
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
     {
@@ -99,64 +99,64 @@ use SandraCore\System;
         return $return ;
     }
 
-     public function getRequiredTriplets(){
+    public function getRequiredTriplets(){
 
         $this->requirementAbstractTripletArray = array(
             self::EVENT_SOURCE_ADDRESS,
             self::EVENT_DESTINATION_VERB,
-           self::EVENT_CONTRACT,
+            self::EVENT_CONTRACT,
             self::EVENT_TYPE,
-           );
+        );
 
         return $this->requirementAbstractTripletArray ;
 
     }
 
-     public function create(Blockchain $blockchain,
-                            BlockchainAddress $sourceAddressConcept,
-                            BlockchainAddress $destinationAddressConcept,
-                            BlockchainContract $contract,
-                            $txid,
-                            $timestamp,
-                            BlockchainBlock $block,
-                            BlockchainContractStandard $token = null,
-                            $quantity = 1
+    public function create(Blockchain $blockchain,
+                           BlockchainAddress $sourceAddressConcept,
+                           BlockchainAddress $destinationAddressConcept,
+                           BlockchainContract $contract,
+                           $txid,
+                           $timestamp,
+                           BlockchainBlock $block,
+                           BlockchainContractStandard $token = null,
+                           $quantity = 1
 
- )
-     {
+    )
+    {
 
-         $dataArray[Blockchain::$txidConceptName] = $txid ;
-         $dataArray[self::EVENT_QUANTITY] = $quantity ;
-         $dataArray[self::EVENT_BLOCK_TIME] = $timestamp ;
-
-
+        $dataArray[Blockchain::$txidConceptName] = $txid ;
+        $dataArray[self::EVENT_QUANTITY] = $quantity ;
+        $dataArray[self::EVENT_BLOCK_TIME] = $timestamp ;
 
 
-         /** @var BlockchainContractFactory $contractFactory */
-
-         $triplets[self::EVENT_SOURCE_ADDRESS] = $sourceAddressConcept ;
-         $triplets[self::EVENT_DESTINATION_VERB] = $destinationAddressConcept ;
-
-         $triplets[self::ON_BLOCKCHAIN_EVENT] = $blockchain::NAME ;
-         $triplets[self::EVENT_BLOCK] = $block ;
-
-         //does the contract has a token id ?
-         if (!is_null($token)){
-             $stucture = $token->getSpecifierData();
 
 
-             $triplets[self::EVENT_CONTRACT] = array($contract->subjectConcept->idConcept=>$stucture);
+        /** @var BlockchainContractFactory $contractFactory */
 
-         }
+        $triplets[self::EVENT_SOURCE_ADDRESS] = $sourceAddressConcept ;
+        $triplets[self::EVENT_DESTINATION_VERB] = $destinationAddressConcept ;
 
-         else {
-             $triplets[self::EVENT_CONTRACT] = $contract;
+        $triplets[self::ON_BLOCKCHAIN_EVENT] = $blockchain::NAME ;
+        $triplets[self::EVENT_BLOCK] = $block ;
 
-         }
+        //does the contract has a token id ?
+        if (!is_null($token)){
+            $stucture = $token->getSpecifierData();
 
 
-         return parent::createNew($dataArray, $triplets);
-     }
+            $triplets[self::EVENT_CONTRACT] = array($contract->subjectConcept->idConcept=>$stucture);
+
+        }
+
+        else {
+            $triplets[self::EVENT_CONTRACT] = $contract;
+
+        }
+
+
+        return parent::createNew($dataArray, $triplets);
+    }
 
 
 
@@ -170,7 +170,7 @@ use SandraCore\System;
         //First we check if all required parameters are present (for all events)
         foreach ($this->getRequired() as $required){
 
-        //test if ref exists
+            //test if ref exists
             if (!isset($dataArray[$required]) and !isset($dataArray[$sandra->systemConcept->get($required)])){
 
                 self::$messagePool[] = "$required not defined for transaction";
@@ -206,7 +206,7 @@ use SandraCore\System;
 
     }
 
-     private function verifyTransfer($dataArray,$linkArray){
+    private function verifyTransfer($dataArray,$linkArray){
 
 
         if ($linkArray[BlockchainEventFactory::EVENT_SOURCE_ADDRESS] == $linkArray[BlockchainEventFactory::EVENT_DESTINATION_VERB]){
@@ -217,104 +217,52 @@ use SandraCore\System;
 
         return true ;
 
-     }
+    }
 
 
     public function buildAddressFactory(){
 
-       foreach ($this->entityArray as $eventEntity){
+        foreach ($this->entityArray as $eventEntity){
 
-           /** @var BlockchainEvent $eventEntity */
+            /** @var BlockchainEvent $eventEntity */
 
-           $source = $eventEntity->getSourceAddress();
+            $source = $eventEntity->getSourceAddress();
 
-       }
+        }
 
 
     }
 
-     public function returnArray($displayManager){
+    public function returnArray($displayManager){
 
-         $output = array();
+        $output = array();
 
-         foreach ($this->entityArray ? $this->entityArray : array() as $eventEntity){
+        foreach ($this->entityArray ? $this->entityArray : array() as $eventEntity){
+
+            $contractAdress = null ;
+
+            /** @var BlockchainEvent $eventEntity */
+            $output[] = $eventEntity->display()->return();
 
 
+        }
 
-             $contractAdress = null ;
-
-             /** @var BlockchainEvent $eventEntity */
-             $output[] = $eventEntity->display()->return();
-             continue ;
-
-             $source = $eventEntity->getSourceAddress();
-             try {
-                 $contract = $eventEntity->getBlockchainContract();
-                 if($contract instanceof BlockchainContract or $contract instanceof BlockchainToken) {
-                     $contractAdress = $contract->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
-                    // $eventData['asset'] = $contract->resolveMetaData($eventEntity->getTokenId());
-                 }
+        return $output ;
 
 
 
+    }
 
-             }
-             catch (\Exception $e){
-                 /** @var BlockchainContract $contract */
+    public function display():DisplayManager{
 
-                 $contractAdress = 'null' ;
+        if (!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
 
-
-                 //  continue ;
-             }
-
-             /** @var BlockchainContract $contract */
+        return $this->displayManager ;
 
 
-             $timestamp = $eventEntity->get(self::EVENT_BLOCK_TIME);
-             $arrayKey = $timestamp.'.'.$eventEntity->get(Blockchain::$txidConceptName);
-
-             $eventData['tokenId'] =  $eventEntity->getTokenId();
-             // $eventData['opensea'] =  $eventEntity->get('openSeaId');
-             $eventData['source'] =  $source ;
-             $eventData['destination'] =   $eventEntity->getDestinationAddress();
-             $eventData['quantity'] =   $eventEntity->get('quantity');
-             $eventData['timestamp'] =   $eventEntity->get(self::EVENT_BLOCK_TIME);
-
-             $eventData['contract'] =   $contractAdress;
-
-
-             $eventData['txHash'] =$eventEntity->get(Blockchain::$txidConceptName);
-             //$eventData['tokenData'] = $tokenData ;
-
-             //$joinedAssets = $contract->get
-
-             $returnArray[$arrayKey] =  $eventData ;
-
-             $contract = null ;
-
-         }
-
-        // $displayManager = new DisplayManager($this);
-        // $displayManager->pushData($returnArray);
-
-
-         return $output ;
-
-
-
-     }
-
-     public function display():DisplayManager{
-
-       if (!isset($this->displayManager)){
-           $this->displayManager = new DisplayManager($this);
-       }
-
-       return $this->displayManager ;
-
-
-     }
+    }
 
 
 
