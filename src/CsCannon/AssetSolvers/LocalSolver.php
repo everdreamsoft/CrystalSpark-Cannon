@@ -31,7 +31,7 @@ class LocalSolver extends AssetSolver
 
     private static $assetInCollections ;
 
-    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array{
+    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array{
 
 
         //we get target collection
