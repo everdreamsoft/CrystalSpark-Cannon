@@ -9,6 +9,8 @@
 namespace CsCannon\Blockchains;
 
 
+use SandraCore\Concept;
+
 abstract class RpcProvider
 {
 
@@ -25,5 +27,11 @@ abstract class RpcProvider
 
     public abstract function getHostUrl();
     public abstract function getBlockchain():Blockchain;
+    public abstract function transform(Concept $concept, $value);
+
+
+
+
+
 
 }

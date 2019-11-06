@@ -11,7 +11,6 @@ namespace CsCannon\Blockchains\Klaytn;
 
 
 use CsCannon\Blockchains\Blockchain;
-use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
 
 
 class KlaytnBlockchain extends Blockchain
@@ -21,7 +20,9 @@ class KlaytnBlockchain extends Blockchain
    const NAME = 'klaytn';
     protected $nameShort = 'klay';
     private static $staticBlockchain ;
-
+    public static $network = array("cypress"=>array("explorerTx"=>'https://scope.klaytn.com/tx/'),
+    "baobab"=>array("explorerTx"=>'https://baobab.scope.klaytn.com/tx/')
+    );
     public function __construct()
     {
 
@@ -30,6 +31,7 @@ class KlaytnBlockchain extends Blockchain
         $this->eventFactory = new KlaytnEventFactory();
 
     }
+
 
     public static function getStatic()
     {
