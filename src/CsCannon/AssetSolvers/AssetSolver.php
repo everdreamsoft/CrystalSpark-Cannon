@@ -29,7 +29,7 @@ abstract class AssetSolver extends Entity
     public static $solverEntity = null ;
 
 
-public abstract static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array ;
+public abstract static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):?array ;
 protected abstract static function updateSolver() ;
 
 
