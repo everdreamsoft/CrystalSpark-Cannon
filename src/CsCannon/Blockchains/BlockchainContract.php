@@ -16,12 +16,14 @@ namespace CsCannon\Blockchains;
 use CsCannon\Asset;
 use CsCannon\AssetCollection;
 use CsCannon\AssetFactory;
+use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 use CsCannon\Displayable;
 use CsCannon\DisplayManager;
 use SandraCore\Entity;
 use SandraCore\System;
 
-abstract class  BlockchainContract extends Entity Implements Displayable
+ abstract class  BlockchainContract extends Entity Implements Displayable
 {
 
     abstract  function getBlockchain():Blockchain;
@@ -153,11 +155,4 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
 
 
-
-
-
-
-
-
-
-}
+ }
