@@ -70,16 +70,19 @@ class LocalSolver extends AssetSolver
             if (in_array($contract->subjectConcept->idConcept,$contractArray)) {
 
                 $standardData = $assetEntity->getBrotherEntity(AssetFactory::$tokenJoinVerb);
-                $standardData = end($standardData);
+                //Only if the asset specifiy standard data
+                if(is_array($standardData)) {
+                    $standardData = end($standardData);
 
 
-                //I have to check if path is correct
-                $localStorageStandard = $contract->getStandard();
-                $localStorageStandard->setTokenPath($standardData->entityRefs);
+                    //I have to check if path is correct
+                    $localStorageStandard = $contract->getStandard();
+                    $localStorageStandard->setTokenPath($standardData->entityRefs);
 
-                //if the local storage data is exactely the same
-                if($localStorageStandard->getSpecifierData() != $specifier->getSpecifierData()){
-                    continue ;
+                    //if the local storage data is exactely the same
+                    if ($localStorageStandard->getSpecifierData() != $specifier->getSpecifierData()) {
+                        continue;
+                    }
                 }
 
                 $return[] = $assetEntity;
