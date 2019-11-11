@@ -288,12 +288,15 @@ public function getContractMap(){
             $contract = reset($contract);
             $quantity =$balanceEntity->get('quantity');
             $token = $contract->getStandard();
-            $token->setTokenPath($balanceEntity->entityRefs);
+            $newToken = clone $token;
+            $newToken->setTokenPath($balanceEntity->entityRefs);
 
 
 
+            $this->addContractToken($contract,$newToken,$quantity);
 
-            $this->addContractToken($contract,$token,$quantity);
+
+
 
 
 

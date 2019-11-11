@@ -6,6 +6,7 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 use CsCannon\Orb;
+use SandraCore\Reference;
 use SandraCore\System;
 
 /**
@@ -44,16 +45,32 @@ class ERC721 extends EthereumContractStandard
     //ovveride the method to catch tokenId
     public function setTokenPath($tokenPath){
 
-       $tokenIdUnid = $this->system->systemConcept->get('tokenId');
+        $tokenIdUnid = $this->system->systemConcept->get('tokenId');
 
         //we check if we got a raw value or a reference
 
         if (isset ($tokenPath[$tokenIdUnid])){
-            $this->tokenId = $tokenPath[$tokenIdUnid];
+
+            $referenceConceptOrString = $tokenPath[$tokenIdUnid];
+            if ($referenceConceptOrString instanceof Reference){
+                $referenceConceptOrString = $referenceConceptOrString->refValue;
+            }
+
+
+
+            $this->tokenId = $referenceConceptOrString;
+
+
         }
 
         if (isset ($tokenPath['tokenId'])){
-            $this->tokenId = $tokenPath['tokenId'];
+
+            $referenceConceptOrString = $tokenPath['tokenId'];
+            if ($referenceConceptOrString instanceof Reference){
+                $referenceConceptOrString = $referenceConceptOrString->refValue;
+            }
+
+            $this->tokenId = $referenceConceptOrString;
         }
 
 

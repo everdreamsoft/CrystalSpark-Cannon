@@ -34,26 +34,27 @@ class LocalSolver extends AssetSolver
     public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array{
 
 
+        $return = null ;
         //we get target collection
 
-       if (!isset(self::$assetInCollections[$assetCollection->getId()])) {
+        if (!isset(self::$assetInCollections[$assetCollection->getId()])) {
 
-           $assetFactory = new AssetFactory();
-           $assetFactory->setFilter(0, $assetCollection);
-           $assetFactory->populateLocal();
-           $assetFactory->getTriplets();
-           $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
-           $entities = $assetFactory->entityArray ;
+            $assetFactory = new AssetFactory();
+            $assetFactory->setFilter(0, $assetCollection);
+            $assetFactory->populateLocal();
+            $assetFactory->getTriplets();
+            $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
+            $entities = $assetFactory->entityArray ;
 
-           self::$assetInCollections[$assetCollection->getId()] = $assetFactory ;
+            self::$assetInCollections[$assetCollection->getId()] = $assetFactory ;
 
 
 
-       }
+        }
 
-      $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
+        $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
 
-       //sub optimal there should be a map for that
+        //sub optimal there should be a map for that
 
         foreach ($assetCollectionList->entityArray as $assetEntity)
         {
@@ -63,19 +64,31 @@ class LocalSolver extends AssetSolver
 
             if (!isset($assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)])) continue ;
 
-           $contractArray =  $assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)];
+            $contractArray =  $assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)];
 
-                //linked contract =
+            //linked contract =
             if (in_array($contract->subjectConcept->idConcept,$contractArray)) {
 
-                //$assetEntity = $entities[$orb->contract->subjectConcept->idConcept] ;
-                return array($assetEntity);
+                $standardData = $assetEntity->getBrotherEntity(AssetFactory::$tokenJoinVerb);
+                $standardData = end($standardData);
+
+
+                //I have to check if path is correct
+                $localStorageStandard = $contract->getStandard();
+                $localStorageStandard->setTokenPath($standardData->entityRefs);
+
+                //if the local storage data is exactely the same
+                if($localStorageStandard->getSpecifierData() != $specifier->getSpecifierData()){
+                    continue ;
+                }
+
+                $return[] = $assetEntity;
             }
 
 
         }
 
-        return null ;
+        return $return ;
 
 
     }

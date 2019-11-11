@@ -23,7 +23,7 @@ final class BlockchainTest extends TestCase
     {
 
 
-      $exploreTx = \CsCannon\Blockchains\Klaytn\KlaytnBlockchain::getNetworkData('cypress','explorer_tx');
+      $exploreTx = \CsCannon\Blockchains\Klaytn\KlaytnBlockchain::getNetworkData('cypress','explorerTx');
 
       $this->assertEquals('https://scope.klaytn.com/tx/',$exploreTx);
 
