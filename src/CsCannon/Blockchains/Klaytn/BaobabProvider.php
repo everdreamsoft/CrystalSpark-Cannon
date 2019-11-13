@@ -35,10 +35,8 @@ class BaobabProvider extends RpcProvider
 
 
 
-        $cmd = "node public/caver/index.js 
-         --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)."
-         --target=".$address->getAddress()."
-         --node=".$this->$this->getHostUrl();
+        $cmd = "node public/caver/getBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()." --node=".$this->getHostUrl();
+
         return  exec($cmd);
 
     }
@@ -47,6 +45,15 @@ class BaobabProvider extends RpcProvider
     public function getBlockchain():Blockchain
     {
         return new KlaytnBlockchain();
+    }
+
+    public function ownerOf(BlockchainContract $contract, $tokenId, BlockchainContractStandard $standard){
+
+
+
+        $cmd = "node public/caver/ownerOf.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --tokenId=$tokenId --node=".$this->getHostUrl();
+        return  exec($cmd);
+
     }
 
     public function transform(Concept $concept, $value)
