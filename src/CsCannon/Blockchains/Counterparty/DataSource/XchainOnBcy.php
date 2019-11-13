@@ -87,7 +87,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
                 "tokenId" => $result['asset'],
                 "blockIndex" => $result['block_index'],
                 BlockchainEventFactory::EVENT_BLOCK_TIME => $result['block_time'],
-                "contract" => $result['asset'],
+                BlockchainEventFactory::EVENT_CONTRACT => $result['asset'],
 
 
             );

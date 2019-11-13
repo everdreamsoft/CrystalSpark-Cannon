@@ -21,9 +21,9 @@ use SandraCore\Concept;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class KlaytnCypress extends RpcProvider
+class BaobabProvider extends RpcProvider
 {
-    public const HOST_URL = 'https://api.cypress.klaytn.net:8651/' ;
+    public const HOST_URL = 'https://api.baobab.klaytn.net:8651/' ;
 
 
     public function getHostUrl($apiKey = null)
@@ -35,17 +35,22 @@ class KlaytnCypress extends RpcProvider
 
 
 
-        $cmd = "node public/caver/cypressBalance.js 
-        --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)."
+        $cmd = "node public/caver/index.js 
+         --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)."
          --target=".$address->getAddress()."
          --node=".$this->$this->getHostUrl();
         return  exec($cmd);
 
     }
 
-    public function transform(Concept $concept, $value){
 
+    public function getBlockchain():Blockchain
+    {
+        return new KlaytnBlockchain();
+    }
 
+    public function transform(Concept $concept, $value)
+    {
         //If a specific chain provider need to transform data
 
         $sandra = $concept->system;
@@ -58,21 +63,5 @@ class KlaytnCypress extends RpcProvider
 
         return $value ;
 
-
-    }
-
-    public function ownerOf(BlockchainContract $contract, $tokenId, BlockchainContractStandard $standard){
-
-
-
-        $cmd = "node public/caver/ownerOf.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --tokenId=$tokenId";
-        return  exec($cmd);
-
-    }
-
-
-    public function getBlockchain():Blockchain
-    {
-        return new KlaytnBlockchain();
     }
 }
