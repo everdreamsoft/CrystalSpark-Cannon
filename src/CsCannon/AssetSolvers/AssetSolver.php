@@ -27,6 +27,7 @@ abstract class AssetSolver extends Entity
     const LAST_UPDATE_SHORTNAME = 'updateTimestamp';
     public static $lastUpdate = null ;
     public static $solverEntity = null ;
+    public  $additionalSolverParam = null ;
 
 
 public abstract static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):?array ;
@@ -64,6 +65,23 @@ public static function update($onlyIfOlderThanSec = null){
 
 
     }
+
+    public  function getAdditionalParam(){
+
+        return $this->additionalSolverParam ;
+
+
+
+    }
+
+    public  function setAdditionalParam($array){
+
+        $this->additionalSolverParam = $array ;
+
+
+
+    }
+
 
     public static function getEntity():self {
 

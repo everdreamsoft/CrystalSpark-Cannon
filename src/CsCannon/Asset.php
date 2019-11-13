@@ -23,6 +23,7 @@ class Asset extends \SandraCore\Entity implements Displayable
     public $id ;
 
     public const IMAGE_URL = 'imageUrl';
+    public const METADATA_URL = 'metadataUrl';
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {

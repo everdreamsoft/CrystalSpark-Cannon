@@ -55,6 +55,8 @@ class AssetCollection extends \SandraCore\Entity
     public function setSolver(AssetSolver $assetSolver)
     {
 
+        //$additionalSolverParameters = $assetSolver->getAdditionalParam() ;
+
         $this->setBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB,$assetSolver,null);
 
     }
