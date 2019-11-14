@@ -24,7 +24,7 @@ use Symfony\Component\Process\Process;
 class KlaytnCypress extends RpcProvider
 {
     public const HOST_URL = 'https://api.cypress.klaytn.net:8651/' ;
-    public const CS_CAVER_PATH = 'public/caver/' ;
+    public  $csCaverPath = 'public/caver/' ;
 
 
     public function getHostUrl($apiKey = null)
@@ -36,7 +36,7 @@ class KlaytnCypress extends RpcProvider
 
 
 
-        $cmd = 'node'. self::CS_CAVER_PATH."getBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()." --node=".$this->getHostUrl();
+        $cmd = 'node'. $this->csCaverPath."getBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()." --node=".$this->getHostUrl();
 
         return  exec($cmd);
 
@@ -64,7 +64,7 @@ class KlaytnCypress extends RpcProvider
 
 
 
-        $cmd = 'node'. self::CS_CAVER_PATH."ownerOf.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --tokenId=$tokenId --node=".$this->getHostUrl();
+        $cmd = 'node'. $this->csCaverPath."ownerOf.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --tokenId=$tokenId --node=".$this->getHostUrl();
         return  exec($cmd);
 
     }
