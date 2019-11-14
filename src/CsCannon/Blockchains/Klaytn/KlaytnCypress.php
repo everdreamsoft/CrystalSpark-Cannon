@@ -36,7 +36,7 @@ class KlaytnCypress extends RpcProvider
 
 
 
-        $cmd = 'node'. $this->csCaverPath."getBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()." --node=".$this->getHostUrl();
+        $cmd = 'node '. $this->csCaverPath."getBalance.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --target=".$address->getAddress()." --node=".$this->getHostUrl();
 
         return  exec($cmd);
 
@@ -64,7 +64,7 @@ class KlaytnCypress extends RpcProvider
 
 
 
-        $cmd = 'node'. $this->csCaverPath."ownerOf.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --tokenId=$tokenId --node=".$this->getHostUrl();
+        $cmd = 'node '. $this->csCaverPath."ownerOf.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER)." --tokenId=$tokenId --node=".$this->getHostUrl();
         return  exec($cmd);
 
     }
