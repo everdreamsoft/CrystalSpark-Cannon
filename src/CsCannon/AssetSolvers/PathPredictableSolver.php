@@ -40,6 +40,7 @@ class PathPredictableSolver extends AssetSolver
 
 
         $solvers = $assetCollection->getSolvers();
+        $solverData = $assetCollection->getBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB,self::getEntity());
         $return = array();
 
         //get the correct solver
@@ -49,13 +50,25 @@ class PathPredictableSolver extends AssetSolver
             if ($pathSolverEntity instanceof PathPredictableSolver){
 
                 $foreignAssetFactory = new ForeignEntityAdapter(null,null,SandraManager::getSandra());
-                $assetConcept = new ForeignConcept("hi".$specifier->specificatorData['tokenId'],SandraManager::getSandra());
+                $assetConcept = new ForeignConcept("".$specifier->getDisplayStructure(),SandraManager::getSandra());
 
-                $imgUrl =  $pathSolverEntity->get(Asset::IMAGE_URL);
-                $metadataUrl =  $pathSolverEntity->get(Asset::METADATA_URL);
+                $imgUrl =  $solverData->get(Asset::IMAGE_URL);
+                $metadataUrl =  $solverData->get(Asset::METADATA_URL);
 
-                $data = array(AssetFactory::IMAGE_URL=>$imgUrl,
-                    AssetFactory::METADATA_URL=>$metadataUrl
+                $finalImage = $imgUrl ;
+                $finalMetaData = $metadataUrl ;
+
+                //now we replace the strings
+                foreach($specifier->specificatorData ? $specifier->specificatorData : array() as $data => $dataValue ){
+
+                    $finalImage = str_replace('{{'.$data.'}}',"$dataValue",$finalImage);
+                    $finalMetaData = str_replace('{{'.$data.'}}',"$dataValue",$finalMetaData);
+
+                }
+
+                $data = array(AssetFactory::IMAGE_URL=>$finalImage,
+                    AssetFactory::METADATA_URL=>$finalMetaData,
+                    AssetFactory::ID=>$specifier->getDisplayStructure()
                 );
 
                 $return[] = new Asset($assetConcept,$data,$foreignAssetFactory,$data,AssetFactory::$isa,AssetFactory::$file,SandraManager::getSandra());

@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/everdreamsoft/sandra.git",
-                "reference": "49a38b08175f65097425e57c399a9a9931b8be8c"
+                "reference": "6205f7ecb44d28928b5435fe189a4280deb26d7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/49a38b08175f65097425e57c399a9a9931b8be8c",
-                "reference": "49a38b08175f65097425e57c399a9a9931b8be8c",
+                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/6205f7ecb44d28928b5435fe189a4280deb26d7b",
+                "reference": "6205f7ecb44d28928b5435fe189a4280deb26d7b",
                 "shasum": ""
             },
             "require-dev": {
@@ -38,13 +38,13 @@
                 "MIT"
             ],
             "description": "Sandra Ontologic Datagraph",
-            "time": "2019-10-25T14:27:39+00:00"
+            "time": "2019-11-13T17:38:36+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
-            "version": "dev-master",
+            "version": "1.3.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
@@ -466,12 +466,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "5a03e94d9f0e4047097a4870d704b5b4eda4eb0c"
+                "reference": "b85a9205e06bead6f243af7f29812d8a62e50027"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/5a03e94d9f0e4047097a4870d704b5b4eda4eb0c",
-                "reference": "5a03e94d9f0e4047097a4870d704b5b4eda4eb0c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/b85a9205e06bead6f243af7f29812d8a62e50027",
+                "reference": "b85a9205e06bead6f243af7f29812d8a62e50027",
                 "shasum": ""
             },
             "require": {
@@ -521,7 +521,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-23T09:02:55+00:00"
+            "time": "2019-11-03T06:15:39+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -718,12 +718,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4e65eea6e1dfa9eb6f32a1407dfb6ffcb4b97b7f"
+                "reference": "a98ff6bb0060f2ae1717f8c556db3ab808558119"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4e65eea6e1dfa9eb6f32a1407dfb6ffcb4b97b7f",
-                "reference": "4e65eea6e1dfa9eb6f32a1407dfb6ffcb4b97b7f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a98ff6bb0060f2ae1717f8c556db3ab808558119",
+                "reference": "a98ff6bb0060f2ae1717f8c556db3ab808558119",
                 "shasum": ""
             },
             "require": {
@@ -793,7 +793,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-26T04:57:15+00:00"
+            "time": "2019-11-08T23:58:54+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -846,12 +846,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "0b71b4de0c55d2eb2946f30052e94d23e014c2cd"
+                "reference": "c57ba51c28b64ef8a4b14b40bceb2c5ca19e9406"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/0b71b4de0c55d2eb2946f30052e94d23e014c2cd",
-                "reference": "0b71b4de0c55d2eb2946f30052e94d23e014c2cd",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/c57ba51c28b64ef8a4b14b40bceb2c5ca19e9406",
+                "reference": "c57ba51c28b64ef8a4b14b40bceb2c5ca19e9406",
                 "shasum": ""
             },
             "require": {
@@ -902,7 +902,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2019-10-23T09:03:30+00:00"
+            "time": "2019-10-28T09:22:49+00:00"
         },
         {
             "name": "sebastian/diff",

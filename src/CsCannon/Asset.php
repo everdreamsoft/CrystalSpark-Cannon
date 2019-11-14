@@ -35,7 +35,7 @@ class Asset extends \SandraCore\Entity implements Displayable
         if ($factory instanceof ForeignEntityAdapter){
 
            $this->imageUrl = $sandraReferencesArray[AssetFactory::IMAGE_URL];
-            $this->id = $sandraReferencesArray['assetId'];
+            $this->id = $sandraReferencesArray[AssetFactory::ID];
             $this->metaDataUrl = $sandraReferencesArray[AssetFactory::METADATA_URL];
 
         }

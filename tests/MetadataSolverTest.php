@@ -28,11 +28,11 @@ use PHPUnit\Framework\TestCase;
 final class MetadataSolverTest extends TestCase
 {
 
-    public const COLLECTION_NAME = "My First Collection" ;
-    public const COLLECTION_CODE = "MyFirstCollection" ;
-    public const COLLECTION_CONTRACT = "myContract" ;
+    public const COLLECTION_NAME = "My First Collection2" ;
+    public const COLLECTION_CODE = "MyFirstCollection2" ;
+    public const COLLECTION_CONTRACT = "myContract2" ;
 
-    public function testCollection()
+    public function testMetasolver()
     {
 
         ini_set('display_errors', 1);
@@ -40,17 +40,21 @@ final class MetadataSolverTest extends TestCase
         error_reporting(E_ALL);
 
 
+
+
+
         \CsCannon\Tests\TestManager::initTestDatagraph();
 
         $contractFactory = new EthereumContractFactory();
         $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
 
-        $pathSolver = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/{{tokenId}}","http://www.website.com/{{tokenId}}") ;
+        $pathSolver = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/image/{{tokenId}}","http://www.website.com/meta/{{tokenId}}") ;
+       // $pathSolver = LocalSolver::getEntity() ;
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
         $collection = $assetCollectionFactory->create(self::COLLECTION_CODE,null, $pathSolver);
         $erc721 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
-        $erc721->setTokenId(2);
+        $erc721->setTokenId($tokenId=2);
 
 
 
@@ -64,11 +68,17 @@ final class MetadataSolverTest extends TestCase
         $collection->setSolver($pathSolver);
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory->populateLocal();
         $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
 
-        $asset = $pathSolver::resolveAsset($collection,$erc721,$contract);
+        $assets = $pathSolver::resolveAsset($collection,$erc721,$contract);
 
+        $this->assertInstanceOf(Asset::class,$assets[0]);
 
+        $asset = reset($assets);
+        /** @var Asset $asset */
+
+        $this->assertEquals("http://www.website.com/image/$tokenId",$asset->imageUrl);
 
 
 

@@ -18,6 +18,7 @@ use CsCannon\Orb;
 use CsCannon\SandraManager;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
+use SandraCore\System;
 
 abstract class AssetSolver extends Entity
 {
@@ -27,7 +28,8 @@ abstract class AssetSolver extends Entity
     const LAST_UPDATE_SHORTNAME = 'updateTimestamp';
     public static $lastUpdate = null ;
     public static $solverEntity = null ;
-    public  $additionalSolverParam = null ;
+    public $additionalSolverParam ;
+
 
 
 public abstract static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):?array ;
@@ -85,15 +87,13 @@ public static function update($onlyIfOlderThanSec = null){
 
     public static function getEntity():self {
 
-    if( is_null(self::$solverEntity)) {
+       $sandra = SandraManager::getSandra();
 
-        $solverFactory = new MetadataSolverFactory(SandraManager::getSandra());
-        $solverFactory->populateLocal();
-        self::$solverEntity = $solverFactory->getOrCreateFromRef('class_name', static::class);
 
-    }
+        $solverFactory = new MetadataSolverFactory($sandra);
 
-    return self::$solverEntity;
+
+    return $sandra->entityToClassStore(static::class,$solverFactory);
 
 
 

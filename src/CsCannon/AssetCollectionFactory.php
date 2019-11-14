@@ -70,6 +70,8 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     private static function getSolverData (){
 
+        //TODO must investigate here save in system instead
+
         $actualSandra = SandraManager::getSandra() ;
 
         if (self::$staticSolvers == null or $actualSandra->instanceId != self::$staticSolvers->system->instanceId) {
@@ -124,6 +126,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $this->getTriplets();
         $this->joinFactory(self::METADATASOLVER_VERB,self::getSolverData());
+        $this->populateBrotherEntities(self::METADATASOLVER_VERB);
         $this->joinPopulate();
 
         //set the solvers
