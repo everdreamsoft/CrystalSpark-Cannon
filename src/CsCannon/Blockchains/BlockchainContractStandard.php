@@ -67,12 +67,14 @@ abstract class BlockchainContractStandard extends Entity
             die();
         }
 
+        return $this ;
+
 
     }
 
     public function setTokenPath($tokenPath){
 
-        $this->verifyTokenPath($tokenPath);
+        return $this->verifyTokenPath($tokenPath);
 
     }
 
@@ -82,7 +84,7 @@ abstract class BlockchainContractStandard extends Entity
 
     }
 
-    public static function getEntity():self
+    public static function getEntity($data=null):self
     {
 
         $localEntity = null ;
@@ -103,14 +105,46 @@ abstract class BlockchainContractStandard extends Entity
 
         }
 
-        return $localEntity;
+        //if($data) $localEntity->setTokenPath($data);
+        $newEntity = clone $localEntity ;
+
+        return $newEntity;
 
     }
 
-    public static function init()
+    public static function init($data = null)
     {
 
-        return static::getEntity();
+        return static::getEntity($data);
+
+    }
+
+    public static function getJsonFromStandardArray($array)
+    {
+
+        $csv = '';
+        $totalArray = array();
+
+        foreach ($array as $standard){
+            $totalArray[] = $standard->specificatorData ;
+
+
+        }
+
+        $json = json_encode($totalArray);
+
+        return $json ;
+
+
+    }
+
+    public static function getStandardsFromJson($json)
+    {
+
+
+
+        return $json ;
+
 
     }
 

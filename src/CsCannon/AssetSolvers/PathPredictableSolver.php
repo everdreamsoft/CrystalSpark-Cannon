@@ -97,6 +97,8 @@ class PathPredictableSolver extends AssetSolver
 
 
 
+
+
     public static function getEntity($imagePath=null,$metadataPath=null):AssetSolver {
 
 

@@ -13,6 +13,7 @@ use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use SandraCore\EntityFactory;
 use SandraCore\System;
 
 class AssetCollection extends \SandraCore\Entity
@@ -22,6 +23,8 @@ class AssetCollection extends \SandraCore\Entity
     public $name = 'name';
     public $imageUrl = 'imageUrl';
     public $description = 'description';
+
+    const SAMPLE_STORAGE = 'sampleStorage';
 
     private $displayArray = array();
 
@@ -113,6 +116,26 @@ class AssetCollection extends \SandraCore\Entity
         $this->description = $description;
 
 
+    }
+
+
+    public  function storeSample($array)
+    {
+
+        $factory = $this->factory;
+
+       $json = BlockchainContractStandard::getJsonFromStandardArray($array);
+       /** @var EntityFactory $factory */
+      $sampleStore = $this->setBrotherEntity('STORE',self::SAMPLE_STORAGE,null);
+      $sampleStore->setStorage($json);
+
+
+
+    }
+
+    protected  function getSampleAssets()
+    {
+        $sampleCSV = $this->getStorage();
     }
 
     public function getSolvers(){

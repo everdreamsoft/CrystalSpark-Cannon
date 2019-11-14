@@ -20,6 +20,7 @@ use CsCannon\Blockchains\Ethereum\Interfaces\ERC20;
 use CsCannon\Orb;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721 ;
 
 
 
@@ -56,6 +57,8 @@ final class MetadataSolverTest extends TestCase
         $erc721 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
         $erc721->setTokenId($tokenId=2);
 
+        $contract->bindToCollection($collection);
+
 
 
         /** @var \CsCannon\AssetCollection $collection */
@@ -91,6 +94,57 @@ final class MetadataSolverTest extends TestCase
 
 
      //   \CsCannon\Tests\TestManager::registerDataStructure();
+
+    }
+
+    public function testSample()
+    {
+
+
+
+
+
+        $contractFactory = new EthereumContractFactory();
+        $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
+
+        $pathSolver = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/image/{{tokenId}}","http://www.website.com/meta/{{tokenId}}") ;
+        // $pathSolver = LocalSolver::getEntity() ;
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory->populateLocal();
+        $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        $erc721 =  ERC721::init(1);
+        $erc721->setTokenId($tokenId=2);
+
+
+
+        $asset[]  = $pathSolver::resolveAsset($collection, $erc721->setTokenId(2),$contract);
+        $asset[]  = $pathSolver::resolveAsset($collection, $erc721->setTokenId(3),$contract);
+        $asset[]  = $pathSolver::resolveAsset($collection, $erc721->setTokenId(4),$contract);
+
+        $standards[] = ERC721::init(1);
+        $standards[] = ERC721::init(2);
+        $standards[] = ERC721::init(3);
+
+        //$orb = new Orb($contract, $erc721->setTokenId(2),$collection,$asset);
+       // $orbFactory = new \CsCannon\OrbFactory();
+        //$orbs[] = $orbFactory->getOrbsFromContractPath($contract, $erc721->setTokenId(3));
+
+
+        $collection->storeSample($standards);
+
+
+
+
+
+
+
+
+        //$addressEntity = $addressFactory->get($testAddress);
+        //$balance = $addressEntity->getBalance();
+
+
+        //   \CsCannon\Tests\TestManager::registerDataStructure();
 
     }
 
