@@ -133,6 +133,18 @@ final class MetadataSolverTest extends TestCase
 
         $collection->storeSample($standards);
 
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory->populateLocal();
+        $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
+
+        $standars = $collection->getStoredSamples();
+
+       return $standards ;
+
+
+
+
+
 
 
 

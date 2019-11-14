@@ -126,6 +126,8 @@ abstract class BlockchainContractStandard extends Entity
         $totalArray = array();
 
         foreach ($array as $standard){
+            /** @var \CsCannon\Blockchains\BlockchainContractStandard $standard */
+            $standard->specificatorData['_class_'] = get_class($standard);
             $totalArray[] = $standard->specificatorData ;
 
 
@@ -141,9 +143,18 @@ abstract class BlockchainContractStandard extends Entity
     public static function getStandardsFromJson($json)
     {
 
+        $array = json_decode($json,1);
+        $standard = [];
 
+        foreach ($array as $path){
 
-        return $json ;
+            $class = $path['_class_'];
+
+           $standard[] = $class::init($path);
+
+        }
+
+        return $standard;
 
 
     }

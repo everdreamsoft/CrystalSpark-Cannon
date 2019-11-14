@@ -127,6 +127,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         $this->getTriplets();
         $this->joinFactory(self::METADATASOLVER_VERB,self::getSolverData());
         $this->populateBrotherEntities(self::METADATASOLVER_VERB);
+        $this->populateBrotherEntities('store');
         $this->joinPopulate();
 
         //set the solvers
