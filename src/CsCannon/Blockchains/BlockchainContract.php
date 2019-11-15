@@ -51,7 +51,7 @@ use SandraCore\System;
 
     }
 
-    public function getStandard():BlockchainContractStandard{
+    public function getStandard():?BlockchainContractStandard{
 
 
 

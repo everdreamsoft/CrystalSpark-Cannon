@@ -18,7 +18,9 @@ use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use SandraCore\ForeignEntityAdapter;
 
 class XcpContract extends BlockchainContract
@@ -70,6 +72,14 @@ class XcpContract extends BlockchainContract
 
         return array();
 
+    }
+
+    public function getStandard():?BlockchainContractStandard{
+
+
+        parent::getStandard();
+
+        return CounterpartyAsset::init();
     }
 
 
