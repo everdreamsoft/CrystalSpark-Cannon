@@ -138,8 +138,11 @@ abstract class BlockchainImporter
                 $contract = $contractFactory->get($fentity->get(BlockchainEventFactory::EVENT_CONTRACT));
                 $blockTime = $fentity->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
                 $block = $blockfactory->get($fentity->get(BlockchainBlockFactory::INDEX_SHORTNAME)); //to verify
+                /** @var BlockchainContract $contract */
 
-                $tokenId = $fentity->get(BlockchainContractFactory::TOKENID);
+
+                $standard = $contract->getStandard();
+                $standard->setTokenPath($fentity->get(BlockchainContractFactory::CONTRACT_STANDARD));
 
                 $quantity = 1 ;
 
@@ -148,7 +151,7 @@ abstract class BlockchainImporter
                     $quantity = $fentity->get(BlockchainEventFactory::EVENT_QUANTITY) ;
                 }
 
-                $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,$tokenId,$quantity);
+                $populateEventFactory->create($blockchain,$sourceAddress,$destination,$contract,$tx,$blockTime,$block,$standard,$quantity);
 
 
             }
