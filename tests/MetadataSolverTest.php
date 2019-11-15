@@ -125,10 +125,9 @@ final class MetadataSolverTest extends TestCase
         $standards[] = ERC721::init(1);
         $standards[] = ERC721::init(2);
         $standards[] = ERC721::init(3);
-
         //$orb = new Orb($contract, $erc721->setTokenId(2),$collection,$asset);
        // $orbFactory = new \CsCannon\OrbFactory();
-        //$orbs[] = $orbFactory->getOrbsFromContractPath($contract, $erc721->setTokenId(3));
+        //$orbs[] = $orbFactory->getOrbsFromContractPatKh($contract, $erc721->setTokenId(3));
 
 
         $collection->storeSample($standards);

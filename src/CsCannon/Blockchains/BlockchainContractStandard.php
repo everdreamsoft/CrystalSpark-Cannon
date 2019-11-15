@@ -105,7 +105,7 @@ abstract class BlockchainContractStandard extends Entity
 
         }
 
-        //if($data) $localEntity->setTokenPath($data);
+        if($data) $localEntity->setTokenPath($data);
         $newEntity = clone $localEntity ;
 
         return $newEntity;
