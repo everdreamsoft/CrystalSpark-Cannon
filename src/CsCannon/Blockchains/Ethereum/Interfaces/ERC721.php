@@ -97,6 +97,7 @@ class ERC721 extends EthereumContractStandard
             $tokenData = null ; //we remove token data array
             $directTokenId = $tokenId ;
         }
+        if (is_array($tokenId)) $tokenData = $tokenId ;
 
 
         $return = parent::init($tokenData);
