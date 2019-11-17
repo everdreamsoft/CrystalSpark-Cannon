@@ -16,6 +16,7 @@ use CsCannon\Orb;
 use CsCannon\SandraManager;
 use SandraCore\Entity;
 use SandraCore\Reference;
+use SandraCore\System;
 
 abstract class BlockchainContractStandard extends Entity
 {
@@ -87,16 +88,19 @@ abstract class BlockchainContractStandard extends Entity
     public static function getEntity($data=null):self
     {
 
-        $localEntity = null ;
+        $sandra = SandraManager::getSandra();
 
-        if (isset(static::$entityClassArray[static::class]))
-        $localEntity = static::$entityClassArray[static::class] ;
+        $localEntity = null ;
+        $standardFactory = BlockchainStandardFactory::getStatic(SandraManager::getSandra());
+
+        if ($sandra->entityToClassStore(static::class,$standardFactory))
+            $localEntity = $sandra->entityToClassStore(static::class,$standardFactory) ;
         /** @var BlockchainContractStandard $localEntity */
 
 
         if (is_null($localEntity) or $localEntity->system->instanceId != SandraManager::getSandra()->instanceId) {
 
-            $standardFactory = BlockchainStandardFactory::getStatic(SandraManager::getSandra());
+
 
 
             static::$entityClassArray[static::class] = $standardFactory->getOrCreateFromRef('class_name', static::class);
@@ -150,7 +154,7 @@ abstract class BlockchainContractStandard extends Entity
 
             $class = $path['_class_'];
 
-           $standard[] = $class::init($path);
+            $standard[] = $class::init($path);
 
         }
 
