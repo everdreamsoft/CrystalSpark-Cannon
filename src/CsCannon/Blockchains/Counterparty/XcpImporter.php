@@ -35,7 +35,7 @@ class XcpImporter extends BlockchainImporter
 
 
         $blockFactory = $this->getPopulatedBlockFactory($foreignEntityEventsFactory);
-       // die();
+        // die();
 
         $addressFactory = $this->getPopulatedAddressFactory($foreignEntityEventsFactory);
         $contractFactory = $this->getPopulatedContractFactory($foreignEntityEventsFactory);
@@ -45,7 +45,7 @@ class XcpImporter extends BlockchainImporter
         $this->saveEvents($foreignEntityEventsFactory,$this->blockchain,$contractFactory,$addressFactory,$blockFactory);
 
 
-       // $newAddress = count($addressFactory->newEntities);
+        // $newAddress = count($addressFactory->newEntities);
 
         $totalResponses['data'] = $this->responseArray ;
         return $totalResponses ;

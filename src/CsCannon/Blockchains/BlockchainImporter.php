@@ -396,8 +396,14 @@ abstract class BlockchainImporter
         $response['total'] =  $countTotalEntities ;
 
 
-
+        $count = 0;
         foreach ($entityIdList as $entityIdentifierString){
+
+            $count++ ;
+            if (!$entityIdentifierString){
+                continue;
+            }
+            //echo"pass $entityIdentifierString $count ".PHP_EOL;
 
             $entityFactory->get($entityIdentifierString,true);
             //$foundEntity =$entityFactory->first($entityIdentifier,$entityIdentifierString);

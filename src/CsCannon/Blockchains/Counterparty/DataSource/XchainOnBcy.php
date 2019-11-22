@@ -66,6 +66,13 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($resultArray as $result) {
 
+            if (!($result['asset'])){
+
+                $result['asset'] ='NOASSET' ;
+                continue ;
+            }
+            //echo"asset :".$result['asset'] .PHP_EOL;
+
 
             //add tracker
             $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
