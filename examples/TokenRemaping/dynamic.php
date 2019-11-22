@@ -20,7 +20,7 @@ const COLLECTION_CODE = "Yummy" ;
 const EXAMPLE_ERC20_CONTRACT = "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"; //DAI contract
 const EXAMPLE_HOLDER_ADDRESS = "0x1a84d1c0258bdc26f013218acb2530a76c884a38"; //DAI holder
 
-$setup = true ;
+$setup = false ;
 if($setup) {
 
 //Example token

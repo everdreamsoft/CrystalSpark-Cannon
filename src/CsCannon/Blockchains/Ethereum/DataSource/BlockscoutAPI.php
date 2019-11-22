@@ -168,7 +168,7 @@ class BlockscoutAPI extends BlockchainDataSource
         foreach ($foreignAdapter->getEntities() as $entity){
 
             $contract = $contractFactory->get($entity->get('contractAddress'));
-            $standard = new ERC20();
+            $standard = ERC20::init();
 
             //$standard->setTokenId("1");
             $address->balance->addContractToken($contract,$standard,$entity->get('balance'));

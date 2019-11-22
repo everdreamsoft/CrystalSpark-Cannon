@@ -1,0 +1,39 @@
+<?php
+/**
+ * Created by EverdreamSoft.
+ * User: Shaban Shaame
+ * Date: 2019-09-26
+ * Time: 15:48
+ */
+
+
+namespace CsCannon ;
+
+use CsCannon\AssetSolvers\LocalSolver;
+use CsCannon\Blockchains\Ethereum\DataSource\BlockscoutAPI;
+use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+
+require_once __DIR__ . '/../../vendor/autoload.php'; // Autoload files using Composer autoload
+
+
+$sandra = SandraManager::getSandra();
+
+$collectionFactory = new AssetCollectionFactory($sandra);
+$collection = $collectionFactory->get('KlaytnChamp');
+
+$tokenId = 512 ;
+
+$metaData = [AssetFactory::IMAGE_URL => 'https://klaytn.champ.blockdevs.asia/token_img/' . $tokenId,
+    AssetFactory::METADATA_URL => 'https://klaytn.champ.blockdevs.asia/token/' . $tokenId,
+    ];
+
+
+$standard = ERC721::init($tokenId); //We instance
+$specifierData = $standard->getSpecifierData();
+$assetFactory->create($this->getAddress() . '-' . $tokenId, $metaData, $collection, array($contract => $specifierData));
+
+
+
+];
