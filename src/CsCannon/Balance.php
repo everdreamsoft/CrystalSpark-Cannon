@@ -40,7 +40,7 @@ class Balance
     public function __construct(BlockchainAddress $addressEntity = null)
     {
 
-       $this->address = $addressEntity ;
+        $this->address = $addressEntity ;
 
     }
 
@@ -69,35 +69,35 @@ class Balance
 //die("deado");
         $output = array();
 
-          foreach($this->contracts ? $this->contracts : array() as $chain){
+        foreach($this->contracts ? $this->contracts : array() as $chain){
 
 
-              foreach($chain ? $chain : array() as $contractId =>$contracts){
+            foreach($chain ? $chain : array() as $contractId =>$contracts){
 
-              $newContract = null ;
-              $newContract['contract'] = $contractId ;
-
-
-                  foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
-
-                  //get the token object
-                  $tokenObject = $token['token'] ;
-
-                  /** @var BlockchainContractStandard $tokenObject */
-
-                  $newToken =  $tokenObject->specificatorData;
-                  $newToken['standard'] = $tokenObject->getStandardName();
-                  $newToken['quantity'] = $token['quantity'];
+                $newContract = null ;
+                $newContract['contract'] = $contractId ;
 
 
+                foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
 
-                  $newContract['tokens'][] = $newToken ;
+                    //get the token object
+                    $tokenObject = $token['token'] ;
 
-              }
-              $output[] = $newContract ;
-          }
+                    /** @var BlockchainContractStandard $tokenObject */
 
-      }
+                    $newToken =  $tokenObject->specificatorData;
+                    $newToken['standard'] = $tokenObject->getStandardName();
+                    $newToken['quantity'] = $token['quantity'];
+
+
+
+                    $newContract['tokens'][] = $newToken ;
+
+                }
+                $output[] = $newContract ;
+            }
+
+        }
         return $output ;
     }
 
@@ -130,28 +130,29 @@ class Balance
                 foreach($contracts ? $contracts : array() as $tokenComposedId =>$token) {
 
 
-                        /** @var AssetCollection $collectionEntity */
+                    /** @var AssetCollection $collectionEntity */
 
-                        $tokenObject = $token['token'] ;
-                        //have we found an orb ?
-                        if($orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject)){
+                    $tokenObject = $token['token'] ;
+                    //$quantity = $token->
+                    //have we found an orb ?
+                    if($orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject)){
 
-                            $orbArray = $orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject);
+                        $orbArray = $orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject,$token['quantity']);
 
 
-                            $orbs[] = $orbArray ;
-                        }
-
-                }
-
+                        $orbs[] = $orbArray ;
+                    }
 
                 }
+
+
             }
+        }
 
 
-$this->orbFactory = $orbFactory ;
+        $this->orbFactory = $orbFactory ;
 
-return $this->orbFactory ;
+        return $this->orbFactory ;
 
 
 
@@ -161,56 +162,56 @@ return $this->orbFactory ;
     public function returnObsByCollections():array{
 
 
-      $factory = $this->getObs();
-      $output = array();
+        $factory = $this->getObs();
+        $output = array();
 
-      if (!is_array($factory->instanceCollectionMap)) return $output ;
+        if (!is_array($factory->instanceCollectionMap)) return $output ;
 
-       foreach ($factory->instanceCollectionMap as $collectionId => $orbs){
+        foreach ($factory->instanceCollectionMap as $collectionId => $orbs){
 
-           /** @var Orb $firstOrb */
-           $firstOrb = reset($orbs);
-           $collection = $firstOrb->assetCollection->getDefaultDisplay();
-
-
-           foreach ($orbs as $index => $orb) {
-
-               /** @var BlockchainContract $contract */
-               $contract = $orb->contract ;
-
-               /** @var BlockchainContractStandard $token */
-               $token = $orb->tokenSpecifier ;
-
-               /** @var Asset $asset */
-               $asset = $orb->asset ;
-
-               $contractChain = $contract->getBlockchain();
-
-               $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
-
-               /** @var Orb $orb */
-               $orbDisplay['contract'] = $contract->getId();
-               $orbDisplay['chain'] = $contractChain::NAME;
-
-               $orbDisplay['token'] = $token->specificatorData ;
-               $orbDisplay['token']['standard'] = $token->getStandardName();
-               $orbDisplay['quantity'] = $quantity ;
-               $orbDisplay['asset']['image'] = $asset->imageUrl ;
+            /** @var Orb $firstOrb */
+            $firstOrb = reset($orbs);
+            $collection = $firstOrb->assetCollection->getDefaultDisplay();
 
 
+            foreach ($orbs as $index => $orb) {
 
-               $collection['orbs'][] = $orbDisplay ;
-           }
+                /** @var BlockchainContract $contract */
+                $contract = $orb->contract ;
 
-           $output['collections'][] = $collection ;
+                /** @var BlockchainContractStandard $token */
+                $token = $orb->tokenSpecifier ;
 
-           }
+                /** @var Asset $asset */
+                $asset = $orb->asset ;
 
-       //die(print_r(json_encode($output)));
+                $contractChain = $contract->getBlockchain();
+
+                $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
+
+                /** @var Orb $orb */
+                $orbDisplay['contract'] = $contract->getId();
+                $orbDisplay['chain'] = $contractChain::NAME;
+
+                $orbDisplay['token'] = $token->specificatorData ;
+                $orbDisplay['token']['standard'] = $token->getStandardName();
+                $orbDisplay['quantity'] = $quantity ;
+                $orbDisplay['asset']['image'] = $asset->imageUrl ;
+
+
+
+                $collection['orbs'][] = $orbDisplay ;
+            }
+
+            $output['collections'][] = $collection ;
+
+        }
+
+        //die(print_r(json_encode($output)));
 
         return $output ;
 
-       }
+    }
 
     function print_array($array,$depth=1,$indentation=0){
         if (is_array($array)){
@@ -246,11 +247,11 @@ return $this->orbFactory ;
         }
     }
 
-public function getContractMap(){
+    public function getContractMap(){
 
         return $this->contractMap ;
 
-}
+    }
 
     public function getLocalFactory():EntityFactory{
 
@@ -313,7 +314,7 @@ public function getContractMap(){
 
 
 
-      $factory = $this->getLocalFactory();
+        $factory = $this->getLocalFactory();
 
         $factory->populateLocal(100000); //we might have issue if a user has more contract balance than this num
 
@@ -331,7 +332,7 @@ public function getContractMap(){
                     $triplets = [self::LINKED_ADDRESS=>$this->address,
                         self::ON_CONTRACT=>$this->contractMap[$contractId],
                         self::LAST_BLOCK_UPDATE=>$lastBlockUpdate
-                        ];
+                    ];
 
 
 
