@@ -9,6 +9,7 @@
 namespace CsCannon;
 
 use CsCannon\Blockchains\BlockchainEventFactory;
+use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
@@ -23,39 +24,27 @@ class Kickstart
 
         $sandra = SandraManager::getSandra();
 
-        $ethContractFactory = new EthereumContractFactory();
-        $ethContractFactory->populateLocal();
-        $ethContractFactory->createViewTable("EthereumContracts");
+        self::createViewFromFactory(new EthereumContractFactory(),'EthereumContracts');
+        self::createViewFromFactory(new EthereumAddressFactory(),'EthereumAddress');
+        self::createViewFromFactory(new KlaytnContractFactory(),'KlatnContracts');
+        self::createViewFromFactory(new KlaytnAddressFactory(),'KlaytnAddress');
+        self::createViewFromFactory(new EntityFactory("balanceItem",'balanceFile',$sandra),'balances');
+        self::createViewFromFactory(new BlockchainEventFactory(),'Events');
+        self::createViewFromFactory(new \CsCannon\AssetCollectionFactory($sandra),'AssetCollections');
+        self::createViewFromFactory(new \CsCannon\AssetFactory(),'Assets');
 
-        $factory = new EthereumAddressFactory();
+        self::createViewFromFactory(new XcpContractFactory(),'XcpContracts');
+
+
+    }
+
+    public static function createViewFromFactory(EntityFactory $factory, $viewName){
+
+
         $factory->populateLocal();
-        $factory->createViewTable("EthereumAddress");
-
-        $ethContractFactory = new KlaytnContractFactory();
-        $ethContractFactory->populateLocal();
-        $ethContractFactory->createViewTable("KlatnContracts");
-
-        $factory = new KlaytnAddressFactory();
-        $factory->populateLocal();
-        $factory->createViewTable("KlaytnAddress");
-
-        $ethContractFactory = new EntityFactory("balanceItem",'balanceFile',$sandra);
-        $ethContractFactory->populateLocal();
-        $ethContractFactory->createViewTable("balances");
-
-
-        $factory = new BlockchainEventFactory();
-        $factory->populateLocal();
-        $factory->createViewTable("Events");
-
-        $factory = new \CsCannon\AssetCollectionFactory($sandra);
-        $factory->populateLocal();
-        $factory->createViewTable("AssetCollections");
-
-        $factory = new \CsCannon\AssetFactory();
-        $factory->populateLocal();
-        $factory->createViewTable("Assets");
-
+        if (count($factory->getEntities())>0){
+            $factory->createViewTable("$viewName");
+        }
 
 
 
