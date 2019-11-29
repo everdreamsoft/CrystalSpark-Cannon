@@ -29,6 +29,9 @@ use SandraCore\ForeignEntityAdapter;
 class LocalSolver extends AssetSolver
 {
 
+    /**
+     * @var EntityFactory[]
+     */
     private static $assetInCollections ;
 
     public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array{
@@ -49,49 +52,12 @@ class LocalSolver extends AssetSolver
             self::$assetInCollections[$assetCollection->getId()] = $assetFactory ;
 
 
-
         }
 
         $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
 
-        //sub optimal there should be a map for that
+        return  $assetCollectionList->getAssetsFromContract($contract,$specifier);
 
-        foreach ($assetCollectionList->entityArray as $assetEntity)
-        {
-            /** @var Asset $assetEntity */
-
-            $sandra = SandraManager::getSandra();
-
-            if (!isset($assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)])) continue ;
-
-            $contractArray =  $assetEntity->subjectConcept->tripletArray[$sandra->systemConcept->get(AssetFactory::$tokenJoinVerb)];
-
-            //linked contract =
-            if (in_array($contract->subjectConcept->idConcept,$contractArray)) {
-
-                $standardData = $assetEntity->getBrotherEntity(AssetFactory::$tokenJoinVerb);
-                //Only if the asset specifiy standard data
-                if(is_array($standardData)) {
-                    $standardData = end($standardData);
-
-
-                    //I have to check if path is correct
-                    $localStorageStandard = $contract->getStandard();
-                    $localStorageStandard->setTokenPath($standardData->entityRefs);
-
-                    //if the local storage data is exactely the same
-                    if ($localStorageStandard->getSpecifierData() != $specifier->getSpecifierData()) {
-                        continue;
-                    }
-                }
-
-                $return[] = $assetEntity;
-            }
-
-
-        }
-
-        return $return ;
 
 
     }

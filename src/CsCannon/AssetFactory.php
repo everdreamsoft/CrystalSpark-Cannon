@@ -12,7 +12,9 @@ namespace CsCannon;
 
 
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use SandraCore\Entity;
 use SandraCore\System;
 
 class AssetFactory extends \SandraCore\EntityFactory
@@ -27,6 +29,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     public const ID = "assetId";
     public const IMAGE_URL = "imgURL";
     public const METADATA_URL = "metaDataURL";
+    private $specifierMap ;
 
 
 
@@ -64,15 +67,42 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function get($id):?Asset{
+    public function getAssetsFromContract(BlockchainContract $contract, BlockchainContractStandard $specifier){
 
-        return $this->first(AssetFactory::ID,$id);
+        if (!isset($this->specifierMap[$contract->subjectConcept->idConcept])) {
+
+            $assetList = $this->getEntitiesWithBrother(self::$tokenJoinVerb, $contract->subjectConcept->idConcept);
+
+            foreach ($assetList ? $assetList : array() as $asset){
+
+                $localStorageStandard = $contract->getStandard();
+                $standardData = $asset->getBrotherEntity(AssetFactory::$tokenJoinVerb);
+                if(is_array($standardData)) {
+                    $standardData = end($standardData);
+                    $localStorageStandard->setTokenPath($standardData->entityRefs);
+                }
+
+                $this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()][] = $asset ;
+            }
+
+
+        }
+
+        return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+
+
 
 
     }
 
+    public function get($id):?Asset{
 
-    public function create($id, Array $metaData,$collections=null,$contracts=null){
+        return $this->first(AssetFactory::ID,$id);
+
+    }
+
+
+    public function create($id, Array $metaData,array $collections=null,array $contracts=null){
 
 
 
@@ -89,24 +119,33 @@ class AssetFactory extends \SandraCore\EntityFactory
         }
 
         $metaData[self::ID] = $id ;
+        $brotherEntities = null ;
+
+        //we need to add the meta data on brothers
+        foreach ($contracts ? $contracts : array() as $contract){
+            /** @var Entity $contract */
+            $brotherEntities[self::$tokenJoinVerb][$contract->subjectConcept->idConcept][$this->sc->get('creationTimestamp')] = time();
+
+        }
+
+        //we need to add the meta data on brothers
+        foreach ($collections ? $collections : array() as $collection){
+            /** @var Entity $collection */
+            $brotherEntities[self::$collectionJoinVerb][$collection->subjectConcept->idConcept][$this->sc->get('creationTimestamp')] = time();
+
+        }
+
+        //$brotherEntities = array(self::$tokenJoinVerb =>($contracts),self::$collectionJoinVerb =>($collections));
 
 
 
-        $newEntity = $this->createNew($metaData,array(self::$tokenJoinVerb =>($contracts),self::$collectionJoinVerb =>($collections)));
+        $newEntity = $this->createNew($metaData,$brotherEntities);
 
         //bind the contract to collection
 
 
 
         return $newEntity ;
-
-
-
-
-
-
-
-
 
 
 

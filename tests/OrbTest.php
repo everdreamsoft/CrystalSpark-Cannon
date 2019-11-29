@@ -18,6 +18,7 @@ use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC20;
 use CsCannon\Orb;
+use CsCannon\OrbFactory;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
 
@@ -108,7 +109,14 @@ final class OrbTest extends TestCase
 
        // $getJoinedContract->dumpMeta();
 
+        //Brother entity hotplug not supported by sandra at this moment
+        $newContractFactoryBecauseNotHotPlug =  $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contract = $newContractFactoryBecauseNotHotPlug->get(self::COLLECTION_CONTRACT);
+
+
         $myOrbFactory = new \CsCannon\OrbFactory();
+        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
+        $assetFactory->populateLocal();
         $orbs = $myOrbFactory->getOrbsFromContractPath($contract,ERC20::getEntity());
 
         $this->assertInstanceOf(Orb::class,$orbs[0],"Orb couldn't be retreived");
