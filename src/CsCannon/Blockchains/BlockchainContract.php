@@ -105,13 +105,17 @@ use SandraCore\System;
 
     }
 
+     public function setName(){
+
+         return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
+
+     }
+
 
 
     public function getId(){
 
-
         return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
-
 
     }
 

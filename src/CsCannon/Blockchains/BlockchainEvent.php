@@ -15,6 +15,7 @@ namespace CsCannon\Blockchains;
 
 
 use CsCannon\DisplayManager;
+
 use CsCannon\OrbFactory;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
@@ -160,6 +161,11 @@ class BlockchainEvent extends Entity implements Displayable
 
             foreach ($orbArray ? $orbArray : array() as $orb) {
                 /**@var Orb $orb */
+                $orbArray = $orb->getAsset()->display()->return();
+                $orbArray['asset'] = $orb->getAsset()->display()->return();
+                $orbArray['collection']['name'] = $orb->assetCollection->name;
+                $orbArray['collection']['id'] = $orb->assetCollection->getId();
+                $return['orbs'][] = $orbArray ; //legacy support
                 $return['orbs'][] = $orb->getAsset()->display()->return();
 
             }
