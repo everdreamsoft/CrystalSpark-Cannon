@@ -108,6 +108,7 @@ abstract class BlockchainImporter
 
         if(!empty($conceptsArray)) {
             $populateEventFactory->populateLocal();
+            $matchingEntities = count($addressFactory->entityArray);
 
         }
         else {
@@ -115,7 +116,7 @@ abstract class BlockchainImporter
             $populateEventFactory->populateLocal(1,0,null);
 
         }
-        $matchingEntities = count($addressFactory->entityArray);
+
 
 
 
