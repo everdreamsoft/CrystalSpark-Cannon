@@ -32,6 +32,7 @@ class TestManager
 
         $sandraToFlush = new System('phpUnit_', true);
         \SandraCore\Setup::flushDatagraph($sandraToFlush);
+        $sandraToFlush->destroy();
         $system = new System('phpUnit_',true);
         $system->registerStructure = true ;
 

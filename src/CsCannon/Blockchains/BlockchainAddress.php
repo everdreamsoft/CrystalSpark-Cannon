@@ -82,22 +82,7 @@ abstract class  BlockchainAddress extends Entity implements Displayable
     }
 
 
-    public function getEvents($limit = 100,$offset=0){
 
-
-        $blockchain = $this->getBlockchain();
-
-        $eventFactorySender = clone $blockchain->getEventFactory();
-        //$eventFactoryReceiver = clone $blockchain->getEventFactory();
-
-        $eventFactorySender->filterBySender($this);
-
-        $eventFactorySender->populateLocal($limit,$offset);
-        //$eventFactoryReceiver->populateLocal($limit,$offset);
-
-        print_r($eventFactorySender->getArray());
-
-    }
 
     public function getDataSource(): BlockchainDataSource
     {
