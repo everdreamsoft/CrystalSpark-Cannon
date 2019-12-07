@@ -5,10 +5,12 @@ namespace CsCannon;
 
 
 
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Ethereum\MaticBlockchain;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
 class BlockchainRouting
@@ -23,7 +25,82 @@ class BlockchainRouting
 
     }
 
+    /**
+     * Deduct potential blockchains from an address
+     *
+     * @param $address
+     * @return Blockchain[]
+     */
+    public static function getBlockchainsFromAddress($address){
+
+        //as for today 0x means all ethereum type format
+        if(substr( $address, 0, 2 ) === "0x"){
+
+            $blockchainList['eth'] = $address ;
+            $blockchains[] = new EthereumBlockchain();
+            $blockchains[] = new KlaytnBlockchain();
+            $blockchains[] = new \CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain();
+
+
+        }
+
+        else{
+
+            $blockchainList['xcp'] = $address;
+            $blockchains[] = new XcpBlockchain();
+
+        }
+
+        return $blockchains ;
+
+
+    }
+
+    /**
+     * Get Address factories from an array of blockchains
+     *
+     * @param Blockchain[] $blockchainArray
+     * @return BlockchainAddressFactory[]
+     */
+    public static function getAddressFactoriesFromBlockchains(array $blockchainArray){
+
+        $addressFactories = array();
+
+        foreach ($blockchainArray as $blockchain){
+
+            $addressFactories[$blockchain::NAME] = $blockchain->getAddressFactory();
+        }
+
+        return $addressFactories ;
+
+    }
+
+    /**
+     * Deduct potential blockchains from an address and return factories
+     *
+     * @param  $address
+     * @return BlockchainAddressFactory[]
+     */
+    public static function getAddressFactoriesFromAddress($address){
+
+        $blockchains = self::getBlockchainsFromAddress($address);
+        $addressFactories = self::getAddressFactoriesFromBlockchains($blockchains);
+
+        return $addressFactories ;
+
+    }
+
+
    public static function blockchainFromAddress($address){
+
+       //as Force klaytn
+       if(substr( $address, 0, 2 ) === "0x"){
+
+           $blockchainList['klay'] = $address ;
+           $blockchain = new KlaytnBlockchain();
+
+
+       }
 
         //as for today 0x means ethereum
        if(substr( $address, 0, 2 ) === "0x"){
@@ -34,14 +111,7 @@ class BlockchainRouting
 
        }
 
-       //as Force klaytn
-       if(substr( $address, 0, 2 ) === "0x"){
 
-           $blockchainList['klay'] = $address ;
-           $blockchain = new KlaytnBlockchain();
-
-
-       }
 
        else if (substr( $address, 0, 2 ) === "3P"){
 
@@ -67,6 +137,17 @@ class BlockchainRouting
 
 
         $blockchain = self::blockchainFromAddress($deducable);
+
+
+        return  $blockchain->getAddressFactory() ;
+
+
+    }
+
+    public static function getAddressFactories($address):BlockchainAddressFactory{
+
+
+        $blockchain = self::blockchainFromAddress($address);
 
 
         return  $blockchain->getAddressFactory() ;

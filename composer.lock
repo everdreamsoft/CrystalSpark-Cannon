@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/everdreamsoft/sandra.git",
-                "reference": "a10dd1255d80c0289b94920839f3200d07fb62f5"
+                "reference": "891ba1d5fccf179e395eb5eea2dde2e4def0e536"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/a10dd1255d80c0289b94920839f3200d07fb62f5",
-                "reference": "a10dd1255d80c0289b94920839f3200d07fb62f5",
+                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/891ba1d5fccf179e395eb5eea2dde2e4def0e536",
+                "reference": "891ba1d5fccf179e395eb5eea2dde2e4def0e536",
                 "shasum": ""
             },
             "require-dev": {
@@ -38,22 +38,22 @@
                 "MIT"
             ],
             "description": "Sandra Ontologic Datagraph",
-            "time": "2019-11-29T15:49:19+00:00"
+            "time": "2019-12-03T10:37:50+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
-            "version": "1.3.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "ae466f726242e637cebdd526a7d991b9433bacf1"
+                "reference": "eca6c638ef64433b2e36a9221826e75e39c65eb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/ae466f726242e637cebdd526a7d991b9433bacf1",
-                "reference": "ae466f726242e637cebdd526a7d991b9433bacf1",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/eca6c638ef64433b2e36a9221826e75e39c65eb9",
+                "reference": "eca6c638ef64433b2e36a9221826e75e39c65eb9",
                 "shasum": ""
             },
             "require": {
@@ -71,7 +71,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2.x-dev"
+                    "dev-master": "1.4.x-dev"
                 }
             },
             "autoload": {
@@ -96,7 +96,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2019-10-21T16:45:58+00:00"
+            "time": "2019-12-06T20:47:21+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -718,12 +718,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "5b88be431c279005c1fb43a2713b4c14e271ae11"
+                "reference": "ee9af40ca43cb6665d5b5324de6f83342f2e25a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5b88be431c279005c1fb43a2713b4c14e271ae11",
-                "reference": "5b88be431c279005c1fb43a2713b4c14e271ae11",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ee9af40ca43cb6665d5b5324de6f83342f2e25a2",
+                "reference": "ee9af40ca43cb6665d5b5324de6f83342f2e25a2",
                 "shasum": ""
             },
             "require": {
@@ -793,7 +793,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-11-28T08:13:52+00:00"
+            "time": "2019-12-06T13:33:07+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

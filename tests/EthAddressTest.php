@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 final class EthAddressTest extends TestCase
 {
 
-    public function testAddressTestXcp()
+    public function testAddressTestEth()
     {
 
 

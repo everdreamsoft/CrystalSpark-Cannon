@@ -6,11 +6,12 @@
  * Time: 14:42
  */
 
-namespace CsCannon\Blockchains\Ethereum;
+namespace CsCannon\Blockchains\Ethereum\Sidechains\Matic;
 
 
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 
 
 class MaticBlockchain extends EthereumBlockchain
