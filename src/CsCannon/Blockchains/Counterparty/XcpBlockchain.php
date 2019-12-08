@@ -18,6 +18,9 @@ use CsCannon\Blockchains\Bitcoin\BtcBlockchain;
 
    const NAME = 'counterparty';
    private static $staticBlockchain ;
+     public static $network = array("mainet"=>array("explorerTx"=>'https://xchain.io/tx/'),
+         "testnet"=>array("explorerTx"=>'https://testnet.xchain.io/tx/')
+     );
 
 
 
