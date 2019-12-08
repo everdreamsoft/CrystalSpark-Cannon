@@ -166,7 +166,7 @@ class BlockchainEvent extends Entity implements Displayable
                 $orbArray['collection']['name'] = $orb->assetCollection->name;
                 $orbArray['collection']['id'] = $orb->assetCollection->getId();
                 $return['orbs'][] = $orbArray ; //legacy support
-                $return['orbs'][] = $orb->getAsset()->display()->return();
+               // $return['orbs'][] = $orb->getAsset()->display()->return();
 
             }
         }

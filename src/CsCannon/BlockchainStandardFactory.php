@@ -33,7 +33,8 @@ class BlockchainStandardFactory extends EntityFactory
 
     public static function getStatic(System $sandra){
 
-        if (self::$blockchainStandardFactory == null or !isset(self::$blockchainStandardFactory->system)){
+        if (self::$blockchainStandardFactory == null or !isset(self::$blockchainStandardFactory->system) or
+            self::$blockchainStandardFactory->system->instanceId != $sandra->instanceId){
             self::$blockchainStandardFactory = new BlockchainStandardFactory($sandra);
             self::$blockchainStandardFactory->populateLocal();
 

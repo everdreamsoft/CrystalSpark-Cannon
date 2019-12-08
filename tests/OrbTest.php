@@ -29,9 +29,10 @@ use PHPUnit\Framework\TestCase;
 final class OrbTest extends TestCase
 {
 
-    public const COLLECTION_NAME = "My First Collection" ;
-    public const COLLECTION_CODE = "MyFirstCollection" ;
-    public const COLLECTION_CONTRACT = "myContract" ;
+    public const COLLECTION_NAME = "My First CollectionForOrb" ;
+    public const COLLECTION_CODE = "MyFirstCollectionForOrb" ;
+    public const COLLECTION_CONTRACT = "myContractForOrb" ;
+    public const ASSET_IMAGE_URL = "http://www.google.com" ;
 
     public function testCollection()
     {
@@ -81,17 +82,17 @@ final class OrbTest extends TestCase
 
         //create a contract
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
-        $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true);
+        $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true,ERC20::getEntity());
         $contract->bindToCollection($collectionEntity);
 
 
        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
-       $metaData = [\CsCannon\AssetFactory::IMAGE_URL=>'http://www.google.com',
-           \CsCannon\AssetFactory::METADATA_URL =>"http://www.google.com"
+       $metaData = [\CsCannon\AssetFactory::IMAGE_URL=>self::ASSET_IMAGE_URL,
+           \CsCannon\AssetFactory::METADATA_URL =>self::ASSET_IMAGE_URL
            ];
 
 
-       $asset = $assetFactory->create('hello',$metaData, [$collectionEntity],[$contract]);
+       $asset = $assetFactory->create('AssetOrb',$metaData, [$collectionEntity],[$contract]);
 
 
         $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
@@ -111,7 +112,10 @@ final class OrbTest extends TestCase
 
         //Brother entity hotplug not supported by sandra at this moment
         $newContractFactoryBecauseNotHotPlug =  $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $newContractFactoryBecauseNotHotPlug->populateLocal();
         $contract = $newContractFactoryBecauseNotHotPlug->get(self::COLLECTION_CONTRACT);
+
+
 
 
         $myOrbFactory = new \CsCannon\OrbFactory();
@@ -165,7 +169,7 @@ final class OrbTest extends TestCase
     {
 
         $testAddress = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
-        $testContract = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
+
 
         $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
 
@@ -186,7 +190,7 @@ final class OrbTest extends TestCase
         $event2 = $eventFactory->create(new EthereumBlockchain(),
             $addressEntity,
             $addressEntity,
-            $contractFactory->get(self::COLLECTION_CONTRACT,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init()),
+            $contractFactory->get(self::COLLECTION_CONTRACT,false),
             'fooTX EWRC 20',
             "123343555",
             $currentBlock,
@@ -199,8 +203,16 @@ final class OrbTest extends TestCase
         $eventFactory->populateLocal();
         $eventList = $eventFactory->getEntities();
 
+        $this->assertCount(1,$eventList);
+
+
 
         $output = $eventFactory->display()->html()->return();
+        //should be one event
+        $this->assertCount(1,$output);
+        //should be one orb on the event
+        $this->assertCount(1,$output[0]['orbs']);
+        $this->assertEquals(self::ASSET_IMAGE_URL,$output[0]['orbs'][0]['asset']['imageUrl']);
 
 
 

@@ -201,6 +201,7 @@ class OpenSeaImporter extends BlockchainDataSource
         $foreignAdapter->populate();
        // $foreignAdapter->dumpMeta();
         $contractFactory = new EthereumContractFactory();
+        $contractFactory->populateLocal();
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
@@ -257,7 +258,7 @@ class OpenSeaImporter extends BlockchainDataSource
          //   $assetEntity['image'] = $entity->get('image');
            // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
 
-            $contractFactory->populateLocal();
+
             $ethContract = $contractFactory->get($contractAddress);
 
             $standard =  ERC721::init();

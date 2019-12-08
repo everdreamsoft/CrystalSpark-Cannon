@@ -31,6 +31,11 @@ class AssetFactory extends \SandraCore\EntityFactory
     public const METADATA_URL = "metaDataURL";
     private $specifierMap ;
 
+    public static function myfunc($item)
+    {
+
+    }
+
 
 
     public function __construct(System $system = null)

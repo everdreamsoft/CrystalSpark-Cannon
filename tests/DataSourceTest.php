@@ -42,6 +42,9 @@ final class DataSourceTest extends TestCase
 
         \CsCannon\Tests\TestManager::initTestDatagraph();
 
+        //No test yet
+        $this->assertEquals(1,1);
+
 
 
 

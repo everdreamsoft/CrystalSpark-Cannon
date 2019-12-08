@@ -138,6 +138,9 @@ final class MetadataSolverTest extends TestCase
 
         $standars = $collection->getStoredSamples();
 
+        //Todo make tests
+        $this->assertEquals(1,1);
+
        return $standards ;
 
 
