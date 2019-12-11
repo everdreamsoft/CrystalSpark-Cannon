@@ -41,8 +41,10 @@ class OpenSeaImporter extends BlockchainDataSource
 
 
 
-    public static function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter{
+    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter{
 
+
+        $address = self::getAddressString($address);
 
         if (!is_null($address)) $addressFilter = "&account_address=$address";
 
@@ -69,9 +71,6 @@ class OpenSeaImporter extends BlockchainDataSource
 
 
 
-
-
-
         $foreignEntityAdapter = new ForeignEntityAdapter($openSeaEvents,'asset_events',SandraManager::getSandra());
         $foreignEntityAdapter->flatSubEntity('transaction','transaction');
         $foreignEntityAdapter->flatSubEntity('asset','asset');
@@ -87,31 +86,40 @@ class OpenSeaImporter extends BlockchainDataSource
         //dd($openSeaSynch->return2dArray());
         $display = '';
 
+        // dd($foreignEntityAdapter->return2dArray());
+
         foreach ($foreignEntityAdapter->return2dArray() as $value){
 
             if (!array_key_exists('f:asset.asset_contract', $value)) continue ;
 
+            $trackedArray = array();
+
             $source =  $value[BlockchainEventFactory::EVENT_SOURCE_ADDRESS]['address'] ;
             $destination = $value[BlockchainEventFactory::EVENT_DESTINATION_VERB]['address'];
             $contract = $value['f:asset.asset_contract']['address'];
+
 
             $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
             $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] =$source ;
             $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $destination;
 
             $trackedArray[BlockchainImporter::TRACKER_CONTRACTIDS][] = $contract;
+            // echo"$contract : contract ". $value['f:asset.asset_contract']['address'].PHP_EOL;
+
 
             //correct the format
             $value[BlockchainEventFactory::EVENT_SOURCE_ADDRESS] = $source ;
             $value[BlockchainEventFactory::EVENT_DESTINATION_VERB] = $destination ;
             $value[BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB ] =  $destination  ;
             $value[BlockchainEventFactory::EVENT_CONTRACT] =  $contract  ;
-            $value[BlockchainContractFactory::TOKENID] =  $value['f:asset.token_id']  ;
 
-
+            $value["blockIndex"] =  $value['f:transaction.block_number']  ;
+            $value[BlockchainImporter::TRACKER_BLOCKTIME] =   strtotime($value['timestamp'])  ;
 
             $value[BlockchainEventFactory::EVENT_BLOCK_TIME] =   date("U",strtotime($value['timestamp']));
             $value['timestamp'] = date("U",strtotime($value['timestamp']));
+            $value[BlockchainContractFactory::CONTRACT_STANDARD] =   array('tokenId'=>$value['f:asset.token_id']) ;
+            // $value[BlockchainStandardFactory::] =   array('tokenId'=>$value['f:asset.token_id']) ;
 
             //todo add blocktime
 
@@ -127,54 +135,6 @@ class OpenSeaImporter extends BlockchainDataSource
 
         }
 
-
-
-
-
-
-
-        /*
-        foreach ($resultArray as $result) {
-
-
-            //add tracker
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
-
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['source_address'] ;
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['destination_address'] ;
-
-
-
-            $hash = $result['tx_hash'];
-
-            $quantity = $result['quantity'];
-            $transactionData = array("txHash" => "$hash",
-                "memo" => $result['memo'],
-                "quantity" => $quantity,
-                Blockchain::$txidConceptName => $hash,
-                BlockchainEventFactory::EVENT_SOURCE_ADDRESS => $result['source_address'],
-                "destinationAddress" => $result['destination_address'],
-                "tokenId" => $result['asset'],
-                "blockIndex" => $result['block_index'],
-                "blockTime" => $result['block_time'],
-                "contract" => $result['asset'],
-
-
-            );
-
-            //add tracker
-            $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'] ;
-
-
-            //$transactionData[BlockchainImporter::TRACKER_BLOCKID][] =  $result['block_index'] ;
-
-
-            $transactionData = $transactionData + $trackedArray ;
-
-
-
-
-        }*/
 
 
 

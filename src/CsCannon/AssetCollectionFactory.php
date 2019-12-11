@@ -57,7 +57,10 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     public static function getStaticCollection(): AssetCollectionFactory{
 
-        if (self::$staticInstance == null) {
+        $sandra = SandraManager::getSandra();
+
+        if (self::$staticInstance == null or !isset(self::$staticInstance->system) or
+            self::$staticInstance->system->instanceId != $sandra->instanceId) {
             self::$staticInstance = new AssetCollectionFactory(SandraManager::getSandra());
             self::$staticInstance->populateLocal();
         }

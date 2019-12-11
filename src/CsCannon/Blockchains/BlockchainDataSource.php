@@ -29,6 +29,15 @@ use SandraCore\ForeignEntityAdapter;
 
      }
 
+     public static function getAddressString($address)
+     {
+
+         if ($address instanceof BlockchainAddress) return $address->getAddress();
+         if (is_string($address)) return $address ;
+         return null ;
+
+     }
+
      public static function getLocalCollection(AssetCollectionFactory $localCollections = null)
      {
 
@@ -45,7 +54,7 @@ use SandraCore\ForeignEntityAdapter;
      }
 
 
-     public static abstract function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter ;
+     public static abstract function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter ;
 
 
 

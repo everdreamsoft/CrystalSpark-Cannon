@@ -82,8 +82,9 @@ abstract class  BlockchainAddress extends Entity implements Displayable
     }
 
 
-
-
+    /**
+     * @return BlockchainDataSource
+     */
     public function getDataSource(): BlockchainDataSource
     {
 

@@ -127,10 +127,10 @@ class AssetCollection extends \SandraCore\Entity
 
         $factory = $this->factory;
 
-       $json = BlockchainContractStandard::getJsonFromStandardArray($array);
-       /** @var EntityFactory $factory */
-      $sampleStore = $this->setBrotherEntity('store',self::SAMPLE_STORAGE,null);
-      $sampleStore->setStorage($json);
+        $json = BlockchainContractStandard::getJsonFromStandardArray($array);
+        /** @var EntityFactory $factory */
+        $sampleStore = $this->setBrotherEntity('store',self::SAMPLE_STORAGE,null);
+        $sampleStore->setStorage($json);
 
 
     }
@@ -159,7 +159,11 @@ class AssetCollection extends \SandraCore\Entity
         $sampleCSV = $this->getStorage();
     }
 
+    /**
+     * @return AssetSolver[]
+     */
     public function getSolvers(){
+
 
         return $this->getJoinedEntities(AssetCollectionFactory::METADATASOLVER_VERB);
 
