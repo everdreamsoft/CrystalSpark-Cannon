@@ -46,6 +46,9 @@ class OpenSeaImporter extends BlockchainDataSource
 
         $address = self::getAddressString($address);
 
+        if ($batchMax=='')$batchMax = 1000;
+        if ($offset=='')$offset = 0;
+
         if (!is_null($address)) $addressFilter = "&account_address=$address";
 
         $sandra =  SandraManager::getSandra();
@@ -68,6 +71,8 @@ class OpenSeaImporter extends BlockchainDataSource
 
 
         );
+
+        $entityArray = array();
 
 
 
