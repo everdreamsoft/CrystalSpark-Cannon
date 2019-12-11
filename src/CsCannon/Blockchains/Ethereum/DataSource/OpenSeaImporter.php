@@ -50,7 +50,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
         $sandra =  SandraManager::getSandra();
         /** @var System $sandra */
-        $openSeaEvents = 'https://api.opensea.io/api/v1/events/?event_type=transfer'.$addressFilter;
+        $openSeaEvents =  "https://api.opensea.io/api/v1/events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
 
 
 
