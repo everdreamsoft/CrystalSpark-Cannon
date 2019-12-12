@@ -20,7 +20,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
-use CsCannon\Blockchains\Counterparty\DataSource\DatagraphSource;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
@@ -35,7 +35,7 @@ class KlaytnAddress extends BlockchainAddress
 
 
     protected static  $className = 'CsCannon\Blockchains\Klaytn\KlaytnAddress' ;
-    protected static $defaultDataSource = 'CsCannon\Blockchains\Counterparty\DataSource\DatagraphSource' ;
+    protected static $defaultDataSource = 'CsCannon\Blockchains\DataSource\DatagraphSource' ;
 
 
 

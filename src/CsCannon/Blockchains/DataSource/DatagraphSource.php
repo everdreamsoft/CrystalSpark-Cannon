@@ -1,6 +1,6 @@
 <?php
 
-namespace CsCannon\Blockchains\Counterparty\DataSource;
+namespace CsCannon\Blockchains\DataSource;
 
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
