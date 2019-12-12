@@ -20,6 +20,7 @@ class BlockchainStandardFactory extends EntityFactory
     protected static $isa = 'blockchainStandard' ;
     protected static $file = 'blockchainStandardFile' ;
     private static $blockchainStandardFactory ; /** @var BlockchainContractStandard  */
+    public const STANDARD_NAME_SHORTNAME = 'standardName';
 
     /**
      * @param System $sandra

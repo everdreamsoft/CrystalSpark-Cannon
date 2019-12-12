@@ -127,9 +127,16 @@ class AssetFactory extends \SandraCore\EntityFactory
         $brotherEntities = null ;
 
         //we need to add the meta data on brothers
-        foreach ($contracts ? $contracts : array() as $contract){
+        foreach ($contracts ? $contracts : array() as $key => $contract){
             /** @var Entity $contract */
-            $brotherEntities[self::$tokenJoinVerb][$contract->subjectConcept->idConcept][$this->sc->get('creationTimestamp')] = time();
+            if ($contract instanceof BlockchainContract) {
+                $brotherEntities[self::$tokenJoinVerb][$contract->subjectConcept->idConcept][$this->sc->get('creationTimestamp')] = time();
+
+            }
+            if (is_array($contract)) {
+                $brotherEntities[self::$tokenJoinVerb][$key] = $contract;
+
+            }
 
         }
 
