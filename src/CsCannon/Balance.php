@@ -159,7 +159,7 @@ class Balance
 
     }
 
-    public function returnObsByCollections():array{
+    public function returnObsByCollections($displayZeroBalance = false):array{
 
 
         $factory = $this->getObs();
@@ -198,9 +198,15 @@ class Balance
                 $orbDisplay['quantity'] = $quantity ;
                 $orbDisplay['asset']['image'] = $asset->imageUrl ;
 
+                //hide orbs with 0 quantity
+                if ($quantity >= 0 or $displayZeroBalance == false){
+                    $collection['orbs'][] = $orbDisplay ;
+
+                }
 
 
-                $collection['orbs'][] = $orbDisplay ;
+
+
             }
 
             $output['collections'][] = $collection ;
