@@ -11,6 +11,7 @@ namespace CsCannon\Blockchains\Interfaces;
 
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
+use SandraCore\Reference;
 
 class UnknownStandard extends BlockchainContractStandard
 {
@@ -28,5 +29,18 @@ class UnknownStandard extends BlockchainContractStandard
     public function getDisplayStructure()
     {
         return null ;
+    }
+
+    public function verifyTokenPath($tokenPath)
+    {
+        foreach ($tokenPath as $key => $referenceConceptOrString){
+
+            if ($referenceConceptOrString instanceof Reference){
+                $referenceConceptOrString = $referenceConceptOrString->refValue;
+            }
+
+            $this->specificatorData[$this->system->systemConcept->getSCS($key)] = $referenceConceptOrString ;
+
+        }
     }
 }

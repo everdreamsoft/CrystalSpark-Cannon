@@ -216,12 +216,7 @@ $countTX = 0 ;
                 //$address = new
                $val = $contract->processLog($filterChange);
 
-
-
-
-
-               echo $val->hexVal();
-
+                echo $val->hexVal();
 
                 print_r(($this->status($eth)));
 
