@@ -10,6 +10,7 @@ namespace CsCannon\Blockchains;
 
 
 use CsCannon\AssetSolvers\AssetSolver;
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
@@ -151,7 +152,8 @@ abstract class BlockchainImporter
 
 
                     echo "contract doens't have standard".PHP_EOL;
-                    continue ;
+                    //continue ;
+                    $standard =  UnknownStandard::init();
 
                 }
 
