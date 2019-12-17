@@ -14,7 +14,9 @@ namespace CsCannon\Blockchains\Ethereum;
 
 
 
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainContractStandard;
 
 class EthereumContractFactory extends BlockchainContractFactory
 {
@@ -25,6 +27,16 @@ class EthereumContractFactory extends BlockchainContractFactory
 
 
     protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumContract' ;
+
+    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    {
+
+        //in ethereum we transform it lowercase
+        $identifier = strtolower($identifier);
+        return parent::get($identifier,$autoCreate, $contractStandard);
+
+
+    }
 
 
 
