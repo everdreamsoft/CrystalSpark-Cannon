@@ -9,6 +9,8 @@
 namespace CsCannon;
 
 
+
+use CsCannon\AssetSolvers\AssetSolver;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
 use SandraCore\System;
@@ -26,10 +28,25 @@ class MetadataSolverFactory extends EntityFactory
         parent::__construct(static::$isa,static::$file,$sandra);
 
 
+    }
+
+    public function getSolverWithIdentifier($identifier){
+
+        if (!$this->populated){
+
+            $this->populateLocal();
+        }
+
+       $thisSolver = $this->last(AssetSolver::IDENTIFIER,$identifier);
+
+        return $thisSolver ;
 
 
 
     }
+
+
+
 
 
 

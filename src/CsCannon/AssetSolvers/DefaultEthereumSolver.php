@@ -21,7 +21,13 @@ use SandraCore\ForeignConcept;
 use SandraCore\ForeignEntityAdapter;
 
 class DefaultEthereumSolver extends AssetSolver
+
 {
+
+    public static function getSolverIdentifier(){
+
+        return "defaultEthereumSolver";
+    }
 
     public static function resolveAsset(AssetCollection $collection, BlockchainContractStandard $specifier, BlockchainContract $contract):array {
 

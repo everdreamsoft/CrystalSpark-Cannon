@@ -11,6 +11,8 @@ namespace CsCannon\Blockchains\Interfaces;
 
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
+use SandraCore\CommonFunctions;
+use SandraCore\Entity;
 use SandraCore\Reference;
 
 class UnknownStandard extends BlockchainContractStandard
@@ -35,11 +37,22 @@ class UnknownStandard extends BlockchainContractStandard
     {
         foreach ($tokenPath as $key => $referenceConceptOrString){
 
+            $shortName = 'error';
+
             if ($referenceConceptOrString instanceof Reference){
                 $referenceConceptOrString = $referenceConceptOrString->refValue;
             }
 
-            $this->specificatorData[$this->system->systemConcept->getSCS($key)] = $referenceConceptOrString ;
+            if (is_numeric($key)){
+                $shortName = $this->system->systemConcept->getSCS($key);
+            }
+            else if (is_string($key)){
+                $shortName = $key;
+            }
+
+
+
+            $this->specificatorData[$this->system->systemConcept->getSCS($shortName)] = $referenceConceptOrString ;
 
         }
     }

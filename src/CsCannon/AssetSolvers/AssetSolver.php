@@ -26,9 +26,11 @@ abstract class AssetSolver extends Entity
     const FILE = 'assetSolverFile';
 
     const LAST_UPDATE_SHORTNAME = 'updateTimestamp';
+    const IDENTIFIER = 'identifier';
     public static $lastUpdate = null ;
     public static $solverEntity = null ;
     public $additionalSolverParam ;
+
 
 
 
@@ -37,11 +39,10 @@ protected abstract static function updateSolver() ;
 
 
 
-public static function loadContractsAssets(BlockchainContractFactory $contractFactory){
+public static function loadContractsAssets(BlockchainContractFactory $contractFactory){}
 
+public abstract static function getSolverIdentifier();
 
-
-}
 
 public static function update($onlyIfOlderThanSec = null){
 
@@ -91,6 +92,9 @@ public static function update($onlyIfOlderThanSec = null){
 
 
         $solverFactory = new MetadataSolverFactory($sandra);
+        $solverEntity = $sandra->entityToClassStore(static::class,$solverFactory);
+        /** @var Entity $solverEntity */
+        $solverEntity->getOrInitReference(self::IDENTIFIER,static::getSolverIdentifier());
 
 
     return $sandra->entityToClassStore(static::class,$solverFactory);

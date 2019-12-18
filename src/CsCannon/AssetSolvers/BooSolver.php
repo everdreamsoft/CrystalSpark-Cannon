@@ -34,6 +34,11 @@ class BooSolver extends LocalSolver
     public static $limitToTokens = null ;
     public static $limitCollection = null ;
 
+    public static function getSolverIdentifier(){
+
+        return "booSolver";
+    }
+
 
 
     public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array{

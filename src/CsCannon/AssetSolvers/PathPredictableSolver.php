@@ -34,6 +34,11 @@ class PathPredictableSolver extends AssetSolver
     private static $assetInCollections ;
     public  $additionalSolverParam ;
 
+    public static function getSolverIdentifier(){
+
+        return "pathPredictableSolver";
+    }
+
 
 
     public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array{
@@ -90,11 +95,6 @@ class PathPredictableSolver extends AssetSolver
     {
         return ;
     }
-
-
-
-
-
 
 
 
