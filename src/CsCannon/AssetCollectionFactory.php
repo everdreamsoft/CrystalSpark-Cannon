@@ -109,6 +109,14 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
             $assetSolver = LocalSolver::getEntity();
         }
 
+        if(!$assetSolver->validate()){
+
+            SandraManager::dispatchError($sandra,1,3,'invalid solver'.
+            get_class($assetSolver).' for collection'.$id
+
+            ,$this);
+        };
+
         return $this->createNew($dataToSave,[self::METADATASOLVER_VERB=>$assetSolver]);
 
 
@@ -154,7 +162,11 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
             $assetSolver = LocalSolver::getEntity();
         }
 
+
+
         $enity  = $this->getOrCreateFromRef($this->id,$collectionId);
+
+
 
         /** @var AssetCollection $enity */
         $enity->setSolver($assetSolver);

@@ -59,6 +59,14 @@ class AssetCollection extends \SandraCore\Entity
     public function setSolver(AssetSolver $assetSolver)
     {
 
+        if(!$assetSolver->validate()){
+
+            SandraManager::dispatchError(SandraManager::getSandra(),1,3,'invalid solver'.
+                get_class($assetSolver).' for collection '. $this->id
+
+                ,$this);
+        };
+
         if ($assetSolver) {
             $additionalSolverParameters = $assetSolver->getAdditionalParam();
 

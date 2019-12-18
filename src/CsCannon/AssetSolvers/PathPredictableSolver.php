@@ -33,6 +33,7 @@ class PathPredictableSolver extends AssetSolver
 
     private static $assetInCollections ;
     public  $additionalSolverParam ;
+    public $paramInfo = [Asset::METADATA_URL=>'required',Asset::IMAGE_URL=>'required'];
 
     public static function getSolverIdentifier(){
 

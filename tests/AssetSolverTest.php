@@ -9,7 +9,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use CsCannon\Asset;
 use CsCannon\AssetSolvers\AssetSolver;
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\AssetSolvers\PathPredictableSolver;
 use PHPUnit\Framework\TestCase;
 
@@ -60,6 +62,45 @@ final class AssetSolverTest extends TestCase
 
 
    }
+
+    public function testSetSolver(){
+
+        $collectionFactory =  new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $predictableSolver = PathPredictableSolver::getEntity();
+        $noParamSolver = LocalSolver::getEntity();
+        $noparamSolverOverrided = clone $noParamSolver ;
+        $invalidSolver = clone $predictableSolver ;
+        $invalidSolverFiltered = clone $predictableSolver ;
+        $validSolver = clone $predictableSolver ;
+        $overridedAndFilteredSolver = clone $predictableSolver ;
+
+        $invalidSolver->setAdditionalParam(['youhoo'=>"yahaaa"]);
+        $noparamSolverOverrided->setAdditionalParam(['youhoo'=>"yahaaa"]);
+        $invalidSolver->setAdditionalParam(['youhoo'=>"yahaaa"]);
+        $invalidSolverFiltered->filterAndSetParam(['youhoo'=>"yahaaa"]);
+        $validSolver->setAdditionalParam([Asset::IMAGE_URL=>"http://my", Asset::METADATA_URL=>'url']);
+        $overridedAndFilteredSolver->filterAndSetParam([Asset::IMAGE_URL=>"http://my", Asset::METADATA_URL=>'url','unusefulData'=>'notUseful']);
+
+        //has it been correctely filtered
+        $this->assertEquals($overridedAndFilteredSolver->getAdditionalParam(),$validSolver->getAdditionalParam());
+
+        $this->assertTrue($noParamSolver->validate());
+        $this->assertTrue($noparamSolverOverrided->validate());
+        $this->assertTrue($overridedAndFilteredSolver->validate());
+        $this->assertTrue($overridedAndFilteredSolver->validate());
+
+        $this->assertFalse($invalidSolver->validate());
+        $this->assertFalse($invalidSolverFiltered->validate());
+
+
+        $collectionFactory->create('yahaa',null,$validSolver);
+
+
+
+
+
+
+    }
 
 
 
