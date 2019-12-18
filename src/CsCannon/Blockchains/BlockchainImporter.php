@@ -153,7 +153,7 @@ abstract class BlockchainImporter
 
                     echo "contract doens't have standard".PHP_EOL;
                     //continue ;
-                    $standard =  UnknownStandard::init();
+                    $standard =  UnknownStandard::init($fentity->get(BlockchainContractFactory::CONTRACT_STANDARD));
 
                 }
 

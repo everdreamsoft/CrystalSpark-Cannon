@@ -52,7 +52,7 @@ class UnknownStandard extends BlockchainContractStandard
 
 
 
-            $this->specificatorData[$this->system->systemConcept->getSCS($shortName)] = $referenceConceptOrString ;
+            $this->specificatorData[$shortName] = $referenceConceptOrString ;
 
         }
     }
