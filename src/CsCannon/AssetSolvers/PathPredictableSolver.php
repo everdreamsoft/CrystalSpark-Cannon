@@ -61,6 +61,9 @@ class PathPredictableSolver extends AssetSolver
                 $imgUrl =  $solverData->get(Asset::IMAGE_URL);
                 $metadataUrl =  $solverData->get(Asset::METADATA_URL);
 
+                //remove escaped characters
+                $imgUrl = str_replace("\\","",$imgUrl);
+
                 $finalImage = $imgUrl ;
                 $finalMetaData = $metadataUrl ;
 
