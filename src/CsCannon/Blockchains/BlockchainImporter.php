@@ -326,12 +326,13 @@ abstract class BlockchainImporter
         $countTotalEntities = count($blockList);
 
         $identifierUnid = $this->sandra->systemConcept->get($trackerIdentifier);
-        $fileUnid = $this->sandra->systemConcept->get($blockFactory->entityIsa);
+        $fileUnid = $this->sandra->systemConcept->get($blockFactory->entityContainedIn);
 
         //we search concepts with existing addresses
         $conceptsArray = DatabaseAdapter::searchConcept($blockRawList,$identifierUnid,$this->sandra,'',$fileUnid);
 
         //Missing preloading
+        $blockFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
 
         if(!empty($conceptsArray)) {
             $blockFactory->populateLocal();

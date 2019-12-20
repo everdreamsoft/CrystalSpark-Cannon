@@ -30,14 +30,14 @@ class MetadataSolverFactory extends EntityFactory
 
     }
 
-    public function getSolverWithIdentifier($identifier){
+    public function getSolverWithIdentifier($identifier):?AssetSolver{
 
         if (!$this->populated){
 
             $this->populateLocal();
         }
 
-       $thisSolver = $this->last(AssetSolver::IDENTIFIER,$identifier);
+        $thisSolver = $this->last(AssetSolver::IDENTIFIER,$identifier);
 
         return $thisSolver ;
 
