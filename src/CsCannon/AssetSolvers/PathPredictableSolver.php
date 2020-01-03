@@ -70,8 +70,8 @@ class PathPredictableSolver extends AssetSolver
                 //now we replace the strings
                 foreach($specifier->specificatorData ? $specifier->specificatorData : array() as $data => $dataValue ){
 
-                    $finalImage = str_replace('{{'.$data.'}}',"$dataValue",$finalImage);
-                    $finalMetaData = str_replace('{{'.$data.'}}',"$dataValue",$finalMetaData);
+                    $finalImage = str_replace('{'.$data.'}',"$dataValue",$finalImage);
+                    $finalMetaData = str_replace('{'.$data.'}',"$dataValue",$finalMetaData);
 
                 }
 
@@ -108,9 +108,9 @@ class PathPredictableSolver extends AssetSolver
 
 
 
-         $entity = parent::getEntity();
-         /** @var PathPredictableSolver $entity */
-         $entity->setAdditionalParam([Asset::IMAGE_URL=>$imagePath,Asset::METADATA_URL=>$metadataPath]);
+        $entity = parent::getEntity();
+        /** @var PathPredictableSolver $entity */
+        $entity->setAdditionalParam([Asset::IMAGE_URL=>$imagePath,Asset::METADATA_URL=>$metadataPath]);
 
         return $entity;
 
