@@ -84,6 +84,7 @@ public  const CONTRACT_STANDARD = 'contractStandard';
 
 
         if(is_null($entity) && !$autoCreate){
+            if (is_null(static::$isa)) return null ; //in case we don't have a blockchain and the contract doens't exists
             $refConceptId = CommonFunctions::somethingToConceptId(static::$isa,SandraManager::getSandra());
             $entity = new static::$className("foreignContract:$identifier",array($identifierName => $identifier),$foreignAdapter,$this->entityReferenceContainer, $this->entityContainedIn, "foreign$identifier",$this->system);
             $this->addNewEtities($entity,array($refConceptId=>$entity));

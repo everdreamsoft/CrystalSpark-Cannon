@@ -10,18 +10,37 @@ use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
-use CsCannon\Blockchains\Ethereum\MaticBlockchain;
+
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
 class BlockchainRouting
 {
 
+    /**
+     * get supported blockchains by the framework
+     * @return Blockchain[]
+     */
     public static function getSupportedBlockchains(){
 
         $supported[] = new XcpBlockchain();
         $supported[] = new EthereumBlockchain();
+        //$supported[] = new MaticBlockchain();
+        $supported[] = new KlaytnBlockchain();
 
         return $supported ;
+
+    }
+
+    public static function getBlockchainFromName($name):?Blockchain{
+
+        $supported = self::getSupportedBlockchains();
+
+        foreach ($supported as $blockchain){
+
+            if ($name == $blockchain::NAME) return $blockchain ;
+
+        }
+        return null ;
 
     }
 

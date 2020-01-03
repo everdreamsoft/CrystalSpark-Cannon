@@ -20,6 +20,9 @@ class EthereumBlockchain extends Blockchain
    const NAME = 'ethereum';
     protected $nameShort = 'eth';
     private static $staticBlockchain ;
+    public static $network = array("mainet"=>array("explorerTx"=>'https://etherscan.io/tx/'),
+
+    );
 
     public function __construct()
     {
