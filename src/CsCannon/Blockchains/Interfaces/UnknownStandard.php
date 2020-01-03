@@ -35,7 +35,7 @@ class UnknownStandard extends BlockchainContractStandard
 
     public function verifyTokenPath($tokenPath)
     {
-        foreach ($tokenPath as $key => $referenceConceptOrString){
+        foreach ($tokenPath ? $tokenPath : array() as $key => $referenceConceptOrString){
 
             $shortName = 'error';
 
