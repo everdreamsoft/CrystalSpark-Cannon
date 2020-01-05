@@ -57,7 +57,10 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     public static function getStaticCollection(): AssetCollectionFactory{
 
-        if (self::$staticInstance == null) {
+        $sandra = SandraManager::getSandra();
+
+        if (self::$staticInstance == null or !isset(self::$staticInstance->system) or
+            self::$staticInstance->system->instanceId != $sandra->instanceId) {
             self::$staticInstance = new AssetCollectionFactory(SandraManager::getSandra());
             self::$staticInstance->populateLocal();
         }
@@ -74,7 +77,8 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $actualSandra = SandraManager::getSandra() ;
 
-        if (self::$staticSolvers == null or $actualSandra->instanceId != self::$staticSolvers->system->instanceId) {
+        if (self::$staticSolvers == null  or !isset(self::$staticSolvers->system) or
+            $actualSandra->instanceId != self::$staticSolvers->system->instanceId) {
             self::$staticSolvers = new MetadataSolverFactory(SandraManager::getSandra());
 
         }
@@ -105,6 +109,14 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
             $assetSolver = LocalSolver::getEntity();
         }
+
+        if(!$assetSolver->validate()){
+
+            SandraManager::dispatchError($sandra,1,3,'invalid solver'.
+                get_class($assetSolver).' for collection'.$id
+
+                ,$this);
+        };
 
         return $this->createNew($dataToSave,[self::METADATASOLVER_VERB=>$assetSolver]);
 
@@ -151,7 +163,11 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
             $assetSolver = LocalSolver::getEntity();
         }
 
+
+
         $enity  = $this->getOrCreateFromRef($this->id,$collectionId);
+
+
 
         /** @var AssetCollection $enity */
         $enity->setSolver($assetSolver);
@@ -187,7 +203,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         /** @var AssetCollection $newCollection */
 
         $contract->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$newCollection,null);
-        $newCollection->setSolver(DefaultEthereumSolver::getEntity());
+        //$newCollection->setSolver(DefaultEthereumSolver::getEntity());
 
 
         return $newCollection ;
