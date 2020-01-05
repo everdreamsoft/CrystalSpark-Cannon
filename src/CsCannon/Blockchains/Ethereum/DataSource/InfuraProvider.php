@@ -12,6 +12,7 @@ namespace CsCannon\Blockchains\Ethereum\DataSource;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\RpcProvider;
+use SandraCore\Concept;
 
 class InfuraProvider extends RpcProvider
 {
@@ -25,5 +26,10 @@ class InfuraProvider extends RpcProvider
     public function getBlockchain(): Blockchain
     {
       return  new EthereumBlockchain();
+    }
+
+    public function transform(Concept $concept, $value)
+    {
+        return $value ;
     }
 }

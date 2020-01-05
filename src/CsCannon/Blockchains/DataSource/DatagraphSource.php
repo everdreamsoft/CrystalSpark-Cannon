@@ -1,6 +1,6 @@
 <?php
 
-namespace CsCannon\Blockchains\Counterparty\DataSource;
+namespace CsCannon\Blockchains\DataSource;
 
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
@@ -31,7 +31,7 @@ class DatagraphSource extends BlockchainDataSource
 
 
 
-    public static function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
     {
 
 

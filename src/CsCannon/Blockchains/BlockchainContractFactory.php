@@ -99,9 +99,12 @@ public  const CONTRACT_STANDARD = 'contractStandard';
 
             }
 
+            $timstamp['creationTimestamp'] = time();
+            $array = [self::CONTRACT_STANDARD => [$contractStandardEnt->subjectConcept->idConcept=>$timstamp]];
+
             $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier),
-                [self::CONTRACT_STANDARD => $contractStandardEnt]
-                );
+                $array
+            );
 
 
 

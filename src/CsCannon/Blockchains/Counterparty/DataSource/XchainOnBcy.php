@@ -31,7 +31,7 @@ class XchainOnBcy extends BlockchainDataSource
 
 
 
-    public static function getEvents($contract,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
     {
 
 

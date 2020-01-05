@@ -9,6 +9,7 @@
 namespace CsCannon\Blockchains;
 
 
+use CsCannon\AssetSolvers\AssetSolver;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
@@ -143,6 +144,17 @@ abstract class BlockchainImporter
 
 
                 $standard = $contract->getStandard();
+
+                if (is_null($standard)){
+
+                    //we remap the contract standard
+
+
+                    echo "contract doens't have standard".PHP_EOL;
+                    continue ;
+
+                }
+
                 $standard->setTokenPath($fentity->get(BlockchainContractFactory::CONTRACT_STANDARD));
 
                 $quantity = 1 ;
@@ -274,7 +286,7 @@ abstract class BlockchainImporter
 
         /** @var BlockchainContractFactory $contractFactory */
 
-        $response= $this->getFactoryAndCreateEntities($foreignAdapter,BlockchainContractFactory::TOKENID,$contractFactory,$trackerIdentifier);
+        $response= $this->getFactoryAndCreateEntities($foreignAdapter,BlockchainContractFactory::MAIN_IDENTIFIER,$contractFactory,$trackerIdentifier);
 
         $this->responseArray['contracts'] = $response ;
 
@@ -405,6 +417,7 @@ abstract class BlockchainImporter
                 continue;
             }
             //echo"pass $entityIdentifierString $count ".PHP_EOL;
+
 
             $entityFactory->get($entityIdentifierString,true);
             //$foundEntity =$entityFactory->first($entityIdentifier,$entityIdentifierString);

@@ -24,7 +24,7 @@ class GenericContractFactory extends BlockchainContractFactory
     const ABI_TARGET = 'abi';
 
 
-    protected static $className = 'CsCannon\Blockchains\Klaytn\KlaytnContract' ;
+    protected static $className = 'CsCannon\Blockchains\Generic\GenericContract' ;
 
 
 
