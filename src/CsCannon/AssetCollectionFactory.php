@@ -77,7 +77,8 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $actualSandra = SandraManager::getSandra() ;
 
-        if (self::$staticSolvers == null or $actualSandra->instanceId != self::$staticSolvers->system->instanceId) {
+        if (self::$staticSolvers == null or !isset(self::$staticSolvers->system) or
+            $actualSandra->instanceId != self::$staticSolvers->system->instanceId) {
             self::$staticSolvers = new MetadataSolverFactory(SandraManager::getSandra());
 
         }
