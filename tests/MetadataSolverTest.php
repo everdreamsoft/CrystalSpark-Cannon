@@ -49,15 +49,23 @@ final class MetadataSolverTest extends TestCase
         $contractFactory = new EthereumContractFactory();
         $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
 
-        $pathSolver = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/image/{{tokenId}}","http://www.website.com/meta/{{tokenId}}") ;
+        $pathSolver = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/image/{tokenId}","http://www.website.com/meta/{tokenId}") ;
+        $pathSolverOptional = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/image/{tokenId}",
+            "http://www.website.com/meta/{tokenId}",
+            "http://www.fallback.com/meta/{tokenId}") ;
        // $pathSolver = LocalSolver::getEntity() ;
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+
         $collection = $assetCollectionFactory->create(self::COLLECTION_CODE,null, $pathSolver);
+        $collectionWithOptional = $assetCollectionFactory->create(self::COLLECTION_CODE.'optional',null, $pathSolverOptional);
         $erc721 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
         $erc721->setTokenId($tokenId=2);
 
+
+
         $contract->bindToCollection($collection);
+        $contract->bindToCollection($collectionWithOptional);
 
 
 
@@ -69,12 +77,14 @@ final class MetadataSolverTest extends TestCase
         $collection->setImageUrl("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png");
         $collection->setDescription("My collection is fantastic");
         $collection->setSolver($pathSolver);
+        $collection->setSolver($pathSolverOptional);
 
         $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
         $assetCollectionFactory->populateLocal();
         $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
 
         $assets = $pathSolver::resolveAsset($collection,$erc721,$contract);
+        $assetsWithOpt = $pathSolverOptional::resolveAsset($collection,$erc721,$contract);
 
         $this->assertInstanceOf(Asset::class,$assets[0]);
 

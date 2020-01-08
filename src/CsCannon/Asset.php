@@ -21,9 +21,12 @@ class Asset extends \SandraCore\Entity implements Displayable
     public $metaDataUrl;
     public $imageUrl;
     public $id ;
+    public $fallbackImage ;
+
 
     public const IMAGE_URL = 'imageUrl';
     public const METADATA_URL = 'metadataUrl';
+    public const FALLBACK_IMAGE = 'fallbackImageUrl';
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
@@ -38,12 +41,18 @@ class Asset extends \SandraCore\Entity implements Displayable
             $this->id = $sandraReferencesArray[AssetFactory::ID];
             $this->metaDataUrl = $sandraReferencesArray[AssetFactory::METADATA_URL];
 
+            if (isset ($sandraReferencesArray[Asset::FALLBACK_IMAGE]))
+                $this->fallbackImage = $sandraReferencesArray[Asset::FALLBACK_IMAGE];
+
         }
         else{
 
             $this->imageUrl = $this->get(AssetFactory::IMAGE_URL);
             $this->id = $this->get(AssetFactory::ID);
             $this->metaDataUrl =  $this->get(AssetFactory::METADATA_URL);
+            $this->fallbackImage = $this->get(Asset::FALLBACK_IMAGE);
+
+
 
         }
 
