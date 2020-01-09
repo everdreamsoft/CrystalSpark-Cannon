@@ -309,6 +309,7 @@ abstract class BlockchainImporter
         /** @var BlockchainContractFactory $contractFactory */
 
         $blockList = array();
+        $blockRawList = array();
 
         foreach ($foreignAdapter->entityArray as $entity){
 
