@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/everdreamsoft/sandra.git",
-                "reference": "aa341701a418e20ba5d68416906105c539bc7af8"
+                "reference": "d6213c5c1c2b50c9f4646d583bbe1882fba08cd7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/aa341701a418e20ba5d68416906105c539bc7af8",
-                "reference": "aa341701a418e20ba5d68416906105c539bc7af8",
+                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/d6213c5c1c2b50c9f4646d583bbe1882fba08cd7",
+                "reference": "d6213c5c1c2b50c9f4646d583bbe1882fba08cd7",
                 "shasum": ""
             },
             "require-dev": {
@@ -38,7 +38,7 @@
                 "MIT"
             ],
             "description": "Sandra Ontologic Datagraph",
-            "time": "2020-01-06T14:23:36+00:00"
+            "time": "2020-01-07T17:14:35+00:00"
         }
     ],
     "packages-dev": [
