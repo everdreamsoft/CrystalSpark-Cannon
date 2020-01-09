@@ -156,8 +156,8 @@ class Asset extends \SandraCore\Entity implements Displayable
     {
 
         $assetData[self::IMAGE_URL] = $this->imageUrl ;
-        if(isset ($assetData[self::FALLBACK_IMAGE]))
-        $assetData[self::FALLBACK_IMAGE] = $this->fallbackImage ;
+        if(isset ($this->fallbackImage))
+            $assetData[self::FALLBACK_IMAGE] = $this->fallbackImage ;
         return $assetData ;
     }
 
