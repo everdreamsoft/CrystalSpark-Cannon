@@ -20,6 +20,7 @@ class BlockchainBlockFactory extends EntityFactory
     public $foreignAdapterX ;
     protected static $className = 'CsCannon\Blockchains\BlockchainBlock' ;
     const  INDEX_SHORTNAME = 'blockIndex';
+    const  BLOCK_TIMESTAMP = 'timestamp';
 
 
 
