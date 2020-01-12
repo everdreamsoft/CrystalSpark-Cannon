@@ -21,6 +21,18 @@ use SandraCore\ForeignEntityAdapter;
  class  BlockchainBlock extends Entity
 {
 
+    public function getTimestamp(){
+
+    return $this->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+
+    }
+
+     public function getId(){
+
+         return $this->get(BlockchainBlockFactory::INDEX_SHORTNAME);
+
+     }
+
 
 
 
