@@ -33,6 +33,12 @@ use SandraCore\ForeignEntityAdapter;
 
      }
 
+     public function setTimestamp($timestamp){
+
+         return $this->createOrUpdateRef(BlockchainBlockFactory::INDEX_SHORTNAME,$timestamp);
+
+     }
+
 
 
 

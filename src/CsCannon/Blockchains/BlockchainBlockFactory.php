@@ -24,8 +24,6 @@ class BlockchainBlockFactory extends EntityFactory
 
 
 
-
-
    public function __construct(Blockchain $blockchain){
 
        $blockIsa = $blockchain::$blockchainConceptName.'Bloc' ;
@@ -45,7 +43,7 @@ class BlockchainBlockFactory extends EntityFactory
 
    }
 
-    public function get($id)
+    public function get($id):BlockchainBlock
     {
         return $this->first(self::INDEX_SHORTNAME,$id) ;
     }

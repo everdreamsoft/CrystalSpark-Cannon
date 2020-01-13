@@ -326,6 +326,11 @@ abstract class BlockchainImporter
 
         $countTotalEntities = count($blockList);
 
+        if ($countTotalEntities < 1){
+            $response['new'] = 0 ;
+            $response['new'] = 0 ;
+        }
+
         $identifierUnid = $this->sandra->systemConcept->get($trackerIdentifier);
         $fileUnid = $this->sandra->systemConcept->get($blockFactory->entityContainedIn);
 
