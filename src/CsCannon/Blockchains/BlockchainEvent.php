@@ -143,6 +143,7 @@ class BlockchainEvent extends Entity implements Displayable
     public function getBlock():BlockchainBlock
     {
         $block = $this->getJoinedEntities(BlockchainEventFactory::EVENT_BLOCK);
+        $block = end($block);
         return $block ;
     }
 
