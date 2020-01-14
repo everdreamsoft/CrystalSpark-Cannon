@@ -5,6 +5,7 @@ namespace CsCannon\Blockchains;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Generic\GenericBlockchain;
 use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
@@ -89,6 +90,11 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
 
         $return = parent::populateLocal($limit, $offset, $asc);
+
+        $blockFactory = new BlockchainBlockFactory(GenericBlockchain::getStatic());
+        $this->joinFactory(self::EVENT_BLOCK,$blockFactory);
+        $this->joinPopulate();
+
 
 
 

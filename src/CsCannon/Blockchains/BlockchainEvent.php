@@ -36,6 +36,7 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_CONTRACT = 'contract';
     const DISPLAY_QUANTITY = 'quantity';
     const DISPLAY_TIMESTAMP = 'timestamp';
+    const DISPLAY_TIMESTAMP_LEGACY = 'legacy';
     const DISPLAY_BLOCKCHAIN = 'blockchain';
     const DISPLAY_BLOCKCHAIN_NETWORK = 'network_name';
 
@@ -132,11 +133,22 @@ class BlockchainEvent extends Entity implements Displayable
     }
 
 
-
+    //interesting but doens't seem used
     public function __set($name, $value)
     {
         echo "Setting '$name' to '$value'\n";
         $this->data[$name] = $value;
+    }
+
+    public function getBlock():BlockchainBlock
+    {
+        $block = $this->getJoinedEntities(BlockchainEventFactory::EVENT_BLOCK);
+        return $block ;
+    }
+
+    public function getBlockTimestamp()
+    {
+        $this->getBlock()->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
     }
 
 
@@ -147,7 +159,8 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
-        $return[self::DISPLAY_TIMESTAMP] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
+        $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp();
+        $return[self::DISPLAY_TIMESTAMP_LEGACY] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
         $return[self::DISPLAY_BLOCKCHAIN] = $this->getBlockchainContract()->getBlockchain()::NAME ;
 
        $contract =  $this->getBlockchainContract();
