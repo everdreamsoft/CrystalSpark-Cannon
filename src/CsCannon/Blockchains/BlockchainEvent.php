@@ -149,7 +149,7 @@ class BlockchainEvent extends Entity implements Displayable
 
     public function getBlockTimestamp()
     {
-        $this->getBlock()->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+        return $this->getBlock()->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
     }
 
 

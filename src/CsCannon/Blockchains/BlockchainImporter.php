@@ -360,7 +360,7 @@ abstract class BlockchainImporter
             /** @var BlockchainBlockFactory $blockFactory */
 
             $newBlock =  $blockFactory->getOrCreateFromRef(BlockchainBlockFactory::INDEX_SHORTNAME,$blockData['blockIndex']);
-            $newBlock->createOrUpdateRef('timestamp',$blockData[self::TRACKER_BLOCKTIME]);
+            $newBlock->createOrUpdateRef(BlockchainBlockFactory::BLOCK_TIMESTAMP,$blockData[self::TRACKER_BLOCKTIME]);
 
         }
 
