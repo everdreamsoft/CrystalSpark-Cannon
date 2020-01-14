@@ -161,6 +161,18 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
         $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp();
+
+        //autofixer if blocktime doens't exist for block
+        if (! $return[self::DISPLAY_TIMESTAMP]){ //blocktime not on block
+            if ($this->get(BlockchainEventFactory::EVENT_BLOCK_TIME) > 1){ //legacy blocktime exist
+                $block = $this->getBlock();
+                $block->setTimestamp($this->get(BlockchainEventFactory::EVENT_BLOCK_TIME));
+                $return[self::DISPLAY_TIMESTAMP] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
+            }
+
+        }
+
+
         $return[self::DISPLAY_TIMESTAMP_LEGACY] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
         $return[self::DISPLAY_BLOCKCHAIN] = $this->getBlockchainContract()->getBlockchain()::NAME ;
 
