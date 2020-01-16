@@ -38,7 +38,7 @@ public  const CONTRACT_STANDARD = 'contractStandard';
     }
 
 
-    public function populateFromCollection(AssetCollection $collection,$limit, $offset, $asc)
+    public function populateFromCollection(AssetCollection $collection,$limit = 10000, $offset = 0, $asc = 'ASC')
     {
 
         $this->setFilter(self::JOIN_COLLECTION,$collection);
