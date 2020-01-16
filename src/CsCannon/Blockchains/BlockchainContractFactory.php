@@ -2,6 +2,7 @@
 
 namespace CsCannon\Blockchains;
 
+use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainAddressFactory;
@@ -32,6 +33,17 @@ public  const CONTRACT_STANDARD = 'contractStandard';
         parent::__construct(static::$isa,static::$file,SandraManager::getSandra());
 
         $this->generatedEntityClass = static::$className ;
+
+
+    }
+
+
+    public function populateFromCollection(AssetCollection $collection,$limit, $offset, $asc)
+    {
+
+        $this->setFilter(self::JOIN_COLLECTION,$collection);
+
+        return $this->populateLocal($limit, $offset, $asc);
 
 
     }
@@ -120,13 +132,7 @@ public  const CONTRACT_STANDARD = 'contractStandard';
 
 
 
-// legacy
-    public function resolveMetaData (){
 
-
-    return 'helloMeta';
-
-}
 
 
 
