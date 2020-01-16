@@ -68,10 +68,17 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     );
 
-    public function bindToContract(BlockchainContract $token){
+    public function bindToContract(BlockchainContract $contract){
 
 
-        $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$token,null);
+        $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$contract,null);
+
+    }
+
+    public function bindToCollection(AssetCollection $collection){
+
+
+        $this->setBrotherEntity(AssetFactory::$collectionJoinVerb,$collection,null);
 
     }
 
@@ -111,14 +118,6 @@ class Asset extends \SandraCore\Entity implements Displayable
 
 
 
-    public function joinCollection(BlockchainToken $token){
-
-        $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$token,null);
-
-
-
-
-    }
 
     public function getDisplayable(){
 
