@@ -10,9 +10,7 @@ namespace CsCannon\Blockchains\Generic;
 
 
 use CsCannon\Blockchains\Blockchain;
-
-use CsCannon\Blockchains\Klaytn\GenericEventFactory;
-
+use CsCannon\Blockchains\Generic\GenericEventFactory;
 
 
 class GenericBlockchain extends Blockchain

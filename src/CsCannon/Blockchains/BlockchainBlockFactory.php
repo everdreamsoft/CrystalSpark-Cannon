@@ -5,6 +5,7 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\BlockchainRouting;
 
+use CsCannon\Blockchains\Generic\GenericBlockchain;
 use CsCannon\SandraManager;
 use SandraCore\CommonFunctions;
 use SandraCore\Entity;
@@ -28,24 +29,23 @@ class BlockchainBlockFactory extends EntityFactory
 
    public function __construct(Blockchain $blockchain){
 
-       $blockIsa = $blockchain::$blockchainConceptName.'Bloc' ;
+       $blockIsa = null ;
+        if (!($blockchain  instanceof GenericBlockchain)){
+            $blockIsa = $blockchain::$blockchainConceptName.'Bloc' ;
+        }
+
+
        $this->file = $blockchain::$blockchainConceptName.'BlocFile' ;
        $this->entityIsa = $blockIsa ;
 
 
-
-
      parent::__construct($blockIsa,$this->file,SandraManager::getSandra());
-
-
 
      $this->generatedEntityClass = static::$className ;
 
-
-
    }
 
-    public function get($id)
+    public function get($id):BlockchainBlock
     {
         return $this->first(self::INDEX_SHORTNAME,$id) ;
     }

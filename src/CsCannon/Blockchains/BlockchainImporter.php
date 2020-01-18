@@ -326,6 +326,11 @@ abstract class BlockchainImporter
 
         $countTotalEntities = count($blockList);
 
+        if ($countTotalEntities < 1){
+            $response['new'] = 0 ;
+            $response['new'] = 0 ;
+        }
+
         $identifierUnid = $this->sandra->systemConcept->get($trackerIdentifier);
         $fileUnid = $this->sandra->systemConcept->get($blockFactory->entityContainedIn);
 
@@ -355,7 +360,7 @@ abstract class BlockchainImporter
             /** @var BlockchainBlockFactory $blockFactory */
 
             $newBlock =  $blockFactory->getOrCreateFromRef(BlockchainBlockFactory::INDEX_SHORTNAME,$blockData['blockIndex']);
-            $newBlock->createOrUpdateRef('timestamp',$blockData[self::TRACKER_BLOCKTIME]);
+            $newBlock->createOrUpdateRef(BlockchainBlockFactory::BLOCK_TIMESTAMP,$blockData[self::TRACKER_BLOCKTIME]);
 
         }
 

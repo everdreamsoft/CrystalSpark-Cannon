@@ -30,6 +30,17 @@ class InfuraProvider extends RpcProvider
 
     public function transform(Concept $concept, $value)
     {
+        //If a specific chain provider need to transform data
+
+        $sandra = $concept->system;
+        $tixIdConcept = $sandra->conceptFactory->getConceptFromShortnameOrId(Blockchain::$txidConceptName);
+
+        if ($tixIdConcept->idConcept == $concept->idConcept){
+
+            return "0x$value";
+        }
+
         return $value ;
+
     }
 }
