@@ -18,7 +18,7 @@ use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 class FirstOasisAddressFactory extends BlockchainAddressFactory
 {
 
-    public static $isa = null;
+    public static $isa = 'firstOasisAddress';
     public static $file = 'blockchainAddressFile';
     protected static $className = 'CsCannon\Blockchains\FirstOasis\FirstOasisAddress' ;
 

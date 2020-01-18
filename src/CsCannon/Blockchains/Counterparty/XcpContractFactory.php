@@ -26,6 +26,14 @@ class XcpContractFactory extends BlockchainContractFactory
     protected static $className = 'CsCannon\Blockchains\Counterparty\XcpContract' ;
 
 
+    public function __construct()
+    {
+        $this->blockchain = XcpBlockchain::class ;
+        return parent::__construct();
+
+    }
+
+
     public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
 

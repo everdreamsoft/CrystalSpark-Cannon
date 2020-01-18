@@ -23,6 +23,13 @@ class GenericContractFactory extends BlockchainContractFactory
     const ABI_VERB = 'has';
     const ABI_TARGET = 'abi';
 
+    public function __construct()
+    {
+        $this->blockchain = GenericBlockchain::class ;
+        return parent::__construct();
+
+    }
+
 
     protected static $className = 'CsCannon\Blockchains\Generic\GenericContract' ;
 

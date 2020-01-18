@@ -26,7 +26,17 @@ class EthereumContractFactory extends BlockchainContractFactory
     const ABI_TARGET = 'abi';
 
 
+
+
     protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumContract' ;
+
+
+    public function __construct()
+    {
+        $this->blockchain = EthereumBlockchain::class ;
+        return parent::__construct();
+
+    }
 
     public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {

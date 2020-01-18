@@ -135,6 +135,7 @@ use SandraCore\System;
 
             $return['address'] = $this->getId();
             $return['standard'] = $token->getStandardName() ;
+            $return['blockchain'] = $this->getBlockchain()::NAME ;
 
             $return['token'] = $token->specificatorData ;
 

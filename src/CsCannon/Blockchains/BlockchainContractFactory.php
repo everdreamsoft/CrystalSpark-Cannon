@@ -27,6 +27,8 @@ public const  MAIN_IDENTIFIER = 'id';
 public  const JOIN_COLLECTION = 'inCollection';
 public  const JOIN_ASSET = 'joinAsset';
 public  const CONTRACT_STANDARD = 'contractStandard';
+public  const ON_BLOCKCHAIN_VERB = 'onBlockchain';
+public $blockchain ;
 
     public function __construct(){
 
@@ -113,7 +115,10 @@ public  const CONTRACT_STANDARD = 'contractStandard';
             }
 
             $timstamp['creationTimestamp'] = time();
-            $array = [self::CONTRACT_STANDARD => [$contractStandardEnt->subjectConcept->idConcept=>$timstamp]];
+            $array = [self::CONTRACT_STANDARD => [$contractStandardEnt->subjectConcept->idConcept=>$timstamp],
+                self::ON_BLOCKCHAIN_VERB => [$this->blockchain::getStatic()]
+                ];
+
 
             $entity = $this->createNew(array(self::MAIN_IDENTIFIER=>$identifier),
                 $array

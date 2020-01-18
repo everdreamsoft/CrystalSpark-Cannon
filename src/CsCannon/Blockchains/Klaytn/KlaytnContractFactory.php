@@ -23,6 +23,13 @@ class KlaytnContractFactory extends BlockchainContractFactory
     const ABI_VERB = 'has';
     const ABI_TARGET = 'abi';
 
+    public function __construct()
+    {
+        $this->blockchain = KlaytnBlockchain::class ;
+        return parent::__construct();
+
+    }
+
 
     protected static $className = 'CsCannon\Blockchains\Klaytn\KlaytnContract' ;
 
