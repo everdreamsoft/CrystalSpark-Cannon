@@ -19,7 +19,7 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 class FirstOasisContractFactory extends BlockchainContractFactory
 {
 
-    public static $isa = null;
+    public static $isa = 'firstOasisContract';
     const ABI_VERB = 'has';
     const ABI_TARGET = 'abi';
 
