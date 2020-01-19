@@ -11,6 +11,7 @@ namespace CsCannon\Blockchains\Generic;
 
 
 
+use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Blockchain;
 
 use CsCannon\Blockchains\BlockchainContract;
@@ -32,6 +33,15 @@ class GenericContract extends BlockchainContract
     public function getBlockchain():Blockchain
     {
         $triples = $this->subjectConcept->tripletArray;
+        if (isset($triples[$this->system->systemConcept->get(BlockchainContractFactory::ON_BLOCKCHAIN_VERB)])) {
+            $blockchainCOnceptId = $triples[$this->system->systemConcept->get(BlockchainContractFactory::ON_BLOCKCHAIN_VERB)];
+            $blockchainCOnceptId = reset($blockchainCOnceptId);
+            $blockchainShortname = $this->system->systemConcept->getSCS($blockchainCOnceptId);
+            $blockchain = BlockchainRouting::getBlockchainFromName($blockchainShortname);
+            if (!is_null($blockchain))
+                return $blockchain ;
+
+        }
         return GenericBlockchain::getStatic();
     }
 
