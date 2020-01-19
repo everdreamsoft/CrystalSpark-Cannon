@@ -16,7 +16,9 @@ use CsCannon\Blockchains\Bitcoin\BtcBlockchain;
  class XcpBlockchain extends BtcBlockchain
 {
 
+     protected $name = 'counterparty';
    const NAME = 'counterparty';
+     protected $nameShort = 'xcp';
    private static $staticBlockchain ;
      public static $network = array("mainet"=>array("explorerTx"=>'https://xchain.io/tx/'),
          "testnet"=>array("explorerTx"=>'https://testnet.xchain.io/tx/')
@@ -40,12 +42,8 @@ use CsCannon\Blockchains\Bitcoin\BtcBlockchain;
            self::$staticBlockchain = new XcpBlockchain();
 
        }
-
        return self::$staticBlockchain ;
 
      }
-
-
-
 
  }

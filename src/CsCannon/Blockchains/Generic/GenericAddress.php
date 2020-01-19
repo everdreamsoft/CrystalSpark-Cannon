@@ -22,7 +22,7 @@ class GenericAddress extends BlockchainAddress
 
 
     protected static  $className = 'CsCannon\Blockchains\Generic\GenericAddress' ;
-    protected static $defaultDataSource = 'CsCannon\Blockchains\Counterparty\DataSource\DatagraphSource' ;
+    protected static $defaultDataSource = 'CsCannon\Blockchains\DataSource\DatagraphSource' ;
 
 
 

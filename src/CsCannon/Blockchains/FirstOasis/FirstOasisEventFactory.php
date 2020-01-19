@@ -24,7 +24,7 @@ class FirstOasisEventFactory extends BlockchainEventFactory
 {
 
 
-    protected static $className = 'CsCannon\Blockchains\FirstOasis\FirstOasis' ; //Update to relevant class
+    protected static $className = 'CsCannon\Blockchains\FirstOasis\FirstOasisEvent' ; //Update to relevant class
 
 
 

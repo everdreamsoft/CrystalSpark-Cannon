@@ -21,7 +21,7 @@ class FirstOasisContractFactory extends BlockchainContractFactory
 
     public function __construct()
     {
-        $this->blockchain = FirstOasisBlockchain::getStatic();
+        $this->blockchain = FirstOasisBlockchain::class;
         return parent::__construct();
 
     }

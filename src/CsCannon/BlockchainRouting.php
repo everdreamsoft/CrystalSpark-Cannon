@@ -11,6 +11,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 
+use CsCannon\Blockchains\FirstOasis\FirstOasisBlockchain;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
 class BlockchainRouting
@@ -26,6 +27,7 @@ class BlockchainRouting
         $supported[] = new EthereumBlockchain();
         //$supported[] = new MaticBlockchain();
         $supported[] = new KlaytnBlockchain();
+        $supported[] = new FirstOasisBlockchain();
 
         return $supported ;
 
