@@ -14,6 +14,7 @@ namespace CsCannon\Blockchains\FirstOasis;
 
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEventFactory;
+use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumEvent;
 use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
@@ -35,6 +36,7 @@ class FirstOasisEventFactory extends BlockchainEventFactory
         parent::__construct();
 
         $this->generatedEntityClass = static::$className ;
+        $this->setFilter(self::ON_BLOCKCHAIN_EVENT,FirstOasisBlockchain::NAME); //Update relevant chain name
 
 
 
