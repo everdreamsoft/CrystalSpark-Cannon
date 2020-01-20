@@ -15,7 +15,7 @@ use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Blockchain;
 
 use CsCannon\Blockchains\BlockchainContract;
-
+use CsCannon\Blockchains\BlockchainContractFactory;
 
 
 class GenericContract extends BlockchainContract
