@@ -31,6 +31,7 @@ use SandraCore\System;
     public $displayManager ;
 
     const DISPLAY_ID = 'contract';
+    const EXPLICIT_TOKEN_LISTING_SHORTNAME = 'explicitListing'; // explicit token listing is used when one asset point to multiple contract's token ID. For example SOG one card multiple token id
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system){
 
@@ -90,6 +91,24 @@ use SandraCore\System;
 
 
     }
+
+     public function setExplicitTokenId($boolean = true){
+
+         return $this->getOrInitReference(self::EXPLICIT_TOKEN_LISTING_SHORTNAME,$boolean);
+
+
+     }
+
+     public function isExplicitTokenId(){
+
+         $explicit = $this->get(self::EXPLICIT_TOKEN_LISTING_SHORTNAME) ;
+         if (is_null($explicit)) return 0 ;
+
+         return $explicit ;
+
+
+     }
+
 
     public function bindToAsset(Asset $asset){
 

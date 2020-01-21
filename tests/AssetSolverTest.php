@@ -96,6 +96,105 @@ final class AssetSolverTest extends TestCase
 
 
 
+    }
+
+    public function testAssetToTokenPathTest(){
+
+
+
+        $collectionName = 'testCollection';
+        $sandra = \CsCannon\SandraManager::getSandra();
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $collection = $assetCollectionFactory->create($collectionName,null, \CsCannon\AssetSolvers\LocalSolver::getEntity());
+
+        $collection->setName($collectionName);
+        $collection->setImageUrl("random");
+        $collection->setDescription("Random");
+        $collection->setSolver(LocalSolver::getEntity());
+
+
+
+
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contract = $contractFactory->get("@account",true,\CsCannon\Blockchains\Ethereum\Interfaces\ERC721::getEntity());
+        $contract->bindToCollection($collection);
+        $contractFactory->populateLocal();
+       // $standard=$contract->getStandard()->setTokenId(1);
+
+
+
+        $contract->setExplicitTokenId(1);
+
+
+
+
+
+
+
+        //An asset that have multiple token Id
+        $assetFactory = new \CsCannon\AssetFactory($sandra);
+        $myAsset = $assetFactory->create("myUnique",["hello"=>'data'],[$collection],[$contract]);
+        $myAsset2 = $assetFactory->create("myUnique2",["hello"=>'data'],[$collection],[$contract]);
+
+        $tokenPathToAssetFactory = new \CsCannon\TokenPathToAssetFactory($sandra);
+
+        $erc721_1 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(1);
+        $erc721_2 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(2);
+        $erc721_3 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(3);
+
+        $entToSolver = $tokenPathToAssetFactory->create($erc721_1);
+        $entToSolver2 = $tokenPathToAssetFactory->create($erc721_2);
+        $entToSolver1_2 =$tokenPathToAssetFactory->create($erc721_1); //duplicata for test
+        $entToSolver3 =$tokenPathToAssetFactory->create($erc721_3);
+
+
+        $this->assertEquals($entToSolver->subjectConcept->idConcept,$entToSolver1_2->subjectConcept->idConcept);
+        $this->assertCount(3,$tokenPathToAssetFactory->getEntities());
+
+
+
+        //At this point we should have 2 entity path
+        $tokenPathToAssetFactoryV = new \CsCannon\TokenPathToAssetFactory($sandra);
+        $shaban2 = $tokenPathToAssetFactoryV->populateLocal();
+
+
+
+        //asset binding
+        $myAsset->bindToContractWithMultipleSpecifiers($contract,[$entToSolver,$entToSolver2,$entToSolver1_2]);
+
+        $myAsset2->bindToContractWithMultipleSpecifiers($contract,[$entToSolver2]);
+
+
+        $tokenPath = $myAsset->getTokenPathForContract($contract);
+        $tokenPath2 = $myAsset2->getTokenPathForContract($contract);
+
+        $this->assertCount(2,$tokenPath);
+
+
+
+        $this->assertCount(1,$tokenPath2);
+
+
+
+        //Now we need to solve
+        $mySolver = LocalSolver::getEntity();
+
+        $myOrbFactory = new \CsCannon\OrbFactory();
+        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
+        $assetFactory->populateLocal();
+
+        $orbs = $myOrbFactory->getOrbsFromContractPath($contract,$erc721_1);
+
+        $this->assertCount(1,$orbs);
+
+        $orbs = $myOrbFactory->getOrbsFromContractPath($contract,$erc721_2);
+        $this->assertCount(2,$orbs);
+
+        //var_dump($orbs);
+
+
+
 
 
     }

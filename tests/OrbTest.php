@@ -32,6 +32,7 @@ final class OrbTest extends TestCase
     public const COLLECTION_NAME = "My First CollectionForOrb" ;
     public const COLLECTION_CODE = "MyFirstCollectionForOrb" ;
     public const COLLECTION_CONTRACT = "myContractForOrb" ;
+    public const COLLECTION_721 = "myContractForOrb721" ;
     public const ASSET_IMAGE_URL = "http://www.google.com" ;
 
     public function testCollection()
@@ -109,6 +110,70 @@ final class OrbTest extends TestCase
        // $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
 
        // $getJoinedContract->dumpMeta();
+
+        //Brother entity hotplug not supported by sandra at this moment
+        $newContractFactoryBecauseNotHotPlug =  $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $newContractFactoryBecauseNotHotPlug->populateLocal();
+        $contract = $newContractFactoryBecauseNotHotPlug->get(self::COLLECTION_CONTRACT);
+
+
+
+
+        $myOrbFactory = new \CsCannon\OrbFactory();
+        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
+        $assetFactory->populateLocal();
+        $orbs = $myOrbFactory->getOrbsFromContractPath($contract,ERC20::getEntity());
+
+        $this->assertInstanceOf(Orb::class,$orbs[0],"Orb couldn't be retreived");
+
+        //we look if the local asset solver works
+        $orb = reset($orbs);
+        /**@var Orb $orb*/
+        $orbAsset = $orb->getAsset();
+
+        $this->assertInstanceOf(Asset::class,$orbAsset,"Orbs asset is not an asset");
+
+        \CsCannon\Tests\TestManager::registerDataStructure();
+
+
+    }
+
+    public function testAssetErc721()
+
+    {
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $collectionEntity = $assetCollectionFactory->get(self::COLLECTION_CODE);
+
+        //create a contract
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true,ERC20::getEntity());
+        $contract->bindToCollection($collectionEntity);
+
+
+        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
+        $metaData = [\CsCannon\AssetFactory::IMAGE_URL=>self::ASSET_IMAGE_URL,
+            \CsCannon\AssetFactory::METADATA_URL =>self::ASSET_IMAGE_URL
+        ];
+
+
+        $asset = $assetFactory->create('AssetOrb',$metaData, [$collectionEntity],[$contract]);
+
+
+        $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
+
+
+        $getJoinedContract = $asset->getContracts();
+        $getJoinedCollection= $asset->getCollections();
+
+        foreach (($getJoinedContract ? $getJoinedContract : array()) as $contract)
+            $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainContract::class,$contract,"Asset contract is not a contract");
+
+        foreach (($getJoinedCollection ? $getJoinedCollection : array()) as $collection)
+            $this->assertInstanceOf(\CsCannon\AssetCollection::class,$collection,"Asset collection is not a collection");
+        // $this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset factory didn't produce an asset");
+
+        // $getJoinedContract->dumpMeta();
 
         //Brother entity hotplug not supported by sandra at this moment
         $newContractFactoryBecauseNotHotPlug =  $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();

@@ -9,11 +9,6 @@
 namespace CsCannon\Blockchains\Ethereum;
 
 
-
-
-
-
-
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;

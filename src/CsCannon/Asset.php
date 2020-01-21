@@ -10,8 +10,10 @@
 namespace CsCannon;
 
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use SandraCore\Entity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
 
@@ -27,9 +29,12 @@ class Asset extends \SandraCore\Entity implements Displayable
     public const IMAGE_URL = 'imageUrl';
     public const METADATA_URL = 'metadataUrl';
     public const FALLBACK_IMAGE = 'fallbackImageUrl';
+    public $tokenPathFactory ;
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
+
+        $this->tokenPathFactory = new TokenPathToAssetFactory($system);
 
 
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
@@ -82,6 +87,30 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     }
 
+    /**
+     * @param BlockchainContract $contract
+     * @param Entity[] $tokenPaths array of token path
+     */
+    public function bindToContractWithMultipleSpecifiers(BlockchainContract $contract, array $tokenPaths){
+
+
+        foreach ($tokenPaths ?? array() as $tokenPath){
+
+                //System::sandraException(SandraManager::getSandra()->systemError("",self::class,3,"Binding asset with contract specifier not a valid blockchain standard
+                //"));
+                //continue ;
+
+            $contract->setExplicitTokenId(1);
+            $tokenPath->subjectConcept->createTriplet($contract->subjectConcept,$this->subjectConcept);
+           // $this->subjectConcept->createTriplet($contract->subjectConcept,$tokenPath->subjectConcept);
+
+
+        }
+
+
+    }
+
+
     public function getContracts(){
 
 
@@ -99,6 +128,19 @@ class Asset extends \SandraCore\Entity implements Displayable
         return $contracts;
 
     }
+
+    public function getTokenPathForContract(BlockchainContract $contract, $limit=1000){
+
+        //tokenpath->contract->asset
+     $this->tokenPathFactory->setFilter($contract->subjectConcept->idConcept,$this->subjectConcept->idConcept);
+     $this->tokenPathFactory->populateLocal($limit);
+
+     return $this->tokenPathFactory->getEntities();
+
+
+
+    }
+
 
     public function getCollections(){
 
