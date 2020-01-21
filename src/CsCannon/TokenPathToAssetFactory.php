@@ -40,6 +40,15 @@ class TokenPathToAssetFactory extends EntityFactory
     }
 
 
+    public function getOrCreate(BlockchainContractStandard $standard){
+
+
+        $result = $this->get($standard->getSpecifierData());
+        if ($result == null) $this->create($standard);
+
+    }
+
+
     public function getOrbsInCollection(AssetCollection $assetCollection,$limit,$offset){
 
 
