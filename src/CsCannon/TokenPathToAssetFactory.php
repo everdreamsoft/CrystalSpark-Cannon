@@ -43,7 +43,7 @@ class TokenPathToAssetFactory extends EntityFactory
     public function getOrCreate(BlockchainContractStandard $standard){
 
 
-        $result = $this->get($standard->getSpecifierData());
+        $result = $this->get($standard->getDisplayStructure());
         if ($result == null) $this->create($standard);
 
     }

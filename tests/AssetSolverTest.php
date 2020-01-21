@@ -142,15 +142,19 @@ final class AssetSolverTest extends TestCase
         $erc721_1 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(1);
         $erc721_2 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(2);
         $erc721_3 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(3);
+        $erc721_4 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(4);
 
         $entToSolver = $tokenPathToAssetFactory->create($erc721_1);
         $entToSolver2 = $tokenPathToAssetFactory->create($erc721_2);
         $entToSolver1_2 =$tokenPathToAssetFactory->create($erc721_1); //duplicata for test
         $entToSolver3 =$tokenPathToAssetFactory->create($erc721_3);
 
+        $entSolverTest3 = $tokenPathToAssetFactory->getOrCreate($erc721_3);
+        $entSolverTest4 = $tokenPathToAssetFactory->getOrCreate($erc721_4);
+
 
         $this->assertEquals($entToSolver->subjectConcept->idConcept,$entToSolver1_2->subjectConcept->idConcept);
-        $this->assertCount(3,$tokenPathToAssetFactory->getEntities());
+        $this->assertCount(4,$tokenPathToAssetFactory->getEntities());
 
 
 
