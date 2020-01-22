@@ -106,8 +106,8 @@ class AssetFactory extends \SandraCore\EntityFactory
 
                 $tokenToAssetFactory->populateBrotherEntities($contract);
 
-                $assetsList = $tokenToAsset->subjectConcept->tripletArray[$contract->subjectConcept->idConcept];
-                foreach ($assetsList ?? array() as $assetId) {
+                $assetsList = $tokenToAsset->subjectConcept->tripletArray[$contract->subjectConcept->idConcept] ?? array();
+                foreach ($assetsList  as $assetId) {
 
                     $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()][] = $this->entityArray[$assetId];;
                 }
