@@ -24,8 +24,8 @@ class Balance
 {
 
 
-    public $contracts ;
-    private $contractMap ;
+    public $contracts = array() ;
+    private $contractMap = array() ;
     public $orbFactory ;
     private $orbBuilt = false ;
     public $display ;
