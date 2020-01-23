@@ -55,6 +55,34 @@ abstract class  BlockchainAddress extends Entity implements Displayable
 
 
      }
+
+
+    /**
+     * @param BlockchainContract[] $blockchainContracts
+     * @param int $limit
+     * @param int $offset
+     * @return Balance
+     */
+    public function getBalanceForContract(array $blockchainContracts, $limit=100, $offset=0):Balance{
+
+
+        $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
+        $collectionFactory->populateLocal();
+
+
+
+        $dataSource =  $this->getDataSource();
+        $balance = $dataSource::getBalanceForContract($this,$blockchainContracts,$limit,$offset);
+
+
+        $this->balance = $balance ;
+
+
+        return $balance ;
+
+
+    }
+
     abstract public function getBlockchain():Blockchain;
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)

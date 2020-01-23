@@ -51,6 +51,7 @@ use SandraCore\ForeignEntityAdapter;
 
 
 
+
      }
 
 
@@ -60,5 +61,20 @@ use SandraCore\ForeignEntityAdapter;
 
 
     public static abstract function getBalance(BlockchainAddress $address,$limit,$offset):Balance ;
+
+
+     /**
+      * @param BlockchainAddress $address
+      * @param BlockchainContract[] $contract
+      * @param $limit
+      * @param $offset
+      * @return Balance
+      */
+     public static  function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset):Balance {
+
+         //this should be abstract but for the moment we keep like that
+
+
+     }
 
 }

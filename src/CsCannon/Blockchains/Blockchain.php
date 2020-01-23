@@ -27,6 +27,9 @@ abstract class Blockchain
     public  $blockFactory ;
     public static $network = array("null"=>array("explorer_tx"=>'null'));
 
+    /**
+     * @return BlockchainAddressFactory
+     */
     public function getAddressFactory()
     {
 

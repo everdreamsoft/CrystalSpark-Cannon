@@ -8,6 +8,7 @@ use CsCannon\AssetCollectionFactory;
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
@@ -38,6 +39,7 @@ class OpenSeaImporter extends BlockchainDataSource
 {
 
     public $sandra ;
+    public static $apiUrl = 'https://api.opensea.io/api/v1/';
 
 
 
@@ -53,7 +55,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
         $sandra =  SandraManager::getSandra();
         /** @var System $sandra */
-        $openSeaEvents =  "https://api.opensea.io/api/v1/events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
+        $openSeaEvents =  self::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
 
 
 
@@ -154,7 +156,36 @@ class OpenSeaImporter extends BlockchainDataSource
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
 
-        $foreignAdapter = new ForeignEntityAdapter("https://api.opensea.io/api/v1/assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$address->getAddress(),'assets',SandraManager::getSandra());
+        return self::getBalanceForContract($address,array(), $limit, $offset);
+
+
+
+    }
+
+    /**
+     * @param BlockchainAddress $address
+     * @param BlockchainContract[] $blockchainContracts
+     * @param $limit
+     * @param $offset
+     * @return Balance
+     */
+    public static function getBalanceForContract(BlockchainAddress $address, array $blockchainContracts, $limit, $offset): Balance
+    {
+
+        $contractFilter = '';
+
+        if (!empty($blockchainContracts)){
+
+            foreach ($blockchainContracts as $blockchainContract) {
+                $contractFilter .= '&asset_contract_addresses='.$blockchainContract->getId();
+
+                }
+        }
+
+
+        $foreignAdapter = new ForeignEntityAdapter(self::$apiUrl."assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$address->getAddress()
+            .$contractFilter
+            ,'assets',SandraManager::getSandra());
 
         $assetVocabulary = array('image_url'=>'image',
             'assetName'=>'assetName',
@@ -164,14 +195,14 @@ class OpenSeaImporter extends BlockchainDataSource
         $foreignAdapter->flatSubEntity('asset_contract','contract');
         $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
         $foreignAdapter->populate();
-       // $foreignAdapter->dumpMeta();
+        // $foreignAdapter->dumpMeta();
         $contractFactory = new EthereumContractFactory();
         $contractFactory->populateLocal();
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
 
-         self::$localCollections = $collectionFactory ;
+        self::$localCollections = $collectionFactory ;
         $balance = new Balance();
 
         //opensea API ruleset
@@ -220,8 +251,8 @@ class OpenSeaImporter extends BlockchainDataSource
 
 
 
-         //   $assetEntity['image'] = $entity->get('image');
-           // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
+            //   $assetEntity['image'] = $entity->get('image');
+            // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
 
 
             $ethContract = $contractFactory->get($contractAddress);
