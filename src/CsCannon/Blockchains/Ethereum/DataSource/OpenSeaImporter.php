@@ -55,7 +55,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
         $sandra =  SandraManager::getSandra();
         /** @var System $sandra */
-        $openSeaEvents =  self::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
+        $openSeaEvents =  static::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
 
 
 
@@ -183,7 +183,7 @@ class OpenSeaImporter extends BlockchainDataSource
         }
 
 
-        $foreignAdapter = new ForeignEntityAdapter(self::$apiUrl."assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$address->getAddress()
+        $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_by=current_price&order_direction=a&limit=300&owner=".$address->getAddress()
             .$contractFilter
             ,'assets',SandraManager::getSandra());
 
