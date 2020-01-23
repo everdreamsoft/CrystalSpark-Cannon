@@ -218,7 +218,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
             if ($standard == "ERC721") $contractStandard =  ERC721::init();
 
-
+           /*
             //on opensea one contract = 1 collection
             if(!isset($collectionArray[$contractAddress])){
 
@@ -233,6 +233,7 @@ class OpenSeaImporter extends BlockchainDataSource
                 $collectionArray[$contractAddress] = $collection;
 
             }
+
             $collection = $collectionArray[$contractAddress] ;
 
             if(!isset( $collectionContractsArray[$contractAddress])){
@@ -253,6 +254,7 @@ class OpenSeaImporter extends BlockchainDataSource
 
             //   $assetEntity['image'] = $entity->get('image');
             // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
+
 
 
             $ethContract = $contractFactory->get($contractAddress);
