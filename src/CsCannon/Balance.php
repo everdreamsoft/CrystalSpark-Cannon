@@ -44,6 +44,16 @@ class Balance
 
     }
 
+    public function merge(Balance $balanceToMerge){
+
+
+
+        $this->contracts = $this->contracts + $balanceToMerge->contracts;
+        $this->contractMap = $this->contractMap + $balanceToMerge->contractMap ;
+
+
+    }
+
 
     public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){
 

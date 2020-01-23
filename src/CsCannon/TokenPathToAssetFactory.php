@@ -46,6 +46,8 @@ class TokenPathToAssetFactory extends EntityFactory
         $result = $this->get($standard->getDisplayStructure());
         if ($result == null) $this->create($standard);
 
+        return $result ;
+
     }
 
 
