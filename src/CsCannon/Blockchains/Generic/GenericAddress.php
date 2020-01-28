@@ -6,7 +6,7 @@
  * Time: 14:42
  */
 
-namespace CsCannon\Blockchains\Klaytn;
+namespace CsCannon\Blockchains\Generic;
 
 
 
@@ -32,7 +32,7 @@ class GenericAddress extends BlockchainAddress
 
     public function getBlockchain(): Blockchain
     {
-        return KlaytnBlockchain::getStatic();
+        return GenericBlockchain::getStatic();
     }
 
 
