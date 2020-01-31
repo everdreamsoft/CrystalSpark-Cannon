@@ -43,7 +43,7 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
        if(is_null($entity) && !$autoCreate){
            $refConceptId = CommonFunctions::somethingToConceptId(static::$isa,SandraManager::getSandra());
-           $entity = new static::$className("foreign$address",array($addressName => $address),$this->foreignAdapterX,$this->entityReferenceContainer, $this->entityContainedIn, "foreign$address",$this->system);
+           $entity = new static::$className("foreign$address",array($addressName => $address),$this->foreignAdapterX,"f:$address",$this->entityReferenceContainer, $this->entityContainedIn,$this->system);
            $this->addNewEtities($entity,array($refConceptId=>$entity));
 
            //dd($entity);
