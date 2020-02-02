@@ -77,6 +77,7 @@ class AssetFactory extends \SandraCore\EntityFactory
         if (!isset($this->specifierMap[$contract->subjectConcept->idConcept])) {
 
             $assetList = $this->getEntitiesWithBrother(self::$tokenJoinVerb, $contract->subjectConcept->idConcept);
+            if (!$assetList) return null ;
 
             foreach ($assetList ? $assetList : array() as $asset){
 
