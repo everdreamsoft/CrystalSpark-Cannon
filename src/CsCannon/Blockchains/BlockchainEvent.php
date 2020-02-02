@@ -135,8 +135,14 @@ class BlockchainEvent extends Entity implements Displayable
 
     public function __set($name, $value)
     {
-        echo "Setting '$name' to '$value'\n";
+
         $this->data[$name] = $value;
+    }
+
+    public function setSourceContract(BlockchainContract $contract)
+    {
+
+        $this->setBrotherEntity(BlockchainEventFactory::EVENT_SOURCE_CONTRACT,$contract,null);
     }
 
 
