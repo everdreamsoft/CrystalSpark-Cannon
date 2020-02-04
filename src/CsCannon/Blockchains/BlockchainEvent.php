@@ -136,7 +136,7 @@ class BlockchainEvent extends Entity implements Displayable
     //interesting but doens't seem used
     public function __set($name, $value)
     {
-        echo "Setting '$name' to '$value'\n";
+
         $this->data[$name] = $value;
     }
 
@@ -150,6 +150,12 @@ class BlockchainEvent extends Entity implements Displayable
     public function getBlockTimestamp()
     {
         return $this->getBlock()->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+    }
+
+    public function setSourceContract(BlockchainContract $contract)
+    {
+
+        $this->setBrotherEntity(BlockchainEventFactory::EVENT_SOURCE_CONTRACT,$contract,null);
     }
 
 
