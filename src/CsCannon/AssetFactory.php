@@ -109,6 +109,7 @@ class AssetFactory extends \SandraCore\EntityFactory
                 $assetsList = $tokenToAsset->subjectConcept->tripletArray[$contract->subjectConcept->idConcept] ?? array();
                 foreach ($assetsList  as $assetId) {
 
+                    if (!isset($this->entityArray[$assetId])) continue ;
                     $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()][] = $this->entityArray[$assetId];;
                 }
 
