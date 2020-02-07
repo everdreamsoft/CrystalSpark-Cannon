@@ -26,7 +26,7 @@ class Asset extends \SandraCore\Entity implements Displayable
     public $fallbackImage ;
 
 
-    public const IMAGE_URL = 'imageUrl';
+    public const IMAGE_URL = 'imgUrl';
     public const METADATA_URL = 'metadataUrl';
     public const FALLBACK_IMAGE = 'fallbackImageUrl';
     public $tokenPathFactory ;
@@ -42,7 +42,7 @@ class Asset extends \SandraCore\Entity implements Displayable
 
         if ($factory instanceof ForeignEntityAdapter){
 
-           $this->imageUrl = $sandraReferencesArray[AssetFactory::IMAGE_URL];
+            $this->imageUrl = $sandraReferencesArray[AssetFactory::IMAGE_URL];
             $this->id = $sandraReferencesArray[AssetFactory::ID];
             $this->metaDataUrl = $sandraReferencesArray[AssetFactory::METADATA_URL];
 
@@ -87,6 +87,22 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     }
 
+    public function setImageUrl($url){
+
+
+        $this->createOrUpdateRef(Asset::IMAGE_URL,$url);
+        $this->imageUrl = $url ;
+
+    }
+
+    public function setMetadataUrl($url){
+
+
+        $this->createOrUpdateRef(Asset::METADATA_URL,$url);
+        $this->metaDataUrl = $url ;
+
+    }
+
     /**
      * @param BlockchainContract $contract
      * @param Entity[] $tokenPaths array of token path
@@ -96,13 +112,13 @@ class Asset extends \SandraCore\Entity implements Displayable
 
         foreach ($tokenPaths ?? array() as $tokenPath){
 
-                //System::sandraException(SandraManager::getSandra()->systemError("",self::class,3,"Binding asset with contract specifier not a valid blockchain standard
-                //"));
-                //continue ;
+            //System::sandraException(SandraManager::getSandra()->systemError("",self::class,3,"Binding asset with contract specifier not a valid blockchain standard
+            //"));
+            //continue ;
 
             $contract->setExplicitTokenId(1);
             $tokenPath->subjectConcept->createTriplet($contract->subjectConcept,$this->subjectConcept);
-           // $this->subjectConcept->createTriplet($contract->subjectConcept,$tokenPath->subjectConcept);
+            // $this->subjectConcept->createTriplet($contract->subjectConcept,$tokenPath->subjectConcept);
 
 
         }
@@ -132,10 +148,10 @@ class Asset extends \SandraCore\Entity implements Displayable
     public function getTokenPathForContract(BlockchainContract $contract, $limit=1000){
 
         //tokenpath->contract->asset
-     $this->tokenPathFactory->setFilter($contract->subjectConcept->idConcept,$this->subjectConcept->idConcept);
-     $this->tokenPathFactory->populateLocal($limit);
+        $this->tokenPathFactory->setFilter($contract->subjectConcept->idConcept,$this->subjectConcept->idConcept);
+        $this->tokenPathFactory->populateLocal($limit);
 
-     return $this->tokenPathFactory->getEntities();
+        return $this->tokenPathFactory->getEntities();
 
 
 
@@ -163,12 +179,12 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     public function getDisplayable(){
 
-      foreach ($this->displayable as $referenceShortname => $referenceTitle){
+        foreach ($this->displayable as $referenceShortname => $referenceTitle){
 
-        $return[$referenceTitle] = $this->get($referenceShortname) ;
-      }
+            $return[$referenceTitle] = $this->get($referenceShortname) ;
+        }
 
-      return $return ;
+        return $return ;
 
     }
 

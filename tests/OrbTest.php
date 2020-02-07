@@ -277,7 +277,7 @@ final class OrbTest extends TestCase
         $this->assertCount(1,$output);
         //should be one orb on the event
         $this->assertCount(1,$output[0]['orbs']);
-        $this->assertEquals(self::ASSET_IMAGE_URL,$output[0]['orbs'][0]['asset']['imageUrl']);
+        $this->assertEquals(self::ASSET_IMAGE_URL,$output[0]['orbs'][0]['asset'][\CsCannon\AssetFactory::IMAGE_URL]);
 
 
 
