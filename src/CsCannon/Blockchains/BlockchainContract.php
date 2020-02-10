@@ -17,13 +17,16 @@ use CsCannon\Asset;
 use CsCannon\AssetCollection;
 use CsCannon\AssetFactory;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 use CsCannon\Displayable;
 use CsCannon\DisplayManager;
+use SandraCore\CommonFunctions;
+use SandraCore\DatabaseAdapter;
 use SandraCore\Entity;
 use SandraCore\System;
 
- abstract class  BlockchainContract extends Entity Implements Displayable
+abstract class  BlockchainContract extends Entity Implements Displayable
 {
 
     abstract  function getBlockchain():Blockchain;
@@ -32,6 +35,7 @@ use SandraCore\System;
 
     const DISPLAY_ID = 'contract';
     const EXPLICIT_TOKEN_LISTING_SHORTNAME = 'explicitListing'; // explicit token listing is used when one asset point to multiple contract's token ID. For example SOG one card multiple token id
+    const ALIAS_SHORTNAME = 'alias'; // fullText Alias
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system){
 
@@ -92,22 +96,22 @@ use SandraCore\System;
 
     }
 
-     public function setExplicitTokenId($boolean = true){
+    public function setExplicitTokenId($boolean = true){
 
-         return $this->getOrInitReference(self::EXPLICIT_TOKEN_LISTING_SHORTNAME,$boolean);
-
-
-     }
-
-     public function isExplicitTokenId(){
-
-         $explicit = $this->get(self::EXPLICIT_TOKEN_LISTING_SHORTNAME) ;
-         if (is_null($explicit)) return 0 ;
-
-         return $explicit ;
+        return $this->getOrInitReference(self::EXPLICIT_TOKEN_LISTING_SHORTNAME,$boolean);
 
 
-     }
+    }
+
+    public function isExplicitTokenId(){
+
+        $explicit = $this->get(self::EXPLICIT_TOKEN_LISTING_SHORTNAME) ;
+        if (is_null($explicit)) return 0 ;
+
+        return $explicit ;
+
+
+    }
 
 
     public function bindToAsset(Asset $asset){
@@ -124,11 +128,39 @@ use SandraCore\System;
 
     }
 
-     public function setName(){
+    public function setName(){
 
-         return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
+        return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
 
-     }
+    }
+
+    public function setAlias($alias){
+
+        //verify alias existense
+        $verif = new GenericContractFactory();
+        $aliasUnid = $this->system->systemConcept->get(self::ALIAS_SHORTNAME);
+        $fileUnid = $this->system->systemConcept->get(BlockchainContractFactory::$file);
+        $exist = DatabaseAdapter::searchConcept($alias,$aliasUnid,$this->system,'',$fileUnid);
+
+
+        if ($exist) {
+            /** @var BlockchainContract  $lastContract */
+            $lastContract = end($exist);
+            if (!$lastContract == $this->subjectConcept->idConcept) // the contract we are trying to alias exist and it's not this contract
+                $this->system->systemError(0, self::class, 4, 'Contract alias exists ' . $alias);
+
+        }
+
+
+        return $this->getOrInitReference(self::ALIAS_SHORTNAME,$alias);
+
+    }
+
+    public function getAlias(){
+
+        return $this->get(self::ALIAS_SHORTNAME);
+
+    }
 
 
 
@@ -179,4 +211,4 @@ use SandraCore\System;
 
 
 
- }
+}
