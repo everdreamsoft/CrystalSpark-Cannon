@@ -149,8 +149,6 @@ class Balance
                     if($orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject)){
 
                         $orbArray = $orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject,$token['quantity']);
-
-
                         $orbs[] = $orbArray ;
                     }
 
