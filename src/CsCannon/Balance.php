@@ -145,6 +145,7 @@ class Balance
                     $tokenObject = $token['token'] ;
                     //$quantity = $token->
                     //have we found an orb ?
+                    if (! is_numeric($contractEntity->entityId)) continue ;
                     if($orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject)){
 
                         $orbArray = $orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject,$token['quantity']);
