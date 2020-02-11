@@ -26,7 +26,7 @@ class Asset extends \SandraCore\Entity implements Displayable
     public $fallbackImage ;
 
 
-    public const IMAGE_URL = 'imgUrl';
+    public const IMAGE_URL = 'imgURL';
     public const METADATA_URL = 'metadataUrl';
     public const FALLBACK_IMAGE = 'fallbackImageUrl';
     public $tokenPathFactory ;
