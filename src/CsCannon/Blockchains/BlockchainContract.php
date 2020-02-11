@@ -131,7 +131,6 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     public function setName(){
 
         return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
-
     }
 
     public function setAlias($alias){

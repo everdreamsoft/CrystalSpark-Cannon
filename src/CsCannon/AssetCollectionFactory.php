@@ -186,6 +186,8 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     public function createFromOpenSeaEntity(Entity $openSeaEntity, EthereumContract $contract){
 
+        return ;
+
         $data['name'] = $openSeaEntity->get('contract.name');
         $data['symbol'] = $openSeaEntity->get('contract.symbol');
         $data['imageUrl'] = $openSeaEntity->get('contract.image_url');
