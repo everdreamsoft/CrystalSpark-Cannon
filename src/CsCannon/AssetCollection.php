@@ -70,8 +70,8 @@ class AssetCollection extends \SandraCore\Entity
         if ($assetSolver) {
             $additionalSolverParameters = $assetSolver->getAdditionalParam();
             if ($replaceExisting){ // if already has solver remove
-                $solvers = $this->getSolvers();
-                foreach ($solvers as $solver){
+                $solversBrothers = $this->getBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB);
+                foreach ($solversBrothers as $solver){
                     $solver->delete();
                 }
 
