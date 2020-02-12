@@ -41,7 +41,7 @@ class BooSolver extends LocalSolver
 
 
 
-    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):array{
+    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract):?array{
 
         //if was never initialized
         if (self::getLastUpdate() == null)self::update();
