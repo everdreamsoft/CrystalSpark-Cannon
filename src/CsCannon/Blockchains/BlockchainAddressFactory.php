@@ -14,7 +14,7 @@ abstract class BlockchainAddressFactory extends EntityFactory
 {
    public $blockchain ;
     public static $isa ;
-    public static $file ;
+    public static $file = 'blockchainAddressFile' ;
     public $foreignAdapterX ;
     protected static $className = 'CsCannon\XcpAddress' ;
     const ADDRESS_SHORTNAME = 'address' ;
@@ -42,7 +42,9 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
 
        if(is_null($entity) && !$autoCreate){
-           $refConceptId = CommonFunctions::somethingToConceptId(static::$isa,SandraManager::getSandra());
+           $isa = static::$isa ;
+           if (!$isa) $isa= 'genericBlockchain';
+           $refConceptId = CommonFunctions::somethingToConceptId($isa,SandraManager::getSandra());
            $entity = new static::$className("foreign$address",array($addressName => $address),$this->foreignAdapterX,"f:$address",$this->entityReferenceContainer, $this->entityContainedIn,$this->system);
            $this->addNewEtities($entity,array($refConceptId=>$entity));
 
