@@ -106,8 +106,9 @@ class Asset extends \SandraCore\Entity implements Displayable
     /**
      * @param BlockchainContract $contract
      * @param Entity[] $tokenPaths array of token path
+     * @param bool $replaceExisting
      */
-    public function bindToContractWithMultipleSpecifiers(BlockchainContract $contract, array $tokenPaths){
+    public function bindToContractWithMultipleSpecifiers(BlockchainContract $contract, array $tokenPaths,$replaceExisting = false){
 
 
         foreach ($tokenPaths ?? array() as $tokenPath){
@@ -117,7 +118,7 @@ class Asset extends \SandraCore\Entity implements Displayable
             //continue ;
 
             $contract->setExplicitTokenId(1);
-            $tokenPath->subjectConcept->createTriplet($contract->subjectConcept,$this->subjectConcept);
+            $tokenPath->subjectConcept->createTriplet($contract->subjectConcept,$this->subjectConcept,null,$replaceExisting);
             // $this->subjectConcept->createTriplet($contract->subjectConcept,$tokenPath->subjectConcept);
 
 
