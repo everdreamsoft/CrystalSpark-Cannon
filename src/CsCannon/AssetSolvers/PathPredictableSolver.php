@@ -16,6 +16,7 @@ use CsCannon\AssetFactory;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
+use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
@@ -48,6 +49,9 @@ class PathPredictableSolver extends AssetSolver
         $solvers = $assetCollection->getSolvers();
         $solverData = $assetCollection->getBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB,self::getEntity());
         $return = array();
+
+        //Veryyyyy dirty fix
+        if ($specifier instanceof CounterpartyAsset) return $return ;
 
         //get the correct solver
         foreach ($solvers ? $solvers : array() as $pathSolverEntity){

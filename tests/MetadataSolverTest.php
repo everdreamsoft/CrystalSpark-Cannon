@@ -99,11 +99,78 @@ final class MetadataSolverTest extends TestCase
 
 
 
+
+
         //$addressEntity = $addressFactory->get($testAddress);
         //$balance = $addressEntity->getBalance();
 
 
      //   \CsCannon\Tests\TestManager::registerDataStructure();
+
+    }
+
+    public function testMetasolverReplace()
+    {
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+
+        $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        $collection->setSolver(LocalSolver::getEntity());
+
+
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory->populateLocal();
+        $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        $solvers = $collection->getSolvers();
+
+        //we should have two solvers one from the previous test and the local solver
+
+        $this->assertCount(2,$solvers);
+
+        //we remove one solver
+        $bindings = $collection->getBrotherEntity(\CsCannon\AssetCollectionFactory::METADATASOLVER_VERB);
+        $binding = end($bindings);
+        $binding->delete();
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory->populateLocal();
+        $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        $solvers = $collection->getSolvers();
+
+        $this->assertCount(1,$solvers);
+
+        //we rebind two solvers
+        $collection->setSolver(LocalSolver::getEntity());
+
+        $pathSolver = \CsCannon\AssetSolvers\PathPredictableSolver::getEntity("http://www.website.com/image/{tokenId}","http://www.website.com/meta/{tokenId}") ;
+        $collection->setSolver($pathSolver,1);
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory->populateLocal();
+        $collection = $assetCollectionFactory->get(self::COLLECTION_CODE);
+        $solvers = $collection->getSolvers();
+
+        $this->assertCount(1,$solvers);
+
+        $contractFactory = new EthereumContractFactory();
+        $erc721 = ERC721::init($tokenId=1);
+        $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
+        $assets = $pathSolver::resolveAsset($collection,$erc721,$contract);
+
+        $asset = reset($assets);
+        /** @var Asset $asset */
+
+        $this->assertEquals("http://www.website.com/image/$tokenId",$asset->imageUrl);
+
+
+
+
+
+
+
+
+
 
     }
 
@@ -152,17 +219,6 @@ final class MetadataSolverTest extends TestCase
         $this->assertEquals(1,1);
 
        return $standards ;
-
-
-
-
-
-
-
-
-
-
-
 
         //$addressEntity = $addressFactory->get($testAddress);
         //$balance = $addressEntity->getBalance();

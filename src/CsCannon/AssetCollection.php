@@ -56,7 +56,7 @@ class AssetCollection extends \SandraCore\Entity
 
     }
 
-    public function setSolver(AssetSolver $assetSolver)
+    public function setSolver(AssetSolver $assetSolver,$replaceExisting = false)
     {
 
         if(!$assetSolver->validate()){
@@ -69,8 +69,15 @@ class AssetCollection extends \SandraCore\Entity
 
         if ($assetSolver) {
             $additionalSolverParameters = $assetSolver->getAdditionalParam();
+            if ($replaceExisting){ // if already has solver remove
+                $solversBrothers = $this->getBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB);
+                foreach ($solversBrothers as $solver){
+                    $solver->delete();
+                }
 
-            $this->setBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB, $assetSolver, $additionalSolverParameters);
+            }
+
+            $this->setBrotherEntity(AssetCollectionFactory::METADATASOLVER_VERB, $assetSolver, $additionalSolverParameters,true,$replaceExisting);
         }
 
     }

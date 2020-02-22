@@ -33,6 +33,18 @@ class UnknownStandard extends BlockchainContractStandard
         return null ;
     }
 
+    public function getInterfaceAbi()
+    {
+
+        $strJsonFileContents = "[
+    {
+      
+    }
+  ]";
+        return $strJsonFileContents ;
+    }
+
+
     public function verifyTokenPath($tokenPath)
     {
         foreach ($tokenPath ? $tokenPath : array() as $key => $referenceConceptOrString){
@@ -57,15 +69,6 @@ class UnknownStandard extends BlockchainContractStandard
         }
     }
 
-    public function getInterfaceAbi()
-    {
 
-        $strJsonFileContents = "[
-    {
-      
-    }
-  ]";
-        return $strJsonFileContents ;
-    }
 
 }
