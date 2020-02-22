@@ -33,6 +33,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     const EVENT_SOURCE_ADDRESS = 'source';
     const EVENT_DESTINATION_VERB = 'hasSingleDestination';
     const EVENT_CONTRACT = 'blockchainContract';
+    const EVENT_SOURCE_CONTRACT = 'sourceBlockchainContract';
     const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
     const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
     const EVENT_QUANTITY = 'quantity' ;

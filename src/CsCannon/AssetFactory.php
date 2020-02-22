@@ -74,46 +74,24 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     public function getAssetsFromContract(BlockchainContract $contract, BlockchainContractStandard $specifier){
 
+        if (!isset($this->specifierMap[$contract->subjectConcept->idConcept])) {
 
-        $localStorageStandard = $contract->getStandard();
+            $assetList = $this->getEntitiesWithBrother(self::$tokenJoinVerb, $contract->subjectConcept->idConcept);
+            if (!$assetList) return null ;
 
-        //this is true only when one specifier equals one asset. But not if many tokens equals the same asset
-        if (!isset($this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()])) {
+            foreach ($assetList ? $assetList : array() as $asset){
 
-
-          $assetList = $this->getEntitiesWithBrother(self::$tokenJoinVerb, $contract->subjectConcept->idConcept);
-            //in that case we a specific joined concepts
-            if (!$contract->isExplicitTokenId()) {
-
-                foreach ($assetList ? $assetList : array() as $asset) {
-
-
-                    $standardData = $asset->getBrotherEntity(AssetFactory::$tokenJoinVerb);
-                    if (is_array($standardData)) {
-                        $standardData = end($standardData);
-                        $localStorageStandard->setTokenPath($standardData->entityRefs);
-                    }
-
-                    $this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()][] = $asset;
+                $localStorageStandard = $contract->getStandard();
+                $standardData = $asset->getBrotherEntity(AssetFactory::$tokenJoinVerb);
+                if(is_array($standardData)) {
+                    $standardData = end($standardData);
+                    $localStorageStandard->setTokenPath($standardData->entityRefs);
                 }
 
-            } else {
-
-                //lt see if we have linked path
-                $tokenToAssetFactory = new TokenPathToAssetFactory($contract->system);
-                $tokenToAsset = $tokenToAssetFactory->get($specifier->getDisplayStructure());
-                $tokenToAssetFactory->getTriplets();
-
-                $tokenToAssetFactory->populateBrotherEntities($contract);
-
-                $assetsList = $tokenToAsset->subjectConcept->tripletArray[$contract->subjectConcept->idConcept] ?? array();
-                foreach ($assetsList  as $assetId) {
-
-                    $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()][] = $this->entityArray[$assetId];;
-                }
-
-                return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+                $this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()][] = $asset ;
             }
+
+
         }
 
         return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];

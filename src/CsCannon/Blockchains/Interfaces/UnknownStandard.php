@@ -56,4 +56,16 @@ class UnknownStandard extends BlockchainContractStandard
 
         }
     }
+
+    public function getInterfaceAbi()
+    {
+
+        $strJsonFileContents = "[
+    {
+      
+    }
+  ]";
+        return $strJsonFileContents ;
+    }
+
 }
