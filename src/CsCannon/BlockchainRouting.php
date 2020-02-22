@@ -141,6 +141,14 @@ class BlockchainRouting
 
        }
 
+       if(substr( $address, 0, 3 ) === "@f:"){
+
+           $blockchainList['fo'] = $address ;
+           $blockchain = new FirstOasisBlockchain();
+
+
+       }
+
 
    else{
 
