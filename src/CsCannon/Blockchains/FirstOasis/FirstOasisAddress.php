@@ -14,7 +14,7 @@ namespace CsCannon\Blockchains\FirstOasis;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainAddress;
-use CsCannon\Blockchains\Counterparty\DataSource\DatagraphSource;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 
 
 class FirstOasisAddress extends BlockchainAddress
@@ -32,7 +32,7 @@ class FirstOasisAddress extends BlockchainAddress
 
     public function getBlockchain(): Blockchain
     {
-        return FirstOasisBlockhain::getStatic();
+        return FirstOasisBlockchain::getStatic();
     }
 
 
