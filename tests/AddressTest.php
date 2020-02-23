@@ -9,6 +9,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use CsCannon\Blockchains\DataSource\CrystalSuiteDataSource;
 use PHPUnit\Framework\TestCase;
 
 
@@ -68,6 +69,8 @@ final class AddressTest extends TestCase
         $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressFactoryControl = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressEntity = $addressFactory->get($testAddress);
+
+        $addressEntity->setDataSource(new CrystalSuiteDataSource());
 
 
         $balanceObject = $addressEntity->getBalance();

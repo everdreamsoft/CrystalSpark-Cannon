@@ -1,6 +1,6 @@
 <?php
 
-namespace CsCannon\Blockchains\Counterparty\DataSource;
+namespace CsCannon\Blockchains\DataSource;
 
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
@@ -51,10 +51,8 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
 
 
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter(self::URL.'/tokens/balance/'.$address->getAddress(),'data',SandraManager::getSandra());
 
-        $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
-            'quantity'=>'balance'));
         $foreignAdapter->populate();
 
         //load all counterparty contracts onto memory

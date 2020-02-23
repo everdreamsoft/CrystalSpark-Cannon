@@ -170,7 +170,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     }
 
-    public function getAdaptedDecimals(int $number):?int{
+    public function getAdaptedDecimals(int $number):?float{
 
         if (!$this->decimals) return null ;
 
