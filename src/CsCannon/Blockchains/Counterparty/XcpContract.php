@@ -87,4 +87,9 @@ class XcpContract extends BlockchainContract
     {
         return  XcpBlockchain::getStatic();
     }
+
+    function setDivisible()
+    {
+        return parent::setDivisibility(8);
+    }
 }

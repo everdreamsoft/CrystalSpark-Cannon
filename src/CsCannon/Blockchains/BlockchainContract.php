@@ -32,8 +32,10 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     abstract  function getBlockchain():Blockchain;
     public $id ;
     public $displayManager ;
+    public $decimals = null  ;
 
     const DISPLAY_ID = 'contract';
+
     const EXPLICIT_TOKEN_LISTING_SHORTNAME = 'explicitListing'; // explicit token listing is used when one asset point to multiple contract's token ID. For example SOG one card multiple token id
     const ALIAS_SHORTNAME = 'alias'; // fullText Alias
 
@@ -158,6 +160,23 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     public function getAlias(){
 
         return $this->get(self::ALIAS_SHORTNAME);
+
+    }
+
+    public function setDivisibility(int $decimals):self{
+
+        $this->decimals = $decimals ;
+        return $this;
+
+    }
+
+    public function getAdaptedDecimals(int $number):?int{
+
+        if (!$this->decimals) return null ;
+
+        $adapted = ($number/(pow(10,$this->decimals)));
+        return $adapted ;
+
 
     }
 

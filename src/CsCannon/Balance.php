@@ -58,11 +58,16 @@ class Balance
     public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){
 
         $contractChain = $contract->getBlockchain();
+        $rawQuantity = $quantity ;
         //print_r($quantity);
+        $adaptedQuantity = $contract->getAdaptedDecimals($quantity);
+        if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
 
-        //echo"<br> \n getting contract ID  ".$contract->getId(). $quantity;
+
 
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['quantity'] = $quantity;
+        $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['adaptedQuantity'] = $adaptedQuantity;
+        $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['rawQuantity'] =$rawQuantity ;
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;
 
 
