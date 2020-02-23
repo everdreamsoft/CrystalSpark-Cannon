@@ -35,12 +35,14 @@ class CrystalSuiteDataSource extends BlockchainDataSource
     public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
     {
 
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',
+            SandraManager::getSandra());
 
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
 
+        //$foreignEntityAdapter->addNewEtities($entityArray,array());
 
-        $foreignEntityAdapter->addNewEtities($entityArray,array());
-
-        return $foreignEntityAdapter ;
+        return $foreignAdapter ;
     }
 
 
@@ -50,10 +52,7 @@ class CrystalSuiteDataSource extends BlockchainDataSource
         $limitSQL = '';
         $offsetSql = '';
 
-        self::$dbHost = 'eds.alwaysdata.net';
-        self::$db = 'eds2_counterparty';
-        self::$dbUser = 'eds2';
-        self::$dbpass = '';
+
 
 
         if ($limit)
