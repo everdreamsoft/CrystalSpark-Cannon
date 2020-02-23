@@ -84,13 +84,14 @@ class Balance
 //die("deado");
         $output = array();
 
-        foreach($this->contracts ? $this->contracts : array() as $chain){
+        foreach($this->contracts ? $this->contracts : array() as $chainName =>$chain){
 
 
             foreach($chain ? $chain : array() as $contractId =>$contracts){
 
                 $newContract = null ;
                 $newContract['contract'] = $contractId ;
+                $newContract['chain'] = $chainName ;
 
 
                 foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){

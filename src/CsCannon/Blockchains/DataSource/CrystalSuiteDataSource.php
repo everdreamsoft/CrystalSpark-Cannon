@@ -10,6 +10,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\BlockchainStandardFactory;
 use CsCannon\SandraManager;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntity;
@@ -51,7 +52,7 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
 
 
-        $foreignAdapter = new ForeignEntityAdapter(self::URL.'/tokens/balance/'.$address->getAddress(),'data',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter(self::URL.'tokens/balances/'.$address->getAddress(),'data',SandraManager::getSandra());
 
         $foreignAdapter->populate();
 
@@ -61,14 +62,27 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
         $balance = new Balance($address);
         $conterpartyAsset = CounterpartyAsset::init();
-
-        foreach ($foreignAdapter->entityArray as $entity) {
-
-            /** @var ForeignEntity $entity */
-            $contract = $cpContracts->get($entity->get('contractId'),true);
+        $tokenStandardFactory = new BlockchainStandardFactory(SandraManager::getSandra());
+        $tokenStandardFactory->populateLocal();
+        $xcpContractFactory = new XcpContractFactory();
 
 
-            $balance->addContractToken($contract,$conterpartyAsset,$entity->get('balance'));
+
+
+        foreach ($foreignAdapter->entityArray as $rawContract) {
+
+            /** @var ForeignEntity $rawContract */
+            $contractR = $rawContract->get('contract');
+            $chain = $rawContract->get('chain');
+
+            if($chain != 'counterparty') continue ;
+            $token = reset($rawContract->get('tokens'));
+
+            $contract = $xcpContractFactory->get($contractR,true);
+
+
+
+            $balance->addContractToken($contract,$conterpartyAsset,$token['quantity']);
 
         }
 
