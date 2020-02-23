@@ -22,7 +22,7 @@ use SandraCore\PdoConnexionWrapper;
  * Date: 06.06.19
  * Time: 09:53
  */
-class XchainOnBcy extends BlockchainDataSource
+class XchainDataSource extends BlockchainDataSource
 {
 
 
