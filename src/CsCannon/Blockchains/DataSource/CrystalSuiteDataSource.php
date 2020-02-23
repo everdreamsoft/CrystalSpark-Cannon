@@ -53,7 +53,7 @@ class CrystalSuiteDataSource extends BlockchainDataSource
         self::$dbHost = 'eds.alwaysdata.net';
         self::$db = 'eds2_counterparty';
         self::$dbUser = 'eds2';
-        self::$dbpass = 'vk7B2VGmHgYuz3x';
+        self::$dbpass = '';
 
 
         if ($limit)
