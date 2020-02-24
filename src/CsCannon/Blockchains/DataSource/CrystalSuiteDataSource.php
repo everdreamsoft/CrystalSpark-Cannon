@@ -53,8 +53,11 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
 
         $foreignAdapter = new ForeignEntityAdapter(self::URL.'tokens/balances/'.$address->getAddress(),'data',SandraManager::getSandra());
+       // $foreignAdapter->flatSubEntity('tokens','token');
 
         $foreignAdapter->populate();
+        $me =  $foreignAdapter->divideForeignPath(['tokens'],'$first');
+
 
         //load all counterparty contracts onto memory
         $cpContracts = new XcpContractFactory();
@@ -69,20 +72,22 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
 
 
-        foreach ($foreignAdapter->entityArray as $rawContract) {
+        foreach ($foreignAdapter->foreignRawArray['data'] ?? array() as $rawContract) {
 
             /** @var ForeignEntity $rawContract */
-            $contractR = $rawContract->get('contract');
-            $chain = $rawContract->get('chain');
+            $contractR = $rawContract['contract'];
+            $chain = $rawContract['chain'];
+            $tokens = $rawContract['tokens'];
+
+            $contract = $xcpContractFactory->get($contractR, true);
+
 
             if($chain != 'counterparty') continue ;
-            $token = reset($rawContract->get('tokens'));
-
-            $contract = $xcpContractFactory->get($contractR,true);
+            foreach ($tokens ?? array() as $tokenData) {
 
 
-
-            $balance->addContractToken($contract,$conterpartyAsset,$token['quantity']);
+                $balance->addContractToken($contract, $conterpartyAsset, $tokenData['quantity']);
+            }
 
         }
 

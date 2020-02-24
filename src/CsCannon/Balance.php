@@ -80,8 +80,7 @@ class Balance
     public function getTokenBalance():array {
 
 
-//print_r($this->contractMap);
-//die("deado");
+
         $output = array();
 
         foreach($this->contracts ? $this->contracts : array() as $chainName =>$chain){

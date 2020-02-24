@@ -76,11 +76,6 @@ class TokenPathToAssetFactory extends EntityFactory
 
 
 
-
-
-
-
-
     }
 
 
