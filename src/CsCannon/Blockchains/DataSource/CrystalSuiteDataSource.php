@@ -60,14 +60,14 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
 
         //load all counterparty contracts onto memory
-        $cpContracts = new XcpContractFactory();
-        $cpContracts->populateLocal();
+        $xcpContractFactory = new XcpContractFactory();
+        $xcpContractFactory->populateLocal();
 
         $balance = new Balance($address);
         $conterpartyAsset = CounterpartyAsset::init();
         $tokenStandardFactory = new BlockchainStandardFactory(SandraManager::getSandra());
         $tokenStandardFactory->populateLocal();
-        $xcpContractFactory = new XcpContractFactory();
+
 
 
 
