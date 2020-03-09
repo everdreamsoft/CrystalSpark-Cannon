@@ -18,7 +18,7 @@ use SandraCore\Concept;
 
 class MaticProvider extends InfuraProvider
 {
-    public const HOST_URL = 'https://static.matic.network/network/testnet/v3' ;
+    public const HOST_URL = 'https://testnetv3.matic.network' ;
 
     public function getHostUrl()
     {
