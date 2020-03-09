@@ -11,6 +11,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 
+use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\FirstOasis\FirstOasisBlockchain;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
