@@ -26,7 +26,7 @@ class BlockchainRouting
 
         $supported[] = new XcpBlockchain();
         $supported[] = new EthereumBlockchain();
-        //$supported[] = new MaticBlockchain();
+        $supported[] = new MaticBlockchain();
         $supported[] = new KlaytnBlockchain();
         $supported[] = new FirstOasisBlockchain();
 
