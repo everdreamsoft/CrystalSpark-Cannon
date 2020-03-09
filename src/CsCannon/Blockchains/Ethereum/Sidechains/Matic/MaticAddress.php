@@ -18,7 +18,7 @@ use CsCannon\Blockchains\Ethereum\DataSource\BlockscoutAPI;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
 use CsCannon\Blockchains\Ethereum\EthereumAddress;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
-use CsCannon\Blockchains\Ethereum\MaticBlockchain;
+
 
 
 class MaticAddress extends EthereumAddress //update relevant parent
