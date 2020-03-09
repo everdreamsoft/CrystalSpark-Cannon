@@ -6,10 +6,11 @@
  * Time: 14:02
  */
 
-namespace CsCannon\Blockchains\Ethereum\DataSource;
+namespace CsCannon\Blockchains\Ethereum\Sidechains\Matic;
 
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\Ethereum\DataSource\InfuraProvider;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\RpcProvider;

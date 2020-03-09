@@ -12,6 +12,7 @@ namespace CsCannon\Blockchains\Ethereum\Sidechains\Matic;
 
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
 
 
 class MaticBlockchain extends EthereumBlockchain
@@ -24,6 +25,11 @@ class MaticBlockchain extends EthereumBlockchain
 
     public function __construct()
     {
+
+
+        $this->addressFactory = new MaticAddressFactory();
+        $this->contractFactory = new MaticContractFactory();
+        $this->eventFactory = new EthereumEventFactory();
 
 
 
