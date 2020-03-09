@@ -24,7 +24,7 @@ class MaticContractFactory extends EthereumContractFactory
 
 
 
-    protected static $className = 'CsCannon\Blockchains\Ethereum\MaticContract' ;
+    protected static $className = MaticContract::class ;
 
 
     public function __construct()

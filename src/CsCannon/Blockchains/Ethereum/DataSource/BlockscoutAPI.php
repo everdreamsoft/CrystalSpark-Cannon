@@ -44,9 +44,6 @@ class BlockscoutAPI extends BlockchainDataSource
 
 
 
-
-
-
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
 
@@ -96,5 +93,8 @@ class BlockscoutAPI extends BlockchainDataSource
     }
 
 
-
+    public static function getEvents($contract = null, $batchMax = 1000, $offset = 0, $address = null): ForeignEntityAdapter
+    {
+        // TODO: Implement getEvents() method.
+    }
 }
