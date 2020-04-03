@@ -34,6 +34,9 @@ class EthereumEventFactory extends BlockchainEventFactory
 
         $this->setFilter(self::ON_BLOCKCHAIN_EVENT,EthereumBlockchain::NAME); //Update relevant chain name
 
+        $this->addressFactory = new EthereumAddressFactory();
+        $this->contractFactory = new EthereumContractFactory(); //todo should be static
+
 
 
     }
@@ -43,12 +46,11 @@ class EthereumEventFactory extends BlockchainEventFactory
 
         $return = parent::populateLocal($limit, $offset, $asc);
 
-        $addressFactory = new EthereumAddressFactory();
-        $contractFactory = new EthereumContractFactory(); //todo should be static
 
-        $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$addressFactory);
-        $this->joinFactory(self::EVENT_DESTINATION_VERB,$addressFactory);
-        $this->joinFactory(self::EVENT_CONTRACT,$contractFactory);
+
+        $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$this->addressFactory);
+        $this->joinFactory(self::EVENT_DESTINATION_VERB,$this->addressFactory);
+        $this->joinFactory(self::EVENT_CONTRACT,$this->contractFactory);
 
 
         $this->joinPopulate();

@@ -5,7 +5,9 @@ namespace CsCannon\Blockchains;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use CsCannon\Blockchains\Generic\GenericBlockchain;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
@@ -41,6 +43,10 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     // const EVENT_BLOCK_TIME = 'blocktime';
     const EVENT_BLOCK_TIME = 'timestamp';
     public static $messagePool = array();
+
+    public $addressFactory /** @var GenericAddressFactory $addressFactory */ ;
+    public $contractFactory /** @var GenericContractFactory $contractFactory */ ;
+
 
 
     private $genericAddressFactory = EntityFactory::class ;

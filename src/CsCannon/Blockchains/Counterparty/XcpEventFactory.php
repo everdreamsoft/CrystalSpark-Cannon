@@ -25,6 +25,7 @@ class XcpEventFactory extends BlockchainEventFactory
 
     public static $className = 'CsCannon\Blockchains\Counterparty\XcpEvent' ;
     public static $isa = 'blockchainEvent';
+
    // protected static $isa = 'blockchainEvent';
 
 
@@ -38,6 +39,9 @@ class XcpEventFactory extends BlockchainEventFactory
 
         $this->generatedEntityClass = static::$className ;
         $this->setFilter(self::ON_BLOCKCHAIN_EVENT,XcpBlockchain::NAME);
+
+        $this->addressFactory = new XcpAddressFactory();
+        $this->contractFactory = new XcpContractFactory();
 
 
 
@@ -54,13 +58,12 @@ class XcpEventFactory extends BlockchainEventFactory
 
         /** @var Blockchain $blockchain */
 
-        $addressFactory = new XcpAddressFactory();
-        $contractFactory = new XcpContractFactory();
 
 
-        $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$addressFactory);
-        $this->joinFactory(self::EVENT_DESTINATION_VERB,$addressFactory);
-        $this->joinFactory(self::EVENT_CONTRACT,$contractFactory);
+
+        $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$this->addressFactory);
+        $this->joinFactory(self::EVENT_DESTINATION_VERB,$this->addressFactory);
+        $this->joinFactory(self::EVENT_CONTRACT,$this->contractFactory);
 
         $this->joinPopulate();
 
@@ -73,7 +76,7 @@ class XcpEventFactory extends BlockchainEventFactory
 
         //on counterparty we join the asset factory to the contract
         //$contractFactory->joinAsset($assetFactory);
-        $contractFactory->joinPopulate();
+        $this->contractFactory->joinPopulate();
 
 
         $assetFactory->getTriplets();
