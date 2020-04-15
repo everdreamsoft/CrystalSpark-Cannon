@@ -127,7 +127,7 @@ abstract class BlockchainContractStandard extends Entity
     public static function getJsonFromStandardArray($array)
     {
 
-        $csv = '';
+
         $totalArray = array();
 
         foreach ($array as $standard){

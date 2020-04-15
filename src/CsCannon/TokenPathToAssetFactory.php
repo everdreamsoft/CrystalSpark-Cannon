@@ -16,7 +16,14 @@ use SandraCore\DatabaseAdapter;
 use SandraCore\EntityFactory;
 use SandraCore\System;
 
-/** No use for now */
+/**
+ * Class TokenPathToAssetFactory
+ *
+ * Factory to get create join token path to specific assets. For example tokenId = 1 =>
+ *
+ * @method TokenPathToAssetFactory             createNew($dataArray, $linArray = null) : Entity()            Use the method create instead unless you know what you are doing
+
+ */
 
 class TokenPathToAssetFactory extends EntityFactory
 {
@@ -50,14 +57,9 @@ class TokenPathToAssetFactory extends EntityFactory
     }
 
 
-    public function getOrbsInCollection(AssetCollection $assetCollection,$limit,$offset){
 
 
-
-
-    }
-
-    public function create(BlockchainContractStandard $specifier){
+    public function create(BlockchainContractStandard $specifier,$autocommit = true){
 
         $sandra = SandraManager::getSandra();
 

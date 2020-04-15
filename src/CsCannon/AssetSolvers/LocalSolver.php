@@ -19,6 +19,8 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
+use CsCannon\MetadataProbe;
+use CsCannon\MetadataProbeFactory;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
 use InnateSkills\LearnFromWeb\LearnFromWeb;
@@ -33,6 +35,7 @@ class LocalSolver extends AssetSolver
      * @var EntityFactory[]
      */
     private static $assetInCollections ;
+    private static $probeCheckedArray ;
 
     public static function getSolverIdentifier(){
 
@@ -61,10 +64,25 @@ class LocalSolver extends AssetSolver
 
         $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
 
-        return  $assetCollectionList->getAssetsFromContract($contract,$specifier);
+        $assets = $assetCollectionList->getAssetsFromContract($contract,$specifier);
+
+        self::probeMissingAssets($assetCollectionList->returnExplicitNoExistingId(),$assetCollection);
 
 
 
+        return  $assets ;
+
+
+
+    }
+
+    public static function reloadCollectionItems(AssetCollection $assetCollection)
+    {
+        if (isset(self::$assetInCollections[$assetCollection->getId()])) {
+
+            unset (self::$assetInCollections[$assetCollection->getId()]);
+
+        }
     }
 
 
@@ -72,4 +90,53 @@ class LocalSolver extends AssetSolver
     {
         return ;
     }
+
+    public static function clean(){
+
+        self::$assetInCollections = null ;
+        self::$probeCheckedArray = null ;
+
+
+
+    }
+
+
+    protected static function probeMissingAssets($missingArray, AssetCollection $collection)
+    {
+
+
+        $probeFactory = new MetadataProbeFactory();
+        $probeFactory->populateLocal();
+        foreach ($missingArray ?? array() as $value){
+
+           foreach ($value as $dataArray){
+               $contract = $dataArray['contract']; /** @var BlockchainContract $contract */
+               $specifier = $dataArray['specifier'];/** @var BlockchainContractStandard $specifier */
+
+               if (!isset(self::$probeCheckedArray[$collection->getId().'-'.$specifier->getDisplayStructure()])){
+                   $probe = $probeFactory->get($collection,$contract);
+                   self::$probeCheckedArray[$collection->getId().'-'.$specifier->getDisplayStructure()] = $probe;
+
+               }
+               else{
+                   $probe = self::$probeCheckedArray[$collection->getId().'-'.$specifier->getDisplayStructure()];
+               }
+               /** @var MetadataProbe $probe */
+
+                if ($probe)
+               $probe->queue($specifier);
+
+
+
+
+           }
+
+
+        }
+
+    }
+
+
+
+
 }

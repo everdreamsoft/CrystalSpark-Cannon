@@ -29,12 +29,10 @@ class AssetFactory extends \SandraCore\EntityFactory
     public const ID = "assetId";
     public const IMAGE_URL = "imgURL";
     public const METADATA_URL = "metaDataURL";
+    private $unkownExplicitIds ;
     private $specifierMap ;
 
-    public static function myfunc($item)
-    {
 
-    }
 
 
 
@@ -113,7 +111,13 @@ class AssetFactory extends \SandraCore\EntityFactory
                     $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()][] = $this->entityArray[$assetId];;
                 }
 
-                return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+                //is the asset existing ?
+                if (isset($this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()]))
+                    return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+
+                //NO asset found
+                $this->noAssetOnExplicitId($contract,$specifier);
+                return null ;
             }
         }
 
@@ -189,6 +193,23 @@ class AssetFactory extends \SandraCore\EntityFactory
 
 
 
+    }
+
+
+    private function noAssetOnExplicitId(BlockchainContract $contract, BlockchainContractStandard $specifier){
+
+        //I wanted to batch requestes by I will send all raw
+
+        $this->unkownExplicitIds[$contract->getId()][$specifier->getDisplayStructure()]['contract'] = $contract ;
+        $this->unkownExplicitIds[$contract->getId()][$specifier->getDisplayStructure()]['specifier'] = $specifier ;
+
+
+
+    }
+
+    public function returnExplicitNoExistingId(){
+
+        return $this->unkownExplicitIds;
     }
 
 
