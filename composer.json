@@ -11,7 +11,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "everdreamsoft/sandra": "dev-master"
+        "everdreamsoft/sandra": "dev-master",
+      "ext-curl": "*",
+        "ext-json": "*"
     },
 
     "autoload": {

@@ -151,6 +151,36 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         return $balance;
 
 
+    }
+
+    public static function broadcastTx($rawHex)
+    {
+
+        $ch       = curl_init();
+
+
+        curl_setopt($ch, CURLOPT_URL, 'https://xchain.io/api/send_tx');
+
+
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'tx_hex='. $rawHex);
+//curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+
+        $result = curl_exec($ch);
+if ($result === false) {
+    throw new \Exception(curl_error($ch), curl_errno($ch));
+}
+        curl_close($ch);
+
+        print_r (json_decode($result));
+
+        return $result->rawHex ;
+
+
+
+
 
     }
 }

@@ -254,10 +254,6 @@ final class ProbTest extends TestCase
 
         while ($probe->executeQueue()){
 
-
-
-
-
             $now = time();
             $avail = $probe->getNextAvailability();
             $waitTime = $avail - $now ;
@@ -274,7 +270,17 @@ final class ProbTest extends TestCase
 
         $events =  $ethereumEventF->display()->return();
 
-        print_r($events);
+        //print_r($events);
+
+        foreach ($events as $event) {
+
+            //$this->assertEquals($contractAddress, $event['contract']['address']);
+            //$getTokenData = $event['contract']['token'];
+            //$this->assertEquals($erc721_1->specificatorData, $getTokenData);
+            //$this->assertEquals($scenarioImage, $event['orbs']['0']['asset']['imgURL']);
+            $this->assertNotEmpty($event['orbs']['0']['asset']['imgURL']);
+
+        }
 
 
 

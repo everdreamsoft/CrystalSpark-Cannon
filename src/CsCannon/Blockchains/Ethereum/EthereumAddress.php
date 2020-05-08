@@ -34,7 +34,7 @@ class EthereumAddress extends BlockchainAddress
     protected static $isa = 'ethAddress';
     protected static $file = 'ethAddressFile';
     protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumAddress' ;
-    protected static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
+    public static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
 
 
 

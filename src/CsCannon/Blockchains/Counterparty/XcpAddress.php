@@ -28,7 +28,7 @@ class XcpAddress extends BitcoinAddress
     public static $isa = 'btcAddress';
     public static $file = 'btcAddressFile';
     public static  $className = 'CsCannon\Blockchains\XcpAddress' ;
-    protected static $defaultDataSource = 'CsCannon\Blockchains\Counterparty\DataSource\XchainOnBcy' ;
+    public static $defaultDataSource = 'CsCannon\Blockchains\Counterparty\DataSource\XchainOnBcy' ;
 
 
 
