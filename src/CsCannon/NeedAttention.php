@@ -17,7 +17,7 @@ use CsCannon\Blockchains\BlockchainTokenFactory;
 use SandraCore\Entity;
 use SandraCore\System;
 
-class AssetFactory extends \SandraCore\EntityFactory
+class AssetFactoryBKP extends \SandraCore\EntityFactory
 {
 
 
