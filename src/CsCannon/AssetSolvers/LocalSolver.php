@@ -66,7 +66,8 @@ class LocalSolver extends AssetSolver
 
         $assets = $assetCollectionList->getAssetsFromContract($contract,$specifier);
 
-        self::probeMissingAssets($assetCollectionList->returnExplicitNoExistingId(),$assetCollection);
+        // prove is to heavy for now
+        //self::probeMissingAssets($assetCollectionList->returnExplicitNoExistingId(),$assetCollection);
 
 
 
