@@ -121,7 +121,11 @@ class AssetFactory extends \SandraCore\EntityFactory
             }
         }
 
-        return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+        if (isset($this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()]))
+                        return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+
+      return null ;
+
 
 
 

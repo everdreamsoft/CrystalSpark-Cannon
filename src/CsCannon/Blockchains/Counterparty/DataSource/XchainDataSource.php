@@ -157,12 +157,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     {
 
         $ch       = curl_init();
-
-
         curl_setopt($ch, CURLOPT_URL, 'https://xchain.io/api/send_tx');
-
-
-
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, 'tx_hex='. $rawHex);
@@ -177,7 +172,6 @@ if ($result === false) {
         print_r (json_decode($result));
 
         return $result->rawHex ;
-
 
 
 
