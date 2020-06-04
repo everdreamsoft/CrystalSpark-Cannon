@@ -39,9 +39,8 @@ class MaticProvider extends InfuraProvider
 
 
         $cmd = "node CSNotary/NotaryExecutor.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER).
-            " --tokenId=1 
-            --node=".$this->getHostUrl().
-            '--tokenPath="{  \"tokenId\": 1,   \"message\": 2 }'.
+            " --tokenId=1".
+            '--tokenPath="{  \"tokenId\": 1,   \"message\": 2 }"'.
             '--chain="matic"';
         return  exec($cmd);
 
