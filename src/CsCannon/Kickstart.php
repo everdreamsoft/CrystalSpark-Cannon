@@ -28,6 +28,9 @@ class Kickstart
         self::createViewFromFactory(new EthereumAddressFactory(),'EthereumAddress');
         self::createViewFromFactory(new KlaytnContractFactory(),'KlatnContracts');
         self::createViewFromFactory(new KlaytnAddressFactory(),'KlaytnAddress');
+        self::createViewFromFactory(new MaticContractFactory(),'MaticContracts');
+        self::createViewFromFactory(new MaticEventFactory(),'MaticEvents');
+
         self::createViewFromFactory(new EntityFactory("balanceItem",'balanceFile',$sandra),'balances');
         self::createViewFromFactory(new BlockchainEventFactory(),'Events');
         self::createViewFromFactory(new \CsCannon\AssetCollectionFactory($sandra),'AssetCollections');
