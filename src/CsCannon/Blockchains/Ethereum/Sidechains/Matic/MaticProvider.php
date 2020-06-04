@@ -42,7 +42,7 @@ class MaticProvider extends InfuraProvider
             " --tokenId=1 
             --node=".$this->getHostUrl().
             '--tokenPath="{  \"tokenId\": 1,   \"message\": 2 }'.
-            "--chain=matic";
+            '--chain="matic"';
         return  exec($cmd);
 
     }
