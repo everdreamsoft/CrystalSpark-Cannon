@@ -10,6 +10,9 @@ namespace CsCannon\Blockchains\Ethereum\Sidechains\Matic;
 
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\Ethereum\DataSource\InfuraProvider;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
@@ -28,6 +31,20 @@ class MaticProvider extends InfuraProvider
     public function getBlockchain(): Blockchain
     {
       return  new MaticBlockchain();
+    }
+
+
+    public function ownerOf(BlockchainContract $contract, $tokenId, BlockchainContractStandard $standard){
+
+
+
+        $cmd = "node CSNotary/NotaryExecutor.js --contract=".$contract->get(BlockchainContractFactory::MAIN_IDENTIFIER).
+            " --tokenId=1 
+            --node=".$this->getHostUrl().
+            '--tokenPath="{  \"tokenId\": 1,   \"message\": 2 }'.
+            "--chain=matic";
+        return  exec($cmd);
+
     }
 
 
