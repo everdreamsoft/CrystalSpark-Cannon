@@ -29,7 +29,7 @@ class MaticBlockchain extends EthereumBlockchain
 
         $this->addressFactory = new MaticAddressFactory();
         $this->contractFactory = new MaticContractFactory();
-        $this->eventFactory = new EthereumEventFactory();
+        $this->eventFactory = new MaticEventFactory();
 
 
 
