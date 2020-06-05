@@ -15,12 +15,20 @@ abstract class RpcProvider
 {
 
     public $apiKey;
+    public $requestPerSecond = -1;
 
 
 
     public function __construct($apiKey = null)
     {
         $this->apiKey = $apiKey;
+
+
+    }
+
+    public function getRequestPerSecond()
+    {
+        return $this->requestPerSecond ;
 
 
     }

@@ -17,6 +17,7 @@ use SandraCore\Concept;
 class InfuraProvider extends RpcProvider
 {
     public const HOST_URL = 'https://mainnet.infura.io/v3/' ;
+    public $requestPerSecond = 1;
 
     public function getHostUrl()
     {
