@@ -12,6 +12,8 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticContractFactory;
+use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticEventFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
 use SandraCore\EntityFactory;
