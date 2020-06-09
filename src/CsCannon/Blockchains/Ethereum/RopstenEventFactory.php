@@ -20,7 +20,7 @@ class RopstenEventFactory extends BlockchainEventFactory
 {
 
 
-    protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumEvent' ; //Update to relevant class
+    protected static $className = 'CsCannon\Blockchains\Ethereum\RopstenEvent' ; //Update to relevant class
 
 
 
