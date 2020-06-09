@@ -14,6 +14,7 @@ namespace CsCannon\Blockchains\Ethereum\Sidechains\Matic;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Ethereum\DataSource\BlockscoutAPI;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
 use CsCannon\Blockchains\Ethereum\EthereumAddress;
@@ -36,7 +37,7 @@ class MaticAddress extends EthereumAddress //update relevant parent
     {
 
 
-        return  new BlockscoutAPI();
+        return  new DatagraphSource();
     }
 
 

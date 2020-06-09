@@ -22,7 +22,7 @@ use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnAddressFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
 
-class MaticEventFactory extends EthereumEventFactory
+class MaticEventFactory extends BlockchainEventFactory
 {
 
 
