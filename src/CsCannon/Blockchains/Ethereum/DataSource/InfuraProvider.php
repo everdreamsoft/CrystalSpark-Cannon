@@ -21,7 +21,7 @@ class InfuraProvider extends RpcProvider
 
     public function getHostUrl()
     {
-        return self::HOST_URL.$this->apiKey ;
+        return static::HOST_URL.$this->apiKey ;
     }
 
     public function getBlockchain(): Blockchain
