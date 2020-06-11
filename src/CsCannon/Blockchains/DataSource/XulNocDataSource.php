@@ -5,11 +5,14 @@ namespace CsCannon\Blockchains\DataSource;
 use CsCannon\Balance;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\BlockchainStandardFactory;
 use CsCannon\SandraManager;
 use SandraCore\DatabaseAdapter;
@@ -23,28 +26,17 @@ use SandraCore\PdoConnexionWrapper;
  * Date: 06.06.19
  * Time: 09:53
  */
-class CrystalSuiteDataSource extends BlockchainDataSource
+class XulNocDataSource extends BlockchainDataSource
 {
 
 
 
-    public const URL = 'https://baster.bitcrystals.com/api/v1/';
+    public const URL = 'https://xulnoc.everdreamsoft.com/api/v1/';
 
 
 
 
-    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
-    {
 
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',
-            SandraManager::getSandra());
-
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
-
-        //$foreignEntityAdapter->addNewEtities($entityArray,array());
-
-        return $foreignAdapter ;
-    }
 
 
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
@@ -59,14 +51,15 @@ class CrystalSuiteDataSource extends BlockchainDataSource
         $me =  $foreignAdapter->divideForeignPath(['tokens'],'$first');
 
 
-        //load all counterparty contracts onto memory
-        $xcpContractFactory = new XcpContractFactory();
-        $xcpContractFactory->populateLocal();
 
         $balance = new Balance($address);
         $conterpartyAsset = CounterpartyAsset::init();
-        $tokenStandardFactory = new BlockchainStandardFactory(SandraManager::getSandra());
-        $tokenStandardFactory->populateLocal();
+
+        $contractFactory = new GenericContractFactory();
+        $contractFactory->populateLocal();
+
+        $standardFactory = new BlockchainStandardFactory(SandraManager::getSandra());
+        $standardFactory->populateLocal();
 
 
 
@@ -79,14 +72,25 @@ class CrystalSuiteDataSource extends BlockchainDataSource
             $chain = $rawContract['chain'];
             $tokens = $rawContract['tokens'];
 
-            $contract = $xcpContractFactory->get($contractR, true);
+            $contract = $contractFactory->get($contractR, true);
 
 
-            if($chain != 'counterparty') continue ;
+
+
+
+
+            //if($chain != 'counterparty') continue ;
             foreach ($tokens ?? array() as $tokenData) {
 
+                //WE should dynamically allocated correct token standard from name but lacking of time now
+                if ('ERC721' == $tokenData['standard']){
 
-                $balance->addContractToken($contract, $conterpartyAsset, $tokenData['quantity']);
+                    $token =  ERC721::init($tokenData);
+                    $balance->addContractToken($contract, $token, $tokenData['quantity']);
+                }
+
+
+
             }
 
         }
@@ -95,5 +99,16 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
 
 
+    }
+
+    public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset):Balance
+    {
+
+        return static::getBalance($address,$batchMax=1000,$offset=0);
+    }
+
+    public static function getEvents($contract = null, $batchMax = 1000, $offset = 0, $address = null): ForeignEntityAdapter
+    {
+        // TODO: Implement getEvents() method.
     }
 }

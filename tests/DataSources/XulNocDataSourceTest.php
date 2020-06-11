@@ -17,25 +17,24 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class BlockScoutDataSourceTest extends DataSourceAbstract
+class XulNocDataSourceTest extends DataSourceAbstract
 {
     private $contractToTest ;
 
     public function loadTestCases() {
 
+        $addressFactory = new \CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticAddressFactory();
 
-       parent::loadTestCases();
+        $address = $addressFactory->get('0x7f7EED1fcBb2C2cf64d055eED1Ee051DD649C8e7');
+        $this->addressToBeChecked[] = $address ;
 
-       $ethereumContractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+
+       $maticContractFactory = new \CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticContractFactory();
         //we should have 2 tokens of this contract blockchain cutties
-       $contractCuties = $ethereumContractFactory->get('0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe');
+       $contractSog = $maticContractFactory->get('0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe');
 
-        //we should have 2 tokens of this contract
-        $contract = $ethereumContractFactory->get('0xf5b0a3efb8e8e4c201e2a935f110eaaf3ffecb8d');
+       $this->contractToTest[] = $contractSog;
 
-
-       $this->contractToTest[] = $contractCuties;
-       $this->contractToTest[] = $contract;
 
 
 
@@ -56,7 +55,8 @@ class BlockScoutDataSourceTest extends DataSourceAbstract
         $this->loadTestCases();
 
         $address = $this->addressToBeChecked[0];
-        $address->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\BlockscoutAPI());
+
+        $address->setDataSource(new \CsCannon\Blockchains\DataSource\XulNocDataSource());
 
 
         $balance = $address->getBalanceForContract($this->contractToTest);
@@ -67,10 +67,9 @@ class BlockScoutDataSourceTest extends DataSourceAbstract
 
 
 
-
-
-
     }
+
+
 
 
 }
