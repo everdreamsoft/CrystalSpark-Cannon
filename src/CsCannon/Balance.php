@@ -307,6 +307,17 @@ class Balance
             /** @var BlockchainContract $contract */
             $contract = $balanceEntity->getJoinedEntities(self::ON_CONTRACT);
             $contract = reset($contract);
+
+            /** @var BlockchainContractFactory $contractFactory */
+
+            //remove not same chain contracts
+            $isa = $contract->system->systemConcept->get('is_a');
+            $isaTriplet = $contract->subjectConcept->tripletArray[$isa];
+            $actualisaShortname = $contract->factory->entityIsa ;
+            $actualisaId = $contract->system->systemConcept->get($actualisaShortname); ;
+            if (!in_array($actualisaId,$isaTriplet))
+                continue ;
+
             $quantity =$balanceEntity->get('quantity');
             $token = $contract->getStandard();
             $newToken = clone $token;

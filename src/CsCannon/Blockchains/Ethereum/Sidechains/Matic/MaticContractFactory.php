@@ -29,8 +29,10 @@ class MaticContractFactory extends EthereumContractFactory
 
     public function __construct()
     {
+
+        $return =  parent::__construct();
         $this->blockchain = MaticBlockchain::class ;
-        return parent::__construct();
+        return $return ;
 
     }
 
