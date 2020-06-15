@@ -22,6 +22,7 @@ use SandraCore\Concept;
 class MaticProvider extends InfuraProvider
 {
     public const HOST_URL = 'https://testnetv3.matic.network' ;
+    public $requestPerSecond = 10;
 
     public function getHostUrl()
     {
