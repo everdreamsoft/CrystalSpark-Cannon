@@ -41,6 +41,6 @@ class GenericAddress extends BlockchainAddress
     {
 
 
-       return  new DatagraphSource();
+       return  new \CsCannon\Blockchains\DataSource\DatagraphSource();
     }
 }

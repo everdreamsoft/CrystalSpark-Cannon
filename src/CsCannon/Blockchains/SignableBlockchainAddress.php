@@ -22,4 +22,12 @@ class SignableBlockchainAddress
         
     }
 
+    public function getPrivateKey()
+    {
+
+        return $this->privateKey ;
+
+
+    }
+
 }
