@@ -81,7 +81,7 @@ class BlockscoutAPI extends BlockchainDataSource
     public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset): Balance
     {
 
-        //temporary URL
+
         $foreignAdapter = new ForeignEntityAdapter(self::getChainUrl()
             ."?module=account&action=tokenlist&address=".$address->getAddress(),'result',SandraManager::getSandra());
 
@@ -94,11 +94,25 @@ class BlockscoutAPI extends BlockchainDataSource
         $contractFactory->populateLocal();
 
         $foreignAdapter->populate();
+        $contractAddressMap = [];
+
+        foreach ($contract ?? [] as $contract){
+
+            $contractAddressMap[$contract->getId()] = $contract; ;
+        }
+
+
 
         foreach ($foreignAdapter->getEntities() as $entity){
 
-            $contract = $contractFactory->get($entity->get('contractAddress'));
+            $contractAddress = $entity->get('contractAddress');
             $standard = ERC20::init();
+
+            //we remove unwanted contracts
+            if (!isset($contractAddressMap[$contractAddress])) continue ;
+            $contract = $contractAddressMap[$contractAddress] ;
+
+            if ($entity->get('contractAddress'))
 
             //$standard->setTokenId("1");
             $address->balance->addContractToken($contract,$standard,$entity->get('balance'));

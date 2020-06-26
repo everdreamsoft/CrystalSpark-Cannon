@@ -60,7 +60,7 @@ class Balance
         $contractChain = $contract->getBlockchain();
         $rawQuantity = $quantity ;
         //print_r($quantity);
-        $adaptedQuantity = $contract->getAdaptedDecimals($quantity);
+        $adaptedQuantity = $contract->getAdaptedDecimals(intval($quantity));
         if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
 
 

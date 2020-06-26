@@ -32,10 +32,13 @@ class BlockScoutDataSourceTest extends DataSourceAbstract
 
         //we should have 2 tokens of this contract
         $contract = $ethereumContractFactory->get('0xf5b0a3efb8e8e4c201e2a935f110eaaf3ffecb8d');
+        $contractBcy = $ethereumContractFactory->get('0xAdbBB02E20C44779e87F7eA90C47c9A7a8A93fee');
+        $contractBcy->setDivisibility(8);
 
 
        $this->contractToTest[] = $contractCuties;
        $this->contractToTest[] = $contract;
+        $this->contractToTest[] = $contractBcy;
 
 
 
@@ -65,9 +68,22 @@ class BlockScoutDataSourceTest extends DataSourceAbstract
         $this->assertCount(count($this->contractToTest),$balance->getContractMap());
 
 
+    }
+
+    public function testERC20()
+    {
+
+        $this->loadTestCases();
+
+        $address = $this->addressToBeChecked[0];
+        $address->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\BlockscoutAPI());
 
 
+        $balance = $address->getBalanceForContract([$this->contractToTest[2]]);
 
+
+        //we should have equal contract in the balance as the number of requested contracts
+        $this->assertCount(count($this->contractToTest),$balance->getContractMap());
 
 
     }
