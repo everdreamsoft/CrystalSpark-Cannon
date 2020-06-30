@@ -48,20 +48,7 @@ class AssetFactory extends \SandraCore\EntityFactory
         $this->generatedEntityClass = self::$className ;
     }
 
-    //legacy (token doesn't exist anymore it's contracts)
-    public function joinToken (BlockchainTokenFactory $factory){
 
-        $this->joinFactory(AssetFactory::$tokenJoinVerb,$factory);
-
-
-    }
-
-    public function joinContract (BlockchainTokenFactory $factory){
-
-        $this->joinFactory(AssetFactory::$tokenJoinVerb,$factory);
-
-
-    }
 
     public function joinCollection (AssetCollectionFactory $factory){
 

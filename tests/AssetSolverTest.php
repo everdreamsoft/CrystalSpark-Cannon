@@ -128,10 +128,6 @@ final class AssetSolverTest extends TestCase
 
 
 
-
-
-
-
         //An asset that have multiple token Id
         $assetFactory = new \CsCannon\AssetFactory($sandra);
         $myAsset = $assetFactory->create("myUnique",["hello"=>'data'],[$collection],[$contract]);

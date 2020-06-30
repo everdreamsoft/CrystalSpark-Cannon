@@ -153,6 +153,49 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
     }
 
+    public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset): Balance
+    {
+
+
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
+
+        $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
+            'quantity'=>'balance'));
+        $foreignAdapter->populate();
+
+        //load all counterparty contracts onto memory
+        $cpContracts = new XcpContractFactory();
+        $cpContracts->populateLocal();
+
+        $balance = new Balance($address);
+        $conterpartyAsset = CounterpartyAsset::init();
+
+        $contractAddressMap = [];
+
+        foreach ($contract ?? [] as $contract){
+
+            //we remove unwanted contracts
+            if (!isset($contractAddressMap[$contract->getId()])) continue ;
+
+
+            $contractAddressMap[$contract->getId()] = $contract; ;
+        }
+
+        foreach ($foreignAdapter->entityArray as $entity) {
+
+            /** @var ForeignEntity $entity */
+            $contract = $cpContracts->get($entity->get('contractId'),true);
+
+
+            $balance->addContractToken($contract,$conterpartyAsset,$entity->get('balance'));
+
+        }
+
+        return $balance;
+
+
+    }
+
     public static function broadcastTx($rawHex)
     {
 
