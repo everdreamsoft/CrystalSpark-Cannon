@@ -171,7 +171,7 @@ require_once  '../../../autoload.php';
 // $addressFactory = BlockchainRouting::getAddressFactory($addressToQuery);
 
 // $address = $addressFactory->get($addressToQuery);
-// $address->setDataSource( new RopstenDataSource('21AH14S1UUEXRJRPT6PA1HVCK5DVXHTT3V'));
+// $address->setDataSource( new RopstenDataSource(''));
 
 // $assetFactory = new AssetFactory;
 // $asset = $assetFactory->create('jokAsset', []);
@@ -236,26 +236,6 @@ $number = intval($nombre);
 
 $image = $asset->imageUrl;
 var_dump($image);
-// var_dump($asset->getImageUrl());
-
-function findSource($balance){
-
-    foreach($balance as $newBalance){
-        foreach($newBalance as $findOrbs){
-            foreach($findOrbs as $newTruc){
-                if(is_array($newTruc)){
-                    foreach($newTruc as $otherTruc){
-                        // var_dump($newKey['asset']['image']);
-                        $imageToDisplay = $otherTruc['asset']['image'];
-                    }
-                }
-            }
-        }
-    }
-    return $imageToDisplay;
-}
-
-// var_dump(findSource($balance));
 
 ?>
 
