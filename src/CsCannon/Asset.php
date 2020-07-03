@@ -95,6 +95,10 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     }
 
+    public function getImageUrl(){
+        return $this->imageUrl;
+    }
+
     public function setMetadataUrl($url){
 
 

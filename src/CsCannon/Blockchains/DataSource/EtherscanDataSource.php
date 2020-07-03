@@ -6,6 +6,7 @@ use CsCannon\Balance;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC20;
@@ -15,19 +16,37 @@ use CsCannon\BlockchainStandardFactory;
 use CsCannon\SandraManager;
 use SandraCore\ForeignEntityAdapter;
 
-class RopstenDataSource extends BlockchainDataSource
+class EtherscanDataSource extends BlockchainDataSource
 {
     public $sandra;
     public static $chainUrl;
-    public static $defaultChainUrl = 'https://api-ropsten.etherscan.io/api';
+    public static $defaultChainUrl = 'https://api.etherscan.io/api';
     protected static $apiKey;
 
-    // TODO 
-    // Faire tuto en anglais
-    // UseCase : binder un asset sur un ctt
-    // UseCase : Afficher assets differentes Blockchains
+    
+    /**
+     * __construct default on mainnet Etherscan, 'ropsten' or 'rinkeby' are supported as $netToUse
+     * @param  String $apiKey
+     * @param  String $net
+     * @return void
+     */
+    public function __construct(string $apiKey, ?string $netToUse = null){
 
-    public function __construct($apiKey){
+        if($netToUse){
+
+            $net = strtolower($netToUse);
+            
+            switch ($net){
+
+                case 'ropsten':
+                    self::$chainUrl = 'https://api-ropsten.etherscan.io/api';
+                break;
+
+                case 'rinkeby':
+                    self::$chainUrl = 'https://api-rinkeby.etherscan.io/api';
+                break;
+            }
+        }
 
         self::setApiKey($apiKey);
     }
@@ -74,7 +93,15 @@ class RopstenDataSource extends BlockchainDataSource
         return $balance;
 
     }
-
+    
+    /**
+     * getBalanceForContract return the balance of specified contract in parameter
+     * @param  BlockchainAddress $address
+     * @param  BlockchainContract[] $contract
+     * @param  Int $limit
+     * @param  Int $offset
+     * @return Balance
+     */
     public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit = 100, $offset = 0): Balance
     {
 
@@ -120,12 +147,15 @@ class RopstenDataSource extends BlockchainDataSource
 
 
     }
-
+    
+    /**
+     * transformEntities query to url for save the necessary (tokens, address and contract)
+     * @param  String $urlToQuery
+     * @param  BlockchainAddress $address
+     * @param  BlockchainContract $contract
+     * @return Array
+     */
     public static function transformEntities($urlToQuery, BlockchainAddress $address, BlockchainContract $contract){
-        /**
-         * @var BlockchainAddress $address
-         * @var BlockchainContract $contract
-         */
 
         $jason = file_get_contents($urlToQuery);
 
@@ -140,12 +170,15 @@ class RopstenDataSource extends BlockchainDataSource
         return $entityArray;
 
     }
-
-    public static function getAbiForStandard(BlockchainContract $contract, BlockchainContractFactory $contractFactory){
-        /**
-         * @var BlockchainContract $contract 
-         * @var BlockchainContractFactory $contractFactory
-        */
+    
+    /**
+     * getAbiForStandard find the Ethereum standard for the contract (ERC20 or ERC721)
+     * @param  BlockchainContract $contract
+     * @param  BlockchainContractFactory $contractFactory
+     * @return BlockchainContractStandard $standard
+     */
+    public static function getAbiForStandard(BlockchainContract $contract, BlockchainContractFactory $contractFactory): BlockchainContractStandard
+    {
 
         $response = file_get_contents(self::$chainUrl
             .'?module=contract&action=getabi&address='.$contract->getId()
@@ -156,7 +189,6 @@ class RopstenDataSource extends BlockchainDataSource
 
         // $standard = $contractFactory->get($contract->getId(), true, ERC20::init());
         $standard = ERC20::init();
-
 
         foreach($result as $value) {
 
