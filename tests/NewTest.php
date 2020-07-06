@@ -1,14 +1,17 @@
 <?php
 
+use CsCannon\Asset;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\BlockchainRouting;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\Counterparty\DataSource\XchainDataSource;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticContractFactory;
 use CsCannon\Blockchains\FirstOasis\FirstOasisContractFactory;
@@ -30,28 +33,24 @@ require_once  '../../../autoload.php';
  * @param Array|null $metaData
  * @return void
  */
-function createNewAsset(System $sandra, 
-    string $address, 
+function createNewAsset(
+    System $sandra,
+    Blockchain $blockhain,
     string $contract,
-    BlockchainDataSource $datasource,
-    string $url, 
-    string $collectionName = "MyCollection",
-    array $metaData = []): BlockchainAddress
+    string $url,
+    string $collectionName,
+    array $metaData = []): Asset
     {
+
 
     SandraManager::setSandra($sandra);
 
-    $addressFactory = BlockchainRouting::getAddressFactory($address);
-
-    $myContractAddress = $addressFactory->get($address);
-    $myContractAddress->setDataSource($datasource);
-
     $assetFactory = new AssetFactory;
-    
     $asset = $assetFactory->create($contract, $metaData);
     $asset->setImageUrl($url);
-        
-    $newContractFactory = findContractfactory($address);
+
+    // $newContractFactory = findContractFactory($contract);
+    $newContractFactory = $blockhain->getContractFactory();
     $newContract = $newContractFactory->get($contract, true);
 
     $assetCollectionFactory = new AssetCollectionFactory($sandra);
@@ -63,19 +62,14 @@ function createNewAsset(System $sandra,
     $asset->bindToCollection($myCollection);
     $asset->bindToContract($newContract);
 
-    return $myContractAddress;
+    return $asset;
 
 }
 
-/**
- * findContractfactory with address
- * @param  String $address
- * @return BlockchainContractFactory
- */
-function findContractfactory(string $address): BlockchainContractFactory
+function findContractFactory(string $contract): BlockchainContractFactory
 {
 
-    $unknownFactory = get_class(BlockchainRouting::getAddressFactory($address));
+    $unknownFactory = get_class(BlockchainRouting::getAddressFactory($contract));
 
     switch($unknownFactory){
 
@@ -103,18 +97,33 @@ function findContractfactory(string $address): BlockchainContractFactory
 
 }
 
+$sandra = new System();
 
-$myAsset = createNewAsset(new System(), 
-    'mzKVkdWvhfwoKyzyLg6wpxg9272etaqBC2', 
+$myAsset = createNewAsset(
+    $sandra, 
+    new EthereumBlockchain,
     'A5948053354464580000',
-    new XchainDataSource,
     'https://static.fnac-static.com/multimedia/Images/FD/Comete/123455/CCP_IMG_ORIGINAL/1608833.jpg',
     'MyNewCollection'
 );
 
-$balance = $myAsset->getBalance()->returnObsByCollections();
+
+$addressToQuery = "mzKVkdWvhfwoKyzyLg6wpxg9272etaqBC2";
+$addressFactory = BlockchainRouting::getAddressFactory($addressToQuery);
+
+$address = $addressFactory->get($addressToQuery);
+$address->setDataSource(new XchainDataSource);
+
+$balance = $address->getBalance()->returnObsByCollections();
 
 print_r($balance);
+
+
+$image = $myAsset->getImageUrl();
+// $myAsset->get
+
+$nombre = floor($address->getBalance()->getTokenBalance()[0]['tokens'][0]['quantity']);
+$number = intval($nombre);
 
 ?>
 
@@ -130,8 +139,6 @@ print_r($balance);
     <?php for($i=0; $i<$number; $i++) { ?>
         <img src="<?php echo $image ?>">
     <?php } ?>
-
-    <!-- <img src ='https://static.fnac-static.com/multimedia/Images/FD/Comete/123455/CCP_IMG_ORIGINAL/1608833.jpg' > -->
 
 </body>
 </html>
