@@ -418,7 +418,16 @@ class Balance
 
 
 
+    public function getBalanceForToken(BlockchainContract $contract, BlockchainContractStandard $standard){
 
+        $displayStructure = $standard->getDisplayStructure();
+
+        $floatValue = floatval($this->contracts[$contract->getBlockchain()::NAME][$contract->getId()][$displayStructure]['quantity']);
+
+        return $floatValue;
+
+
+    }
 
 
 

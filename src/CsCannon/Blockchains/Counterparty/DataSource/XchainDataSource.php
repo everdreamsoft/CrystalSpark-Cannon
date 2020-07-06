@@ -11,10 +11,12 @@ use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\SandraManager;
+use PDOException;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\PdoConnexionWrapper;
+use SandraCore\System;
 
 /**
  * Created by EverdreamSoft.
@@ -25,10 +27,20 @@ use SandraCore\PdoConnexionWrapper;
 class XchainDataSource extends BlockchainDataSource
 {
 
+    public static $chainUrl;
+    public static $defaultChainUrl = "https://xchain.io/api/balances/";
 
 
     public static $dbHost, $db, $dbpass, $dbUser ;
 
+
+    public function __construct(string $net = null){
+
+        if($net === "testnet"){
+            self::$chainUrl = "https://testnet.xchain.io/api/balances/";
+        }
+
+    }
 
 
 
@@ -125,7 +137,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     {
 
 
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter(self::getChainUrl().$address->getAddress(),'data',SandraManager::getSandra());
 
         $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
             'quantity'=>'balance'));
@@ -157,7 +169,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     {
 
 
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter(self::getChainUrl().$address->getAddress(),'data',SandraManager::getSandra());
 
         $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
             'quantity'=>'balance'));
@@ -220,4 +232,19 @@ if ($result === false) {
 
 
     }
+
+        public static function getChainUrl(): String
+    {
+
+       if (!isset(self::$chainUrl)){
+
+           self::$chainUrl = self::$defaultChainUrl ;
+
+       }
+
+       return self::$chainUrl;
+
+
+    }
+
 }
