@@ -27,7 +27,7 @@ class DataSourceTest extends TestCase
 
 
         $addressFactory = new \CsCannon\Blockchains\Ethereum\EthereumAddressFactory();
-        $address = $addressFactory->get('0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79');
+        $address = $addressFactory->get(\CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS);
         $this->addressToBeChecked[] = $address ;
 
 

@@ -47,8 +47,16 @@ class DatagraphSource extends BlockchainDataSource
 
     return $balance ;
 
+    }
+
+    public static  function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset):Balance
+    {
 
 
+        $balance = new Balance($address);
+        $balance->loadFromDatagraph($contract);
+
+        return $balance ;
 
     }
 }

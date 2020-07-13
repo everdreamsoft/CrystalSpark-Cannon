@@ -287,7 +287,7 @@ class Balance
 
     }
 
-    public function loadFromDatagraph(){
+    public function loadFromDatagraph(array $onlyContracts = null){
 
 
 
@@ -322,6 +322,8 @@ class Balance
             $token = $contract->getStandard();
             $newToken = clone $token;
             $newToken->setTokenPath($balanceEntity->entityRefs);
+
+            //if (is_array($onlyContracts) && !in_array($contract,$onlyContracts)) continue ;
 
 
 
