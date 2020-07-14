@@ -60,7 +60,7 @@ class Balance
     }
 
 
-    public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){
+    public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity):self{
 
         $contractChain = $contract->getBlockchain();
         $rawQuantity = $quantity ;
@@ -77,6 +77,8 @@ class Balance
 
 
         $this->contractMap[$contract->getId()] = $contract ;
+
+        return $this ;
 
 
 
@@ -473,7 +475,7 @@ class Balance
 
         if (!$this->orbFactory) $this->getObs();
 
-        $map = $this->orbFactory->instanceAssetMap ;
+
         $orbs = $this->orbFactory->getOrbsFromAsset($asset);
         return $orbs ;
 

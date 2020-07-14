@@ -260,6 +260,8 @@ final class AssetSolverTest extends TestCase
 
         $this->assertTrue($balance->isOwningAsset($asset));
 
+        $address->getBalance()->returnObsByCollections();
+
 
        $i = 1 ;
 
