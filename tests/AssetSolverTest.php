@@ -10,9 +10,17 @@
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 use CsCannon\Asset;
+use CsCannon\AssetFactory;
 use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\AssetSolvers\PathPredictableSolver;
+use CsCannon\Blockchains\BlockchainBlockFactory;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
+use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Orb;
+use CsCannon\OrbFactory;
+use CsCannon\SandraManager;
 use PHPUnit\Framework\TestCase;
 
 
@@ -41,7 +49,7 @@ final class AssetSolverTest extends TestCase
        error_reporting(E_ALL);
 
        \CsCannon\Tests\TestManager::initTestDatagraph();
-       $sandra = \CsCannon\SandraManager::getSandra();
+       $sandra = SandraManager::getSandra();
 
        \CsCannon\AssetSolvers\BooSolver::getEntity();
        \CsCannon\AssetSolvers\DefaultEthereumSolver::getEntity();
@@ -63,7 +71,7 @@ final class AssetSolverTest extends TestCase
 
     public function testSetSolver(){
 
-        $collectionFactory =  new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $collectionFactory =  new \CsCannon\AssetCollectionFactory(SandraManager::getSandra());
         $predictableSolver = PathPredictableSolver::getEntity();
         $noParamSolver = LocalSolver::getEntity();
         $noparamSolverOverrided = clone $noParamSolver ;
@@ -103,9 +111,9 @@ final class AssetSolverTest extends TestCase
 
 
         $collectionName = 'testCollection';
-        $sandra = \CsCannon\SandraManager::getSandra();
+        $sandra = SandraManager::getSandra();
 
-        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(SandraManager::getSandra());
         $collection = $assetCollectionFactory->create($collectionName,null, \CsCannon\AssetSolvers\LocalSolver::getEntity());
 
         $collection->setName($collectionName);
@@ -117,7 +125,7 @@ final class AssetSolverTest extends TestCase
 
 
         $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
-        $contract = $contractFactory->get("@account",true,\CsCannon\Blockchains\Ethereum\Interfaces\ERC721::getEntity());
+        $contract = $contractFactory->get("@account",true, ERC721::getEntity());
         $contract->bindToCollection($collection);
         $contractFactory->populateLocal();
        // $standard=$contract->getStandard()->setTokenId(1);
@@ -129,16 +137,16 @@ final class AssetSolverTest extends TestCase
 
 
         //An asset that have multiple token Id
-        $assetFactory = new \CsCannon\AssetFactory($sandra);
+        $assetFactory = new AssetFactory($sandra);
         $myAsset = $assetFactory->create("myUnique",["hello"=>'data'],[$collection],[$contract]);
         $myAsset2 = $assetFactory->create("myUnique2",["hello"=>'data'],[$collection],[$contract]);
 
         $tokenPathToAssetFactory = new \CsCannon\TokenPathToAssetFactory($sandra);
 
-        $erc721_1 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(1);
-        $erc721_2 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(2);
-        $erc721_3 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(3);
-        $erc721_4 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(4);
+        $erc721_1 =  ERC721::init(1);
+        $erc721_2 =  ERC721::init(2);
+        $erc721_3 =  ERC721::init(3);
+        $erc721_4 =  ERC721::init(4);
 
         $entToSolver = $tokenPathToAssetFactory->create($erc721_1);
         $entToSolver2 = $tokenPathToAssetFactory->create($erc721_2);
@@ -156,7 +164,7 @@ final class AssetSolverTest extends TestCase
 
         //At this point we should have 2 entity path
         $tokenPathToAssetFactoryV = new \CsCannon\TokenPathToAssetFactory($sandra);
-        $shaban2 = $tokenPathToAssetFactoryV->populateLocal();
+        $tokenPathToAssetFactoryV->populateLocal();
 
 
 
@@ -180,8 +188,8 @@ final class AssetSolverTest extends TestCase
         //Now we need to solve
         $mySolver = LocalSolver::getEntity();
 
-        $myOrbFactory = new \CsCannon\OrbFactory();
-        $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
+        $myOrbFactory = new OrbFactory();
+        $assetFactory = new AssetFactory(SandraManager::getSandra());
         $assetFactory->populateLocal();
 
         $orbs = $myOrbFactory->getOrbsFromContractPath($contract,$erc721_1);
@@ -193,8 +201,67 @@ final class AssetSolverTest extends TestCase
 
         //var_dump($orbs);
 
+    }
+
+    public function testAssetToTokenBalance(){
+
+        $collectionName = 'testCollection';
+        $sandra = SandraManager::getSandra();
 
 
+        $assetFactory = new AssetFactory(SandraManager::getSandra());
+        $assetFactory->populateLocal();
+
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contractFactory->populateLocal();
+        $contract = $contractFactory->get("@account");
+
+
+        $myOrbFactory = new OrbFactory();
+        $assetFactory = new AssetFactory(SandraManager::getSandra());
+
+        // as defined previously we should have 2 asset linked to token id 1
+        $orbs = $myOrbFactory->getOrbsFromContractPath($contract,ERC721::init(1));
+        $bindedAssetCount = 2 ;
+
+
+        /** @var  $orb Orb */
+        $orb = reset($orbs);
+
+
+        $addressFactory = new EthereumAddressFactory();
+        $address = $addressFactory->get("testAddress",true);
+        $address->setDataSource(new DatagraphSource());
+        $balance = $address->getBalance();
+
+        $unitPerToken = 2 ;
+
+        //we create a virtual balance
+        for ($i=1;$i<5;$i++) {
+            $balance->addContractToken($contract,ERC721::init($i),$unitPerToken);
+
+        }
+        $blockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain());
+        $block = $blockFactory->getOrCreateFromRef(BlockchainBlockFactory::INDEX_SHORTNAME,1);
+        $balance->saveToDatagraph($block);
+
+        //asset to find
+        $asset = $orb->asset ;
+
+        $assetQuantity = $balance->quantityForAsset($asset);
+        //we should have two of this $asset based on 2 tokens with a quantity $unitPerToken ;
+        $this->assertEquals($bindedAssetCount*$unitPerToken,$assetQuantity);
+
+        $balance = $address->getBalance($orb);
+
+        $orbList =  $balance->orbsForAsset($asset);
+
+        $this->assertCount($bindedAssetCount,$orbList);
+
+        $this->assertTrue($balance->isOwningAsset($asset));
+
+
+       $i = 1 ;
 
 
     }

@@ -66,11 +66,7 @@ final class OrbTest extends TestCase
         $this->assertCount(1,$assetCollectionControl->entityArray,"Collection not saved");
         $this->assertEquals($collectionName,$collection->name,"Collection name not pass");
 
-        //$addressEntity = $addressFactory->get($testAddress);
-        //$balance = $addressEntity->getBalance();
 
-
-     //   \CsCannon\Tests\TestManager::registerDataStructure();
 
     }
 

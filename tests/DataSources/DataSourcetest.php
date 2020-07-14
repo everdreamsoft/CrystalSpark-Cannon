@@ -65,6 +65,8 @@ class DataSourceTest extends TestCase
         $balance = $dataSource::getBalance($address,100,0);
         $this->assertGreaterThan(2,count($balance->getContractMap()));
 
+
+
         $importer = new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter();
 
         $events = $dataSource::getEvents(null,null,null,$address);
@@ -87,9 +89,8 @@ class DataSourceTest extends TestCase
         $blockchainImporter->getEvents(null,null,null,null,$address);
 
 
-
-
     }
+
 
 
 
