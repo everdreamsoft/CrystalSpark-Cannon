@@ -111,7 +111,7 @@ class OrbFactory
             $instance->instanceContractMap[$orb->contract->getId()][$orb->orbId] = $orb;
             $instance->instanceCollectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb;
 
-            $instance->instanceAssetMap[$orb->asset->id][$orb->orbId] = $orb;
+            $instance->instanceAssetMap[$orb->asset->get(AssetFactory::ID)][$orb->orbId] = $orb;
         }
 
 

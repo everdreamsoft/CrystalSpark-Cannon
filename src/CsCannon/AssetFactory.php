@@ -126,7 +126,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     }
 
 
-    public function create($id, Array $metaData,array $collections=null,array $contracts=null){
+    public function create($id, Array $metaData,array $collections=null,array $contracts=null):Asset{
 
 
 
