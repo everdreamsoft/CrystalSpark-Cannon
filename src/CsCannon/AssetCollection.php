@@ -179,6 +179,7 @@ class AssetCollection extends \SandraCore\Entity
 
         $assetFactory = new AssetFactory();
         $assetFactory->setFilter(AssetFactory::$collectionJoinVerb, $this);
+        $assetFactory->populateLocal();
 
         return $assetFactory->getEntities();
 
