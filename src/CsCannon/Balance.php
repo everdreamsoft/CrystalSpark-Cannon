@@ -66,7 +66,7 @@ class Balance
         $rawQuantity = $quantity ;
         //print_r($quantity);
         $adaptedQuantity = $contract->getAdaptedDecimals(intval($quantity));
-        if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
+        //if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
 
 
 
