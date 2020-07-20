@@ -13,6 +13,7 @@ use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
 use SandraCore\System;
@@ -168,6 +169,23 @@ class AssetCollection extends \SandraCore\Entity
 
 
     }
+
+    /**
+     * Return an array of assets contained in collection
+     *
+     * @return Asset[]
+     */
+    public function getAssets():array{
+
+        $assetFactory = new AssetFactory();
+        $assetFactory->setFilter(AssetFactory::$collectionJoinVerb, $this);
+        $assetFactory->populateLocal();
+
+        return $assetFactory->getEntities();
+
+
+    }
+
 
     protected  function getSampleAssets()
     {

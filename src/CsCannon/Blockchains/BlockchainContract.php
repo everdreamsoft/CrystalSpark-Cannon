@@ -79,6 +79,22 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     }
 
+    /**
+     *
+     * Get all asset binded to this contract
+     *
+     * @return Asset[]
+     */
+    public function getAssets(){
+
+        $assetFactory = new AssetFactory();
+        $assetFactory->setFilter(AssetFactory::$tokenJoinVerb,$this);
+        $assetFactory->populateLocal();
+
+        return $assetFactory->getEntities();
+
+    }
+
     public function getCollections(){
 
         $collectionEntities = null ;
@@ -91,9 +107,6 @@ abstract class  BlockchainContract extends Entity Implements Displayable
         }
 
         return $collectionEntities;
-
-
-
 
 
     }
@@ -116,12 +129,6 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     }
 
 
-    public function bindToAsset(Asset $asset){
-
-        $this->setBrotherEntity(BlockchainContractFactory::JOIN_ASSET,$asset,null);
-
-
-    }
 
     public function bindToCollection(AssetCollection $collection){
 
@@ -130,12 +137,9 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     }
 
-    public function setName(){
 
-        return $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
-    }
 
-    public function setAlias($alias){
+    public function setAlias($alias):self{
 
         //verify alias existense
         $verif = new GenericContractFactory();
@@ -151,9 +155,9 @@ abstract class  BlockchainContract extends Entity Implements Displayable
                 $this->system->systemError(0, self::class, 4, 'Contract alias exists ' . $alias);
 
         }
+        $this->getOrInitReference(self::ALIAS_SHORTNAME,$alias);
 
-
-        return $this->getOrInitReference(self::ALIAS_SHORTNAME,$alias);
+        return $this ;
 
     }
 

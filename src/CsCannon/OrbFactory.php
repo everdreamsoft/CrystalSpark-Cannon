@@ -16,8 +16,16 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 class OrbFactory
 {
 
-    public static  $orbMap, $contractMap, $collectionMap, $assetMap ;
-    public   $instanceOrbMap, $instanceContractMap, $instanceCollectionMap, $instanceAssetMap, $quantityMap ;
+    //public static  $orbMap, $contractMap, $collectionMap, $assetMap ;
+
+
+    public   $instanceOrbMap, $instanceContractMap, $instanceCollectionMap, $quantityMap ;
+
+    /**
+     *
+     * @var Asset[]
+     */
+    public $instanceAssetMap   ;
 
     public function getOrbsInCollection(AssetCollection $assetCollection,$limit,$offset){
 
@@ -86,11 +94,11 @@ class OrbFactory
 
 
 
-        self::$orbMap[$orb->orbId] = $orb ;
-        self::$contractMap[$orb->contract->getId()][$orb->orbId] = $orb ;
-        self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
-        self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
-        self::$assetMap[$orb->asset->id][$orb->orbId] = $orb;
+        //self::$orbMap[$orb->orbId] = $orb ;
+      //  self::$contractMap[$orb->contract->getId()][$orb->orbId] = $orb ;
+       // self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
+      //  self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
+     //   self::$assetMap[$orb->asset->id][$orb->orbId] = $orb;
 
 
 
@@ -103,7 +111,7 @@ class OrbFactory
             $instance->instanceContractMap[$orb->contract->getId()][$orb->orbId] = $orb;
             $instance->instanceCollectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb;
 
-            $instance->instanceAssetMap[$orb->asset->id][$orb->orbId] = $orb;
+            $instance->instanceAssetMap[$orb->asset->get(AssetFactory::ID)][$orb->orbId] = $orb;
         }
 
 
@@ -120,9 +128,24 @@ class OrbFactory
 
     }
 
+
     public static function convertOrbsToCSV ($array){
 
 
+
+
+    }
+
+
+    /**
+     * @param Asset $asset
+     * @return Orb[]
+     */
+    public  function getOrbsFromAsset (Asset $asset):array{
+
+
+        $map = $this->instanceAssetMap ;
+        return $map[$asset->id] ?? array();
 
 
     }

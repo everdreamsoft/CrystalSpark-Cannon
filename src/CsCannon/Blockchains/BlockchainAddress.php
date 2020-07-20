@@ -45,7 +45,7 @@ abstract class  BlockchainAddress extends Entity implements Displayable
 
 
          $dataSource =  $this->getDataSource();
-         $balance = $dataSource::getBalance($this,100,0);
+         $balance = $dataSource::getBalance($this,10000,0);
 
 
          $this->balance = $balance ;

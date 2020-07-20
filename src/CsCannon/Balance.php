@@ -26,6 +26,11 @@ class Balance
 
     public $contracts = array() ;
     public $contractMap = array() ;
+
+    /**
+     *
+     * @var OrbFactory
+     */
     public $orbFactory ;
     private $orbBuilt = false ;
     public $display ;
@@ -55,13 +60,13 @@ class Balance
     }
 
 
-    public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity){
+    public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity):self{
 
         $contractChain = $contract->getBlockchain();
         $rawQuantity = $quantity ;
         //print_r($quantity);
         $adaptedQuantity = $contract->getAdaptedDecimals(intval($quantity));
-        if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
+        //if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
 
 
 
@@ -72,6 +77,8 @@ class Balance
 
 
         $this->contractMap[$contract->getId()] = $contract ;
+
+        return $this ;
 
 
 
@@ -287,7 +294,7 @@ class Balance
 
     }
 
-    public function loadFromDatagraph(){
+    public function loadFromDatagraph(array $onlyContracts = null){
 
 
 
@@ -322,6 +329,8 @@ class Balance
             $token = $contract->getStandard();
             $newToken = clone $token;
             $newToken->setTokenPath($balanceEntity->entityRefs);
+
+            //if (is_array($onlyContracts) && !in_array($contract,$onlyContracts)) continue ;
 
 
 
@@ -413,6 +422,63 @@ class Balance
     public function balanceUniqueId(BlockchainContract $contract, BlockchainContractStandard $standard){
 
         return $contract->getId().'-'.$standard->getDisplayStructure();
+
+    }
+
+    /**
+     * Does the balance own an asset ? Be careful a 0.5 is not considered as false
+     * @param Asset $asset
+     * @return bool
+     */
+    public function isOwningAsset(Asset $asset):bool {
+
+        if ($this->quantityForAsset($asset) >= 1) return true ;
+
+        return false ;
+
+
+    }
+
+    /**
+     *
+     * @param Asset $asset
+     * @return bool
+     */
+    public function isOwningAssetOrFraction(Asset $asset):bool {
+
+        if ($this->quantityForAsset($asset) > 0) return true ;
+
+        return false ;
+
+
+    }
+
+    public function quantityForAsset(Asset $asset):int{
+
+
+        $orbs = $this->orbsForAsset($asset);
+        $total = 0 ;
+
+        foreach ($orbs as $orb){
+
+            $total += $this->orbFactory->quantityMap[$orb->orbCode];
+        }
+        return $total ;
+
+    }
+
+    /**
+     * @param Asset $asset
+     * @return Orb[]
+     */
+    public function orbsForAsset(Asset $asset){
+
+        if (!$this->orbFactory) $this->getObs();
+
+
+        $orbs = $this->orbFactory->getOrbsFromAsset($asset);
+        return $orbs ;
+
 
     }
 
