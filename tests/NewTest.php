@@ -5,18 +5,10 @@ use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\BlockchainRouting;
-use CsCannon\Blockchains\Blockchain;
-use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContract;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\Counterparty\DataSource\XchainDataSource;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
-use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
-use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
-use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticContractFactory;
-use CsCannon\Blockchains\FirstOasis\FirstOasisContractFactory;
-use CsCannon\Blockchains\Klaytn\KlaytnContractFactory;
+
 use CsCannon\SandraManager;
 use SandraCore\System;
 
@@ -77,7 +69,10 @@ $myAsset = createNewAsset(
     'https://static.fnac-static.com/multimedia/Images/FD/Comete/123455/CCP_IMG_ORIGINAL/1608833.jpg'
 );
 
+$assetFactory = new AssetFactory;
+$assetFactory->populateLocal();
 
+var_dump($myAsset->getContracts());die;
 
 // Get Balance
 
