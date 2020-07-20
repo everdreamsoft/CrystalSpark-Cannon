@@ -170,7 +170,6 @@ final class AssetSolverTest extends TestCase
 
         //asset binding
         $myAsset->bindToContractWithMultipleSpecifiers($contract,[$entToSolver,$entToSolver2,$entToSolver1_2]);
-
         $myAsset2->bindToContractWithMultipleSpecifiers($contract,[$entToSolver2]);
 
 
@@ -182,6 +181,9 @@ final class AssetSolverTest extends TestCase
 
 
         $this->assertCount(1,$tokenPath2);
+
+
+        $this->assertCount(2,$contract->getAssets());
 
 
 

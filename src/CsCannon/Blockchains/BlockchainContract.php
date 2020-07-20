@@ -79,6 +79,22 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     }
 
+    /**
+     *
+     * Get all asset binded to this contract
+     *
+     * @return Asset[]
+     */
+    public function getAssets(){
+
+        $assetFactory = new AssetFactory();
+        $assetFactory->setFilter(AssetFactory::$tokenJoinVerb,$this);
+        $assetFactory->populateLocal();
+
+        return $assetFactory->getEntities();
+
+    }
+
     public function getCollections(){
 
         $collectionEntities = null ;
@@ -91,9 +107,6 @@ abstract class  BlockchainContract extends Entity Implements Displayable
         }
 
         return $collectionEntities;
-
-
-
 
 
     }
