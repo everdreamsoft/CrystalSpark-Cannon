@@ -30,7 +30,7 @@ class AssetTest extends TestCase
 
         $contract->bindToCollection($newCollection);
 
-        $contract->bindToAsset($asset);
+        $asset->bindToContract($contract);
 
 
         assertNotNull($asset->getContracts());

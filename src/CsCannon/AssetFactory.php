@@ -126,12 +126,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     }
 
 
-<<<<<<< HEAD
-    public function create($id, Array $metaData,array $collections=null,array $contracts=null): Asset
-    {
-=======
     public function create($id, Array $metaData,array $collections=null,array $contracts=null):Asset{
->>>>>>> 0769d48701d1a1d0efdcd1dccb83f5f59bea9d4f
 
 
 
