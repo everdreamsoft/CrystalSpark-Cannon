@@ -11,8 +11,9 @@ class AssetTest extends TestCase
 {
     public function testAsset(){
 
-        $sandra = new System('', true, '127.0.0.1:3306', 'sandra', 'root', '');
-        SandraManager::setSandra($sandra);
+        \CsCannon\Tests\TestManager::initTestDatagraph();
+        $sandra = \CsCannon\SandraManager::getSandra();
+
 
         $myCollection = new AssetCollectionFactory($sandra);
         $newCollection = $myCollection->getOrCreate('testCollection');
