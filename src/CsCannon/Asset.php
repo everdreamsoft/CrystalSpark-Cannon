@@ -13,6 +13,8 @@ use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use CsCannon\Blockchains\Generic\GenericContract;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use SandraCore\Entity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
@@ -128,9 +130,25 @@ class Asset extends \SandraCore\Entity implements Displayable
     }
 
 
+    /**
+     *
+     * Will return an array of Generic contract. Be careful as you won't receive a blockchain specific contract
+     * GenericContract as opposed to EthereumContract. If you manually joined contract factory the function will only
+     * return contract from your joined factory
+     *
+     * @return GenericContract[]
+     */
     public function getContracts(){
 
+        $entitiesArray = $this->getJoinedEntities(AssetFactory::$tokenJoinVerb) ;
 
+        //entity not found it might be beause the factory hasn't been joined
+        if (!$entitiesArray) {
+            $contractFactory = new GenericContractFactory();
+            $this->factory->joinFactory(AssetFactory::$tokenJoinVerb, $contractFactory);
+            $this->factory->joinPopulate();
+            $entitiesArray = $this->getJoinedEntities(AssetFactory::$tokenJoinVerb) ;
+        }
 
         $contracts = null ;
         $this->factory->getTriplets();
@@ -158,8 +176,24 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     }
 
-
+    /**
+     *
+     * Will return an array of collections.  If you manually joined collection factory the function will only
+     * return collection from your joined factory
+     *
+     * @return AssetCollection[]
+     */
     public function getCollections(){
+
+        $entitiesArray = $this->getJoinedEntities(AssetFactory::$collectionJoinVerb) ;
+
+        //entity not found it might be beause the factory hasn't been joined
+        if (!$entitiesArray) {
+            $collectionFactory = new AssetCollectionFactory($this->system);
+            $this->factory->joinFactory(AssetFactory::$collectionJoinVerb, $collectionFactory);
+            $this->factory->joinPopulate();
+            $entitiesArray = $this->getJoinedEntities(AssetFactory::$collectionJoinVerb) ;
+        }
 
         $collectionEntities = null ;
         $this->factory->getTriplets();
