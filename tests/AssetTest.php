@@ -1,18 +1,20 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\SandraManager;
+use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
-use SandraCore\System;
 
-class AssetTest extends TestCase
+final class AssetTest extends TestCase
 {
-    public function testAsset(){
+    public function testGetContracts(){
 
-        \CsCannon\Tests\TestManager::initTestDatagraph();
-        $sandra = \CsCannon\SandraManager::getSandra();
+        TestManager::initTestDatagraph();
+        $sandra = SandraManager::getSandra();
 
         $myCollection = new AssetCollectionFactory($sandra);
         $newCollection = $myCollection->getOrCreate('testCollection');
@@ -33,7 +35,8 @@ class AssetTest extends TestCase
         $asset->bindToContract($contract);
 
 
-        assertNotNull($asset->getContracts());
+        $this->assertNotNull($asset->getContracts(), $message ='fail');
+
 
     }
 }
