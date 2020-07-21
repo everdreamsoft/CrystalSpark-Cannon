@@ -6,15 +6,16 @@ use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\SandraManager;
-use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
+use SandraCore\System;
 
-final class AssetTest extends TestCase
+class AssetTest extends TestCase
 {
-    public function testGetContracts(){
+    public function testAsset(){
 
-        TestManager::initTestDatagraph();
-        $sandra = SandraManager::getSandra();
+        \CsCannon\Tests\TestManager::initTestDatagraph();
+        $sandra = \CsCannon\SandraManager::getSandra();
+
 
         $myCollection = new AssetCollectionFactory($sandra);
         $newCollection = $myCollection->getOrCreate('testCollection');
