@@ -132,7 +132,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     public function bindToCollection(AssetCollection $collection){
 
-        $this->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$collection,null);
+        $this->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$collection,['creationTimestamp'=>time()]);
 
 
     }

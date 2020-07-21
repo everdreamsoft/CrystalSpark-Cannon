@@ -16,8 +16,14 @@ class AssetTest extends TestCase
         \CsCannon\Tests\TestManager::initTestDatagraph();
         $sandra = \CsCannon\SandraManager::getSandra();
 
+        $contractFactory = new XcpContractFactory;
+        $contractFactory->populateLocal();
+        $contract = $contractFactory->get('A1417599316207124900', true);
+
+
 
         $myCollection = new AssetCollectionFactory($sandra);
+        $myCollection->populateLocal();
         $newCollection = $myCollection->getOrCreate('testCollection');
         $newCollection->setName('test');
 
@@ -27,7 +33,9 @@ class AssetTest extends TestCase
         $asset->bindToCollection($newCollection);
 
 
+
         $contractFactory = new XcpContractFactory;
+        $contractFactory->populateLocal();
         $contract = $contractFactory->get('A1417599316207124900', true);
     
 
@@ -35,8 +43,22 @@ class AssetTest extends TestCase
 
         $asset->bindToContract($contract);
 
+        $contractFactory = new XcpContractFactory;
+
+        $contract = $contractFactory->get('A1417599316207124900', true);
+
+
+
+        $assetFactory = new AssetFactory;
+        $assetFactory->populateLocal();
+
+        $contracts = $asset->getContracts();
+
+
+
 
         $this->assertNotNull($asset->getContracts(), $message ='fail');
+        $this->assertEquals(1,1);
 
 
     }
