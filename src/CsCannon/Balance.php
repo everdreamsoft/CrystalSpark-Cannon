@@ -211,6 +211,7 @@ class Balance
                 $orbDisplay['token']['standard'] = $token->getStandardName();
                 $orbDisplay['quantity'] = $quantity ;
                 $orbDisplay['asset']['image'] = $asset->imageUrl ;
+                $orbDisplay['asset']['id']  = $asset->id;
 
                 //hide orbs with 0 quantity
                 if ($quantity >= 0 or $displayZeroBalance == false){
