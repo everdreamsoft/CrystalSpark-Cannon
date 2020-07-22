@@ -268,6 +268,36 @@ class BlockchainRouting
 
         }
 
+        //if data was build on legacy version we don't have onBlockchain entity. We we get with the is_a array
+        if (empty($arrayOfChains)){
+            $systemConcept = $address->system->systemConcept ;
+
+            $arrayOfBlockchainsIs_a__address = $address->subjectConcept->tripletArray[$systemConcept->get('is_a')] ;
+
+            foreach ($arrayOfBlockchainsIs_a__address ?? array() as $is___AddressUnid){
+
+                $name = $systemConcept->getSCS($is___AddressUnid);
+
+                switch ($name){
+
+                    case "ethAddress":
+                        $arrayOfChains[] = EthereumBlockchain::getStatic();
+                        break;
+                    case "btcAddress":
+                        $arrayOfChains[] = XcpBlockchain::getStatic();
+                        break;
+                    case "klaytnAddress":
+                        $arrayOfChains[] = KlaytnBlockchain::getStatic();
+                        break;
+
+                }
+
+            }
+
+        }
+
+
+
         return $arrayOfChains ;
 
     }
