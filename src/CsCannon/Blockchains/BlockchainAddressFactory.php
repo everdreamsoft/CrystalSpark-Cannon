@@ -35,6 +35,15 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
    }
 
+    public static function getAddress($address,$autoCreate = false):BlockchainAddress{
+
+        $factoryOfSelf = new static();
+
+        return $factoryOfSelf->get($address,$autoCreate);
+
+
+    }
+
     public function get($address,$autoCreate = false):BlockchainAddress{
 
         $addressName = self::ADDRESS_SHORTNAME;

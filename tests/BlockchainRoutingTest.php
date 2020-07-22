@@ -72,6 +72,7 @@ final class BlockchainRoutingTest extends TestCase
             //the first supported chain
             $actualBlockchainToTest = $supportedChainsArray[$i];
 
+
             $this->assertInstanceOf(get_class($firstBlockchainFromContract),$actualBlockchainToTest);
 
             $i++;

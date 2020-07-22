@@ -43,6 +43,15 @@ public $blockchain ;
 
     }
 
+    public static function getContract($identifier,$autocreate = false,BlockchainContractStandard $standard = null){
+
+        $factoryOfSelf = new static();
+
+        return $factoryOfSelf->get($identifier,$autocreate,$standard);
+
+
+    }
+
 
     public function populateFromCollection(AssetCollection $collection,$limit = 10000, $offset = 0, $asc = 'ASC')
     {

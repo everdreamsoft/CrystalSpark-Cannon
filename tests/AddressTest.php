@@ -9,6 +9,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\DataSource\CrystalSuiteDataSource;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +33,7 @@ final class AddressTest extends TestCase
         $addressFactoryControl = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressEntity = $addressFactory->get($testAddress);
 
-        /** @var \CsCannon\Blockchains\Counterparty\XcpAddressFactory $addressFactory */
+        /** @var XcpAddressFactory $addressFactory */
 
 
        $this->assertInstanceOf(\CsCannon\Blockchains\Counterparty\XcpAddress::class,$addressEntity,
@@ -47,6 +48,11 @@ final class AddressTest extends TestCase
 
         //now we store the address on the datagraph
         $addressEntity = $addressFactory->get($testAddress,1);
+
+        //test if shorthand for address
+        $addressShorthanded = XcpAddressFactory::getAddress($testAddress);
+
+        $this->assertEquals($addressShorthanded->subjectConcept,$addressEntity->subjectConcept);
 
         //and we try to retreive it
         $addressFactory->populateLocal();
