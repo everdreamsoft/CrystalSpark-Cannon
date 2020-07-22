@@ -71,6 +71,10 @@ abstract class Blockchain
 
     }
 
+    public function getName(){
+
+        return $this->name;
+    }
 
 
 

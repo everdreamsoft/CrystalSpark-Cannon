@@ -34,9 +34,9 @@ class XchainDataSource extends BlockchainDataSource
     public static $dbHost, $db, $dbpass, $dbUser ;
 
 
-    public function __construct(string $net = null){
+    public function __construct(bool $mainNet = true){
 
-        if($net === "testnet"){
+        if($mainNet === false){
             self::$chainUrl = "https://testnet.xchain.io/api/balances/";
         }
 
@@ -52,11 +52,11 @@ class XchainDataSource extends BlockchainDataSource
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
         $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends 
-JOIN index_transactions ON sends.`tx_hash_id` = index_transactions.id
-JOIN index_addresses s ON sends.`source_id` = s.id
-JOIN index_addresses d ON sends.`destination_id` = d.id
-JOIN assets a  ON sends.`asset_id` = a.id
-JOIN blocks b  ON sends.`block_index` = b.`block_index`
+            JOIN index_transactions ON sends.`tx_hash_id` = index_transactions.id
+            JOIN index_addresses s ON sends.`source_id` = s.id
+            JOIN index_addresses d ON sends.`destination_id` = d.id
+            JOIN assets a  ON sends.`asset_id` = a.id
+            JOIN blocks b  ON sends.`block_index` = b.`block_index`
          
          LIMIT $batchMax OFFSET $offset";
         $pdo = $blockSucker->get();
