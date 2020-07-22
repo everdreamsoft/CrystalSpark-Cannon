@@ -146,6 +146,10 @@ final class OrbTest extends TestCase
         $contract = $contractFactory->get(self::COLLECTION_CONTRACT,true,ERC20::getEntity());
         $contract->bindToCollection($collectionEntity);
 
+        //test shorthand
+        $contractShorthanded = EthereumContractFactory::getContract(self::COLLECTION_CONTRACT);
+        $this->assertEquals($contractShorthanded->subjectConcept,$contract->subjectConcept);
+
 
         $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
         $metaData = [\CsCannon\AssetFactory::IMAGE_URL=>self::ASSET_IMAGE_URL,
