@@ -33,6 +33,8 @@ abstract class BlockchainAddressFactory extends EntityFactory
      $foreignAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
      $this->foreignAdapterX = $foreignAdapter ;
 
+     $this->blockchain = static::getBlockchain();
+
    }
 
     public static function getAddress($address,$autoCreate = false):BlockchainAddress{
@@ -43,6 +45,7 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
 
     }
+    public abstract static function getBlockchain();
 
     public function get($address,$autoCreate = false):BlockchainAddress{
 
@@ -67,9 +70,13 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
            }
 
-            $entity = $this->createNew(array(self::ADDRESS_SHORTNAME=>$address));
+            $additionalBrothers = [
+                BlockchainContractFactory::ON_BLOCKCHAIN_VERB => [$this->blockchain::NAME => ['creationTimestamp'=>time()]]
+            ];
 
-            //dd($entity);
+            $entity = $this->createNew(array(self::ADDRESS_SHORTNAME=>$address),$additionalBrothers);
+
+
 
         }
 
@@ -80,6 +87,8 @@ abstract class BlockchainAddressFactory extends EntityFactory
        return $entity ;
 
     }
+
+
 
 
 }

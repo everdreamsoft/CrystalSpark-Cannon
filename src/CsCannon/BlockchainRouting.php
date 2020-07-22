@@ -6,6 +6,7 @@ namespace CsCannon;
 
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
@@ -16,6 +17,7 @@ use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\RopstenEthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\FirstOasis\FirstOasisBlockchain;
+use CsCannon\Blockchains\Generic\GenericAddress;
 use CsCannon\Blockchains\Generic\GenericContract;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 use SandraCore\Entity;
@@ -240,7 +242,33 @@ class BlockchainRouting
         return $arrayOfChains ;
 
 
+    }
 
+    /**
+     *
+     * A generic address is expected but any Blockchain contract is accepted for function stability purpose.
+     * If the Generic address is defined as specific chain address return the specific chain
+     *
+     * @param BlockchainAddress $contract
+     * @return Blockchain[]
+     */
+    public static function getBlockchainFromGenericAddress(BlockchainAddress $address):array {
+
+        if (! $address instanceof GenericAddress) return [$address->getBlockchain()];
+
+        $arrayOfBlockchains = $address->getBrotherEntity(BlockchainContractFactory::ON_BLOCKCHAIN_VERB);
+        $arrayOfChains = [];
+
+        foreach ($arrayOfBlockchains ?? array() as $onBlockchainEntity){
+            /** @var Entity $onBlockchainEntity  */
+            $conceptTarget = $onBlockchainEntity->targetConcept;
+            $conceptShortname = $conceptTarget->getShortname();
+            $blockchain = self::getBlockchainFromName($conceptShortname);
+            $arrayOfChains[] = $blockchain ;
+
+        }
+
+        return $arrayOfChains ;
 
     }
 

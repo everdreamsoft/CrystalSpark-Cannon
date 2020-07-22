@@ -25,7 +25,7 @@ class MaticAddressFactory extends EthereumAddressFactory
 
     public static function getBlockchain(){
 
-        return MaticBlockchain::class ;
+        return \CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain::class ;
 
 
     }

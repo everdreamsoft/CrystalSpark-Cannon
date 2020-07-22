@@ -18,6 +18,8 @@ class BtcAddressFactory extends BlockchainAddressFactory
     public static $file = 'btcAddressFile';
 
 
-
-
+    public static function getBlockchain()
+    {
+        return BtcBlockchain::class ;
+    }
 }

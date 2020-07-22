@@ -57,7 +57,6 @@ final class BlockchainRoutingTest extends TestCase
             $cf = $blockchain->getContractFactory();
             $cf->get("myCOntractOn".$blockchain::NAME,true);
 
-
         }
 
         $genericContractFactory = new \CsCannon\Blockchains\Generic\GenericContractFactory();
@@ -71,18 +70,41 @@ final class BlockchainRoutingTest extends TestCase
 
             //the first supported chain
             $actualBlockchainToTest = $supportedChainsArray[$i];
-
-
             $this->assertInstanceOf(get_class($firstBlockchainFromContract),$actualBlockchainToTest);
-
             $i++;
-
 
         }
 
+    }
 
+    public function testGenenicAddressGetBlockchain(){
 
+        $countSupportedChain = 0 ;
+        $supportedChainsArray = BlockchainRouting::getSupportedBlockchains() ;
+        foreach ($supportedChainsArray as $blockchain){
 
+            $countSupportedChain++ ;
+
+            $cf = $blockchain->getAddressFactory();
+            $cf->get("addressOn ".$blockchain::NAME,true);
+
+        }
+
+        $genericAddressFactory = new \CsCannon\Blockchains\Generic\GenericContractFactory();
+        $genericAddressFactory->populateLocal();
+
+        $i = 0 ;
+        foreach ($genericAddressFactory->getEntities() as $address){
+
+            $arrayOfBlockchainFromContract = BlockchainRouting::getBlockchainFromGenericContract($address);
+            $firstBlockchainFromContract = reset($arrayOfBlockchainFromContract);
+
+            //the first supported chain
+            $actualBlockchainToTest = $supportedChainsArray[$i];
+            $this->assertInstanceOf(get_class($firstBlockchainFromContract),$actualBlockchainToTest);
+            $i++;
+
+        }
 
     }
 
