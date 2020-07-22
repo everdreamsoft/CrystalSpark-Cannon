@@ -7,6 +7,8 @@ namespace CsCannon;
 
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddressFactory;
+use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
@@ -14,7 +16,9 @@ use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\RopstenEthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\FirstOasis\FirstOasisBlockchain;
+use CsCannon\Blockchains\Generic\GenericContract;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
+use SandraCore\Entity;
 
 class BlockchainRouting
 {
@@ -207,8 +211,43 @@ class BlockchainRouting
 
     }
 
+    /**
+     *
+     * A generic contract is expected but any Blockchain contract is accepted for function stability purpose.
+     * If the Generic contract is defined as specific chain contract return the specific chain
+     *
+     * @param BlockchainContract $contract
+     * @return Blockchain[]
+     */
+    public static function getBlockchainFromGenericContract(BlockchainContract $contract):array {
+
+        if (! $contract instanceof GenericContract) return [$contract->getBlockchain()];
+
+        $arrayOfBlockchains = $contract->getBrotherEntity(BlockchainContractFactory::ON_BLOCKCHAIN_VERB);
+        $arrayOfChains = [];
+
+        foreach ($arrayOfBlockchains ?? array() as $onBlockchainEntity){
+             /** @var Entity $onBlockchainEntity  */
+            $conceptTarget = $onBlockchainEntity->targetConcept;
+            $conceptShortname = $conceptTarget->getShortname();
+            $blockchain = self::getBlockchainFromName($conceptShortname);
+            $arrayOfChains[] = $blockchain ;
+
+
+
+        }
+
+        return $arrayOfChains ;
+
+
+
+
+    }
+
 
     public static function getDataPath($blockchain,$type){
+
+
 
 
        switch  ($blockchain) {

@@ -37,7 +37,7 @@ abstract class Blockchain
 
     }
 
-    public function getContractFactory()
+    public function getContractFactory():BlockchainContractFactory
     {
 
         return $this->contractFactory;

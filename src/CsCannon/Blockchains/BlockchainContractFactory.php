@@ -28,11 +28,15 @@ public  const JOIN_COLLECTION = 'inCollection';
 public  const JOIN_ASSET = 'joinAsset';
 public  const CONTRACT_STANDARD = 'contractStandard';
 public  const ON_BLOCKCHAIN_VERB = 'onBlockchain';
+
+
 public $blockchain ;
 
     public function __construct(){
 
         parent::__construct(static::$isa,static::$file,SandraManager::getSandra());
+
+
 
         $this->generatedEntityClass = static::$className ;
 
@@ -60,6 +64,8 @@ public $blockchain ;
         $collectionFactory = AssetCollectionFactory::getStaticCollection();
 
         $this->populateBrotherEntities(self::CONTRACT_STANDARD);
+        $this->populateBrotherEntities(self::ON_BLOCKCHAIN_VERB);
+
 
 
         $this->joinFactory(static::JOIN_COLLECTION,$collectionFactory);
@@ -114,9 +120,12 @@ public $blockchain ;
 
             }
 
+            $testVariable = $this->blockchain::NAME ;
+
+
             $timstamp['creationTimestamp'] = time();
             $array = [self::CONTRACT_STANDARD => [$contractStandardEnt->subjectConcept->idConcept=>$timstamp],
-                self::ON_BLOCKCHAIN_VERB => [$this->blockchain::getStatic()]
+                self::ON_BLOCKCHAIN_VERB => [$this->blockchain::NAME => ['creationTimestamp'=>time()]]
                 ];
 
 
