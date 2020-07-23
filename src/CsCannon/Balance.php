@@ -209,6 +209,7 @@ class Balance
                 $contractChain = $contract->getBlockchain();
 
                 $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
+                $refinedQuantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['adaptedQuantity'] ;
 
                 /** @var Orb $orb */
                 $orbDisplay['contract'] = $contract->getId();
@@ -217,6 +218,7 @@ class Balance
                 $orbDisplay['token'] = $token->specificatorData ;
                 $orbDisplay['token']['standard'] = $token->getStandardName();
                 $orbDisplay['quantity'] = $quantity ;
+                $orbDisplay['adaptedQuantity'] = $refinedQuantity ;
                 $orbDisplay['asset']['image'] = $asset->imageUrl ;
 
                 //hide orbs with 0 quantity
