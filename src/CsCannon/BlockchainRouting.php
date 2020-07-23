@@ -272,6 +272,8 @@ class BlockchainRouting
         if (empty($arrayOfChains)){
             $systemConcept = $address->system->systemConcept ;
 
+            $address->factory->getTriplets();
+
             $arrayOfBlockchainsIs_a__address = $address->subjectConcept->tripletArray[$systemConcept->get('is_a')] ;
 
             foreach ($arrayOfBlockchainsIs_a__address ?? array() as $is___AddressUnid){
