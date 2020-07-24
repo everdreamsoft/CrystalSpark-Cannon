@@ -30,4 +30,12 @@ abstract class CSEntityFactory extends EntityFactory
 
     }
 
+    public static function getPopulated($limit=10000,$offset=0,$asc='ASC'):self{
+
+      $factory = new static();
+      $factory->populateLocal($limit,$offset,$asc);
+      return $factory ;
+
+    }
+
 }
