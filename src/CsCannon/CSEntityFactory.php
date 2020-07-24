@@ -10,6 +10,7 @@ namespace CsCannon;
 
 
 
+use SandraCore\Entity;
 use SandraCore\EntityFactory;
 
 abstract class CSEntityFactory extends EntityFactory
@@ -35,6 +36,13 @@ abstract class CSEntityFactory extends EntityFactory
       $factory = new static();
       $factory->populateLocal($limit,$offset,$asc);
       return $factory ;
+
+    }
+
+    public static function factoryCreateNew($dataArray, $linkArray = null): Entity{
+
+        $factory = new static();
+        return $factory->createNew($dataArray, $linkArray);
 
     }
 
