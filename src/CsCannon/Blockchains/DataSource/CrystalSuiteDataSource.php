@@ -105,7 +105,7 @@ class CrystalSuiteDataSource extends BlockchainDataSource
             $blockchainStandardFactory = new BlockchainStandardFactory($foreignAdapter->system);
             $blockchainStandardFactory->populateLocal();
 
-            $contract = $contractFactoryMap[$chain]->get($contractR);
+            $contract = $contractFactoryMap[$chain]->get($contractR,true);
 
 
 

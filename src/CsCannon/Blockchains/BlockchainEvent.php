@@ -39,6 +39,7 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_TIMESTAMP_LEGACY = 'legacy';
     const DISPLAY_BLOCKCHAIN = 'blockchain';
     const DISPLAY_BLOCKCHAIN_NETWORK = 'network_name';
+    const DISPLAY_BLOCK_ID = 'blockHeight';
 
 
 
@@ -167,6 +168,7 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
         $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp();
+        $return[self::DISPLAY_BLOCK_ID] = $this->getBlock()->getId();
 
         //autofixer if blocktime doens't exist for block
         if (! $return[self::DISPLAY_TIMESTAMP]){ //blocktime not on block
