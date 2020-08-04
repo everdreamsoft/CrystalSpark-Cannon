@@ -16,6 +16,7 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\DisplayManager;
 
+
 use CsCannon\OrbFactory;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
@@ -25,7 +26,7 @@ use SandraCore\System;
 class BlockchainEvent extends Entity implements Displayable
 {
 
-   protected $name ;
+    protected $name ;
     protected static $isa ;
     protected static $file ;
     public $displayManager ;
@@ -50,25 +51,43 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getJoinedAssets(\CsCannon\Asset $asset){
+    public function getBlockchainName():array{
 
-       // $this->getJoined(BlockchainTokenFactory::$joinAssetVerb);
+        $sc = $this->system->systemConcept ;
+
+        $blockchainsUnids = $this->subjectConcept->tripletArray[$sc->get(BlockchainEventFactory::ON_BLOCKCHAIN_EVENT)];
+        $return = array();
+
+        foreach ($blockchainsUnids ?? array() as $blockchainUnid){
+
+            $return[] = $sc->getSCS($blockchainUnid);
+
+        }
+
+        return $return ;
 
 
     }
 
-     public function getSourceAddress():?BlockchainAddress{
+    public function getJoinedAssets(\CsCannon\Asset $asset){
+
+        // $this->getJoined(BlockchainTokenFactory::$joinAssetVerb);
+
+
+    }
+
+    public function getSourceAddress():?BlockchainAddress{
 
         $source= $this->getJoinedEntities(BlockchainEventFactory::EVENT_SOURCE_ADDRESS);
-         if (is_null($source)) return null;
+        if (is_null($source)) return null;
         $source = reset($source); //take the first source
         /** @var BlockchainAddress $source */
-         return $source;
+        return $source;
 
 
 
 
-     }
+    }
 
     public function getDestinationAddress(){
 
@@ -162,10 +181,20 @@ class BlockchainEvent extends Entity implements Displayable
 
     public function returnArray($displayManager)
     {
+
+        $blockchains = $this->getBlockchainName();
+        $blockchain = end($blockchains);
+
+
         $return[self::DISPLAY_TXID] = $this->get(Blockchain::$txidConceptName);
+        $return[self::DISPLAY_BLOCKCHAIN] = $blockchain ;
         $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
+
+        //force this blockchain into contract
+        $return[self::DISPLAY_CONTRACT]['blockchain']= $blockchain ;
+
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
         $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp();
         $return[self::DISPLAY_BLOCK_ID] = $this->getBlock()->getId();
@@ -182,13 +211,13 @@ class BlockchainEvent extends Entity implements Displayable
 
 
         $return[self::DISPLAY_TIMESTAMP_LEGACY] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
-        $return[self::DISPLAY_BLOCKCHAIN] = $this->getBlockchainContract()->getBlockchain()::NAME ;
 
-       $contract =  $this->getBlockchainContract();
-       $collections = $contract->getCollections();
+
+        $contract =  $this->getBlockchainContract();
+        $collections = $contract->getCollections();
         $sp = $this->getSpecifier();
 
-       //here we are building to much factories
+        //here we are building to much factories
         if(is_array($collections)) {
             $orbFactory = new OrbFactory();
             $orbArray = $orbFactory->getOrbFromSpecifier($this->getSpecifier(), $contract, reset($collections));
@@ -201,7 +230,7 @@ class BlockchainEvent extends Entity implements Displayable
                 $orbArray['collection']['name'] = $orb->assetCollection->name;
                 $orbArray['collection']['id'] = $orb->assetCollection->getId();
                 $return['orbs'][] = $orbArray ; //legacy support
-               // $return['orbs'][] = $orb->getAsset()->display()->return();
+                // $return['orbs'][] = $orb->getAsset()->display()->return();
 
             }
         }

@@ -11,6 +11,10 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\BlockchainAddressFactory;
+use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
+use CsCannon\Blockchains\Ethereum\EthereumContract;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\SandraManager;
 use PHPUnit\Framework\TestCase;
 
 
@@ -105,6 +109,37 @@ final class BlockchainRoutingTest extends TestCase
             $i++;
 
         }
+
+    }
+
+    public function testSearch(){
+
+        $contractString = '0xd346d304ea1837053452357c2066a4701de9a04b';
+
+        EthereumContractFactory::getContract($contractString,true);
+
+        $search = BlockchainRouting::searchConceptFromString($contractString, SandraManager::getSandra());
+        $result1 = reset($search);
+
+        $this->assertInstanceOf(EthereumContract::class,$result1);
+        $this->assertEquals($contractString,$result1->getId());
+
+        $addressString = '1AyyAr2u2aQr7uHvMueL7pHzYCvPdVQhvx';
+
+        XcpAddressFactory::getAddress($addressString,true);
+
+        $search = BlockchainRouting::searchConceptFromString($addressString, SandraManager::getSandra());
+        $result1 = reset($search);
+
+        $this->assertInstanceOf(\CsCannon\Blockchains\Counterparty\XcpAddress::class,$result1);
+        $this->assertEquals($addressString,$result1->getAddress());
+
+
+
+
+        
+
+
 
     }
 

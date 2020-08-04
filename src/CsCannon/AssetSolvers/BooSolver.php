@@ -227,7 +227,7 @@ class BooSolver extends LocalSolver
 
                     if($entityToken instanceof BlockchainContract && $currentAsset instanceof Asset) {
                         echo "binding contract".$entityToken->getId();
-                        $entityToken->bindToAsset($currentAsset);
+                        //$entityToken->bindToAsset($currentAsset);
                         echo $entityToken->entityId." token binded $collectionCode-$contractId to asset $currentAsset->entityId  \n";
 
                         $entityToken->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$collectionEntity,null);
