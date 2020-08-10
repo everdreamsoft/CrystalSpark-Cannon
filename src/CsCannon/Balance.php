@@ -53,7 +53,8 @@ class Balance
 
 
 
-        $this->contracts = $this->contracts + $balanceToMerge->contracts;
+        //$this->contracts = $this->contracts + $balanceToMerge->contracts;
+        $this->contracts = array_merge_recursive($this->contracts,$balanceToMerge->contracts);
         $this->contractMap = $this->contractMap + $balanceToMerge->contractMap ;
 
 
