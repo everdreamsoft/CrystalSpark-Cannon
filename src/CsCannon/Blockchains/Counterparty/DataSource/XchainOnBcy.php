@@ -124,7 +124,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
 
-        $limit = 1000;
+        $limit = 5000;
 
         $limitSQL = '';
         $offsetSql = '';
