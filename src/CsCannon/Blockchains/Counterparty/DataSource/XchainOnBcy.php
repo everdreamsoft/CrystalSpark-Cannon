@@ -100,7 +100,6 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
 
             );
-
             //add tracker
             $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'] ;
 
