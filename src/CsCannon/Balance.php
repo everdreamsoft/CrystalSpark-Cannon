@@ -464,6 +464,7 @@ class Balance
 
         foreach ($orbs as $orb){
 
+            if (!isset($this->orbFactory->quantityMap[$orb->orbCode])) continue ;
             $total += $this->orbFactory->quantityMap[$orb->orbCode];
         }
         return $total ;
