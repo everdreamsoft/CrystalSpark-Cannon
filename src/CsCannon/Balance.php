@@ -40,6 +40,10 @@ class Balance
     const ON_CONTRACT = 'onContract';
     const LAST_BLOCK_UPDATE = 'lastBlockUpdate';
     const BALANCE_ITEM_ID = 'id';
+    /**
+     * @var bool
+     */
+    private $tokenBuild;
 
 
     public function __construct(BlockchainAddress $addressEntity = null)
@@ -87,6 +91,8 @@ class Balance
 
     public function getTokenBalance():array {
 
+        $this->tokenBuild = true ;
+
 
 
         $output = array();
@@ -126,7 +132,8 @@ class Balance
 
     public function getObs():OrbFactory{
 
-
+        if (!$this->tokenBuild) $this->getTokenBalance();
+        $this->orbBuilt = true ;
 
         //Has my contract a collection of collections ?
 
