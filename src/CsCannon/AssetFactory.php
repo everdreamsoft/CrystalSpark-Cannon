@@ -66,7 +66,7 @@ class AssetFactory extends \SandraCore\EntityFactory
         if (!isset($this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()])) {
 
 
-          $assetList = $this->getEntitiesWithBrother(self::$tokenJoinVerb, $contract->subjectConcept->idConcept);
+            $assetList = $this->getEntitiesWithBrother(self::$tokenJoinVerb, $contract->subjectConcept->idConcept);
             //in that case we a specific joined concepts
             if (!$contract->isExplicitTokenId()) {
 
@@ -109,9 +109,9 @@ class AssetFactory extends \SandraCore\EntityFactory
         }
 
         if (isset($this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()]))
-                        return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+            return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
 
-      return null ;
+        return null ;
 
 
 
@@ -125,10 +125,23 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     }
 
+    public function getOrCreate($id, Array $metaData,array $collections=null,array $contracts=null){
+
+        //Id should be unique in collection
+        $verifyFactory = new AssetFactory(SandraManager::getSandra());
+        $verifyFactory->populateLocal();
+        $verif = $verifyFactory->get($id);
+
+        if($verif) {
+            return $verif;
+        }
+
+        return $this->forceCreate($id,  $metaData, $collections, $contracts);
+
+    }
+
 
     public function create($id, Array $metaData,array $collections=null,array $contracts=null):Asset{
-
-
 
         //Id should be unique in collection
         $verifyFactory = new AssetFactory(SandraManager::getSandra());
@@ -141,6 +154,19 @@ class AssetFactory extends \SandraCore\EntityFactory
             return $verif ;
 
         }
+
+        return $this->forceCreate($id,  $metaData, $collections, $contracts);
+
+
+
+
+
+    }
+
+
+    private function forceCreate($id, Array $metaData,array $collections=null,array $contracts=null):Asset{
+
+
 
         $metaData[self::ID] = $id ;
         $brotherEntities = null ;
@@ -180,11 +206,8 @@ class AssetFactory extends \SandraCore\EntityFactory
 
 
 
-
-
-
-
     }
+
 
 
     private function noAssetOnExplicitId(BlockchainContract $contract, BlockchainContractStandard $specifier){

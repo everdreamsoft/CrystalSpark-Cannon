@@ -67,14 +67,13 @@ class MetadataProbe extends Entity
             //if we have a cscannon asset name we use it at the key for the asset
             $assetId = $standard->getDisplayStructure();
             if ( isset($dataArray[Asset::CSCANNON_ID])){
-
                 $assetId = $dataArray[Asset::CSCANNON_ID] ;
             }
 
 
             $collections = $this->getCollections();
             $contracts = $this->getContracts();
-            $asset = $assetFactory->create($assetId, $dataArray,$collections,$contracts);
+            $asset = $assetFactory->getOrCreate($assetId, $dataArray,$collections,$contracts);
 
             $entToSolver = $tokenPathToAssetFactory->create($standard);
             $asset->bindToContractWithMultipleSpecifiers(reset($contracts),[$entToSolver]);
