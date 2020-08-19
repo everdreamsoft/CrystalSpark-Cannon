@@ -31,6 +31,7 @@ class Asset extends \SandraCore\Entity implements Displayable
     public const IMAGE_URL = 'imgURL';
     public const METADATA_URL = 'metadataUrl';
     public const FALLBACK_IMAGE = 'fallbackImageUrl';
+    public const CSCANNON_ID = 'cannon_assetId';
     public $tokenPathFactory ;
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)

@@ -64,10 +64,17 @@ class MetadataProbe extends Entity
             $dataArray[Asset::IMAGE_URL] = $dataArray['image'] ;
             $dataArray[Asset::METADATA_URL] = $url ;
 
+            //if we have a cscannon asset name we use it at the key for the asset
+            $assetId = $standard->getDisplayStructure();
+            if ( $dataArray[Asset::CSCANNON_ID]){
+
+                $assetId = $dataArray[Asset::CSCANNON_ID] ;
+            }
+
 
             $collections = $this->getCollections();
             $contracts = $this->getContracts();
-            $asset = $assetFactory->create($standard->getDisplayStructure(), $dataArray,$collections,$contracts);
+            $asset = $assetFactory->create($assetId, $dataArray,$collections,$contracts);
 
             $entToSolver = $tokenPathToAssetFactory->create($standard);
             $asset->bindToContractWithMultipleSpecifiers(reset($contracts),[$entToSolver]);
