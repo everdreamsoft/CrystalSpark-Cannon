@@ -66,7 +66,7 @@ class MetadataProbe extends Entity
 
             //if we have a cscannon asset name we use it at the key for the asset
             $assetId = $standard->getDisplayStructure();
-            if ( $dataArray[Asset::CSCANNON_ID]){
+            if ( isset($dataArray[Asset::CSCANNON_ID])){
 
                 $assetId = $dataArray[Asset::CSCANNON_ID] ;
             }
