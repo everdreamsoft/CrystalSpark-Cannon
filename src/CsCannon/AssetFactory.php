@@ -129,14 +129,28 @@ class AssetFactory extends \SandraCore\EntityFactory
 
         //Id should be unique in collection
         $verifyFactory = new AssetFactory(SandraManager::getSandra());
-        $verifyFactory->populateLocal();
+        $verifyFactory->populateFromSearchResults($id,AssetFactory::ID);
         $verif = $verifyFactory->get($id);
 
         if($verif) {
+            $this->assetUpdate($verif,$metaData);
             return $verif;
         }
 
         return $this->forceCreate($id,  $metaData, $collections, $contracts);
+
+    }
+
+    public function assetUpdate(Asset $asset, $metaData){
+
+        foreach ($metaData ?? array() as $keyData => $valueData){
+
+            if ($asset->get($keyData) != $valueData){
+
+                $asset->createOrUpdateRef($keyData,$valueData);
+            }
+
+        }
 
     }
 
