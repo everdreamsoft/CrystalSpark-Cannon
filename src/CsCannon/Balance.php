@@ -228,6 +228,7 @@ class Balance
                 $orbDisplay['quantity'] = $quantity ;
                 $orbDisplay['adaptedQuantity'] = $refinedQuantity ;
                 $orbDisplay['asset']['image'] = $asset->imageUrl ;
+                $orbDisplay['asset']['assetId'] = $asset->id ;
 
                 //hide orbs with 0 quantity
                 if ($quantity >= 0 or $displayZeroBalance == false){
