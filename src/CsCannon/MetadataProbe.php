@@ -55,7 +55,6 @@ class MetadataProbe extends Entity
 
                 $fetchedUrl = str_replace('{'.$data.'}',"$dataValue",$url);
 
-
             }
 
             //echo"Query at ".time().PHP_EOL;
