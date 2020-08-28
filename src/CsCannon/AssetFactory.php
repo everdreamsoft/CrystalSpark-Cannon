@@ -146,7 +146,7 @@ class AssetFactory extends \SandraCore\EntityFactory
         foreach ($metaData ?? array() as $keyData => $valueData){
 
             if ($asset->get($keyData) != $valueData){
-                if (!is_string($valueData)) continue ;
+                if (!is_string($valueData) && !is_numeric($valueData)) continue ;
 
                 $asset->createOrUpdateRef($keyData,$valueData);
             }
