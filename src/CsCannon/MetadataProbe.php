@@ -98,12 +98,18 @@ class MetadataProbe extends Entity
 
                 $probeData['error'] = $e->getMessage();
             }
-            $probResult[] = $probeData ;
+
 
 
 
             $entToSolver = $tokenPathToAssetFactory->create($standard);
-            $asset->bindToContractWithMultipleSpecifiers(reset($contracts),[$entToSolver]);
+            try {
+                $asset->bindToContractWithMultipleSpecifiers(reset($contracts), [$entToSolver], true);
+            } catch (\Exception $e) {
+                $probeData['error'] = $e->getMessage();
+            }
+
+            $probResult[] = $probeData ;
             $iterationCount++;
 
             $this->setProbeWait($this->getProbeWaitTime());
