@@ -9,6 +9,7 @@
 namespace CsCannon;
 
 
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use SandraCore\DatabaseAdapter;
 use SandraCore\Entity;
@@ -40,6 +41,8 @@ class MetadataProbe extends Entity
         $assetFactory = new AssetFactory();
         $tokenPathToAssetFactory = new \CsCannon\TokenPathToAssetFactory(SandraManager::getSandra());
         $iterationCount = 1 ;
+
+        $probResult = array();
 
         foreach($standards as $standard) {
            if ($iterationCount > 1) sleep($this->getProbeWaitTime());
@@ -74,6 +77,31 @@ class MetadataProbe extends Entity
             $collections = $this->getCollections();
             $contracts = $this->getContracts();
             $asset = $assetFactory->getOrCreate($assetId, $dataArray,$collections,$contracts);
+            //then we update
+            $assetFactory->assetUpdate($asset,$dataArray);
+            $probeData = array();
+
+            try {
+                $firstContract = reset($contracts);
+                /** @var BlockchainContract $firstContract */
+                $firstContract->getId();
+                $count = count($contracts) - 1;
+
+                $assetFactory->assetUpdate($asset, $dataArray);
+                $probeData['token'] = $standard->getDisplayStructure();
+                $probeData['asset'] = $dataArray;
+                $probeData['contract'] = $firstContract->getId();
+                $probeData['otherContractCount'] = $count;
+
+
+
+            }catch (\Exception $e){
+
+                $probeData['error'] = $e->getMessage();
+            }
+            $probResult[] = $probeData ;
+
+
 
             $entToSolver = $tokenPathToAssetFactory->create($standard);
             $asset->bindToContractWithMultipleSpecifiers(reset($contracts),[$entToSolver]);
@@ -86,7 +114,7 @@ class MetadataProbe extends Entity
 
         }
 
-        return true ;
+        return $probResult ;
 
     }
 
