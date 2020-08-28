@@ -218,6 +218,7 @@ class Balance
 
                 $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
                 $refinedQuantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['adaptedQuantity'] ;
+                if ($quantity == 0 )continue ; //do not show zero balance
 
                 /** @var Orb $orb */
                 $orbDisplay['contract'] = $contract->getId();
