@@ -279,7 +279,15 @@ class BlockchainRouting
 
             $address->factory->getTriplets();
 
+
+            //address has no defined blockchain
+            if (!isset($address->subjectConcept->tripletArray[$systemConcept->get('is_a')])){
+
+               return  self::getBlockchainsFromAddress($address->getAddress());
+            }
+
             $arrayOfBlockchainsIs_a__address = $address->subjectConcept->tripletArray[$systemConcept->get('is_a')];
+
 
             foreach ($arrayOfBlockchainsIs_a__address ?? array() as $is___AddressUnid) {
 
