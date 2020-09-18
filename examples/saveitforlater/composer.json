@@ -1,0 +1,6 @@
+{
+  "require": {
+    "everdreamsoft/crystal-spark-cannon": "dev-master",
+    "everdreamsoft/sandra": "dev-master"
+  }
+}
