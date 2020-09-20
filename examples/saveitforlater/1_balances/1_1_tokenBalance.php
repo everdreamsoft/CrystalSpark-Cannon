@@ -26,7 +26,7 @@ require_once '../config.php'; // Don't forget to configure your database in conf
 require_once '../viewHeader.html'; // Don't forget to configure your database in config.php
 
 
-
+    echoTitle("Loading token balances");
 
     $ethBlockchain = new EthereumBlockchain();
 
@@ -37,8 +37,14 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
     */
 
+
     //the address to query balance
     $testEthAddress = '0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79';
+
+    echoSubTitle("Loading balance from OpenSea ");
+    echoExplanations("We are loading balance from wallet : $testEthAddress using OpenSea as datasource");
+    
+
 
     $ethereumAddressFactory = new EthereumAddressFactory();
     $myTestEthereumAddress = $ethereumAddressFactory->get($testEthAddress, true); //get an address object from the factory
@@ -48,19 +54,16 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     $balance = $myTestEthereumAddress->getBalance(); //this will return a balance object
     $tokenArray = $balance->getTokenBalanceArray();
 
-
     echoArray($tokenArray);
-
 
     $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain());
     $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
-    $balance->saveToDatagraph($currentBlock);
+    $balance->saveToDatagraph();
 
+    echoExplanations("We save the balance we got from OpenSea to our local database (datagraph)");
     echoCode(' $balance->saveToDatagraph($currentBlock);');
 
-    echoTitle("my Title");
-
-
+    echoTitle("Read balance from local Datagraph");
 
     $ethereumAddressFactory = new EthereumAddressFactory();
     $myTestEthereumAddress = $ethereumAddressFactory->get($testEthAddress, true); //get an address object from the factory
@@ -70,12 +73,11 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     $balance = $myTestEthereumAddress->getBalance(); //this will return a balance object
     $tokenArray = $balance->getTokenBalanceArray();
 
-
+    echoExplanations("The result from getting balance from our local database");
     echoArray($tokenArray);
 
 
-    $addressFactory = new EthereumAddressFactory();
-    $addressFactory->setFilter();
+
 
 
 

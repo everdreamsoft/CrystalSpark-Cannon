@@ -261,6 +261,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
             $standard =  ERC721::init();
 
+
             $standard->setTokenId($entity->get('token_id'));
             $balance->addContractToken($ethContract,$standard,1);
 

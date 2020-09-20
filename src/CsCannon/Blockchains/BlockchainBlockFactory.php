@@ -50,6 +50,12 @@ class BlockchainBlockFactory extends EntityFactory
         return $this->first(self::INDEX_SHORTNAME,$id) ;
     }
 
+    public static function getOrCreateBlockWithId($id,Blockchain $blockchain):BlockchainBlock
+    {
+        $blockFactory = new BlockchainBlockFactory($blockchain);
+        return $blockFactory->getOrCreateFromRef(self::INDEX_SHORTNAME,$id);
+    }
+
 
 
 

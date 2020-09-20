@@ -19,3 +19,15 @@ function echoTitle($titleString){
    echo "<h1> $titleString </h1>";
 
 }
+
+function echoSubTitle($titleString){
+
+    echo "<h2> $titleString </h2>";
+
+}
+
+function echoExplanations($explanationString){
+
+    echo "<p> $explanationString </p>";
+
+}

@@ -16,6 +16,7 @@ use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
@@ -393,6 +394,7 @@ class Balance
                 $newContract = null ;
                 $newContract['contract'] = $contractId ;
                 $contract = $contractFactory->get($this->contractMap[$contractId]->getId(),true);
+
                 /** @var BlockchainContract $contract */
 
 
@@ -404,12 +406,20 @@ class Balance
                         $lastBlockUpdateArray
                     ];
 
+                    $contractStandard = $contract->getStandard();
+
+
 
 
                     //get the token object
                     $tokenObject = $token['token'] ;
 
+
                     /** @var BlockchainContractStandard $tokenObject */
+                    if ((!$contractStandard or $contractStandard instanceof UnknownStandard) &&  !($tokenObject instanceof UnknownStandard)){
+
+                        $contract->setStandard($tokenObject);
+                    }
 
                     $newToken =  $tokenObject->specificatorData;
                     $newToken['quantity'] = $token['quantity'];
