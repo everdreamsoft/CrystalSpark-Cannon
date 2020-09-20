@@ -270,6 +270,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
 
         }
+        $balance->address = $address ;
         return $balance ;
 
     }

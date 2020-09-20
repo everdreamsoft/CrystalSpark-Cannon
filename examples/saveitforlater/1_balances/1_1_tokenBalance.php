@@ -10,8 +10,8 @@
 
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
-use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
-use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -24,6 +24,8 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 
 require_once '../config.php'; // Don't forget to configure your database in config.php
 require_once '../viewHeader.html'; // Don't forget to configure your database in config.php
+
+
 
 
     $ethBlockchain = new EthereumBlockchain();
@@ -44,41 +46,46 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     $myTestEthereumAddress->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaDataSource());
 
     $balance = $myTestEthereumAddress->getBalance(); //this will return a balance object
-    $tokenArray = $balance->getTokenBalance();
-
-    echo "<pre>";
-    print_r($tokenArray);
-    echo "</pre>";
-
-    $balance->saveToDatagraph();
+    $tokenArray = $balance->getTokenBalanceArray();
 
 
-    $ethereumAddressFactory = $ethBlockchain->getAddressFactory();
-    $countyAdressFactory = new \CsCannon\Blockchains\Counterparty\XcpAddressFactory();
-    \CsCannon\Blockchains\Counterparty\XcpAddressFactory::getAddress("myNULLADDRESSS");
-    $myEthereumAddress = $ethereumAddressFactory->get('0xf7ee6c2f811b52c72efd167a1bb3f4adaa1e0f89', true);
-    $ethereumAddressFactory->populateLocal();
-    $ethereumAddressFactory->createViewTable("ethereumAddress");
+    echoArray($tokenArray);
 
 
-    $myContract = EthereumContractFactory::getContract('0xd346d304ea1837053452357c2066a4701de9a04b');
+    $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Ethereum\EthereumBlockchain());
+    $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
+    $balance->saveToDatagraph($currentBlock);
 
-    $blockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($ethBlockchain);
+    echoCode(' $balance->saveToDatagraph($currentBlock);');
+
+    echoTitle("my Title");
 
 
-    $ethereumAddressFactory->populateLocal();
 
-    print_r($ethereumAddressFactory->getDisplay('array'));
+    $ethereumAddressFactory = new EthereumAddressFactory();
+    $myTestEthereumAddress = $ethereumAddressFactory->get($testEthAddress, true); //get an address object from the factory
 
-    $ethAdressEntities = $ethereumAddressFactory->getEntities();
+    $myTestEthereumAddress->setDataSource(new \CsCannon\Blockchains\DataSource\DatagraphSource()); //we are defining our local database as datasource;
 
-    foreach ($ethAdressEntities as $ethAdressEntity) {
+    $balance = $myTestEthereumAddress->getBalance(); //this will return a balance object
+    $tokenArray = $balance->getTokenBalanceArray();
 
-        /** @var $ethAdressEntity \CsCannon\Blockchains\Ethereum\EthereumAddress */
 
-        echo $ethAdressEntity->getAddress() . PHP_EOL;
+    echoArray($tokenArray);
 
-    }
+
+    $addressFactory = new EthereumAddressFactory();
+    $addressFactory->setFilter();
+
+
+
+
+
+
+
+
+
+
 
 
 /*

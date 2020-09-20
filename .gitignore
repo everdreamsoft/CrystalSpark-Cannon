@@ -1,3 +1,4 @@
 .idea
 localTest
 /vendor/
+/examples/saveitforlater/vendor/

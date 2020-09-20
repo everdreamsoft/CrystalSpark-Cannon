@@ -30,7 +30,12 @@ class UnknownStandard extends BlockchainContractStandard
 
     public function getDisplayStructure()
     {
-        return null ;
+        $output = '';
+        foreach ($this->specificatorData ?? array() as $key => $value){
+
+            $output .= '-'.$key.'-'.$value;
+        }
+        return $output ;
     }
 
     public function getInterfaceAbi()

@@ -14,6 +14,8 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/vendor/autoload.php'; // Autoload files using Composer autoload
 
+require_once 'commonFunctions.php'; // Don't forget to configure your database in config.php
+
 //step 1 create a database for example cscannon
 
 //step 2 configure your db credentials
