@@ -15,7 +15,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/vendor/autoload.php'; // Autoload files using Composer autoload
+require_once __DIR__ . '/../../vendor/autoload.php'; // In use while we test
+
+//require_once __DIR__ . '/vendor/autoload.php'; // Autoload files using Composer autoload
 require_once  'config.php'; // Don't forget to configure your database in config.php
 require_once  'viewHeader.html'; // Don't forget to configure your database in config.php
 
@@ -29,7 +31,7 @@ $testEthAddress = '0xf7ee6c2f811b52c72efd167a1bb3f4adaa1e0f89';
 $ethereumAddressFactory = new EthereumAddressFactory();
 $myTestEthereumAddress = $ethereumAddressFactory->get($testEthAddress,true); //get an address object from the factory
 
-$myTestEthereumAddress->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter());
+$myTestEthereumAddress->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaDataSource());
 
 $balance = $myTestEthereumAddress->getBalance() ; //this will return a balance object
 $tokenArray = $balance->getTokenBalance();
@@ -50,7 +52,7 @@ $countyAdressFactory = new \CsCannon\Blockchains\Counterparty\XcpAddressFactory(
 $myEthereumAddress = $ethereumAddressFactory->get('0xf7ee6c2f811b52c72efd167a1bb3f4adaa1e0f89',true);
 $ethereumAddressFactory->populateLocal();
 $ethereumAddressFactory->createViewTable("ethereumAddress");
-$sandra->systemConcept->get("ShabanCOncept");
+
 
 $myContract = EthereumContractFactory::getContract('0xd346d304ea1837053452357c2066a4701de9a04b');
 

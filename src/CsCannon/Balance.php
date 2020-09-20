@@ -130,6 +130,14 @@ class Balance
         return $output ;
     }
 
+    public function getTokenBalanceArray():array {
+
+       //this is the right naming for getting token in an array
+
+        //we return the function with non canonic naming
+        return $this->getTokenBalance() ;
+    }
+
     public function getObs():OrbFactory{
 
         if (!$this->tokenBuild) $this->getTokenBalance();
@@ -362,13 +370,16 @@ class Balance
 
     }
 
-    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate){
+    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate=null){
 
 
 
         $factory = $this->getLocalFactory();
 
         $factory->populateLocal(100000); //we might have issue if a user has more contract balance than this num
+
+        $lastBlockUpdateArray = [];
+        if (!$lastBlockUpdate) $lastBlockUpdateArray = [self::LAST_BLOCK_UPDATE=>$lastBlockUpdate];
 
         foreach($this->contracts ? $this->contracts : array() as $chain){
 
@@ -383,7 +394,7 @@ class Balance
 
                     $triplets = [self::LINKED_ADDRESS=>$this->address,
                         self::ON_CONTRACT=>$this->contractMap[$contractId],
-                        self::LAST_BLOCK_UPDATE=>$lastBlockUpdate
+                        $lastBlockUpdateArray
                     ];
 
 
