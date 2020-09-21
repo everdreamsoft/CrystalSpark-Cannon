@@ -114,9 +114,10 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getTxId():string{
+    public function getTxId():?string{
 
-        return $this->get(self::DISPLAY_TXID);
+
+        return $this->get(Blockchain::$txidConceptName);
 
     }
 
