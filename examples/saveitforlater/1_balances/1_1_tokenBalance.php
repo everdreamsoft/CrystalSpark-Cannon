@@ -61,7 +61,7 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     $balance->saveToDatagraph();
 
     echoExplanations("We save the balance we got from OpenSea to our local database (datagraph)");
-    echoCode(' $balance->saveToDatagraph($currentBlock);');
+    echoCode(' $balance->saveToDatagraph();');
 
     echoTitle("Read balance from local Datagraph");
 

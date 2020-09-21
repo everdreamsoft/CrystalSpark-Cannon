@@ -13,9 +13,11 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpEventFactory;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Blockchains\Generic\GenericAddressFactory;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Generic\GenericEventFactory;
 
 
@@ -59,7 +61,7 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
         $blockObject = BlockchainBlockFactory::getOrCreateBlockWithId($count,$blockchain);
         $txId = "0xdummyTx".$count ;
 
-
+        //This is where we save a new transaction
         $eventFactory = $blockchain->getEventFactory();
         $eventFactory->create($blockchain,
             $dummySourceAddress,
@@ -108,9 +110,14 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     echoSubTitle("show Counterparty TX");
     displayTransactionFromFactory(new XcpEventFactory());
 
+
+    //filter section
+    echoTitle("Filter transactions");
+
+
+
     //we are displaying transaction from 0xDummySourceAddress0 on any chain
     $addressToSearch = '0xDummySourceAddress0';
-    echoTitle("Filter transactions");
     echoSubTitle("Show transaction on any chain with $addressToSearch as sender");
     $transactionFactory = new GenericEventFactory();
     $transactionFactory->filterBySender(GenericAddressFactory::getAddress($addressToSearch));
@@ -119,11 +126,10 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     //we are displaying transaction to 0xDummySourceAddress0 on ethereum having
     $addressToSearch = '0xDummySourceAddress0';
     $filterContract = '0xMyDummyContract';
-    echoTitle("Filter transactions");
-    echoSubTitle("Show transaction on ethereum with $addressToSearch as receive and $filterContract as contract");
-    $transactionFactory = new GenericEventFactory();
-    $transactionFactory->filterByReceiver(GenericAddressFactory::getAddress($addressToSearch));
-    $transactionFactory->filterByContract(GenericAddressFactory::getAddress($addressToSearch));
+    echoSubTitle("Show transaction on ethereum with $addressToSearch as receiver and $filterContract as contract");
+    $transactionFactory = new EthereumEventFactory();
+    $transactionFactory->filterByReceiver(EthereumAddressFactory::getAddress($addressToSearch));
+    $transactionFactory->filterByContract(EthereumContractFactory::getContract($filterContract));
     displayTransactionFromFactory($transactionFactory);
 
 
