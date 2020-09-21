@@ -91,6 +91,23 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
     }
 
+    public function filterByReceiver(BlockchainAddress $receiverEntity){
+
+        $this->setFilter(BlockchainEventFactory::EVENT_SOURCE_ADDRESS,$receiverEntity);
+
+        return $this ;
+
+    }
+
+    public function filterByContract(BlockchainContract $contract){
+
+        $this->setFilter(BlockchainEventFactory::EVENT_CONTRACT,$contract);
+
+        return $this ;
+
+    }
+
+
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
     {
 
@@ -276,6 +293,8 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
 
     }
+
+
 
 
 
