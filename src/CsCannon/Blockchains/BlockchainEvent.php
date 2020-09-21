@@ -84,9 +84,6 @@ class BlockchainEvent extends Entity implements Displayable
         /** @var BlockchainAddress $source */
         return $source;
 
-
-
-
     }
 
     public function getDestinationAddress(){
@@ -114,6 +111,12 @@ class BlockchainEvent extends Entity implements Displayable
         //$fullContract = $contract->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
 
         return $contract;
+
+    }
+
+    public function getTxId():string{
+
+        return $this->get(self::DISPLAY_TXID);
 
     }
 

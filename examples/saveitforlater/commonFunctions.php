@@ -31,3 +31,21 @@ function echoExplanations($explanationString){
     echo "<p> $explanationString </p>";
 
 }
+
+function buildTd($columContent){
+
+    return "<td> $columContent </td>";
+
+}
+
+function buildTr($lineContent){
+
+    return "<tr> $lineContent </tr>";
+
+}
+
+function echoHTMLTable($tableData){
+
+    echo "<table> $tableData </table>";
+
+}

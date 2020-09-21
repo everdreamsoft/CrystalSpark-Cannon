@@ -23,7 +23,7 @@ error_reporting(E_ALL);
 
 
 
-require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
+//require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 require_once '../config.php'; // Don't forget to configure your database in config.php
 require_once '../viewHeader.html'; // Don't forget to configure your database in config.php
@@ -74,16 +74,24 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
         //we are going to load display only 10 transaction per factory
        $transactions = $factory->populateLocal(100,0,'DESC'); //limit 10 offset 0 and DESC order (from last to first)
+        $tableHTML = '' ;
+        $fullLine = '';
+
 
         foreach ($transactions as $transaction){
 
             /** @var \CsCannon\Blockchains\BlockchainEvent $transaction */
-            echo(" Blockchain : ".$transaction->getBlockchainName()[0].PHP_EOL);
-            echo(" Source : ".$transaction->getSourceAddress()->getAddress().PHP_EOL);
-            echo(" Destination : ".$transaction->getSourceAddress()->getAddress().PHP_EOL);
-            echo"<BR>";
+            $lineHtml = buildTd($transaction->getBlockchainName()[0]);
+            $lineHtml .= buildTd($transaction->getTxId());
+            $lineHtml .= buildTd($transaction->getSourceAddress()->getAddress());
+            $lineHtml .= buildTd($transaction->getDestinationAddress()->getAddress());
+            $lineHtml .= buildTd($transaction->getBlockchainContract()->getId());
+
+            $fullLine .= buildTr($lineHtml);
 
         }
+
+        echoHTMLTable($fullLine);
 
 
     }
