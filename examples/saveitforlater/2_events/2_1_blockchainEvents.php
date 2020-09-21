@@ -72,11 +72,10 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
     function displayTransactionFromFactory(BlockchainEventFactory $factory ){
 
-        //we are going to load display only 10 transaction per factory
-       $transactions = $factory->populateLocal(100,0,'DESC'); //limit 10 offset 0 and DESC order (from last to first)
+        //we are going to load display only 25 transaction per factory
+       $transactions = $factory->populateLocal(25,0,'DESC'); //limit 25 offset 0 and DESC order (from last to first)
         $tableHTML = '' ;
         $fullLine = '';
-
 
         foreach ($transactions as $transaction){
 
@@ -96,6 +95,8 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
     }
 
+    echoTitle("Transaction by blockchains");
+
     echoSubTitle("show anychain TX");
     displayTransactionFromFactory(new GenericEventFactory());
 
@@ -104,6 +105,9 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
     echoSubTitle("show Counterparty TX");
     displayTransactionFromFactory(new XcpEventFactory());
+
+    echoTitle("Filter transactions");
+    //$transactionFactory
 
 
 
