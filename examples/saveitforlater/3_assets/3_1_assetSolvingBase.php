@@ -24,7 +24,7 @@ require_once '../viewHeader.html';
 
     $testEthAddress = '0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79';
 
-    echoSubTitle("Work in progress");
+    echoSubTitle("Asset Solving");
     echoExplanations("On our tutorial 1_1_tokenBalance we learned how to get token balance from an address
     but this is not very sexy. In this tutorial we are going to look how we can retreive assets from a token contract
     ");
