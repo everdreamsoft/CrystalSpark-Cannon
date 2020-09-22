@@ -31,7 +31,7 @@ require_once '../viewHeader.html';
 
 
     echoExplanations("the balance of our example address 0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79 shows
-     seven ERC-721 tokens within four different contracts. But for this example let's focus on Blockchain Cutties contract
+     seven ERC-721 tokens within four different contracts. But for this example let's focus on Blockchain Cuties contract
     0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe
     ");
 
@@ -88,7 +88,7 @@ require_once '../viewHeader.html';
 
         /*now we are going to tag this collection in order to filter collection created during this tutorial and not
         other collection available in our current datagraph
-        for this we create a new relation collection->belontsTo->3_1_assetSolvingBase
+        for this we create a new relation collection->belontsTo->3_1_assetSolvingBase we will filter on that later on
         */
         $bcCollection->setBrotherEntity('belongsTo','3_1_assetSolvingBase',[]);
 
@@ -124,7 +124,7 @@ require_once '../viewHeader.html';
     $assetCollectionFactory->populateLocal();
     foreach ($assetCollectionFactory->getEntities() as $collection){
 
-        $referencesToDisplay = ['name','description','myCustomValue'];
+        $referencesToDisplay = ['name','description','myCustomValue','aNewCustomField'];
         $line = '';
 
         foreach ($referencesToDisplay as $referenceName)  {
@@ -184,9 +184,7 @@ require_once '../viewHeader.html';
 
     }
 
-
-
-    $orbs = $balance->getObs();
+    echoExplanations("Now our CScannon is able to resolve assets and collection out of our balance");
 
     echoArray($balance->returnObsByCollections());
 
