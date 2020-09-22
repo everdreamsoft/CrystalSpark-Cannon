@@ -7,6 +7,7 @@
  */
 
 use CsCannon\AssetCollectionFactory;
+use CsCannon\AssetSolvers\PathPredictableSolver;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 
@@ -85,7 +86,11 @@ require_once '../viewHeader.html';
         $bcCollection->createOrUpdateRef("aNewCustomField","no field is too much");
 
 
-
+        /*now we are going to tag this collection in order to filter collection created during this tutorial and not
+        other collection available in our current datagraph
+        for this we create a new relation collection->belontsTo->3_1_assetSolvingBase
+        */
+        $bcCollection->setBrotherEntity('belongsTo','3_1_assetSolvingBase',[]);
 
         //now we have to put blockchaincuties contract in the collection
 
@@ -112,6 +117,10 @@ require_once '../viewHeader.html';
 
     $collectionTable = '';
     $assetCollectionFactory = new AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+
+    //here we are making sure we are taking the one collection we created here
+    $assetCollectionFactory->setFilter('belongsTo','3_1_assetSolvingBase');
+
     $assetCollectionFactory->populateLocal();
     foreach ($assetCollectionFactory->getEntities() as $collection){
 
@@ -127,6 +136,62 @@ require_once '../viewHeader.html';
     }
 
     echoHTMLTable($collectionTable,$referencesToDisplay);
+
+    echoSubTitle("Asset Solving");
+
+    echoExplanations("There are multiple ways to solve asset. Meaning converting a token balance to an asset, in our
+    case displaying the cuties image from the collection. The simplest way is to use the path predictable solver.
+    Path predicatble convert a token reference, in our case tokenId, into an image URL.
+    
+    In the case of blockchain cuties resource image are located on blockchain cuties website in the form of
+    https://blockchaincuties.com/rest/svgap/3/{tokenId}.svg {tokenId} to be replaced by the ERC-721 tokenId.
+    <br> For example 
+    <a href='https://blockchaincuties.com/rest/svgap/3/47225.svg'>
+    https://blockchaincuties.com/rest/svgap/3/47225.svg</a>
+    <br> Path predictable solver always take the image URI as first parameter, the JSON metadata URI path and optionnaly
+    a fallback image URI if the image is not found. You can pass any token data under curly bracket {anyTokenData} 
+    the data will be replaced by the actual token data. On this particual case as we are using ERC-721 standard we are
+    using {tokenId}
+    
+    
+    ");
+    echoExplanations("we are binding the solver to the collection");
+    echoCode('$pathSolver = PathPredictableSolver::getEntity("https://blockchaincuties.com/rest/svgap/3/{tokenId}.svg","https://blockchaincuties.com/rest/svgap/3/{tokenId}.svg") ;');
+
+    /* note this time we are not creating a solver from a factory but we are using getEntity. The reason is we are using
+    and existing solver entity existing in CSCannon. So when handling solvers always use SolverName::getEntity()
+
+    */
+    $pathSolver = PathPredictableSolver::getEntity("https://blockchaincuties.com/rest/svgap/3/{tokenId}.svg","https://blockchaincuties.com/rest/svgap/3/{tokenId}.svg") ;
+
+    echoCode('$bcCollection->setSolver($pathSolver);');
+
+    //did we just create the collection and the solver ?
+    if (isset($bcCollection)) {
+        // we do this step only if we just created the collection. if $bcCollection exist in means it has been created above
+        $bcCollection->setSolver($pathSolver);
+
+        echoExplanations("We just added the collection in our datagraph in order for CSCannon to be able to resolve
+        our assets please reload the page as our collection and solver data are fresh we need to have updated data
+        
+        ");
+        //So we stop the process right here
+        die();
+
+
+
+
+
+    }
+
+
+
+    $orbs = $balance->getObs();
+
+    echoArray($balance->returnObsByCollections());
+
+
+
 
 
 
