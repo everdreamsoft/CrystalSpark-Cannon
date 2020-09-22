@@ -44,8 +44,16 @@ function buildTr($lineContent){
 
 }
 
-function echoHTMLTable($tableData){
+function echoHTMLTable($tableData,array $headArray=null){
 
-    echo "<table> $tableData </table>";
+    $headHtml = '';
+    if (is_array($headArray)){
+        foreach ($headArray as $headName)
+        $headHtml .= "<th> $headName </th>";
+
+
+    }
+
+    echo "<table>$headHtml. $tableData </table>";
 
 }

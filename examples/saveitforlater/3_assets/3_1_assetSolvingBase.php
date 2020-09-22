@@ -111,11 +111,22 @@ require_once '../viewHeader.html';
     echoSubTitle("Display the collection");
 
     $collectionTable = '';
+    $assetCollectionFactory = new AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+    $assetCollectionFactory->populateLocal();
     foreach ($assetCollectionFactory->getEntities() as $collection){
 
-        $collection->get
+        $referencesToDisplay = ['name','description','myCustomValue'];
+        $line = '';
+
+        foreach ($referencesToDisplay as $referenceName)  {
+            $line .=  buildTd($collection->get($referenceName));
+        }
+
+        $collectionTable .= buildTr($line);
 
     }
+
+    echoHTMLTable($collectionTable,$referencesToDisplay);
 
 
 
