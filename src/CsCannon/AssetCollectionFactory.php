@@ -244,9 +244,16 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         //$this->createNew()
 
 
+    }
 
-
-
+    /**
+     * Get Collections
+     *
+     * @return AssetCollection[]
+     */
+    public function getEntities()
+    {
+        return parent::getEntities();
     }
 
 
