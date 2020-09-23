@@ -22,7 +22,7 @@ error_reporting(E_ALL);
 require_once '../config.php'; // Don't forget to configure your database in config.php
 require_once '../viewHeader.html';
 
-    $testEthAddress = '0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79';
+
 
     echoSubTitle("Asset Solving");
     echoExplanations("On our tutorial 1_1_tokenBalance we learned how to get token balance from an address
@@ -35,6 +35,7 @@ require_once '../viewHeader.html';
     0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe
     ");
 
+    $testEthAddress = '0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79';
 
     $myTestEthereumAddress = EthereumAddressFactory::getAddress($testEthAddress,true); //get an address object from the factory
     $contract = EthereumContractFactory::getContract('0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe',true);
@@ -43,11 +44,21 @@ require_once '../viewHeader.html';
     $balance = $myTestEthereumAddress->getBalanceForContract(array($contract)); // this time we do get balance for a single contract
     //note we are passing an array of contracts as parameters. Opensea datasource has at the time of writing issue with querying multiple contracts.
 
+    echoCode(' $testEthAddress = \'0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79\';
+    
+    $myTestEthereumAddress = EthereumAddressFactory::getAddress($testEthAddress,true); //get an address object from the factory
+    $contract = EthereumContractFactory::getContract(\'0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe\',true);
+
+    $myTestEthereumAddress->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaDataSource());
+    $balance = $myTestEthereumAddress->getBalanceForContract(array($contract)); // this time we do get balance for a single contract
+    //note we are passing an array of contracts as parameters. Opensea datasource has at the time of writing issue with querying multiple contracts.');
+
 
 
     echoExplanations("The token balance for this specific contract is as follow :
     ");
 
+    echoCode('$balance->getTokenBalanceArray()');
     echoArray($balance->getTokenBalanceArray());
 
     echoExplanations("If the balance didn't change we should have 2 ERC721 tokens with tokenIds 47225 30450

@@ -18,7 +18,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // In use while we test. Comment this line if you are using this project stand alone
-require_once __DIR__ . '/../../../vendor/autoload.php';
+//require_once __DIR__ . '/../../../vendor/autoload.php';
 
 //require_once __DIR__ . '/vendor/autoload.php'; // Autoload files using Composer autoload
 
