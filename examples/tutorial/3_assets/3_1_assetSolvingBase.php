@@ -179,9 +179,6 @@ require_once '../viewHeader.html';
         die();
 
 
-
-
-
     }
 
     echoExplanations("Now our CScannon is able to resolve assets and collection out of our balance");
