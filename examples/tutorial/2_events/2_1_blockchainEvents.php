@@ -40,6 +40,8 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     $ethBlockchain = new EthereumBlockchain();
     $eventFactory = $ethBlockchain->getEventFactory();
 
+
+    echoTitle("Blockchain Events");
     //we set a function to add blockchain event in our datagraph
     function createRandomTransaction(){
 
@@ -102,6 +104,33 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     echoTitle("Transaction by blockchains");
 
     echoSubTitle("show anychain TX");
+    echoCode('
+    //Now that we created a random transaction let\'s create a function that displays transactions
+    function displayTransactionFromFactory(BlockchainEventFactory $factory ){
+
+        //we are going to load display only 25 transaction per factory
+       $transactions = $factory->populateLocal(25,0,"DESC"); //limit 25 offset 0 and DESC order (from last to first)
+        $tableHTML = "" ;
+        $fullLine = "";
+
+        foreach ($transactions as $transaction){
+
+            /** @var \CsCannon\Blockchains\BlockchainEvent $transaction */
+            $lineHtml = buildTd($transaction->getBlockchainName()[0]);
+            $lineHtml .= buildTd($transaction->getTxId());
+            $lineHtml .= buildTd($transaction->getSourceAddress()->getAddress());
+            $lineHtml .= buildTd($transaction->getDestinationAddress()->getAddress());
+            $lineHtml .= buildTd($transaction->getBlockchainContract()->getId());
+
+            $fullLine .= buildTr($lineHtml);
+
+        }
+
+        echoHTMLTable($fullLine);
+
+
+    }');
+    echoCode("displayTransactionFromFactory(new GenericEventFactory());");
     displayTransactionFromFactory(new GenericEventFactory());
 
     echoSubTitle("show ethereum TX");
@@ -136,7 +165,7 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
 
 
-
+require_once '../viewFooter.html';
 
 
 

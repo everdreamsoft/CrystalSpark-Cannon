@@ -27,9 +27,16 @@ class OrbFactory
      */
     public $instanceAssetMap   ;
 
-    public function getOrbsInCollection(AssetCollection $assetCollection,$limit,$offset){
+    /**
+     *
+     * Get the orbs contained in a collection
+     *
+     * @param AssetCollection $assetCollection
+     * @return Orb[]
+     */
+    public function getOrbsInCollection(AssetCollection $assetCollection){
 
-
+        return $this->instanceCollectionMap[$assetCollection->getId()] ;
 
 
     }
@@ -95,10 +102,10 @@ class OrbFactory
 
 
         //self::$orbMap[$orb->orbId] = $orb ;
-      //  self::$contractMap[$orb->contract->getId()][$orb->orbId] = $orb ;
-       // self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
-      //  self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
-     //   self::$assetMap[$orb->asset->id][$orb->orbId] = $orb;
+        //  self::$contractMap[$orb->contract->getId()][$orb->orbId] = $orb ;
+        // self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
+        //  self::$collectionMap[$orb->assetCollection->getId()][$orb->orbId] = $orb ;
+        //   self::$assetMap[$orb->asset->id][$orb->orbId] = $orb;
 
 
 

@@ -2,9 +2,9 @@
 
 function echoCode($codeString){
 
-    echo "<pre>".PHP_EOL;
+    echo "<pre><code class='language-php' data-lang='php'>".PHP_EOL;
     echo $codeString.PHP_EOL ;
-    echo "</pre>".PHP_EOL;
+    echo "</code></pre>".PHP_EOL;
 
 }
 
@@ -54,6 +54,6 @@ function echoHTMLTable($tableData,array $headArray=null){
 
     }
 
-    echo "<table>$headHtml. $tableData </table>";
+    echo "<table class='table'>$headHtml. $tableData </table>";
 
 }

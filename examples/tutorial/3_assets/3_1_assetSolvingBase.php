@@ -183,12 +183,28 @@ require_once '../viewHeader.html';
 
     echoExplanations("Now our CScannon is able to resolve assets and collection out of our balance");
 
+    echoCode('$balance->returnObsByCollections()');
     echoArray($balance->returnObsByCollections());
 
+    echoExplanations("Now let's display our balance in a more visual way");
+
+    $bcCollection = $assetCollectionFactory->get('blockchaincuties');
+
+    $orbFactory = $balance->getObs();
+
+    foreach ($orbFactory->getOrbsInCollection($bcCollection) as $orb){
+
+        echo $orb->getAsset()->imageUrl ;
 
 
 
 
+    }
+
+
+
+
+require_once '../viewFooter.html';
 
 
 

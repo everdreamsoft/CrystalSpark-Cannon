@@ -45,6 +45,15 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
     echoExplanations("We are loading balance from wallet : $testEthAddress using OpenSea as datasource");
     
 
+    echoCode('
+     $testEthAddress = \'0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79\';
+    $ethereumAddressFactory = new EthereumAddressFactory();
+    $myTestEthereumAddress = $ethereumAddressFactory->get($testEthAddress, true); //get an address object from the factory
+
+    $myTestEthereumAddress->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaDataSource());
+
+    $balance = $myTestEthereumAddress->getBalance(); //this will return a balance object
+    $tokenArray = $balance->getTokenBalanceArray();');
 
     $ethereumAddressFactory = new EthereumAddressFactory();
     $myTestEthereumAddress = $ethereumAddressFactory->get($testEthAddress, true); //get an address object from the factory
@@ -80,21 +89,5 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
 
 
-
-
-
-
-
-
-
-
-
-
-/*
-$myToken = ERC721::init(10);
-
-$eventFactory = new \CsCannon\Blockchains\Ethereum\EthereumEventFactory();
-$eventFactory->create($ethBlockchain,$myEthereumAddress,$myEthereumAddress,$myContract,
-    '0x1d270fe0d386ec038804165158addec0f20983a9543ee52e5667617b89ae7a37',1600435494,$myBlock,$myToken,1);
-*/
+require_once '../viewFooter.html';
 
