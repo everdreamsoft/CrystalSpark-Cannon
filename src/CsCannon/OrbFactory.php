@@ -77,19 +77,17 @@ class OrbFactory
 
     }
 
-    public  function getOrbFromSpecifier(BlockchainContractStandard $specifier,BlockchainContract $contract,AssetCollection $collection){
+    public function getOrbFromSpecifier(BlockchainContractStandard $specifier,BlockchainContract $contract,AssetCollection $collection){
 
         //in order to know find relevant asset we need to get the collection list
-
-
         $orbs =  $this->getOrbsFromContractPath($contract,$specifier);
-
-
         return $orbs ;
+    }
+
+    public function getOrbQuantity(Orb $orb){
 
 
-
-
+       return $this->quantityMap[$orb->orbId];
     }
 
     public static function mapOrb(Orb $orb, OrbFactory $instance = null,$quantity = null){

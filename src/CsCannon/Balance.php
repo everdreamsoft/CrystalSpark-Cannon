@@ -94,19 +94,15 @@ class Balance
 
         $this->tokenBuild = true ;
 
-
-
         $output = array();
 
         foreach($this->contracts ? $this->contracts : array() as $chainName =>$chain){
-
 
             foreach($chain ? $chain : array() as $contractId =>$contracts){
 
                 $newContract = null ;
                 $newContract['contract'] = $contractId ;
                 $newContract['chain'] = $chainName ;
-
 
                 foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
 
@@ -118,8 +114,6 @@ class Balance
                     $newToken =  $tokenObject->specificatorData;
                     $newToken['standard'] = $tokenObject->getStandardName();
                     $newToken['quantity'] = $token['quantity'];
-
-
 
                     $newContract['tokens'][] = $newToken ;
 
@@ -191,9 +185,6 @@ class Balance
         $this->orbFactory = $orbFactory ;
 
         return $this->orbFactory ;
-
-
-
 
     }
 

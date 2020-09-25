@@ -89,5 +89,7 @@ require_once '../viewHeader.html'; // Don't forget to configure your database in
 
 
 
+
+
 require_once '../viewFooter.html';
 

@@ -6,8 +6,10 @@
  * Time: 18:23
  */
 
+use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetSolvers\PathPredictableSolver;
+use CsCannon\Balance;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 
@@ -201,16 +203,30 @@ require_once '../viewHeader.html';
 
     $bcCollection = $assetCollectionFactory->get('blockchaincuties');
 
-    $orbFactory = $balance->getObs();
-
-    foreach ($orbFactory->getOrbsInCollection($bcCollection) as $orb){
-
-        echo $orb->getAsset()->imageUrl ;
 
 
+    //let's create a function to display balances that we can reuse in
+    function displayBalancePerCollection(Balance $balance, AssetCollection $collection)
+    {
+        $orbFactory = $balance->getObs();
 
+        echo '<div class="row">';
+        foreach ($orbFactory->getOrbsInCollection($collection) as $orb) {
 
+            echo "<div class=\"card\" style=\"width: 18rem;\">
+              <img class=\"card-img-top\" src=\"" . $orb->getAsset()->imageUrl . "\" alt=\"Card image cap\">
+              <div class=\"card-body\">
+                <h5 class=\"card-title\">".$orb->tokenSpecifier->getDisplayStructure()."</h5>
+                <p class=\"card-text\">Quantity :".$orbFactory->."</p>
+               
+              </div>
+            </div>";
+
+        }
+        echo '</div>';
     }
+
+    displayBalancePerCollection($balance,$bcCollection);
 
 
 
