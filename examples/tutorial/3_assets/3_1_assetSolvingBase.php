@@ -217,7 +217,7 @@ require_once '../viewHeader.html';
               <img class=\"card-img-top\" src=\"" . $orb->getAsset()->imageUrl . "\" alt=\"Card image cap\">
               <div class=\"card-body\">
                 <h5 class=\"card-title\">".$orb->tokenSpecifier->getDisplayStructure()."</h5>
-                <p class=\"card-text\">Quantity :".$orbFactory->."</p>
+                <p class=\"card-text\">Quantity :".$orbFactory->getOrbQuantity($orb)."</p>
                
               </div>
             </div>";
