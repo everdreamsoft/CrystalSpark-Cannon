@@ -22,6 +22,7 @@ class MaticBlockchain extends EthereumBlockchain
    const NAME = 'matic';
     protected $nameShort = 'mat';
     private static $staticBlockchain ;
+    public  $mainSourceCurrencyTicker = 'MATIC' ;
 
     public function __construct()
     {

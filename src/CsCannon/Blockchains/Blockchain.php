@@ -18,6 +18,8 @@ abstract class Blockchain
    public static $txidConceptName = 'txHash' ;
    public static $provider_opensea_enventId = 'openSeaId' ;
 
+    public  $mainSourceCurrencyTicker = 'NULL' ;
+
     const NAME = 'genericBlockchain';
     const NETWORK_NAME = 'main';
 
@@ -55,6 +57,13 @@ abstract class Blockchain
     {
 
        return new BlockchainBlockFactory($this);
+
+    }
+
+    public function getMainCurrencyTicker():string
+    {
+
+        return $this->mainSourceCurrencyTicker ;
 
     }
 

@@ -23,6 +23,9 @@ class KlaytnBlockchain extends Blockchain
     public static $network = array("cypress"=>array("explorerTx"=>'https://scope.klaytn.com/tx/'),
     "baobab"=>array("explorerTx"=>'https://baobab.scope.klaytn.com/tx/')
     );
+
+   public $mainSourceCurrencyTicker = 'KLAY';
+
     public function __construct()
     {
 
