@@ -203,13 +203,21 @@ require_once '../viewHeader.html';
 
     $bcCollection = $assetCollectionFactory->get('blockchaincuties');
 
-
-
     //let's create a function to display balances that we can reuse in
     function displayBalancePerCollection(Balance $balance, AssetCollection $collection)
     {
-        $orbFactory = $balance->getObs();
 
+        //we display collection header
+        echo"<div class=\"card\">
+      <h5 class=\"card-header\">Balance for ".$balance->address->getAddress()."</h5>
+      <div class=\"card-body\">
+        <h5 class=\"card-title\">".$collection->name."</h5>
+        <p class=\"card-text\">".$collection->description."</p>
+       
+      </div>
+    </div>";
+
+        $orbFactory = $balance->getObs();
         echo '<div class="row">';
         foreach ($orbFactory->getOrbsInCollection($collection) as $orb) {
 

@@ -30,10 +30,10 @@ class TestManager
 
     public static function initTestDatagraph(){
 
-        $sandraToFlush = new System('phpUnit_', true);
+        $sandraToFlush = new System('shabanUnit_', true);
         \SandraCore\Setup::flushDatagraph($sandraToFlush);
         $sandraToFlush->destroy();
-        $system = new System('phpUnit_',true);
+        $system = new System('shabanUnit_',true);
         $system->registerStructure = true ;
 
 
