@@ -30,6 +30,27 @@ final class BlockchainTest extends TestCase
 
     }
 
+    public function testMainSourceCurrencyTicker()
+
+    {
+
+        $arrayOfCompatiblesChains = \CsCannon\BlockchainRouting::getSupportedBlockchains();
+
+        foreach ($arrayOfCompatiblesChains as $blockchain){
+
+            $blockchain->getMainCurrencyTicker();
+
+            $this->assertNotEquals('NULL',$blockchain->getMainCurrencyTicker());
+
+        }
+
+
+
+
+    }
+
+
+
 
 
 
