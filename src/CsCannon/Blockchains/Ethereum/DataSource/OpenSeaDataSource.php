@@ -1,538 +1,289 @@
 <?php
+
+namespace CsCannon\Blockchains\Ethereum\DataSource;
+
+
+use CsCannon\AssetCollection;
+use CsCannon\AssetCollectionFactory;
+use CsCannon\Balance;
+use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainDataSource;
+use CsCannon\Blockchains\BlockchainEventFactory;
+use CsCannon\Blockchains\BlockchainImporter;
+use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
+use CsCannon\SandraManager;
+use Ethereum\DataType\Block;
+use Ethereum\DataType\EthB;
+use Ethereum\DataType\EthBlockParam;
+use Ethereum\DataType\EthQ;
+use Ethereum\DataType\FilterChange;
+use Ethereum\Ethereum;
+use Ethereum\SmartContract;
+use Illuminate\Support\Facades\DB;
+use SandraCore\ForeignEntity;
+use SandraCore\ForeignEntityAdapter;
+use SandraCore\PdoConnexionWrapper;
+
 /**
  * Created by EverdreamSoft.
  * User: Shaban Shaame
- * Date: 2019-08-15
- * Time: 17:01
+ * Date: 06.06.19
+ * Time: 09:53
  */
-
-namespace CsCannon;
-
-
-use CsCannon\Blockchains\Blockchain;
-use CsCannon\Blockchains\BlockchainAddress;
-use CsCannon\Blockchains\BlockchainBlock;
-use CsCannon\Blockchains\BlockchainContract;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\BlockchainContractStandard;
-use CsCannon\Blockchains\BlockchainToken;
-use CsCannon\Blockchains\Interfaces\UnknownStandard;
-use CsCannon\Tests\Displayable;
-use SandraCore\Entity;
-use SandraCore\EntityFactory;
-
-class Balance
+class OpenSeaDataSource extends BlockchainDataSource
 {
 
-
-    public $contracts = array() ;
-    public $contractMap = array() ;
-
-    /**
-     *
-     * @var OrbFactory
-     */
-    public $orbFactory ;
-    private $orbBuilt = false ;
-    public $display ;
-    public $address ;
-
-    const LINKED_ADDRESS = 'belongsToAddress';
-    const ON_CONTRACT = 'onContract';
-    const LAST_BLOCK_UPDATE = 'lastBlockUpdate';
-    const BALANCE_ITEM_ID = 'id';
-    /**
-     * @var bool
-     */
-    private $tokenBuild;
-
-
-    public function __construct(BlockchainAddress $addressEntity = null)
-    {
-
-        $this->address = $addressEntity ;
-
-    }
-
-    public function merge(Balance $balanceToMerge){
+    public $sandra ;
+    public static $apiUrl = 'https://api.opensea.io/api/v1/';
 
 
 
-        //$this->contracts = $this->contracts + $balanceToMerge->contracts;
-        $this->contracts = array_merge_recursive_ex($this->contracts,$balanceToMerge->contracts);
-        $this->contractMap = $this->contractMap + $balanceToMerge->contractMap ;
+    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter{
 
 
-    }
+        $address = self::getAddressString($address);
 
+        if ($batchMax=='')$batchMax = 1000;
+        if ($offset=='')$offset = 0;
 
-    public function addContractToken(BlockchainContract $contract,BlockchainContractStandard $contractStandard,$quantity):self{
+        if (!is_null($address)) $addressFilter = "&account_address=$address";
 
-        $contractChain = $contract->getBlockchain();
-        $rawQuantity = $quantity ;
-        //print_r($quantity);
-        $adaptedQuantity = $contract->getAdaptedDecimals(intval($quantity));
-        //if ($adaptedQuantity)  $quantity = $adaptedQuantity ;
-
-
-
-        $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['quantity'] = $quantity;
-        $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['adaptedQuantity'] = $adaptedQuantity;
-        $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['rawQuantity'] =$rawQuantity ;
-        $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;
-
-
-        $this->contractMap[$contract->getId()] = $contract ;
-
-        return $this ;
+        $sandra =  SandraManager::getSandra();
+        /** @var System $sandra */
+        $openSeaEvents =  static::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
 
 
 
-    }
+        $formattedForeign = new ForeignEntityAdapter(null,null,SandraManager::getSandra());
 
-    public function getTokenBalance():array {
 
-        $this->tokenBuild = true ;
 
-        $output = array();
+        $openSeaVocabulary = array(
+            'id' => Blockchain::$provider_opensea_enventId,
+            'transaction.timestamp' => 'timestamp',
+            'transaction.from_account' => BlockchainEventFactory::EVENT_SOURCE_ADDRESS,
+            'transaction.to_account' => BlockchainEventFactory::EVENT_DESTINATION_VERB,
+            'transaction.transaction_hash' => Blockchain::$txidConceptName,
 
-        foreach($this->contracts ? $this->contracts : array() as $chainName =>$chain){
 
-            foreach($chain ? $chain : array() as $contractId =>$contracts){
 
-                $newContract = null ;
-                $newContract['contract'] = $contractId ;
-                $newContract['chain'] = $chainName ;
+        );
 
-                foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
+        $entityArray = array();
 
-                    //get the token object
-                    $tokenObject = $token['token'] ;
 
-                    /** @var BlockchainContractStandard $tokenObject */
 
-                    $newToken =  $tokenObject->specificatorData;
-                    $newToken['standard'] = $tokenObject->getStandardName();
-                    $newToken['quantity'] = $token['quantity'];
+        $foreignEntityAdapter = new ForeignEntityAdapter($openSeaEvents,'asset_events',SandraManager::getSandra());
+        $foreignEntityAdapter->flatSubEntity('transaction','transaction');
+        $foreignEntityAdapter->flatSubEntity('asset','asset');
+        $foreignEntityAdapter->flatSubEntity('transaction.from_account','AAA'); //doesn't work
+        $foreignEntityAdapter->flatSubEntity('transaction.to_account','BBB'); //doesn't work
 
-                    $newContract['tokens'][] = $newToken ;
 
-                }
-                $output[] = $newContract ;
-            }
+        $foreignEntityAdapter->adaptToLocalVocabulary($openSeaVocabulary);
+        $foreignEntityAdapter->populate(100);
+
+
+
+        //dd($openSeaSynch->return2dArray());
+        $display = '';
+
+        // dd($foreignEntityAdapter->return2dArray());
+
+        foreach ($foreignEntityAdapter->return2dArray() as $value){
+
+            if (!array_key_exists('f:asset.asset_contract', $value)) continue ;
+
+            $trackedArray = array();
+
+            $source =  $value[BlockchainEventFactory::EVENT_SOURCE_ADDRESS]['address'] ;
+            $destination = $value[BlockchainEventFactory::EVENT_DESTINATION_VERB]['address'];
+            $contract = $value['f:asset.asset_contract']['address'];
+
+
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] =$source ;
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $destination;
+
+            $trackedArray[BlockchainImporter::TRACKER_CONTRACTIDS][] = $contract;
+            // echo"$contract : contract ". $value['f:asset.asset_contract']['address'].PHP_EOL;
+
+
+            //correct the format
+            $value[BlockchainEventFactory::EVENT_SOURCE_ADDRESS] = $source ;
+            $value[BlockchainEventFactory::EVENT_DESTINATION_VERB] = $destination ;
+            $value[BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB ] =  $destination  ;
+            $value[BlockchainEventFactory::EVENT_CONTRACT] =  $contract  ;
+
+            $value["blockIndex"] =  $value['f:transaction.block_number']  ;
+            $value[BlockchainImporter::TRACKER_BLOCKTIME] =   strtotime($value['timestamp'])  ;
+
+            $value[BlockchainEventFactory::EVENT_BLOCK_TIME] =   date("U",strtotime($value['timestamp']));
+            $value['timestamp'] = date("U",strtotime($value['timestamp']));
+            $value[BlockchainContractFactory::CONTRACT_STANDARD] =   array('tokenId'=>$value['f:asset.token_id']) ;
+            // $value[BlockchainStandardFactory::] =   array('tokenId'=>$value['f:asset.token_id']) ;
+
+            //todo add blocktime
+
+
+
+            $txHash = $value[Blockchain::$txidConceptName];
+
+            $other = $value ;
+
+            $transactionData = $trackedArray + $other ;
+
+            $entityArray[] = $entity = new ForeignEntity($txHash, $transactionData, $foreignEntityAdapter, $txHash,SandraManager::getSandra());
 
         }
-        return $output ;
+
+
+
+
+        $formattedForeign->addNewEtities($entityArray,array());
+
+        return $formattedForeign ;
+
+
+
     }
 
-    public function getTokenBalanceArray():array {
+    public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
+    {
 
-        //this is the right naming for getting token in an array
+        return self::getBalanceForContract($address,array(), $limit, $offset);
 
-        //we return the function with non canonic naming
-        return $this->getTokenBalance() ;
+
+
     }
 
-    public function getObs():OrbFactory{
+    /**
+     * @param BlockchainAddress $address
+     * @param BlockchainContract[] $blockchainContracts
+     * @param $limit
+     * @param $offset
+     * @return Balance
+     */
+    public static function getBalanceForContract(BlockchainAddress $address, array $blockchainContracts, $limit, $offset): Balance
+    {
 
-        if (!$this->tokenBuild) $this->getTokenBalance();
-        $this->orbBuilt = true ;
+        $contractFilter = '';
 
-        //Has my contract a collection of collections ?
+        if (!empty($blockchainContracts)){
+
+            foreach ($blockchainContracts as $blockchainContract) {
+                $contractFilter .= '&asset_contract_addresses='.$blockchainContract->getId();
+
+                }
+        }
+
+
+        $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_by=current_price&order_direction=a&limit=$limit&offset=$offset&owner=".$address->getAddress()
+            .$contractFilter
+            ,'assets',SandraManager::getSandra());
+
+        $assetVocabulary = array('image_url'=>'image',
+            'assetName'=>'assetName',
+            'name'=>'name',
+        );
+
+        $foreignAdapter->flatSubEntity('asset_contract','contract');
+        $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
+        $foreignAdapter->populate();
+
+        $contractFactory = new EthereumContractFactory();
+        $contractFactory->populateLocal();
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
-        $orbs = array();
 
-        //is the contract part of a collection ?
-        $orbFactory = new OrbFactory();
+        self::$localCollections = $collectionFactory ;
+        $balance = new Balance();
 
-        //for each blockchain
-        foreach($this->contracts ? $this->contracts :array() as $chain){
+        //opensea API ruleset
 
-            //for each contract
-            foreach($chain ? $chain :array() as $contractId =>$contracts){
+        foreach ($foreignAdapter->entityArray as $entity){
 
-                $newContract = null ;
-                $newContract['contract'] = $contractId ;
-                $contractEntity = $this->contractMap[$contractId] ;
-                //$collections = $contractEntity->getCollections();
+            /** @var ForeignEntity $entity */
 
+            $contractAddress = $entity->get('contract.address');
+            $standard = $entity->get('contract.schema_name');
+            //die("standard $standard");
+            $contractStandard =  UnknownStandard::init();
 
-                //foreach token
-                foreach($contracts ? $contracts : array() as $tokenComposedId =>$token) {
+            if ($standard == "ERC721") $contractStandard =  ERC721::init();
 
+           /*
+            //on opensea one contract = 1 collection
+            if(!isset($collectionArray[$contractAddress])){
 
-                    /** @var AssetCollection $collectionEntity */
+                $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
 
-                    $tokenObject = $token['token'] ;
-                    //$quantity = $token->
-                    //have we found an orb ?
-                    if (! is_numeric($contractEntity->entityId)) continue ;
-                    if($orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject)){
+                if (is_null($collection)){
 
-                        $orbArray = $orbFactory->getOrbsFromContractPath($contractEntity,$tokenObject,$token['quantity']);
-                        $orbs[] = $orbArray ;
-                    }
+                    $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
+                    $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
 
                 }
-
-
-            }
-        }
-
-
-        $this->orbFactory = $orbFactory ;
-
-        return $this->orbFactory ;
-
-    }
-
-    public function returnObsByCollections($displayZeroBalance = false):array{
-
-
-        $factory = $this->getObs();
-        $output = array();
-
-        if (!is_array($factory->instanceCollectionMap)) return $output ;
-
-        foreach ($factory->instanceCollectionMap as $collectionId => $orbs){
-
-            /** @var Orb $firstOrb */
-            $firstOrb = reset($orbs);
-            $collection = $firstOrb->assetCollection->getDefaultDisplay();
-
-
-            foreach ($orbs as $index => $orb) {
-
-                /** @var BlockchainContract $contract */
-                $contract = $orb->contract ;
-
-                /** @var BlockchainContractStandard $token */
-                $token = $orb->tokenSpecifier ;
-
-                /** @var Asset $asset */
-                $asset = $orb->asset ;
-
-                $contractChain = $contract->getBlockchain();
-
-                $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
-                $refinedQuantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['adaptedQuantity'] ;
-                if ($quantity == 0 )continue ; //do not show zero balance
-
-                /** @var Orb $orb */
-                $orbDisplay['contract'] = $contract->getId();
-                $orbDisplay['chain'] = $contractChain::NAME;
-
-                $orbDisplay['token'] = $token->specificatorData ;
-                $orbDisplay['token']['standard'] = $token->getStandardName();
-                $orbDisplay['quantity'] = $quantity ;
-                $orbDisplay['adaptedQuantity'] = $refinedQuantity ;
-                $orbDisplay['asset']['image'] = $asset->imageUrl ;
-                $orbDisplay['asset']['id'] = $asset->id ;
-
-                //hide orbs with 0 quantity
-                if ($quantity >= 0 or $displayZeroBalance == false){
-                    $collection['orbs'][] = $orbDisplay ;
-
-                }
-
-
-
+                $collectionArray[$contractAddress] = $collection;
 
             }
 
-            $output['collections'][] = $collection ;
-
-        }
-
-        //die(print_r(json_encode($output)));
-
-        return $output ;
-
-    }
-
-    function print_array($array,$depth=1,$indentation=0){
-        if (is_array($array)){
-            echo "Array(\n";
-            foreach ($array as $key=>$value){
-                if(is_array($value)){
-                    if($depth){
-                        echo "max depth reached.";
-                    }
-                    else{
-                        for($i=0;$i<$indentation;$i++){
-                            echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-                        }
-                        echo $key."=Array(";
-                        $this->print_array($value,$depth-1,$indentation+1);
-                        for($i=0;$i<$indentation;$i++){
-                            echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-                        }
-                        echo ");";
-                    }
-                }
-                else{
-                    for($i=0;$i<$indentation;$i++){
-                        echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-                    }
-                    echo $key."=>".$value."\n";
-                }
-            }
-            echo ");\n";
-        }
-        else{
-            echo "It is not an array\n";
-        }
-    }
-
-    public function getContractMap(){
-
-        return $this->contractMap ;
-
-    }
-
-    public function getLocalFactory():EntityFactory{
-
-
-
-        $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
-        $factory->setFilter(self::LINKED_ADDRESS,$this->address);
-
-
-
-        return $factory ;
-
-
-    }
-
-    public function loadFromDatagraph(array $onlyContracts = null){
-
-
-
-        $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
-        $factory->setFilter(self::LINKED_ADDRESS,$this->address);
-
-        $factory->populateLocal();
-
-        $contractFactory = $this->address->getBlockchain()->getContractFactory();
-        $factory->joinFactory(self::ON_CONTRACT,$contractFactory);
-        $factory->joinPopulate();
-
-        $balanceEntities = $factory->getEntities();
-
-        foreach ($balanceEntities ? $balanceEntities : array() as $balanceEntity){
-
-            /** @var BlockchainContract $contract */
-            $contract = $balanceEntity->getJoinedEntities(self::ON_CONTRACT);
-            $contract = reset($contract);
-
-            /** @var BlockchainContractFactory $contractFactory */
-
-            //remove not same chain contracts
-            $isa = $contract->system->systemConcept->get('is_a');
-            $isaTriplet = $contract->subjectConcept->tripletArray[$isa];
-            $actualisaShortname = $contract->factory->entityIsa ;
-            $actualisaId = $contract->system->systemConcept->get($actualisaShortname); ;
-            if (!in_array($actualisaId,$isaTriplet))
-                continue ;
-
-            $quantity =$balanceEntity->get('quantity');
-            $token = $contract->getStandard();
-            $newToken = clone $token;
-            $newToken->setTokenPath($balanceEntity->entityRefs);
-
-            //if (is_array($onlyContracts) && !in_array($contract,$onlyContracts)) continue ;
-
-
-
-            $this->addContractToken($contract,$newToken,$quantity);
-
-
-
-
-
-
-        }
-
-
-
-        return $this ;
-
-
-    }
-
-    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate=null){
-
-
-
-        $factory = $this->getLocalFactory();
-
-
-        $factory->populateLocal(100000); //we might have issue if a user has more contract balance than this num
-
-        $lastBlockUpdateArray = [];
-        if (!$lastBlockUpdate) $lastBlockUpdateArray = [self::LAST_BLOCK_UPDATE=>$lastBlockUpdate];
-
-        foreach($this->contracts ? $this->contracts : array() as $chainName => $chain){
-
-            $contractFactory = BlockchainRouting::getBlockchainFromName($chainName)->getContractFactory();
-            $contractFactory->populateFromSearchResults(array_keys($chain),BlockchainContractFactory::MAIN_IDENTIFIER);
-
-
-            foreach($chain ? $chain : array() as $contractId =>$contracts){
-
-                $newContract = null ;
-                $newContract['contract'] = $contractId ;
-                $contract = $contractFactory->get($this->contractMap[$contractId]->getId(),true);
-
-                /** @var BlockchainContract $contract */
-
-
-
-                foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
-
-                    $triplets = [self::LINKED_ADDRESS=>$this->address,
-                        self::ON_CONTRACT=>$contract,
-                        $lastBlockUpdateArray
-                    ];
-
-                    $contractStandard = $contract->getStandard();
-
-
-
-
-                    //get the token object
-                    $tokenObject = $token['token'] ;
-
-
-                    /** @var BlockchainContractStandard $tokenObject */
-                    if ((!$contractStandard or $contractStandard instanceof UnknownStandard) &&  !($tokenObject instanceof UnknownStandard)){
-
-                        $contract->setStandard($tokenObject);
-                    }
-
-                    $newToken =  $tokenObject->specificatorData;
-                    $newToken['quantity'] = $token['quantity'];
-                    $newToken[self::BALANCE_ITEM_ID] = $this->balanceUniqueId($this->contractMap[$contractId],$tokenObject) ;
-
-                    //does the balance exists in the datagraph ?
-                    $existEntity = $factory->first(self::BALANCE_ITEM_ID,$this->balanceUniqueId($this->contractMap[$contractId],$tokenObject));
-                    if(!$existEntity){
-
-                        $existEntity = $factory->createNew($newToken,$triplets);
-                    }
-                    else{
-
-                        $existEntity->createOrUpdateRef('quantity',$token['quantity']);
-
-                        //TODO missing last block
-
-                    }
-
-
-
-
-
-
-                    $newContract['tokens'][] = $newToken ;
-
-                }
-                $output[] = $newContract ;
+            $collection = $collectionArray[$contractAddress] ;
+
+            if(!isset( $collectionContractsArray[$contractAddress])){
+                $contract['address'] = $contractAddress;
+                $collectionContractsArray[$contractAddress][] = $contract;
             }
 
-        }
 
-
-
-        return $factory ;
-
-
-    }
-
-    public function balanceUniqueId(BlockchainContract $contract, BlockchainContractStandard $standard){
-
-        return $contract->getId().'-'.$standard->getDisplayStructure();
-
-    }
-
-    /**
-     * Does the balance own an asset ? Be careful a 0.5 is not considered as false
-     * @param Asset $asset
-     * @return bool
-     */
-    public function isOwningAsset(Asset $asset):bool {
-
-        if ($this->quantityForAsset($asset) >= 1) return true ;
-
-        return false ;
-
-
-    }
-
-    /**
-     *
-     * @param Asset $asset
-     * @return bool
-     */
-    public function isOwningAssetOrFraction(Asset $asset):bool {
-
-        if ($this->quantityForAsset($asset) > 0) return true ;
-
-        return false ;
-
-
-    }
-
-    public function quantityForAsset(Asset $asset):int{
-
-
-        $orbs = $this->orbsForAsset($asset);
-        $total = 0 ;
-
-        foreach ($orbs as $orb){
-
-            if (!isset($this->orbFactory->quantityMap[$orb->orbCode])) continue ;
-            $total += $this->orbFactory->quantityMap[$orb->orbCode];
-        }
-        return $total ;
-
-    }
-
-    /**
-     * @param Asset $asset
-     * @return Orb[]
-     */
-    public function orbsForAsset(Asset $asset){
-
-        if (!$this->orbFactory) $this->getObs();
-
-
-        $orbs = $this->orbFactory->getOrbsFromAsset($asset);
-        return $orbs ;
-
-
-    }
-
-
-
-
-}
-function array_merge_recursive_ex(array $array1, array $array2)
-{
-    $merged = $array1;
-
-    foreach ($array2 as $key => & $value) {
-        if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-            $merged[$key] = array_merge_recursive_ex($merged[$key], $value);
-        } else if (is_numeric($key)) {
-            if (!in_array($value, $merged)) {
-                $merged[] = $value;
+            //$contract['address'] = $contractAddress;
+            if(!isset($collectionAssetCount[$contractAddress])){
+                $collectionAssetCount[$contractAddress] = 0;
             }
-        } else {
-            $merged[$key] = $value;
+            $collectionAssetCount[$contractAddress]++;
+
+            /** @var AssetCollection $collection */
+
+
+
+            //   $assetEntity['image'] = $entity->get('image');
+            // $assetEntity['assetId'] = $contractAddress.'-'.$entity->get('token_id');
+
+
+
+            $ethContract = $contractFactory->get($contractAddress);
+
+            $standard =  ERC721::init();
+
+
+            $standard->setTokenId($entity->get('token_id'));
+            $balance->addContractToken($ethContract,$standard,1);
+
+
+
+
+
+
         }
+        $balance->address = $address ;
+        return $balance ;
+
     }
 
-    return $merged;
+    public function createCollectionFromOS($openseaEntity){
+
+
+
+
+
+
+    }
+
+
 }
