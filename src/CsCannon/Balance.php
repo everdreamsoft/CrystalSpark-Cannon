@@ -36,11 +36,13 @@ class Balance
     private $orbBuilt = false ;
     public $display ;
     public $address ;
+    public $tokenCount = 0 ;
 
     const LINKED_ADDRESS = 'belongsToAddress';
     const ON_CONTRACT = 'onContract';
     const LAST_BLOCK_UPDATE = 'lastBlockUpdate';
     const BALANCE_ITEM_ID = 'id';
+
     /**
      * @var bool
      */
@@ -83,6 +85,8 @@ class Balance
 
 
         $this->contractMap[$contract->getId()] = $contract ;
+
+        $this->tokenCount++ ;
 
         return $this ;
 
