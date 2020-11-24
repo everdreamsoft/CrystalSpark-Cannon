@@ -39,6 +39,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     const EXPLICIT_TOKEN_LISTING_SHORTNAME = 'explicitListing'; // explicit token listing is used when one asset point to multiple contract's token ID. For example SOG one card multiple token id
     const ALIAS_SHORTNAME = 'alias'; // fullText Alias
 
+
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system){
 
         /** @var System $system */
@@ -54,6 +55,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
 
         $this->id = $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
+        $this->decimals = $this->get(BlockchainContractFactory::DECIMALS);
 
 
     }
@@ -170,7 +172,11 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     public function setDivisibility(int $decimals):self{
 
         $this->decimals = $decimals ;
-        return $this;
+        $this->getOrInitReference(self::DIVISIBILITY,$decimals);
+        return $this ;
+
+
+
 
     }
 

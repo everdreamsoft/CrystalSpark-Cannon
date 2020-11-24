@@ -28,6 +28,7 @@ public  const JOIN_COLLECTION = 'inCollection';
 public  const JOIN_ASSET = 'joinAsset';
 public  const CONTRACT_STANDARD = 'contractStandard';
 public  const ON_BLOCKCHAIN_VERB = 'onBlockchain';
+public  const DECIMALS = 'decimals';
 
 
 public $blockchain ;

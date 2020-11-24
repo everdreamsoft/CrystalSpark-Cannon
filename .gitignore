@@ -2,3 +2,4 @@
 localTest
 /vendor/
 /examples/saveitforlater/vendor/
+/src/CsCannon/Tests/TestManagerPrivate.php
