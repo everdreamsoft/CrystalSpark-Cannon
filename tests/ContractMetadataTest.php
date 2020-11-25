@@ -38,12 +38,14 @@ final class ContractMetadataTest extends TestCase
 
         \CsCannon\Tests\TestManager::initTestDatagraph();
 
-        $xcp = 'BITCRYSTALS';
+        $xcp = 'MARKETACARD';
         $contract = EthereumContractFactory::getContract($xcp,true);
         $contract->metadata->getDecimals();
         $this->assertNull( $contract->metadata->getDecimals());
+        $contract->setDataSource(new \CsCannon\Blockchains\Counterparty\DataSource\XchainDataSource());
 
         $metadata = $contract->metadata->refreshData();
+        $this->assertEquals(8,$metadata->getDecimals());
 
     }
 

@@ -47,7 +47,6 @@
       <extension name="ZendDebugger" enabled="false" />
       <extension name="ZendUtils" enabled="false" />
       <extension name="amqp" enabled="false" />
-      <extension name="apc" enabled="false" />
       <extension name="apcu" enabled="false" />
       <extension name="couchbase" enabled="false" />
       <extension name="cubrid" enabled="false" />
@@ -120,7 +119,7 @@
   </component>
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings load_method="CUSTOM_LOADER" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="" />
+      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="" />
     </phpunit_settings>
   </component>
 </project>

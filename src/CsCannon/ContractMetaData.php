@@ -99,11 +99,11 @@ class ContractMetaData
     public function refreshData():ContractMetaData{
 
       // $metadata =  XchainOnBcy::getContractMetaData($this->contract);
-       $metadata =  $this->contract->getDataSource();
-       $metadata->getContractMetaData($this->contract);
+       $datasource =  $this->contract->getDataSource();
+        $metadata = $datasource->getContractMetaData($this->contract);
 
 
-        return $this ;
+        return $metadata ;
     }
 
 }

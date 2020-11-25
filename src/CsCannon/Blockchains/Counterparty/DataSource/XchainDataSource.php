@@ -199,17 +199,24 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
     public static function getContractMetaData($contract):ContractMetaData{
 
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$contract->getId(),'data',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/asset/".$contract->getId(),'$unique',SandraManager::getSandra());
+        echo "https://xchain.io/api/asset/".$contract->getId();
 
         $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
-            'quantity'=>'balance'));
+            ));
+
+
         $foreignAdapter->populate();
 
-        $foreignAdapter->dumpMeta();
+       $uniqueResult = $foreignAdapter->getEntities();
+       $uniqueResult = reset($uniqueResult);
+       $uniqueResult->get('divisible');
 
-        //load all counterparty contracts onto memory
 
         $metadata = new ContractMetaData($contract);
+
+        $metadata->setDecimals($uniqueResult->get('divisible')?0 : 8);
+
         return $metadata;
 
 
