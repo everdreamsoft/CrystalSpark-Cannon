@@ -28,6 +28,11 @@ class ContractMetaData
     private $mutableSupply;
     private $interface;
 
+    const DISPLAY_TOTAL_SUPPLY = 'totalSupply';
+    const DISPLAY_MUTABLE_SUPPLY = 'mutableSupply';
+    const DISPLAY_DECIMALS = 'decimals';
+    const DISPLAY_INTERFACE = 'interface';
+
     public function __construct(BlockchainContract $contract){
         
         
@@ -36,7 +41,8 @@ class ContractMetaData
         $this->totalSupply = $contract->get('totalSupply');
         $this->mutableSupply = $contract->get('mutableSupply');
         $this->interface = $contract->get('interface');
-        
+
+
     }
 
     public function getDecimals(){
@@ -90,6 +96,17 @@ class ContractMetaData
 
         $this->contract->createOrUpdateRef('mutableSupply',$mutable);
         return $this->mutableSupply ;
+
+    }
+
+    public function getDisplay(){
+
+       $return[static::DISPLAY_TOTAL_SUPPLY] = $this->getTotalSupply();
+       $return[static::DISPLAY_MUTABLE_SUPPLY] = $this->getTotalSupply();
+       $return[static::DISPLAY_DECIMALS] = $this->getDecimals();
+       $return[static::DISPLAY_INTERFACE] = $this->getInterface();
+
+        return $return ;
 
     }
 
