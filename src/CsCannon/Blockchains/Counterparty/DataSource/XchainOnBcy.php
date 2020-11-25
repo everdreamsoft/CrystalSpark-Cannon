@@ -248,7 +248,7 @@ a2.address as owner_address FROM assets
 
             $array = array();
 
-            $metadata->setIsMutableSupply($result['locked']);
+            $metadata->setIsMutableSupply($result['locked']?0:1);
             $metadata->setDecimals($decimals);
             $metadata->setInterface(CounterpartyAsset::init());
             $metadata->setTotalSupply($result['supply']);
