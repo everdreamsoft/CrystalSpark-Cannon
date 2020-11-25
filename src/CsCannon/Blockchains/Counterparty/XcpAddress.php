@@ -32,12 +32,6 @@ class XcpAddress extends BitcoinAddress
 
 
 
-
-
-
-
-
-
     public  function getBlockchain():Blockchain{
 
         return new XcpBlockchain() ;

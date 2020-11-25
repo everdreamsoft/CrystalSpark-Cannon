@@ -10,6 +10,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\ContractMetaData;
 use CsCannon\SandraManager;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntity;
@@ -58,7 +59,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         (PDOException $exception) {
 
             System::sandraException($exception);
-            return null;
+            return $foreignEntityAdapter;
         }
 
         $array = array();
@@ -192,6 +193,25 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         }
 
         return $balance;
+
+
+    }
+
+    public static function getContractMetaData($contract):ContractMetaData{
+
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$contract->getId(),'data',SandraManager::getSandra());
+
+        $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
+            'quantity'=>'balance'));
+        $foreignAdapter->populate();
+
+        $foreignAdapter->dumpMeta();
+
+        //load all counterparty contracts onto memory
+
+        $metadata = new ContractMetaData($contract);
+        return $metadata;
+
 
 
     }

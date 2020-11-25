@@ -59,7 +59,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         (PDOException $exception) {
 
             System::sandraException($exception);
-            return null;
+            return $foreignEntityAdapter;
         }
 
         $array = array();
@@ -146,7 +146,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         (PDOException $exception) {
 
             System::sandraException($exception);
-            return null;
+            return $foreignEntityAdapter;
         }
 
         $array = array();
@@ -213,6 +213,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
 
 
+        $metadata = new ContractMetaData($contract);
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
         $sql = "SELECT asset as contract_id, 
@@ -233,10 +234,10 @@ a2.address as owner_address FROM assets
         (PDOException $exception) {
 
             System::sandraException($exception);
-            return null;
+            return $metadata;
         }
 
-        $metadata = new ContractMetaData($contract);
+
 
 
         $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
@@ -297,7 +298,7 @@ AND balances.quantity > 0
         (PDOException $exception) {
 
             System::sandraException($exception);
-            return null;
+            return $balance;
         }
 
         $contractNames = array();

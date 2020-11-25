@@ -16,6 +16,7 @@ namespace CsCannon\Blockchains;
 use CsCannon\Asset;
 use CsCannon\AssetCollection;
 use CsCannon\AssetFactory;
+use CsCannon\Blockchains\DataSource\CrystalSuiteDataSource;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
@@ -40,6 +41,17 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     const EXPLICIT_TOKEN_LISTING_SHORTNAME = 'explicitListing'; // explicit token listing is used when one asset point to multiple contract's token ID. For example SOG one card multiple token id
     const ALIAS_SHORTNAME = 'alias'; // fullText Alias
+    public static $defaultDataSource = CrystalSuiteDataSource::class ;
+    public $dataSource ;
+
+     public function getDefaultDataSource():BlockchainDataSource{
+
+         /** @var BlockchainDataSource $defaultDataSource */
+         $newClass = new self::$defaultDataSource() ;
+
+         return $newClass ;
+
+     }
 
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system){
@@ -238,6 +250,28 @@ abstract class  BlockchainContract extends Entity Implements Displayable
         $this->displayManager->dataStore['specifier'] = $specifier;
 
         return $this->displayManager ;
+    }
+
+    /**
+     * @return BlockchainDataSource
+     */
+    public function getDataSource(): BlockchainDataSource
+    {
+
+        if (is_null($this->dataSource)){
+            $this->dataSource = $this->getDefaultDataSource();
+
+        }
+
+        return $this->dataSource ;
+    }
+
+    public function setDataSource(BlockchainDataSource $dataSource)
+    {
+
+        $this->dataSource = $dataSource ;
+
+        return $this ;
     }
 
 
