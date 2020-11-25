@@ -210,13 +210,17 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
        $uniqueResult = $foreignAdapter->getEntities();
        $uniqueResult = reset($uniqueResult);
-       $uniqueResult->get('divisible');
+       $divisible = $uniqueResult->get('divisible');
+       $decimals =  $uniqueResult->get('divisible') ? 8 : 0;
+       $supply = $uniqueResult->get('supply');
 
 
         $metadata = new ContractMetaData($contract);
 
         $metadata->setDecimals($uniqueResult->get('divisible')?8 : 0);
         $metadata->setIsMutableSupply($uniqueResult->get('locked')?0:1);
+        $metadata->setInterface(CounterpartyAsset::init());
+        $metadata->setTotalSupply($divisible? $supply * pow(10,$decimals) : $supply) ;
 
         return $metadata;
 

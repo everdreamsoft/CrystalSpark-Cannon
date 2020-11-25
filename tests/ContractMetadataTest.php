@@ -59,7 +59,7 @@ final class ContractMetadataTest extends TestCase
         $contract = $xcpCOntractF->last(BlockchainContractFactory::MAIN_IDENTIFIER,$xcp);
         $this->assertEquals(8,$contract->metadata->getDecimals());
         $this->assertFalse(boolval($contract->metadata->isMutableSupply()));
-        $this->assertFalse(boolval($contract->metadata->isMutableSupply()));
+        $this->assertEquals(10000000000000000,$contract->metadata->getTotalSupply());
 
     }
 
