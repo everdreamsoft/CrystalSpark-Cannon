@@ -12,7 +12,9 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon\Asset;
 use CsCannon\AssetSolvers\BooSolver;
 use CsCannon\AssetSolvers\LocalSolver;
+use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
+use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
@@ -38,14 +40,23 @@ final class ContractMetadataTest extends TestCase
 
         \CsCannon\Tests\TestManager::initTestDatagraph();
 
-        $xcp = 'MARKETACARD';
-        $contract = EthereumContractFactory::getContract($xcp,true);
+        $xcp = 'BITCRYSTALS';
+        $contract = XcpContractFactory::getContract($xcp,true);
         $contract->metadata->getDecimals();
         $this->assertNull( $contract->metadata->getDecimals());
         $contract->setDataSource(new \CsCannon\Blockchains\Counterparty\DataSource\XchainDataSource());
 
         $metadata = $contract->metadata->refreshData();
         $this->assertEquals(8,$metadata->getDecimals());
+
+
+        //check datastore
+        $contract = EthereumContractFactory::getContract($xcp,true);
+        //We have an issue with hotplug and simple get
+        $xcpCOntractF = new XcpContractFactory();
+        $xcpCOntractF->populateLocal();
+        $contract = $xcpCOntractF->last(BlockchainContractFactory::MAIN_IDENTIFIER,$xcp);
+        $this->assertEquals(8,$contract->metadata->getDecimals());
 
     }
 

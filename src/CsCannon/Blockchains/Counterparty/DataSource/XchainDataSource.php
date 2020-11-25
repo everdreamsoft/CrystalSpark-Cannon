@@ -215,7 +215,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
         $metadata = new ContractMetaData($contract);
 
-        $metadata->setDecimals($uniqueResult->get('divisible')?0 : 8);
+        $metadata->setDecimals($uniqueResult->get('divisible')?8 : 0);
 
         return $metadata;
 
