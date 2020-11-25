@@ -27,6 +27,7 @@ final class AddressTest extends TestCase
         \CsCannon\Tests\TestManager::initTestDatagraph();
 
 
+
         $testAddress = \CsCannon\Tests\TestManager::XCP_TEST_ADDRESS;
 
         $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);

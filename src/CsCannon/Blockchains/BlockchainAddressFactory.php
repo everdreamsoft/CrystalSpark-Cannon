@@ -24,6 +24,8 @@ abstract class BlockchainAddressFactory extends EntityFactory
 
    public function __construct(){
 
+
+      //issue on constructor
      parent::__construct(static::$isa,static::$file,SandraManager::getSandra());
 
 

@@ -30,6 +30,11 @@ class TestManager
 
     public static function initTestDatagraph(){
 
+
+
+         TestManagerPrivate::initTestDatagraph() ;
+        return
+
         $sandraToFlush = new System('phpUnit_', true);
         \SandraCore\Setup::flushDatagraph($sandraToFlush);
         $sandraToFlush->destroy();

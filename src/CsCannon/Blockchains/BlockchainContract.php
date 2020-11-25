@@ -19,6 +19,7 @@ use CsCannon\AssetFactory;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
+use CsCannon\ContractMetaData;
 use CsCannon\Displayable;
 use CsCannon\DisplayManager;
 use SandraCore\CommonFunctions;
@@ -33,6 +34,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     public $id ;
     public $displayManager ;
     public $decimals = null  ;
+    public $metadata = null  ;
 
     const DISPLAY_ID = 'contract';
 
@@ -56,6 +58,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
         $this->id = $this->get(BlockchainContractFactory::MAIN_IDENTIFIER);
         $this->decimals = $this->get(BlockchainContractFactory::DECIMALS);
+        $this->metadata = new ContractMetaData($this);
 
 
     }

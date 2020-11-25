@@ -12,6 +12,7 @@ namespace CsCannon\Blockchains;
 use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\Balance;
+use CsCannon\ContractMetaData;
 use SandraCore\ForeignEntityAdapter;
 
  abstract class BlockchainDataSource
@@ -56,6 +57,13 @@ use SandraCore\ForeignEntityAdapter;
 
 
      public static abstract function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter ;
+
+     public static  function getContractMetaData(BlockchainContract $contract):ContractMetaData {
+
+         throw new \Exception("datasource ".static::class ."doesn not support getContract metadata");
+
+
+     }
 
 
 

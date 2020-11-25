@@ -36,9 +36,14 @@ final class ContractMetadataTest extends TestCase
 
     public function testContractMetadata(){
 
+        \CsCannon\Tests\TestManager::initTestDatagraph();
 
+        $xcp = 'BITCRYSTALS';
+        $contract = EthereumContractFactory::getContract($xcp,true);
+        $contract->metadata->getDecimals();
+        $this->assertNull( $contract->metadata->getDecimals());
 
-
+        $metadata = $contract->metadata->refreshData();
 
     }
 

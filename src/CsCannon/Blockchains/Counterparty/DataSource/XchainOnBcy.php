@@ -10,6 +10,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
+use CsCannon\ContractMetaData;
 use CsCannon\SandraManager;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntity;
@@ -204,6 +205,58 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         $foreignEntityAdapter->addNewEtities($entityArray,array());
 
         return $foreignEntityAdapter ;
+    }
+
+    public static function getContractMetaData($contract):ContractMetaData
+
+    {
+
+
+
+
+        $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
+        $sql = "SELECT asset as contract_id, 
+divisible, supply, block_index, 'type',asset_longname,
+a.address as issuer_address, 
+a2.address as owner_address FROM assets
+         JOIN index_addresses as a on assets.issuer_id = a.id
+          JOIN index_addresses as a2 on assets.owner_id = a2.id
+         ";
+        $pdo = $blockSucker->get();
+
+        $entityArray = array();
+
+        try {
+            $pdoResult = $pdo->prepare($sql);
+            $pdoResult->execute();
+        } catch
+        (PDOException $exception) {
+
+            System::sandraException($exception);
+            return null;
+        }
+
+        $metadata = new ContractMetaData($contract);
+
+
+        $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($resultArray as $result) {
+            $decimals = 0 ;
+            if ($result['divisible'] == 1) $decimals = 8;
+
+            $array = array();
+
+            $metadata->setIsMutableSupply($result['locked']);
+            $metadata->setDecimals($decimals);
+            $metadata->setInterface(CounterpartyAsset::init());
+            $metadata->setTotalSupply($result['supply']);
+            //echo"asset :".$result['asset'] .PHP_EOL;
+
+
+
+        }
+
+        return $metadata ;
     }
 
 
