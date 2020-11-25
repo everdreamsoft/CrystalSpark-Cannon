@@ -67,6 +67,7 @@ class ContractMetaData
     public function setInterface(BlockchainContractStandard $standard){
 
         $this->contract->createOrUpdateRef('interface',get_class($standard));
+        $this->interface = $standard ;
         return $this->interface ;
 
     }
@@ -81,6 +82,7 @@ class ContractMetaData
     public function setTotalSupply($totalSupply){
 
         $this->contract->createOrUpdateRef('totalSupply',$totalSupply);
+        $this->totalSupply = $totalSupply ;
         return $this->totalSupply ;
 
     }
@@ -95,6 +97,7 @@ class ContractMetaData
     public function setIsMutableSupply(bool $mutable){
 
         $this->contract->createOrUpdateRef('mutableSupply',$mutable);
+        $this->mutableSupply = $mutable ;
         return $this->mutableSupply ;
 
     }

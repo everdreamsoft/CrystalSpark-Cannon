@@ -211,17 +211,18 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
     {
 
-
-
         $metadata = new ContractMetaData($contract);
+
+
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
         $sql = "SELECT asset as contract_id, 
-divisible, supply, block_index, 'type',asset_longname,locked,
+divisible, supply, block_index, 'type',asset_longname, locked,
 a.address as issuer_address, 
 a2.address as owner_address FROM assets
          JOIN index_addresses as a on assets.issuer_id = a.id
           JOIN index_addresses as a2 on assets.owner_id = a2.id
+           WHERE assets.asset = '".$contract->getId()."'
          ";
         $pdo = $blockSucker->get();
 
