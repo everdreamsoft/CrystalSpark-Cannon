@@ -58,7 +58,7 @@ class ContractMetaData
 
     }
 
-    public function getInterface(){
+    public function getInterface():BlockchainContractStandard{
 
         return $this->interface ;
 
@@ -107,7 +107,7 @@ class ContractMetaData
        $return[static::DISPLAY_TOTAL_SUPPLY] = $this->getTotalSupply();
        $return[static::DISPLAY_MUTABLE_SUPPLY] = $this->getTotalSupply();
        $return[static::DISPLAY_DECIMALS] = $this->getDecimals();
-       $return[static::DISPLAY_INTERFACE] = $this->getInterface();
+       $return[static::DISPLAY_INTERFACE] = $this->getInterface()->getStandardName();
 
         return $return ;
 
