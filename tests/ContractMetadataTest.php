@@ -48,6 +48,7 @@ final class ContractMetadataTest extends TestCase
 
         $metadata = $contract->metadata->refreshData();
         $this->assertEquals(8,$metadata->getDecimals());
+        $this->assertFalse(boolval($metadata->isMutableSupply()));
 
 
         //check datastore
@@ -57,6 +58,8 @@ final class ContractMetadataTest extends TestCase
         $xcpCOntractF->populateLocal();
         $contract = $xcpCOntractF->last(BlockchainContractFactory::MAIN_IDENTIFIER,$xcp);
         $this->assertEquals(8,$contract->metadata->getDecimals());
+        $this->assertFalse(boolval($contract->metadata->isMutableSupply()));
+        $this->assertFalse(boolval($contract->metadata->isMutableSupply()));
 
     }
 

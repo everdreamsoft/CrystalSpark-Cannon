@@ -32,6 +32,7 @@ class ContractMetaData
     const DISPLAY_MUTABLE_SUPPLY = 'mutableSupply';
     const DISPLAY_DECIMALS = 'decimals';
     const DISPLAY_INTERFACE = 'interface';
+    const DISPLAY_CONTRACT_ID = 'contractId';
 
     public function __construct(BlockchainContract $contract){
         
@@ -96,6 +97,7 @@ class ContractMetaData
 
     public function setIsMutableSupply(bool $mutable){
 
+        if (!$mutable) $mutable = 0 ;
         $this->contract->createOrUpdateRef('mutableSupply',$mutable);
         $this->mutableSupply = $mutable ;
         return $this->mutableSupply ;
@@ -104,8 +106,9 @@ class ContractMetaData
 
     public function getDisplay(){
 
+        $return[static::DISPLAY_CONTRACT_ID] = $this->contract->getId();
        $return[static::DISPLAY_TOTAL_SUPPLY] = $this->getTotalSupply();
-       $return[static::DISPLAY_MUTABLE_SUPPLY] = $this->isMutableSupply();
+       $return[static::DISPLAY_MUTABLE_SUPPLY] = $this->isMutableSupply()?'true':'false';
        $return[static::DISPLAY_DECIMALS] = $this->getDecimals();
        $return[static::DISPLAY_INTERFACE] = $this->getInterface()->getStandardName();
 
