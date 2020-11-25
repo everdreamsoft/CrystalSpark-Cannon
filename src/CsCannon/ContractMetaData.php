@@ -105,7 +105,7 @@ class ContractMetaData
     public function getDisplay(){
 
        $return[static::DISPLAY_TOTAL_SUPPLY] = $this->getTotalSupply();
-       $return[static::DISPLAY_MUTABLE_SUPPLY] = $this->getTotalSupply();
+       $return[static::DISPLAY_MUTABLE_SUPPLY] = $this->isMutableSupply();
        $return[static::DISPLAY_DECIMALS] = $this->getDecimals();
        $return[static::DISPLAY_INTERFACE] = $this->getInterface()->getStandardName();
 
