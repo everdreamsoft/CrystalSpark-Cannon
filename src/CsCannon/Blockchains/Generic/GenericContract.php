@@ -27,9 +27,6 @@ class GenericContract extends BlockchainContract
 
 
 
-
-
-
     public function getBlockchain():Blockchain
     {
         $triples = $this->subjectConcept->tripletArray;

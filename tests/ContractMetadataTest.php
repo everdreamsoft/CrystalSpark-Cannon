@@ -61,6 +61,11 @@ final class ContractMetadataTest extends TestCase
         $this->assertFalse(boolval($contract->metadata->isMutableSupply()));
         $this->assertEquals(10000000000000000,$contract->metadata->getTotalSupply());
 
+        //invalid contract
+        $contract = XcpContractFactory::getContract('AINVALID',true);
+        $contract->setDataSource(new \CsCannon\Blockchains\Counterparty\DataSource\XchainDataSource());
+        $contract->metadata->refreshData();
+
     }
 
 

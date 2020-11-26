@@ -187,7 +187,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     public function setDivisibility(int $decimals):self{
 
         $this->decimals = $decimals ;
-        $this->getOrInitReference(self::DIVISIBILITY,$decimals);
+        $this->getOrInitReference('decimals',$decimals);
         return $this ;
 
 
