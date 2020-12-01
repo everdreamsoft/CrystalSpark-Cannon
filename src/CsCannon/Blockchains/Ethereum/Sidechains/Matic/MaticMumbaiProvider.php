@@ -19,9 +19,9 @@ use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\RpcProvider;
 use SandraCore\Concept;
 
-class MaticProvider extends InfuraProvider
+class MaticMumbaiProvider extends InfuraProvider
 {
-    public const HOST_URL = 'https://rpc-mainnet.maticvigil.com/v1/' ;
+    public const HOST_URL = 'https://rpc-mumbai.matic.today' ;
     public $requestPerSecond = 10;
 
     public function getHostUrl()

@@ -147,12 +147,7 @@ class BlockchainRouting
             $blockchain = new EthereumBlockchain();
 
 
-        } else if (substr($address, 0, 2) === "3P") {
-
-            $blockchainList['waves'] = $address;
-            //$blockchain = new Waves();
-
-        } else if (substr($address, 0, 3) === "@f:") {
+        }  else if (substr($address, 0, 3) === "@f:") {
 
             $blockchainList['fo'] = $address;
             $blockchain = new FirstOasisBlockchain();
