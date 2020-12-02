@@ -232,6 +232,10 @@ class Balance
                 $orbDisplay['token']['standard'] = $token->getStandardName();
                 $orbDisplay['quantity'] = $quantity ;
                 $orbDisplay['adaptedQuantity'] = $refinedQuantity ;
+                $orbDisplay['decimals'] = $contract->metadata->getDecimals() ;
+
+                if (!$orbDisplay['decimals']) $contract->metadata->refreshData();
+
                 $orbDisplay['asset']['image'] = $asset->imageUrl ;
                 $orbDisplay['asset']['id'] = $asset->id ;
 

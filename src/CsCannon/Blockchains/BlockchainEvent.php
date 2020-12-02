@@ -36,6 +36,7 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_DESTINATION_ADDRESS = 'destination';
     const DISPLAY_CONTRACT = 'contract';
     const DISPLAY_QUANTITY = 'quantity';
+    const DISPLAY_ADAPTED_QUANTITY = 'adaptedQuantity';
     const DISPLAY_TIMESTAMP = 'timestamp';
     const DISPLAY_TIMESTAMP_LEGACY = 'legacy';
     const DISPLAY_BLOCKCHAIN = 'blockchain';
@@ -199,7 +200,19 @@ class BlockchainEvent extends Entity implements Displayable
         //force this blockchain into contract
         $return[self::DISPLAY_CONTRACT]['blockchain']= $blockchain ;
 
+        $return[self::DISPLAY_ADAPTED_QUANTITY] = NULL ;
+        //does it have adapted quantity ?
+        if ($this->getBlockchainContract()->decimals){
+           $quantity = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
+            $adaptedQuantity = $quantity ;
+            if ($this->getBlockchainContract()->decimals > 0){
+                $adaptedQuantity = $quantity / pow(10,$this->getBlockchainContract()->decimals);
+            }
+            $return[self::DISPLAY_ADAPTED_QUANTITY] = $adaptedQuantity ;
+        }
+
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
+
         $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp();
         $return[self::DISPLAY_BLOCK_ID] = $this->getBlock()->getId();
 
