@@ -34,7 +34,6 @@ class MaticMumbaiProvider extends InfuraProvider
       return  new MaticBlockchain();
     }
 
-
     public function ownerOf(BlockchainContract $contract, $tokenId, BlockchainContractStandard $standard){
 
 
