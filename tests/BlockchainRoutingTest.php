@@ -10,10 +10,12 @@
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 use CsCannon\BlockchainRouting;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContract;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
 use CsCannon\SandraManager;
 use PHPUnit\Framework\TestCase;
 
@@ -135,10 +137,17 @@ final class BlockchainRoutingTest extends TestCase
         $this->assertEquals($addressString,$result1->getAddress());
 
 
+    }
 
+    public function testCustomBlockchain(){
 
-        
+       $customBlockchain = new CustomBlockchain();
 
+       BlockchainRouting::addBlockchainSupport($customBlockchain);
+
+       $routedBlockchain = BlockchainRouting::getBlockchainFromName($customBlockchain::NAME);
+
+       $this->assertEquals($customBlockchain,$routedBlockchain);
 
 
     }
@@ -147,6 +156,34 @@ final class BlockchainRoutingTest extends TestCase
 
 
 
+
+
+}
+
+class CustomBlockchain extends Blockchain {
+
+    protected $name = 'substrate';
+    const NAME = 'substrate';
+    protected $nameShort = 'substrate';
+    private static $staticBlockchain;
+
+
+    public function __construct()
+    {
+        $this->addressFactory = new \CsCannon\Blockchains\Ethereum\EthereumAddressFactory();
+        $this->contractFactory = new EthereumContractFactory();
+        $this->eventFactory = new EthereumEventFactory();
+    }
+
+    public static function getStatic()
+    {
+
+        if (is_null(self::$staticBlockchain)){
+            self::$staticBlockchain = new CustomBlockchain();
+        }
+
+        return self::$staticBlockchain ;
+    }
 
 
 }

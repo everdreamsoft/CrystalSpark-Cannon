@@ -30,6 +30,12 @@ use SandraCore\System;
 class BlockchainRouting
 {
 
+
+    /**
+     * @var Blockchain[]
+     */
+    public static $hotPluggedBlockchain = [] ;
+
     /**
      * get supported blockchains by the framework
      * @return Blockchain[]
@@ -41,11 +47,27 @@ class BlockchainRouting
         $supported[] = new EthereumBlockchain();
         $supported[] = new MaticBlockchain();
         $supported[] = new KlaytnBlockchain();
-        //$supported[] = new RopstenEthereumBlockchain();
+
+        $supported = array_merge($supported,self::$hotPluggedBlockchain);
 
         return $supported;
 
     }
+
+    public static function addBlockchainSupport(Blockchain $blockchain)
+    {
+        $hotPlugged = self::$hotPluggedBlockchain;
+
+        if (self::getBlockchainFromName($blockchain::NAME) == null) {
+
+            $hotPlugged[] = $blockchain;
+            self::$hotPluggedBlockchain = $hotPlugged;
+        }
+
+        return $blockchain ;
+
+    }
+
 
     public static function getBlockchainFromName($name): ?Blockchain
     {
