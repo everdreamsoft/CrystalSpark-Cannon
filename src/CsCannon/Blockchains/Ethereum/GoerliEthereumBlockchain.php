@@ -28,7 +28,7 @@ class GoerliEthereumBlockchain extends EthereumBlockchain
     {
 
 
-        $this->eventFactory = new GoerliEthereumBlockchain();
+        $this->eventFactory = new EthereumEventFactory();
         parent::__construct();
 
     }
