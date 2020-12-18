@@ -14,6 +14,7 @@ use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 
+use CsCannon\Blockchains\Ethereum\GoerliEthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\RopstenEthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\FirstOasis\FirstOasisBlockchain;
@@ -47,6 +48,7 @@ class BlockchainRouting
         $supported[] = new EthereumBlockchain();
         $supported[] = new MaticBlockchain();
         $supported[] = new KlaytnBlockchain();
+        $supported[] = new GoerliEthereumBlockchain();
 
         $supported = array_merge($supported,self::$hotPluggedBlockchain);
 
