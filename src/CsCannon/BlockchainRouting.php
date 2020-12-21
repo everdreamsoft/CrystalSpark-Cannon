@@ -23,6 +23,7 @@ use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use CsCannon\Blockchains\Generic\GenericContract;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
+use CsCannon\Blockchains\Substrate\Unique\UniqueBlockchain;
 use SandraCore\Concept;
 use SandraCore\DatabaseAdapter;
 use SandraCore\Entity;
@@ -49,6 +50,8 @@ class BlockchainRouting
         $supported[] = new MaticBlockchain();
         $supported[] = new KlaytnBlockchain();
         $supported[] = new GoerliEthereumBlockchain();
+        $supported[] = new UniqueBlockchain();
+
 
         $supported = array_merge($supported,self::$hotPluggedBlockchain);
 

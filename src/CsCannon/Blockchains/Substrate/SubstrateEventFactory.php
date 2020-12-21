@@ -15,7 +15,7 @@ class SubstrateEventFactory extends BlockchainEventFactory
 
         $this->generatedEntityClass = static::$className;
 
-        $this->setFilter(self::ON_BLOCKCHAIN_EVENT, SubstrateBlockchain::NAME);
+        //$this->setFilter(self::ON_BLOCKCHAIN_EVENT, SubstrateBlockchain::NAME);
 
         $this->addressFactory = new SubstrateAddressFactory();
         $this->contractFactory = new SubstrateContractFactory();
