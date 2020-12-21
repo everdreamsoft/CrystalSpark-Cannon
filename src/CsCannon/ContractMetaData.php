@@ -121,9 +121,14 @@ class ContractMetaData
 
     public function refreshData():ContractMetaData{
 
-      // $metadata =  XchainOnBcy::getContractMetaData($this->contract);
-       $datasource =  $this->contract->getDataSource();
-        $metadata = $datasource->getContractMetaData($this->contract);
+        try {
+            // $metadata =  XchainOnBcy::getContractMetaData($this->contract);
+            $datasource = $this->contract->getDataSource();
+            $metadata = $datasource->getContractMetaData($this->contract);
+        }catch (\Exception $e){
+
+            $metadata = new ContractMetaData($this->contract);
+        }
 
 
         return $metadata ;
