@@ -9,7 +9,7 @@ use CsCannon\Blockchains\Substrate\SubstrateEventFactory;
 
 class UniqueEventFactory extends SubstrateEventFactory
 {
-    protected static $className = UniqueEventFactory::class;
+    protected static $className = UniqueEvent::class;
 
     public function __construct(){
 
