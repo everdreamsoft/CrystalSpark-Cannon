@@ -317,6 +317,7 @@ class Balance
     public function loadFromDatagraph(array $onlyContracts = null){
 
 
+        if ($this->address->isForeign()) return $this;
 
         $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
         $factory->setFilter(self::LINKED_ADDRESS,$this->address);
