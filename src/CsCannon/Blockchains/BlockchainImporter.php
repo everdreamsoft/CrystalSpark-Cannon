@@ -103,7 +103,7 @@ abstract class BlockchainImporter
         $txidConceptUnid = $this->sandra->systemConcept->get(Blockchain::$txidConceptName);
         $fileUnid = $this->sandra->systemConcept->get(BlockchainEventFactory::$file);
 
-        $conceptsArray = DatabaseAdapter::searchConcept($txToFindArray,$txidConceptUnid,$this->sandra,'',$fileUnid);
+        $conceptsArray = DatabaseAdapter::searchConcept($this->sandra,$txToFindArray,$txidConceptUnid,'',$fileUnid);
         $populateEventFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
 
         $matchingEntities = 0 ;
@@ -233,7 +233,7 @@ abstract class BlockchainImporter
         $fileUnid = $this->sandra->systemConcept->get($addressFactory::$file);
 
         //we search concepts with existing addresses
-        $conceptsArray = DatabaseAdapter::searchConcept($addressList,$addressUnid,$this->sandra,'',$fileUnid);
+        $conceptsArray = DatabaseAdapter::searchConcept($this->sandra,$addressList,$addressUnid,'',$fileUnid);
 
         $addressFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
         if(!empty($conceptsArray)) {
@@ -335,7 +335,7 @@ abstract class BlockchainImporter
         $fileUnid = $this->sandra->systemConcept->get($blockFactory->entityContainedIn);
 
         //we search concepts with existing addresses
-        $conceptsArray = DatabaseAdapter::searchConcept($blockRawList,$identifierUnid,$this->sandra,'',$fileUnid);
+        $conceptsArray = DatabaseAdapter::searchConcept($this->sandra,$blockRawList,$identifierUnid,'',$fileUnid);
 
         //Missing preloading
         $blockFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
@@ -403,7 +403,7 @@ abstract class BlockchainImporter
         $fileUnid = $this->sandra->systemConcept->get($entityFactory::$file);
 
         //we search concepts with existing addresses
-        $conceptsArray = DatabaseAdapter::searchConcept($entityIdList,$identifierUnid,$this->sandra,'',$fileUnid);
+        $conceptsArray = DatabaseAdapter::searchConcept($this->sandra,$entityIdList,$identifierUnid,'',$fileUnid);
 
         $entityFactory->conceptArray = $conceptsArray ;//we preload the factory with found concepts
         if(!empty($conceptsArray)) {

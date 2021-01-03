@@ -1,5 +1,6 @@
 <?php
 
+namespace CsCannon\Blockchains;
 use CsCannon\Orb;
 
 /**
@@ -9,7 +10,7 @@ use CsCannon\Orb;
  * Time: 14:42
  */
 
-namespace CsCannon\Blockchains;
+
 
 
 

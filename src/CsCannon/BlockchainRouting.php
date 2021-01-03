@@ -367,7 +367,7 @@ class BlockchainRouting
 
         $return = array();
 
-        $concepts = DatabaseAdapter::searchConcept($string, null, $sandra);
+        $concepts = DatabaseAdapter::searchConcept($sandra,$string, null);
 
         foreach ($concepts ?? array() as $conceptId) {
 
