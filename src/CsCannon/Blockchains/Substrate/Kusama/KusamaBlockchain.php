@@ -1,6 +1,6 @@
 <?php
 
-namespace CsCannon\Blockchains\Substrate\Unique;
+namespace CsCannon\Blockchains\Substrate\Kusama;
 
 use CsCannon\Blockchains\Blockchain;
 
@@ -9,29 +9,31 @@ use CsCannon\Blockchains\Substrate\SubstrateBlockchain;
 use CsCannon\Blockchains\Substrate\SubstrateContractFactory;
 use CsCannon\Blockchains\Substrate\SubstrateEventFactory;
 
-class UniqueBlockchainPallet extends SubstrateBlockchain
+class KusamaBlockchain extends SubstrateBlockchain
 {
-    protected $name = 'uniqueSubstratePallet';
-    const NAME = 'uniqueSubstratePallet';
-    protected $nameShort = 'unique';
+    protected $name = 'kusamaBlockchain';
+    const NAME = 'kusamaBlockchain';
+    protected $nameShort = 'kusama';
     private static $staticBlockchain;
  
 
     public function __construct()
     {
-        $this->addressFactory = new UniqueAddressFactory();
-        $this->contractFactory = new RmrkContractFactory();
-        $this->eventFactory = new UniqueEventFactory();
+
+        $this->contractFactory = new KusamaContractFactory();
+        $this->eventFactory = new KusamaEventFactory();
+        $this->addressFactory = new KusamaAddressFactory();
+
+
     }
 
     public static function getStatic()
     {
 
         if (is_null(self::$staticBlockchain)){
-            self::$staticBlockchain = new UniqueBlockchainPallet();
+            self::$staticBlockchain = new KusamaBlockchain();
         }
 
         return self::$staticBlockchain ;
     }
 }
-?>

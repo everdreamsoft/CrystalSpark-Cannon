@@ -20,7 +20,7 @@ class UniqueEventFactory extends SubstrateEventFactory
         $this->setFilter(self::ON_BLOCKCHAIN_EVENT, UniqueBlockchain::NAME);
 
         $this->addressFactory = new UniqueAddressFactory();
-        $this->contractFactory = new UniqueContractFactory();
+        $this->contractFactory = new RmrkContractFactory();
     }
 
 

@@ -20,7 +20,7 @@ class UniqueBlockchain extends SubstrateBlockchain
     public function __construct()
     {
 
-        $this->contractFactory = new UniqueContractFactory();
+        $this->contractFactory = new RmrkContractFactory();
         $this->eventFactory = new UniqueEventFactory();
         $this->addressFactory = new UniqueAddressFactory();
 
