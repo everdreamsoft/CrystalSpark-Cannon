@@ -9,8 +9,8 @@ use CsCannon\Blockchains\Substrate\SubstrateAddressFactory;
 class KusamaAddressFactory extends SubstrateAddressFactory
 {
 
-    public static $isa = 'KusamaAddress';
-    public static $file = 'KusamaAddressFile';
+    public static $isa = 'kusamaAddress';
+    public static $file = 'kusamaAddressFile';
     protected static $className = KusamaAddress::class ;
 
     public function get($address,$autoCreate = false):BlockchainAddress{
