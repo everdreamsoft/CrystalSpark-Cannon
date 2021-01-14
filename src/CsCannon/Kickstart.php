@@ -54,17 +54,13 @@ class Kickstart
 
     }
 
-    public static function createViewForBlockchain(Blockchain $blockchain,System $sandra){
+    public static function createViewForBlockchain(Blockchain $blockchain){
 
         $blockchain->getEventFactory()->createViewTable($blockchain::NAME.'Events');
         $blockchain->getAddressFactory()->createViewTable($blockchain::NAME.'Address');
         $blockchain->getContractFactory()->createViewTable($blockchain::NAME.'Contracts');
 
 
-        $factory->populateLocal();
-        if (count($factory->getEntities())>0){
-            $factory->createViewTable("$viewName");
-        }
 
     }
 
