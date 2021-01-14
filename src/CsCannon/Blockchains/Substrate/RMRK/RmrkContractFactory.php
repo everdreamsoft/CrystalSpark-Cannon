@@ -1,6 +1,6 @@
 <?php
 
-namespace CsCannon\Blockchains\Substrate\Unique;
+namespace CsCannon\Blockchains\Substrate\RMRK;
 
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
