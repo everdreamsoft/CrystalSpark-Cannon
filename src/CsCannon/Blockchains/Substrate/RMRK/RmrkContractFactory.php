@@ -5,6 +5,7 @@ namespace CsCannon\Blockchains\Substrate\RMRK;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
+use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\Blockchains\Substrate\SubstrateBlockchain;
 use CsCannon\Blockchains\Substrate\SubstrateContractFactory;
 
@@ -20,7 +21,7 @@ class RmrkContractFactory extends SubstrateContractFactory
     {
 
         $return = parent::__construct();
-        $this->blockchain = UniqueBlockchain::class;
+        $this->blockchain = KusamaBlockchain::class;
         return $return ;
     }
 
