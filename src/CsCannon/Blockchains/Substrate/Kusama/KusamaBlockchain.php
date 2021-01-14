@@ -15,7 +15,6 @@ class KusamaBlockchain extends SubstrateBlockchain
     const NAME = 'kusamaBlockchain';
     protected $nameShort = 'kusama';
     private static $staticBlockchain;
- 
 
     public function __construct()
     {
@@ -23,7 +22,6 @@ class KusamaBlockchain extends SubstrateBlockchain
         $this->contractFactory = new KusamaContractFactory();
         $this->eventFactory = new KusamaEventFactory();
         $this->addressFactory = new KusamaAddressFactory();
-
 
     }
 
