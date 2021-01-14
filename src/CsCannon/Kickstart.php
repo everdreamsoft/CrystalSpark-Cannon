@@ -8,6 +8,7 @@
 
 namespace CsCannon;
 
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
@@ -51,8 +52,19 @@ class Kickstart
             $factory->createViewTable("$viewName");
         }
 
+    }
+
+    public static function createViewForBlockchain(Blockchain $blockchain,System $sandra){
+
+        $blockchain->getEventFactory()->createViewTable($blockchain::NAME.'Events');
+        $blockchain->getAddressFactory()->createViewTable($blockchain::NAME.'Address');
+        $blockchain->getContractFactory()->createViewTable($blockchain::NAME.'Contracts');
 
 
+        $factory->populateLocal();
+        if (count($factory->getEntities())>0){
+            $factory->createViewTable("$viewName");
+        }
 
     }
 
