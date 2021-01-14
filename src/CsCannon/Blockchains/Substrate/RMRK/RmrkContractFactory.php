@@ -15,7 +15,7 @@ class RmrkContractFactory extends SubstrateContractFactory
     public static $isa = 'rmrkContract';
 
 
-    protected static $className = UniqueContract::class;
+    protected static $className = RmrkContract::class;
 
     public function __construct()
     {
