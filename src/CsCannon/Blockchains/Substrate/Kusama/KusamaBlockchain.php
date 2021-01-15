@@ -12,9 +12,9 @@ use CsCannon\Blockchains\Substrate\SubstrateEventFactory;
 
 class KusamaBlockchain extends SubstrateBlockchain
 {
-    protected $name = 'kusamaBlockchain';
-    const NAME = 'kusamaBlockchain';
-    protected $nameShort = 'kusama';
+    protected $name = 'kusama';
+    const NAME = 'kusama';
+    protected $nameShort = 'ksm';
     private static $staticBlockchain;
 
     public function __construct()
