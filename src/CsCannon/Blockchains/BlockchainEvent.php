@@ -1,6 +1,7 @@
 <?php
 
 namespace CsCannon\Blockchains;
+use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\Orb;
 
 /**
@@ -152,6 +153,11 @@ class BlockchainEvent extends Entity implements Displayable
             return  $instance ;
 
         }
+        else {
+            $contractStandard = UnknownStandard::init();
+            return  $contractStandard ;
+
+        }
 
 
         return null;
@@ -181,7 +187,7 @@ class BlockchainEvent extends Entity implements Displayable
     public function setSourceContract(BlockchainContract $contract)
     {
 
-        $this->setBrotherEntity(BlockchainEventFactory::EVENT_SOURCE_CONTRACT,$contract,null);
+        $this->setBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT,$contract,null);
     }
 
 

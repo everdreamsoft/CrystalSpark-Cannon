@@ -9,6 +9,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use SandraCore\ForeignEntityAdapter;
 use CsCannon\Blockchains\Substrate\SubstrateBlockchain;
 use CsCannon\Blockchains\Substrate\SubstrateContract;
