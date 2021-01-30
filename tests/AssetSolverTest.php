@@ -270,6 +270,52 @@ final class AssetSolverTest extends TestCase
 
     }
 
+    public function testBindingWithAnySpecifier(){
+
+        \CsCannon\Tests\TestManager::initTestDatagraph();
+        $sandra = SandraManager::getSandra();
+
+
+        $collectionFactory =  new \CsCannon\AssetCollectionFactory(SandraManager::getSandra());
+        $collection = $collectionFactory->getOrCreate('helloWorld',LocalSolver::getEntity());
+
+
+
+        $collectionName = 'testCollection';
+        $sandra = SandraManager::getSandra();
+
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contractFactory->populateLocal();
+        $contract = $contractFactory->get("@account",true);
+        $contract->setStandard(ERC721::init());
+        $contract->bindToCollection($collection);
+        $contractFactory->populateLocal();
+
+        $myOrbFactory = new OrbFactory();
+
+        $assetFactory = new AssetFactory(SandraManager::getSandra());
+        $myAsset = $assetFactory->create("myUnique",["hello"=>'data'],[$collection]);
+
+        $rmrkStandard = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::getEntity()->setSn(0001);
+        $myAsset->bindToContractWithSpecifier($contract,$rmrkStandard);
+
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contractFactory->populateLocal();
+        $contract = $contractFactory->get("@account");
+
+
+        $orbs = $myOrbFactory->getOrbsFromContractPath($contract,ERC721::init(1));
+
+        //print_r($orbs);
+        $this->assertCount(1,$orbs);
+
+      //  $myAsset->bindToContract()
+
+
+
+
+    }
+
 
 
 

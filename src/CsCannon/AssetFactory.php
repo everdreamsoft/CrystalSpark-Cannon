@@ -75,14 +75,17 @@ class AssetFactory extends \SandraCore\EntityFactory
 
                     $standardData = $asset->getBrotherEntity(AssetFactory::$tokenJoinVerb);
                     if (is_array($standardData)) {
+
                         $standardData = end($standardData);
-                        $localStorageStandard->setTokenPath($standardData->entityRefs);
+                        $localStorageStandard = $this->replaceAnyOnOmittedData($localStorageStandard,$standardData);
+
                     }
 
                     $this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()][] = $asset;
                 }
 
-            } else {
+            }
+            else {
 
                 //lt see if we have linked path
                 $tokenToAssetFactory = new TokenPathToAssetFactory($contract->system);
@@ -108,8 +111,9 @@ class AssetFactory extends \SandraCore\EntityFactory
             }
         }
 
-        if (isset($this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()]))
-            return $this->specifierMap[$contract->subjectConcept->idConcept][$specifier->getDisplayStructure()];
+
+        if (isset($this->specifierMap[$contract->subjectConcept->idConcept][$this->adaptStandardDisplayStructure($specifier,$localStorageStandard)]))
+            return $this->specifierMap[$contract->subjectConcept->idConcept][$this->adaptStandardDisplayStructure($specifier,$localStorageStandard)];
 
         return null ;
 
@@ -240,6 +244,53 @@ class AssetFactory extends \SandraCore\EntityFactory
 
         return $this->unkownExplicitIds;
     }
+
+    private function adaptStandardDisplayStructure(BlockchainContractStandard $standard,BlockchainContractStandard $localStorageStandard){
+
+        $specifierArray = $standard->specificatorData ;
+
+        foreach ($localStorageStandard->specificatorData ?? array() as $key => $requiredData){
+
+           if ($requiredData == BlockchainContractStandard::CS_CANNON_ANY){
+               $specifierArray[$key] = $requiredData ;
+           }
+
+        }
+        $standard->setTokenPath($specifierArray);
+
+        return $standard->getDisplayStructure();
+
+    }
+
+    private function replaceAnyOnOmittedData(BlockchainContractStandard $standard,$standardData){
+
+        $outputArray = array();
+       foreach ($standard->specificatorArray ?? array() as $keyToExist){
+
+           if (isset($standardData->entityRefs[$keyToExist])){
+
+               $outputArray[$keyToExist] = $standardData[$keyToExist] ;
+           }
+
+           if (!isset($standard->specificatorData[$keyToExist])){
+
+               $outputArray[$keyToExist] = BlockchainContractStandard::CS_CANNON_ANY ;
+           }
+
+
+
+       }
+
+       $standard->setTokenPath($outputArray);
+
+       return $standard ;
+
+    }
+
+
+
+
+
 
 
 

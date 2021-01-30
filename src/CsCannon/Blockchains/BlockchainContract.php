@@ -192,7 +192,6 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
 
 
-
     }
 
     public function getAdaptedDecimals(int $number):?float{
@@ -234,9 +233,6 @@ abstract class  BlockchainContract extends Entity Implements Displayable
             $return['token'] = $token->specificatorData ;
 
         }
-
-
-
 
         return $return ;
     }

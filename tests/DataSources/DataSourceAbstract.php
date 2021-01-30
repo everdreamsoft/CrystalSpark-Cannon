@@ -35,7 +35,7 @@ class DataSourceAbstract extends TestCase
 
 
 
-    public function testDataSource() {
+    public function suspendtestDataSource() {
 
         \CsCannon\Tests\TestManager::initTestDatagraph();
 

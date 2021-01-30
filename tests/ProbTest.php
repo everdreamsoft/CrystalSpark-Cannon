@@ -215,7 +215,7 @@ final class ProbTest extends TestCase
 
     }
 
-    public function testAutoQueue()
+    public function suspendtestAutoQueue()
     {
 
         $erc721_5 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init(5);

@@ -32,8 +32,8 @@ class TestManager
 
 
 
-         TestManagerPrivate::initTestDatagraph() ;
-        return
+        // TestManagerPrivate::initTestDatagraph() ;
+        //return
 
         $sandraToFlush = new System('phpUnit_', true);
         \SandraCore\Setup::flushDatagraph($sandraToFlush);

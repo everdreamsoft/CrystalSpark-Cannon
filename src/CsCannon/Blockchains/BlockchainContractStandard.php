@@ -29,6 +29,7 @@ abstract class BlockchainContractStandard extends Entity
     public abstract function getDisplayStructure() ;
     public static $entityClassArray = null ;
     public const STANDARD_NAME_SHORTNAME = 'standardName';
+    public const  CS_CANNON_ANY = 'CsCannon_any';
 
 
 

@@ -202,33 +202,7 @@ final class OrbTest extends TestCase
 
     }
 
-    public function testOrb()
 
-    {
-
-
-        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
-        //$collectionEntity = $assetCollectionFactory->get(self::COLLECTION_CODE);
-        //BooSolver::update();
-
-        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
-        $contract = $contractFactory->get(self::COLLECTION_CONTRACT);
-
-        $myOrbFactory = new \CsCannon\OrbFactory();
-       $orbs = $myOrbFactory->getOrbsFromContractPath($contract,CounterpartyAsset::getEntity());
-
-
-
-
-
-        $this->assertEquals(1,1);
-        //$this->assertInstanceOf(\CsCannon\Asset::class,$asset,"Asset contract is not a contract");
-
-       // \CsCannon\Tests\TestManager::registerDataStructure();
-
-
-
-    }
 
     public function testGetOrbEvent()
     {

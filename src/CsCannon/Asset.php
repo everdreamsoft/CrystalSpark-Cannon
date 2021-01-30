@@ -78,9 +78,21 @@ class Asset extends \SandraCore\Entity implements Displayable
 
     public function bindToContract(BlockchainContract $contract,$replaceExisting = false){
 
-
         $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$contract,null,true,$replaceExisting);
+    }
 
+    /**
+     *
+     * when joining an asset to a contract with a specific specifier. For example an erc721 with a specific token id
+     * Use BlockchainContractStandard:CsCannon_any to connect with any input such as Erc721 any token id
+     *
+     * @param BlockchainContract $contract
+     * @param BlockchainContractStandard $standard
+     * @param false $replaceExisting
+     */
+    public function bindToContractWithSpecifier(BlockchainContract $contract, BlockchainContractStandard $standard, $replaceExisting = false){
+
+        $this->setBrotherEntity(AssetFactory::$tokenJoinVerb,$contract,$standard->specificatorData,true,$replaceExisting);
     }
 
     public function bindToCollection(AssetCollection $collection, $replaceExisting = false){

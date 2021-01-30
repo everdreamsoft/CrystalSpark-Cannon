@@ -207,14 +207,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
         $contract->setBrotherEntity(BlockchainContractFactory::JOIN_COLLECTION,$newCollection,null);
         //$newCollection->setSolver(DefaultEthereumSolver::getEntity());
 
-
         return $newCollection ;
-
-
-
-        //$this->createNew()
-
-
 
 
     }
