@@ -264,7 +264,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     private function replaceAnyOnOmittedData(BlockchainContractStandard $standard,$standardData){
 
-        $outputArray = array();
+        $outputArray = $standard->specificatorData;
        foreach ($standard->specificatorArray ?? array() as $keyToExist){
 
            if (isset($standardData->entityRefs[$keyToExist])){
