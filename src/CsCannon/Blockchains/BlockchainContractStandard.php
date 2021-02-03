@@ -47,7 +47,9 @@ abstract class BlockchainContractStandard extends Entity
 
 
                 if( !isset($tokenPath[$value]) and !isset($tokenPath[$pathItemUnid])) {
-                    throw new \Exception("" .$this->getStandardName() ." token require $value for contract");
+                    throw new \Exception("" .$this->getStandardName() ." token require $value for contract ");
+
+
 
 
 
@@ -66,8 +68,10 @@ abstract class BlockchainContractStandard extends Entity
             }
         }
         catch (\Exception $e){
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
-            die();
+          //  echo 'Caught exception: ',  $e->getMessage(), "\n";
+            throw $e ;
+
+
         }
 
         return $this ;
