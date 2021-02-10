@@ -29,6 +29,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     public const ID = "assetId";
     public const IMAGE_URL = "imgURL";
     public const METADATA_URL = "metaDataURL";
+    public const ASSET_NAME = "name";
     private $unkownExplicitIds ;
     private $specifierMap ;
 
