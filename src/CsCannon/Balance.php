@@ -487,8 +487,16 @@ class Balance
     public function isOwningAssetOrFraction(Asset $asset):bool {
 
         if ($this->quantityForAsset($asset) > 0) return true ;
-
         return false ;
+
+    }
+
+
+    public function getQuantityForContractToken(BlockchainContract $contract,BlockchainContractStandard $token) {
+
+
+
+        return $this->contracts[$contract->getBlockchain()::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ?? 0;
 
 
     }

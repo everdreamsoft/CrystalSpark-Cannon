@@ -190,6 +190,12 @@ class BlockchainEvent extends Entity implements Displayable
         $this->setBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT,$contract,null);
     }
 
+    public function getQuantity()
+    {
+
+        return $this->get(BlockchainEventFactory::EVENT_QUANTITY);
+    }
+
 
     public function returnArray($displayManager)
     {
