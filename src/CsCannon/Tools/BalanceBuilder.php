@@ -83,7 +83,7 @@ class BalanceBuilder
             $sourceAddressBalance = $event->getSourceAddress()->getBalanceForContract([$event->getBlockchainContract()]);
             $quantityOwned = $sourceAddressBalance->getQuantityForContractToken($contract, $token);
 
-            echo $event->getSourceAddress()->getAddress();
+
             if ($nullAddress != $event->getSourceAddress()->getAddress()){
 
             }
