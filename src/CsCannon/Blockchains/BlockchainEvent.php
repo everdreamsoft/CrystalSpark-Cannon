@@ -22,6 +22,7 @@ use CsCannon\DisplayManager;
 use CsCannon\OrbFactory;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
+use CsCannon\Tools\BalanceBuilder;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -34,6 +35,7 @@ class BlockchainEvent extends Entity implements Displayable
     public $displayManager ;
 
     const DISPLAY_TXID = 'txId';
+    const DISPLAY_VALID = 'validity';
     const DISPLAY_SOURCE_ADDRESS = 'source';
     const DISPLAY_DESTINATION_ADDRESS = 'destination';
     const DISPLAY_CONTRACT = 'contract';
@@ -196,6 +198,41 @@ class BlockchainEvent extends Entity implements Displayable
         return $this->get(BlockchainEventFactory::EVENT_QUANTITY);
     }
 
+    public function isValid()
+    {
+        $valid = $this->getBrotherEntity(BalanceBuilder::PROCESS_STATUS_VERB);
+
+        //no validity status
+        if (!$valid) return null ;
+
+        $valid = reset($valid);
+
+        /** @var Entity $valid */
+
+        if($valid->targetConcept->getShortname() == BalanceBuilder::PROCESS_STATUS_VALID) return true ;
+        if($valid->targetConcept->getShortname() == BalanceBuilder::PROCESS_STATUS_INVALID) return false ;
+
+        return null ;
+
+    }
+
+    public function getError()
+    {
+        $valid = $this->isValid() ;
+
+        if ($valid === true or $valid === null) return null ;
+
+        if ($valid === false){
+            $validEntity = $this->getBrotherEntity(BalanceBuilder::PROCESS_STATUS_VERB);
+            /**@var Entity $validEntity **/
+            $validEntity = reset($validEntity);
+            return $validEntity->getReference(BalanceBuilder::PROCESSOR_ERROR)->refValue;
+        }
+
+
+
+    }
+
 
     public function returnArray($displayManager)
     {
@@ -205,10 +242,21 @@ class BlockchainEvent extends Entity implements Displayable
 
 
         $return[self::DISPLAY_TXID] = $this->get(Blockchain::$txidConceptName);
+
+        if ($this->isValid() !== null){
+            $return[self::DISPLAY_VALID] = $this->isValid() ? 'valid' : 'invalid';
+            if ($this->isValid() === false);
+                $return['error'] = $this->getError();
+        }
+
         $return[self::DISPLAY_BLOCKCHAIN] = $blockchain ;
         $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
+
+
+
+
 
         //force this blockchain into contract
         $return[self::DISPLAY_CONTRACT]['blockchain']= $blockchain ;

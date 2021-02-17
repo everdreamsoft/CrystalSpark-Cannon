@@ -149,12 +149,16 @@ final class BalanceBuilderTest extends TestCase
         $rmrkEventFactory->setFilter(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_INVALID);
 
         $rmrkEventFactory->populateLocal();
+        //$rmrkEventFactory->populateBrotherEntities();
         $this->assertEquals($rmrkEventFactory->getEntities()[$invalid1->idConcept]->subjectConcept,$invalid1);
         $this->assertEquals($rmrkEventFactory->getEntities()[$invalid2->idConcept]->subjectConcept,$invalid2);
+        print_r($rmrkEventFactory->display()->return());
 
 
         // A should own token 2
         $this->assertEquals(1,$addressA->getBalanceForContract([$contractA])->getQuantityForContractToken($contractA,$t2));
+
+
 
 
 

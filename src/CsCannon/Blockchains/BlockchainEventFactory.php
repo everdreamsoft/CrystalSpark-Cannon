@@ -118,6 +118,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         $blockFactory = new BlockchainBlockFactory(GenericBlockchain::getStatic());
         $this->joinFactory(self::EVENT_BLOCK,$blockFactory);
         $this->joinPopulate();
+        $this->populateBrotherEntities();
 
 
 
