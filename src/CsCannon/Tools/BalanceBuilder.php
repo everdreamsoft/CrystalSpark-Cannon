@@ -133,6 +133,10 @@ class BalanceBuilder
 
         }
 
+        $copiedEventFactory = new ( get_class($eventFactory));
+        $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID);
+        $events = static::getEventsFromFactory($copiedEventFactory);
+
         //we revert balance invalid trandactions
         while ($events = static::getEventsFromFactory((new (get_class($eventFactory)))->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID) )  ) {
             foreach ($events as $event) {
@@ -141,6 +145,9 @@ class BalanceBuilder
                 $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME],true,true);
 
             }
+            $copiedEventFactory = new ( get_class($eventFactory));
+            $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID);
+            $events = static::getEventsFromFactory($copiedEventFactory);
         }
 
     }
