@@ -141,7 +141,7 @@ class BalanceBuilder
         $events = static::getEventsFromFactory($copiedEventFactory);
 
         //we revert balance invalid trandactions
-        while ($events = static::getEventsFromFactory((new (get_class($eventFactory)))->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID) )  ) {
+        while ($events) {
             foreach ($events as $event) {
                 /** @var BlockchainEvent $event */
 
@@ -160,7 +160,12 @@ class BalanceBuilder
 
         $maxProcess = 1000 ;
 
-        while ($events = static::getEventsFromFactory((new (get_class($eventFactory)))->setFilter(static::PROCESS_STATUS_VERB,0,true) )  ){
+        $factoryClass = get_class($eventFactory);
+        $copiedEventFactory = new  $factoryClass ;
+        $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,0,true);
+        $events = static::getEventsFromFactory($copiedEventFactory);
+
+        while ($events){
             foreach ($events as $event) {
                 /** @var BlockchainEvent $event */
 
@@ -168,7 +173,14 @@ class BalanceBuilder
                     true,true);
 
                 }
+
+            $factoryClass = get_class($eventFactory);
+            $copiedEventFactory = new  $factoryClass ;
+            $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,0,true);
+            $events = static::getEventsFromFactory($copiedEventFactory);
         }
+
+
     }
 
     private static function getEventsFromFactory(BlockchainEventFactory $factory){
