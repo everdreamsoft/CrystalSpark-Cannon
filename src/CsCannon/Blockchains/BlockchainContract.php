@@ -162,7 +162,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
         $verif = new GenericContractFactory();
         $aliasUnid = $this->system->systemConcept->get(self::ALIAS_SHORTNAME);
         $fileUnid = $this->system->systemConcept->get(BlockchainContractFactory::$file);
-        $exist = DatabaseAdapter::searchConcept($alias,$aliasUnid,$this->system,'',$fileUnid);
+        $exist = DatabaseAdapter::searchConcept($this->system,$alias,$aliasUnid,'',$fileUnid);
 
 
         if ($exist) {
