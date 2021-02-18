@@ -102,7 +102,7 @@ class BalanceBuilder
 
     public static function resetBalanceBuilder(BlockchainEventFactory $eventFactory){
 
-        $maxProcess = 1 ;
+        $maxProcess = 10000 ;
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');
@@ -159,7 +159,6 @@ class BalanceBuilder
     public static function flagAllForValidation (BlockchainEventFactory $eventFactory){
 
         $maxProcess = 1000 ;
-
 
         while ($events = static::getEventsFromFactory((new (get_class($eventFactory)))->setFilter(static::PROCESS_STATUS_VERB,0,true) )  ){
             foreach ($events as $event) {
