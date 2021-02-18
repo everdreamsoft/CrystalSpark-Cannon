@@ -102,14 +102,18 @@ class BalanceBuilder
 
     public static function resetBalanceBuilder(BlockchainEventFactory $eventFactory){
 
-        $maxProcess = 100000 ;
+        $maxProcess = 1 ;
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');
 
+        $copiedEventFactory = new ( get_class($eventFactory));
+        $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
+        $events = static::getEventsFromFactory($copiedEventFactory);
+
 
         //we revert balance of all valid trandactions
-        while ($events = static::getEventsFromFactory((new (get_class($eventFactory)))->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID) )  ) {
+        while ($events = static::getEventsFromFactory($copiedEventFactory)) {
             foreach ($events as $event) {
                 /** @var BlockchainEvent $event */
 
@@ -121,6 +125,12 @@ class BalanceBuilder
                 $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME],true,true);
 
             }
+
+            $copiedEventFactory = new ( get_class($eventFactory));
+            $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
+            $events = static::getEventsFromFactory($copiedEventFactory);
+
+
         }
 
         //we revert balance invalid trandactions
