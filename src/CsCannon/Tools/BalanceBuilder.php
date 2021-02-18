@@ -107,7 +107,8 @@ class BalanceBuilder
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');
 
-        $copiedEventFactory = new ( get_class($eventFactory));
+        $factoryClass = get_class($eventFactory);
+        $copiedEventFactory = new  $factoryClass ;
         $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
         $events = static::getEventsFromFactory($copiedEventFactory);
 
@@ -126,14 +127,16 @@ class BalanceBuilder
 
             }
 
-            $copiedEventFactory = new ( get_class($eventFactory));
+            $factoryClass = get_class($eventFactory);
+            $copiedEventFactory = new  $factoryClass ;
             $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
             $events = static::getEventsFromFactory($copiedEventFactory);
 
 
         }
 
-        $copiedEventFactory = new ( get_class($eventFactory));
+        $factoryClass = get_class($eventFactory);
+        $copiedEventFactory = new  $factoryClass ;
         $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID);
         $events = static::getEventsFromFactory($copiedEventFactory);
 
@@ -145,7 +148,8 @@ class BalanceBuilder
                 $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME],true,true);
 
             }
-            $copiedEventFactory = new ( get_class($eventFactory));
+            $factoryClass = get_class($eventFactory);
+            $copiedEventFactory = new  $factoryClass ;
             $copiedEventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID);
             $events = static::getEventsFromFactory($copiedEventFactory);
         }
