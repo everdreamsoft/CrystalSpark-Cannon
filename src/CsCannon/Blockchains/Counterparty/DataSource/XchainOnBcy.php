@@ -321,8 +321,8 @@ AND balances.quantity > 0
         }
         //we preload the contractFactory
         $counterPartyContractFactory  = new XcpContractFactory();
-        $preloadConcepts = DatabaseAdapter::searchConcept($contractNames,
-            XcpContractFactory::MAIN_IDENTIFIER,$counterPartyContractFactory->system,0,XcpContractFactory::$file);
+        $preloadConcepts = DatabaseAdapter::searchConcept($counterPartyContractFactory->system,$contractNames,
+            XcpContractFactory::MAIN_IDENTIFIER,0,XcpContractFactory::$file);
 
 
         //If we have existing counterparty contracts

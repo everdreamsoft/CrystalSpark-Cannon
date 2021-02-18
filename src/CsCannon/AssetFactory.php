@@ -14,6 +14,7 @@ namespace CsCannon;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainTokenFactory;
+use PhpParser\PrettyPrinter\Standard;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -83,6 +84,7 @@ class AssetFactory extends \SandraCore\EntityFactory
                     if (is_array($standardData)) {
 
                         $standardData = end($standardData);
+                        $localStorageStandard = clone($localStorageStandard);
                         $localStorageStandard = $this->replaceAnyOnOmittedData($localStorageStandard,$standardData);
 
                     }
@@ -174,7 +176,7 @@ class AssetFactory extends \SandraCore\EntityFactory
         $verif = $verifyFactory->get($id);
 
         if (isset($verif)) {
-            SandraManager::dispatchError(SandraManager::getSandra(), 2, 2, "Asset 
+            SandraManager::dispatchError(SandraManager::getSandra(), 2, 2, "Asset
         with id $id already exists", $this);
             return $verif ;
 
@@ -254,42 +256,44 @@ class AssetFactory extends \SandraCore\EntityFactory
     private function adaptStandardDisplayStructure(BlockchainContractStandard $standard,BlockchainContractStandard $localStorageStandard){
 
         $specifierArray = $standard->specificatorData ;
+        $standardModified = clone($standard);
 
         foreach ($localStorageStandard->specificatorData ?? array() as $key => $requiredData){
 
-           if ($requiredData == BlockchainContractStandard::CS_CANNON_ANY){
-               $specifierArray[$key] = $requiredData ;
-           }
+            if ($requiredData == BlockchainContractStandard::CS_CANNON_ANY){
+                $specifierArray[$key] = $requiredData ;
+            }
 
         }
-        $standard->setTokenPath($specifierArray);
+        $standardModified->setTokenPath($specifierArray);
 
-        return $standard->getDisplayStructure();
+        return $standardModified->getDisplayStructure();
 
     }
 
     private function replaceAnyOnOmittedData(BlockchainContractStandard $standard,$standardData){
 
         $outputArray = $standard->specificatorData;
-       foreach ($standard->specificatorArray ?? array() as $keyToExist){
+        $standard = clone($standard);
+        foreach ($standard->specificatorArray ?? array() as $keyToExist){
 
-           if (isset($standardData->entityRefs[$keyToExist])){
+            if (isset($standardData->entityRefs[$keyToExist])){
 
-               $outputArray[$keyToExist] = $standardData[$keyToExist] ;
-           }
+                $outputArray[$keyToExist] = $standardData[$keyToExist] ;
+            }
 
-           if (!isset($standard->specificatorData[$keyToExist])){
+            if (!isset($standard->specificatorData[$keyToExist])){
 
-               $outputArray[$keyToExist] = BlockchainContractStandard::CS_CANNON_ANY ;
-           }
+                $outputArray[$keyToExist] = BlockchainContractStandard::CS_CANNON_ANY ;
+            }
 
 
 
-       }
+        }
 
-       $standard->setTokenPath($outputArray);
+        $standard->setTokenPath($outputArray);
 
-       return $standard ;
+        return $standard ;
 
     }
 

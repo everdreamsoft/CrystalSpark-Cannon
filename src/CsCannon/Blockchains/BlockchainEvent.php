@@ -245,8 +245,9 @@ class BlockchainEvent extends Entity implements Displayable
 
         if ($this->isValid() !== null){
             $return[self::DISPLAY_VALID] = $this->isValid() ? 'valid' : 'invalid';
-            if ($this->isValid() === false);
+            if ($this->isValid() === false) {
                 $return['error'] = $this->getError();
+            }
         }
 
         $return[self::DISPLAY_BLOCKCHAIN] = $blockchain ;

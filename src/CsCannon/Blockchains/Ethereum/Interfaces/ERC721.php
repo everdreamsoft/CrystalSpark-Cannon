@@ -120,7 +120,7 @@ class ERC721 extends EthereumContractStandard
     public function getDisplayStructure()
     {
 
-       $return = 'tokenId-'.$this->tokenId ;
+       $return = 'tokenId-'.$this->specificatorData['tokenId'] ;
         return $return ;
     }
 

@@ -84,6 +84,8 @@ class Balance
         $this->contracts[$contractChain::NAME][$contract->getId()][$contractStandard->getDisplayStructure()]['token'] = $contractStandard;
 
 
+
+
         $this->contractMap[$contract->getId()] = $contract ;
 
         $this->tokenCount++ ;
@@ -220,6 +222,8 @@ class Balance
 
                 $contractChain = $contract->getBlockchain();
 
+                //dd($orb);
+
                 $quantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['quantity'] ;
                 $refinedQuantity = $this->contracts[$contractChain::NAME][$contract->getId()][$token->getDisplayStructure()]['adaptedQuantity'] ;
                 if ($quantity == 0 )continue ; //do not show zero balance
@@ -257,6 +261,12 @@ class Balance
         //die(print_r(json_encode($output)));
 
         return $output ;
+
+    }
+
+    private function takeCSCannonAnyInAccount(){
+
+
 
     }
 

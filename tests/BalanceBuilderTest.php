@@ -143,6 +143,7 @@ final class BalanceBuilderTest extends TestCase
         $this->assertEquals($rmrkEventFactory->getEntities()[$valid3->idConcept]->subjectConcept,$valid3);
         $this->assertEquals($rmrkEventFactory->getEntities()[$valid4->idConcept]->subjectConcept,$valid4);
         $this->assertEquals($rmrkEventFactory->getEntities()[$valid5->idConcept]->subjectConcept,$valid5);
+        print_r($rmrkEventFactory->display()->return());
 
 
         $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
@@ -152,7 +153,7 @@ final class BalanceBuilderTest extends TestCase
         //$rmrkEventFactory->populateBrotherEntities();
         $this->assertEquals($rmrkEventFactory->getEntities()[$invalid1->idConcept]->subjectConcept,$invalid1);
         $this->assertEquals($rmrkEventFactory->getEntities()[$invalid2->idConcept]->subjectConcept,$invalid2);
-        print_r($rmrkEventFactory->display()->return());
+
 
 
         // A should own token 2
