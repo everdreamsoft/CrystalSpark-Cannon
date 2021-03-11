@@ -24,6 +24,7 @@ use CsCannon\Blockchains\Generic\GenericContract;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
+use CsCannon\Blockchains\Substrate\Kusama\WestendBlockchain;
 use CsCannon\Blockchains\Substrate\Unique\UniqueBlockchain;
 use SandraCore\Concept;
 use SandraCore\DatabaseAdapter;
@@ -53,6 +54,7 @@ class BlockchainRouting
         $supported[] = new GoerliEthereumBlockchain();
         $supported[] = new UniqueBlockchain();
         $supported[] = new KusamaBlockchain();
+        $supported[] = new WestendBlockchain();
 
 
         $supported = array_merge($supported,self::$hotPluggedBlockchain);
