@@ -17,11 +17,12 @@ class RmrkContractFactory extends SubstrateContractFactory
 
     protected static $className = RmrkContract::class;
 
-    public function __construct()
+    public function __construct($blockchainClass = null)
     {
 
+        if (!$blockchainClass) $blockchainClass = KusamaBlockchain::class ;
         $return = parent::__construct();
-        $this->blockchain = KusamaBlockchain::class;
+        $this->blockchain = $blockchainClass;
         return $return ;
     }
 

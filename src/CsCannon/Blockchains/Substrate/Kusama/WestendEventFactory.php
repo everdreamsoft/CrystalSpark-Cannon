@@ -21,7 +21,7 @@ class WestendEventFactory extends SubstrateEventFactory
         $this->setFilter(self::ON_BLOCKCHAIN_EVENT, WestendBlockchain::NAME);
 
         $this->addressFactory = new WestendAddressFactory();
-        $this->contractFactory = new RmrkContractFactory();
+        $this->contractFactory = new RmrkContractFactory(WestendBlockchain::class);
     }
 
 

@@ -21,7 +21,7 @@ class WestendBlockchain extends SubstrateBlockchain
     {
 
 
-        $this->contractFactory = new RmrkContractFactory();     //careful with this
+        $this->contractFactory = new RmrkContractFactory(WestendBlockchain::class);     //careful with this
         $this->eventFactory = new WestendEventFactory();
         $this->addressFactory = new WestendAddressFactory();
 
