@@ -234,7 +234,7 @@ class BlockchainEvent extends Entity implements Displayable
     }
 
 
-    public function returnArray($displayManager)
+    public function returnArray($displayManager,$withOrbs=true)
     {
 
         $blockchains = $this->getBlockchainName();
@@ -297,7 +297,7 @@ class BlockchainEvent extends Entity implements Displayable
         $sp = $this->getSpecifier();
 
         //here we are building to much factories
-        if(is_array($collections)) {
+        if(is_array($collections) &&  $this->displayManager->params['withOrbs']) {
             $orbFactory = new OrbFactory();
             $orbArray = $orbFactory->getOrbFromSpecifier($this->getSpecifier(), $contract, reset($collections));
 
@@ -317,11 +317,12 @@ class BlockchainEvent extends Entity implements Displayable
         return $return ;
     }
 
-    public function display(): DisplayManager
+    public function display($withOrbs=true): DisplayManager
     {
         if (!isset($this->displayManager)){
             $this->displayManager = new DisplayManager($this);
         }
+        $this->displayManager->params['withOrbs'] = $withOrbs ;
 
         return $this->displayManager ;
     }
