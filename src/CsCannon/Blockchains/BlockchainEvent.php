@@ -23,6 +23,7 @@ use CsCannon\OrbFactory;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
 use CsCannon\Tools\BalanceBuilder;
+use Matrix\Exception;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -253,11 +254,16 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_BLOCKCHAIN] = $blockchain ;
         $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
-        $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
+        try {
+            $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
+            $sp = $this->getSpecifier();
+        }catch (\Exception $e){
+            $return[self::DISPLAY_CONTRACT]['address'] = $this->getBlockchainContract()->display()->return();
+            $return[self::DISPLAY_CONTRACT]['standard'] = $this->getBlockchainContract()->getStandard()->getStandardName();
+            $return[self::DISPLAY_CONTRACT]['error'] = "event failed to comply ".$e->getMessage();
+            //  dd($return[self::DISPLAY_CONTRACT]);
 
-
-
-
+        }
 
         //force this blockchain into contract
         $return[self::DISPLAY_CONTRACT]['blockchain']= $blockchain ;
@@ -265,7 +271,7 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_ADAPTED_QUANTITY] = NULL ;
         //does it have adapted quantity ?
         if ($this->getBlockchainContract()->decimals){
-           $quantity = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
+            $quantity = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
             $adaptedQuantity = $quantity ;
             if ($this->getBlockchainContract()->decimals > 0){
                 $adaptedQuantity = $quantity / pow(10,$this->getBlockchainContract()->decimals);
@@ -294,7 +300,7 @@ class BlockchainEvent extends Entity implements Displayable
 
         $contract =  $this->getBlockchainContract();
         $collections = $contract->getCollections();
-        $sp = $this->getSpecifier();
+
 
         //here we are building to much factories
         if(is_array($collections) &&  $this->displayManager->params['withOrbs']) {

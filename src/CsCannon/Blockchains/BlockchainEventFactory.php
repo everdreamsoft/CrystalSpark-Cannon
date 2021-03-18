@@ -274,7 +274,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
 
             /** @var BlockchainEvent $eventEntity */
-            $output[] = $eventEntity->display()->return();
+            $output[] = $eventEntity->display( $this->displayManager->params['withOrbs'] ?? null)->return();
 
 
         }
