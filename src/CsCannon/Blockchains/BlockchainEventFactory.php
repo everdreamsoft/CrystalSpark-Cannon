@@ -272,8 +272,9 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
             $contractAdress = null ;
 
+
             /** @var BlockchainEvent $eventEntity */
-            $output[] = $eventEntity->display()->return();
+            $output[] = $eventEntity->display( $this->displayManager->params['withOrbs'] ?? null)->return();
 
 
         }
@@ -284,11 +285,12 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
     }
 
-    public function display():DisplayManager{
+    public function display($withOrbs=true):DisplayManager{
 
         if (!isset($this->displayManager)){
             $this->displayManager = new DisplayManager($this);
         }
+        $this->displayManager->params['withOrbs'] = $withOrbs ;
 
         return $this->displayManager ;
 

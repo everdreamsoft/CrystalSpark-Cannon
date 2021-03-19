@@ -19,6 +19,7 @@ class DisplayManager
     public $outputFormat = 'json';
     public $returnData = array();
     public $dataStore = array();
+    public $params = array();
 
 
     public function __construct(Displayable $displayable)
