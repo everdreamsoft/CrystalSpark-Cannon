@@ -10,7 +10,7 @@ class WestendAddressFactory extends SubstrateAddressFactory
 {
 
     public static $isa = 'westendAddress';
-    public static $file = 'westendAddressFile';
+    public static $file = 'blockchainAddressFile';
     protected static $className = WestendAddress::class ;
 
     public function get($address,$autoCreate = false):BlockchainAddress{

@@ -8,7 +8,7 @@ use CsCannon\Blockchains\BlockchainDataSource;
 
 class WestendAddress extends BlockchainAddress
 {
-    protected static  $className = KusamaAddress::class;
+    protected static  $className = WestendAddress::class;
     public static $defaultDataSource = '\CsCannon\Blockchains\DataSource\DatagraphSource';
 
     public function getBlockchain(): Blockchain
