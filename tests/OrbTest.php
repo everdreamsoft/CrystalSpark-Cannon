@@ -48,10 +48,15 @@ final class OrbTest extends TestCase
 
         $collectionName = self::COLLECTION_NAME ;
 
+        $ownerAddress = 'myowneraddress';
+
+        $address = \CsCannon\Blockchains\Ethereum\EthereumAddressFactory::getAddress($ownerAddress,true);
+
         $collection->setName($collectionName);
         $collection->setImageUrl("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png");
         $collection->setDescription("My collection is fantastic");
         $collection->setSolver(LocalSolver::getEntity());
+        $collection->setOwner($address);
 
         $this->assertInstanceOf(\CsCannon\AssetCollection::class,$collection,"Collection Factory
         Does not return valid collection object");
@@ -65,6 +70,18 @@ final class OrbTest extends TestCase
 
         $this->assertCount(1,$assetCollectionControl->entityArray,"Collection not saved");
         $this->assertEquals($collectionName,$collection->name,"Collection name not pass");
+
+       $owerArray = $collection->getOwners();
+       $owner = reset($owerArray);
+
+        /** @var $owner \CsCannon\Blockchains\BlockchainAddress */
+
+       $this->assertEquals($ownerAddress,$owner->getAddress());
+
+
+
+
+      // die(print_r($collection->getOwners()));
 
 
 

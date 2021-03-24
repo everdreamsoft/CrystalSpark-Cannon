@@ -10,6 +10,7 @@
 namespace CsCannon;
 
 use CsCannon\AssetSolvers\AssetSolver;
+use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
@@ -133,6 +134,20 @@ class AssetCollection extends \SandraCore\Entity
         $this->setStorage($description);
         $this->createOrUpdateRef(AssetCollectionFactory::DESCRIPTION,$description);
         $this->description = $description;
+
+
+    }
+
+    public function setOwner(BlockchainAddress $blockchainAddress){
+
+       $this->setBrotherEntity(AssetCollectionFactory::COLLECTION_OWNER,$blockchainAddress,[]);
+
+
+    }
+
+    public function getOwners(){
+
+       return $this->getJoinedEntities(AssetCollectionFactory::COLLECTION_OWNER);
 
 
     }

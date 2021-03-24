@@ -17,6 +17,7 @@ use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContract;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use SandraCore\displayer\DisplayType;
 use SandraCore\Entity;
 use SandraCore\System;
@@ -41,6 +42,8 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
     const MAIN_NAME = 'name';
     const DESCRIPTION = 'description';
 
+    const COLLECTION_OWNER = 'owner';
+
 
 
 
@@ -51,6 +54,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
         $this->generatedEntityClass = static::$className ;
+
 
 
     }
@@ -138,6 +142,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
         $this->getTriplets();
         $this->joinFactory(self::METADATASOLVER_VERB,self::getSolverData());
+        $this->joinFactory(self::COLLECTION_OWNER,new GenericAddressFactory());
         $this->populateBrotherEntities(self::METADATASOLVER_VERB);
         $this->populateBrotherEntities('store');
         $this->joinPopulate();
