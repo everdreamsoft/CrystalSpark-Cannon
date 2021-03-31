@@ -28,7 +28,7 @@ class BalanceBuilder
     public static function buildBalance(BlockchainEventFactory $eventFactory)
     {
 
-        $maxProcess = 100000 ;
+        $maxProcess = 10000 ;
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');

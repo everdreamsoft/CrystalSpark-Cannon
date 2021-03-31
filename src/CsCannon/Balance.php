@@ -444,8 +444,9 @@ class Balance
                         $existEntity = $factory->createNew($newToken,$triplets);
                     }
                     else{
-
-                        $existEntity->createOrUpdateRef('quantity',$token['quantity']);
+                        if ($existEntity->getReference('quantity')->refValue != $token['quantity']) {
+                            $existEntity->createOrUpdateRef('quantity', $token['quantity']);
+                        }
 
                         //TODO missing last block
 

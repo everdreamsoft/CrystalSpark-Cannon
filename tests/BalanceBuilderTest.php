@@ -249,9 +249,10 @@ final class BalanceBuilderTest extends TestCase
 
     public function testLotOfData(){
 
-
+        \CsCannon\Tests\TestManager::initTestDatagraph();
         $kusamaBlockchain = new \CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain();
         $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
+        $rmrkEventFactory2 = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
 
         $mintAddress = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress(\CsCannon\Blockchains\BlockchainAddressFactory::NULL_ADDRESS,true);
         $addressA = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress('a',true);
@@ -267,22 +268,24 @@ final class BalanceBuilderTest extends TestCase
         $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
         $block1 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,1);
 
-        for($i=0;$i<100;$i++) {
+        for($i=0;$i<1000;$i++) {
 
 
             $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => $i]);
             $event = $rmrkEventFactory->create($kusamaBlockchain, $mintAddress, $addressA, $contractA, 'fooTx', '10000000', $block1, $t1, 1,false);
             $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB, \CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING, [],false);
 
-            $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
+           // $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
 
 
 
 
         }
         \SandraCore\DatabaseAdapter::commit();
-        $emptyFactory = clone($rmrkEventFactory);
+        $emptyFactory = clone($rmrkEventFactory2);
          \CsCannon\Tools\BalanceBuilder::buildBalance(clone($emptyFactory));
+
+         $this->assertEquals(1,1);
 
     }
 
