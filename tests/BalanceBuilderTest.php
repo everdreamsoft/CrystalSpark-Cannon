@@ -247,6 +247,45 @@ final class BalanceBuilderTest extends TestCase
 
     }
 
+    public function testLotOfData(){
+
+
+        $kusamaBlockchain = new \CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain();
+        $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
+
+        $mintAddress = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress(\CsCannon\Blockchains\BlockchainAddressFactory::NULL_ADDRESS,true);
+        $addressA = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress('a',true);
+        $addressB = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress('b',true);
+        $addressC = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress('c',true);
+
+        $contractA = \CsCannon\Blockchains\Substrate\RMRK\RmrkContractFactory::getContract('c1',true,\CsCannon\Blockchains\Interfaces\RmrkContractStandard::getEntity());
+
+        $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => 1]);
+        $t2 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => 2]);
+        $t3 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => 3]);
+
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
+        $block1 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,1);
+
+        for($i=0;$i<100;$i++) {
+
+
+            $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => $i]);
+            $event = $rmrkEventFactory->create($kusamaBlockchain, $mintAddress, $addressA, $contractA, 'fooTx', '10000000', $block1, $t1, 1,false);
+            $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB, \CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING, [],false);
+
+            $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
+
+
+
+
+        }
+        \SandraCore\DatabaseAdapter::commit();
+        $emptyFactory = clone($rmrkEventFactory);
+         \CsCannon\Tools\BalanceBuilder::buildBalance(clone($emptyFactory));
+
+    }
+
 
 
 

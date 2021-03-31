@@ -409,6 +409,8 @@ class Balance
 
 
 
+
+
                 foreach($contracts ? $contracts : array() as $tokenComposedId =>$token){
 
                     $triplets = [self::LINKED_ADDRESS=>$this->address,

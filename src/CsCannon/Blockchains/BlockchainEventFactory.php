@@ -151,7 +151,8 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
                            $timestamp,
                            BlockchainBlock $block,
                            BlockchainContractStandard $token = null,
-                           $quantity = 1
+                           $quantity = 1,
+                            $autocommit=true
 
     )
     {
@@ -186,7 +187,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         }
 
 
-        return parent::createNew($dataArray, $triplets);
+        return parent::createNew($dataArray, $triplets,$autocommit);
     }
 
 

@@ -32,12 +32,15 @@ class BalanceBuilder
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');
+        $count = 0 ;
 
         foreach ($eventFactory->getEntities() as $event) {
             /** @var BlockchainEvent $event */
             if ($event->getDestinationAddress()) {
 
             $error = static::hasSendError($event);
+            echo"looping once ".$count.PHP_EOL;
+            $count++;
 
             if (!$error){
                 $contract = $event->getBlockchainContract();
