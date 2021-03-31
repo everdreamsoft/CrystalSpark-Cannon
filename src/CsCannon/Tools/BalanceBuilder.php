@@ -39,7 +39,7 @@ class BalanceBuilder
             if ($event->getDestinationAddress()) {
 
             $error = static::hasSendError($event);
-            echo"looping once ".$count.PHP_EOL;
+            //echo"looping once ".$count.PHP_EOL;
             $count++;
 
             if (!$error){
