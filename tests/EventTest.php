@@ -119,6 +119,77 @@ final class EventTest extends TestCase
     }
 
 
+    public function xtestSaveOrder()
+    {
+
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        \CsCannon\Tests\TestManager::initTestDatagraph();
+
+
+        $testAddress = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
+        $testContract = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
+
+        $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
+        $addressFactoryControl = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
+        $addressEntity = $addressFactory->get($testAddress,1);
+
+        $contractFactory = new \CsCannon\Blockchains\Klaytn\KlaytnContractFactory();
+        $contract = $contractFactory->get($testContract,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain());
+        $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
+
+        $Erc721_buy =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
+        $Erc721_sell =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
+        $erc20 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init();
+        $Erc721_buy->setTokenId('2');
+        $Erc721_sell->setTokenId('1');
+
+        $eventFactory = new \CsCannon\Blockchains\Klaytn\KlaytnEventFactory();
+        $event = $eventFactory->createOrder(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain(),
+            $addressEntity,
+            $contract,
+            $contract,
+            1,
+            1,
+            1,
+            "testTx",
+            111111,
+            1,
+            1,
+            $currentBlock,
+            $tokenId = $Erc721
+
+
+        );
+
+        $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainEvent::class,$event);
+
+
+
+
+
+        $event2 = $eventFactory->create(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain(),
+            $addressEntity,
+            $addressEntity,
+            $contractFactory->get('anotherFooContract',true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init()),
+            'fooTX EWRC 20',
+            "123343555",
+            $currentBlock,
+            $tokenId = $erc20,
+            $quantity = self::ERC20_QUANTITY
+
+        );
+
+
+
+
+
+    }
+
+
 
 
 

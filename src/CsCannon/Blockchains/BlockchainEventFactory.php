@@ -36,6 +36,11 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     const EVENT_DESTINATION_VERB = 'hasSingleDestination';
     const EVENT_CONTRACT = 'blockchainContract';
 
+
+    const ORDER_BUY_AMOUNT = 'amount';
+    const ORDER_SELL_PRICE = 'sellPrice';
+    const ORDER_BUY_TOTAL = 'buyTotal';
+
     const ON_BLOCKCHAIN_EVENT = 'onBlockchain';
     const EVENT_DESTINATION_SIMPLE_VERB = 'destinationAddress' ;
     const EVENT_QUANTITY = 'quantity' ;
@@ -111,9 +116,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
     {
 
-
-
-        $return = parent::populateLocal($limit, $offset, $asc);
+          $return = parent::populateLocal($limit, $offset, $asc);
 
         $blockFactory = new BlockchainBlockFactory(GenericBlockchain::getStatic());
         $this->joinFactory(self::EVENT_BLOCK,$blockFactory);
@@ -161,9 +164,6 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         $dataArray[self::EVENT_QUANTITY] = $quantity ;
         $dataArray[self::EVENT_BLOCK_TIME] = $timestamp ;
 
-
-
-
         /** @var BlockchainContractFactory $contractFactory */
 
         $triplets[self::EVENT_SOURCE_ADDRESS] = $sourceAddressConcept ;
@@ -189,6 +189,56 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
         return parent::createNew($dataArray, $triplets,$autocommit);
     }
+
+//    public function createOrder(Blockchain $blockchain,
+//                                BlockchainAddress $sourceAddressConcept,
+//                                BlockchainContract $buyContract,
+//                                BlockchainContract $sellContract,
+//                                $buyAmount,
+//                                $sellPrice,
+//                                $buyTotal,
+//                           $txid,
+//                           $timestamp,
+//                           BlockchainBlock $block,
+//                           BlockchainContractStandard $tokenBuy = null,
+//                           BlockchainContractStandard $tokenSell = null,
+//                           ){
+//
+//
+//        $dataArray[Blockchain::$txidConceptName] = $txid ;
+//        $dataArray[self::EVENT_BLOCK_TIME] = $timestamp ;
+//
+//
+//        /** @var BlockchainContractFactory $contractFactory */
+//
+//        $triplets[self::EVENT_SOURCE_ADDRESS] = $sourceAddressConcept ;
+//
+//        $triplets[self::ORDER_BUY_CONTRACT] = array($buyContract => array(self::ORDER_BUY_AMOUNT=>$buyAmount)) ;
+//        $triplets[self::ORDER_SELL_CONTRACT] = array($sellContract => array(self::ORDER_SELL_PRICE=>$sellPrice)) ;
+//
+//        $triplets[self::ON_BLOCKCHAIN_EVENT] = $blockchain::NAME ;
+//        $triplets[self::EVENT_BLOCK] = $block ;
+//
+//        //does the contract has a token id ?
+//        if (!is_null($token)){
+//            $stucture = $token->getSpecifierData();
+//
+//
+//            $triplets[self::EVENT_CONTRACT] = array($contract->subjectConcept->idConcept=>$stucture);
+//
+//        }
+//
+//        else {
+//            $triplets[self::EVENT_CONTRACT] = $contract;
+//
+//        }
+//
+//
+//        return parent::createNew($dataArray, $triplets);
+//
+//
+//
+//    }
 
 
 

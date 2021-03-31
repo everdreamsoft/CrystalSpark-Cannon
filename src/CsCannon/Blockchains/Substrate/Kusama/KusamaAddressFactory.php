@@ -10,7 +10,7 @@ class KusamaAddressFactory extends SubstrateAddressFactory
 {
 
     public static $isa = 'kusamaAddress';
-    public static $file = 'kusamaAddressFile';
+    public static $file = 'blockchainAddressFile';
     protected static $className = KusamaAddress::class ;
 
     public function get($address,$autoCreate = false):BlockchainAddress{

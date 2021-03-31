@@ -45,6 +45,7 @@ class BlockchainEvent extends Entity implements Displayable
     const DISPLAY_BLOCKCHAIN_NETWORK = 'network_name';
     const DISPLAY_BLOCK_ID = 'blockHeight';
     const BLOCKCHAIN_EVENT_TYPE_VERB = 'blockchainEventType';
+    public $eventType = 'order';
 
 
 
