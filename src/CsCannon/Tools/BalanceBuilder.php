@@ -80,10 +80,12 @@ class BalanceBuilder
 
             }
         }
-        try {
-            DatabaseAdapter::commit();
-        }catch (\Exception $e){
-            //nothing to commit
+        if ($somethingToCommit) {
+            try {
+                DatabaseAdapter::commit();
+            } catch (\Exception $e) {
+                //nothing to commit
+            }
         }
 
         self::saveBalanceBuffer();
