@@ -250,9 +250,13 @@ final class BalanceBuilderTest extends TestCase
     public function testLotOfData(){
 
         \CsCannon\Tests\TestManager::initTestDatagraph();
+
         $kusamaBlockchain = new \CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain();
         $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
         $rmrkEventFactory2 = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
+        $rmrkEventFactory3 = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
+
+        \CsCannon\Tools\BalanceBuilder::buildBalance(clone($rmrkEventFactory3));
 
         $mintAddress = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress(\CsCannon\Blockchains\BlockchainAddressFactory::NULL_ADDRESS,true);
         $addressA = \CsCannon\Blockchains\Substrate\Kusama\KusamaAddressFactory::getAddress('a',true);
@@ -268,7 +272,7 @@ final class BalanceBuilderTest extends TestCase
         $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
         $block1 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,1);
 
-        for($i=0;$i<10000;$i++) {
+        for($i=0;$i<100;$i++) {
 
 
             $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => $i]);
@@ -281,7 +285,9 @@ final class BalanceBuilderTest extends TestCase
         }
         \SandraCore\DatabaseAdapter::commit();
         $emptyFactory = clone($rmrkEventFactory2);
-         \CsCannon\Tools\BalanceBuilder::buildBalance(clone($emptyFactory));
+
+        \CsCannon\Tools\BalanceBuilder::buildBalance(clone($emptyFactory));
+
 
          $this->assertEquals(1,1);
 
