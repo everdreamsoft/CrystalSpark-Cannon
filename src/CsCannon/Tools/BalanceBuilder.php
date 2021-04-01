@@ -32,7 +32,7 @@ class BalanceBuilder
     public static function buildBalance(BlockchainEventFactory $eventFactory)
     {
 
-        $maxProcess = 5000 ;
+        $maxProcess = 10000 ;
         self::$bufferBalance = [];
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
