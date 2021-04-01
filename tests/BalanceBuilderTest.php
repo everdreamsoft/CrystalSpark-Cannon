@@ -268,7 +268,7 @@ final class BalanceBuilderTest extends TestCase
         $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
         $block1 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,1);
 
-        for($i=0;$i<1000;$i++) {
+        for($i=0;$i<10000;$i++) {
 
 
             $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => $i]);
@@ -276,8 +276,6 @@ final class BalanceBuilderTest extends TestCase
             $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB, \CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING, [],false);
 
            // $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
-
-
 
 
         }

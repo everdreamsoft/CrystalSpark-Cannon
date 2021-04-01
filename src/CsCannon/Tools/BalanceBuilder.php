@@ -5,10 +5,12 @@ namespace CsCannon\Tools;
 
 
 use CsCannon\Balance;
+use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory;
+use SandraCore\DatabaseAdapter;
 
 class BalanceBuilder
 {
@@ -25,10 +27,13 @@ class BalanceBuilder
     const PROCESSOR_NAME = 'CSCannonBalanceBuilder';
     const PROCESSOR_VERSION = '0.1';
 
+    private static $bufferBalance = [];
+
     public static function buildBalance(BlockchainEventFactory $eventFactory)
     {
 
-        $maxProcess = 10000 ;
+        $maxProcess = 5000 ;
+        self::$bufferBalance = [];
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');
@@ -46,32 +51,59 @@ class BalanceBuilder
                 $contract = $event->getBlockchainContract();
                 $quantity = $event->getQuantity();
                 $token = $event->getSpecifier();
-                $newBalance = $event->getDestinationAddress()->getBalance();
+                $newBalance = self::getAddressBalance($event->getDestinationAddress());
                 $newBalance->addContractToken($event->getBlockchainContract(),$token,$quantity);
-                $newBalance->saveToDatagraph();
+                //$newBalance->saveToDatagraph();
 
-                $oldBalance = $event->getSourceAddress()->getBalance();
+
+                $oldBalance = self::getAddressBalance($event->getSourceAddress());
                 $oldBalancePreviousQuantity = $oldBalance->getQuantityForContractToken($contract,$token);
                 $oldBalance->addContractToken($contract,$token,$oldBalancePreviousQuantity-$quantity);
-                $oldBalance->saveToDatagraph();
+               // $oldBalance->saveToDatagraph();
 
-                $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID);
-                $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME],true,true);
+                $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,false);
+                $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME],false,true);
 
             }
             else{
-                $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID);
+                $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID,false);
                 $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_INVALID,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME,
                     self::PROCESSOR_ERROR=>$error
-                    ],true,true);
+                    ],false,true);
             }
-
 
 
 
 
             }
         }
+        DatabaseAdapter::commit();
+        self::saveBalanceBuffer();
+    }
+
+    private static function getAddressBalance(BlockchainAddress $address){
+
+        if (!isset(self::$bufferBalance[$address->getAddress()])){
+
+            self::$bufferBalance[$address->getAddress()] = $address->getBalance(1000000);
+
+
+        }
+
+        return  self::$bufferBalance[$address->getAddress()];
+
+    }
+
+    private static function saveBalanceBuffer(){
+
+        foreach (self::$bufferBalance as $balance){
+
+            $balance->saveToDatagraph();
+
+        }
+
+        self::$bufferBalance = [];
+
     }
 
     private static function hasSendError(BlockchainEvent $event):?string{
@@ -82,8 +114,10 @@ class BalanceBuilder
             $contract = $event->getBlockchainContract();
             $quantity = $event->getQuantity();
             $token = $event->getSpecifier();
-            $actualBalance = new Balance($event->getSourceAddress());
-            $sourceAddressBalance = $event->getSourceAddress()->getBalanceForContract([$event->getBlockchainContract()]);
+            $actualBalance = self::getAddressBalance($event->getSourceAddress());
+            $sourceAddressBalance = self::getAddressBalance($event->getSourceAddress());
+
+
             $quantityOwned = $sourceAddressBalance->getQuantityForContractToken($contract, $token);
 
 
