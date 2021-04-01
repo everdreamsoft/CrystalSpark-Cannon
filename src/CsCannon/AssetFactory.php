@@ -43,6 +43,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
 
 
+
     public function __construct(System $system = null)
     {
 
@@ -89,7 +90,14 @@ class AssetFactory extends \SandraCore\EntityFactory
 
                     }
 
-                    $this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()][] = $asset;
+                    $assetAlreadyInArray = false ;
+                    foreach  ($this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()] ?? array() as $existAsset){
+                        if ($asset->entityId == $asset->entityId)
+                            $assetAlreadyInArray = true ;
+                    }
+                    if (!$assetAlreadyInArray)
+                        $this->specifierMap[$contract->subjectConcept->idConcept][$localStorageStandard->getDisplayStructure()][] = $asset;
+
                 }
 
             }
