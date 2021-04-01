@@ -38,6 +38,7 @@ class BalanceBuilder
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC');
         $count = 0 ;
+        $somethingToCommit = false ;
 
         foreach ($eventFactory->getEntities() as $event) {
             /** @var BlockchainEvent $event */
@@ -54,6 +55,7 @@ class BalanceBuilder
                 $newBalance = self::getAddressBalance($event->getDestinationAddress());
                 $newBalance->addContractToken($event->getBlockchainContract(),$token,$quantity);
                 //$newBalance->saveToDatagraph();
+                $somethingToCommit = true ;
 
 
                 $oldBalance = self::getAddressBalance($event->getSourceAddress());
@@ -63,6 +65,7 @@ class BalanceBuilder
 
                 $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,false);
                 $event->setBrotherEntity(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,[self::PROCESSOR_CONCEPT=>static::PROCESSOR_NAME],false,true);
+                $somethingToCommit = true ;
 
             }
             else{
