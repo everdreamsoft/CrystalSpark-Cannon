@@ -21,9 +21,10 @@ class SubstrateEventFactory extends BlockchainEventFactory
         $this->contractFactory = new SubstrateContractFactory();
     }
 
-    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
+    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
-        $return = parent::populateLocal($limit, $offset, $asc);
+
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $this->joinFactory(self::EVENT_SOURCE_ADDRESS, $this->addressFactory);
         $this->joinFactory(self::EVENT_DESTINATION_VERB, $this->addressFactory);

@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/everdreamsoft/sandra.git",
-                "reference": "c6430a6feff5c02b57542b3725206b652d79db3a"
+                "reference": "de3e0d01f444cf6fe23d933794a1077c8ce6fc60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/c6430a6feff5c02b57542b3725206b652d79db3a",
-                "reference": "c6430a6feff5c02b57542b3725206b652d79db3a",
+                "url": "https://api.github.com/repos/everdreamsoft/sandra/zipball/de3e0d01f444cf6fe23d933794a1077c8ce6fc60",
+                "reference": "de3e0d01f444cf6fe23d933794a1077c8ce6fc60",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "issues": "https://github.com/everdreamsoft/sandra/issues",
                 "source": "https://github.com/everdreamsoft/sandra/tree/master"
             },
-            "time": "2021-01-29T21:58:59+00:00"
+            "time": "2021-04-06T13:56:31+00:00"
         }
     ],
     "packages-dev": [
@@ -350,12 +350,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9"
+                "reference": "f8d350d8514ff60b5993dd0121c62299480c989c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
-                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/f8d350d8514ff60b5993dd0121c62299480c989c",
+                "reference": "f8d350d8514ff60b5993dd0121c62299480c989c",
                 "shasum": ""
             },
             "require": {
@@ -399,7 +399,7 @@
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
                 "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/master"
             },
-            "time": "2020-11-18T14:27:38+00:00"
+            "time": "2021-03-07T11:12:25+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -453,16 +453,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.12.2",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "245710e971a030f42e08f4912863805570f23d39"
+                "reference": "be1996ed8adc35c3fd795488a653f4b518be70ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/245710e971a030f42e08f4912863805570f23d39",
-                "reference": "245710e971a030f42e08f4912863805570f23d39",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/be1996ed8adc35c3fd795488a653f4b518be70ea",
+                "reference": "be1996ed8adc35c3fd795488a653f4b518be70ea",
                 "shasum": ""
             },
             "require": {
@@ -514,9 +514,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpspec/prophecy/issues",
-                "source": "https://github.com/phpspec/prophecy/tree/1.12.2"
+                "source": "https://github.com/phpspec/prophecy/tree/1.13.0"
             },
-            "time": "2020-12-19T10:15:11+00:00"
+            "time": "2021-03-17T13:42:18+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -822,12 +822,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "877b09d6bc91c7f4e5f677c4c483a42b12923733"
+                "reference": "5071503c50b1ac3f5cb23ef9af123fe64f3ab0d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/877b09d6bc91c7f4e5f677c4c483a42b12923733",
-                "reference": "877b09d6bc91c7f4e5f677c4c483a42b12923733",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5071503c50b1ac3f5cb23ef9af123fe64f3ab0d2",
+                "reference": "5071503c50b1ac3f5cb23ef9af123fe64f3ab0d2",
                 "shasum": ""
             },
             "require": {
@@ -911,7 +911,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-02-23T15:50:35+00:00"
+            "time": "2021-03-17T07:49:42+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1778,12 +1778,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae"
+                "reference": "f07851c5b43e4cb502c24068620e9af6cbdd953f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/9c89b265ccc4092d58e66d72af5d343ee77a41ae",
-                "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/f07851c5b43e4cb502c24068620e9af6cbdd953f",
+                "reference": "f07851c5b43e4cb502c24068620e9af6cbdd953f",
                 "shasum": ""
             },
             "require": {
@@ -1792,7 +1792,7 @@
             },
             "conflict": {
                 "phpstan/phpstan": "<0.12.20",
-                "vimeo/psalm": "<3.9.1"
+                "vimeo/psalm": "<4.6.1 || 4.6.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5.13"
@@ -1829,7 +1829,7 @@
                 "issues": "https://github.com/webmozarts/assert/issues",
                 "source": "https://github.com/webmozarts/assert/tree/master"
             },
-            "time": "2021-01-18T12:52:36+00:00"
+            "time": "2021-03-11T07:08:13+00:00"
         }
     ],
     "aliases": [],

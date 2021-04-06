@@ -5,6 +5,7 @@ namespace CsCannon\Tools;
 
 
 use CsCannon\Balance;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
 use CsCannon\Blockchains\BlockchainEvent;
@@ -36,7 +37,7 @@ class BalanceBuilder
         self::$bufferBalance = [];
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
-        $eventFactory->populateLocal($maxProcess, 0, 'ASC');
+        $eventFactory->populateLocal($maxProcess, 0, 'ASC',BlockchainEventFactory::EVENT_BLOCK_TIME,true);
         $count = 0 ;
         $somethingToCommit = false ;
 
@@ -45,6 +46,7 @@ class BalanceBuilder
             if ($event->getDestinationAddress()) {
 
             $error = static::hasSendError($event);
+            //print_r($event->get(Blockchain::$txidConceptName). " ".$event->get(BlockchainEventFactory::EVENT_BLOCK_TIME)  .PHP_EOL);
            // echo"looping once ".$count.PHP_EOL;
             $count++;
 
@@ -234,7 +236,7 @@ class BalanceBuilder
 
         $maxProcess = 10000 ;
 
-        $factory->populateLocal($maxProcess, 0, 'ASC');
+        $factory->populateLocal($maxProcess, 0, 'ASC',BlockchainEventFactory::EVENT_BLOCK_TIME,true);
 
         return $factory->getEntities();
 

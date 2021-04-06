@@ -65,10 +65,10 @@ public $blockchain ;
     }
 
 
-    public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC')
+    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
 
-        $return = parent::populateLocal($limit, $offset, $asc);
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $standardFactory = new BlockchainStandardFactory(SandraManager::getSandra());
         $collectionFactory = AssetCollectionFactory::getStaticCollection();

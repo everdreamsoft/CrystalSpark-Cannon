@@ -40,10 +40,10 @@ class KlaytnEventFactory extends BlockchainEventFactory
 
     }
 
-    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
+    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
 
-        $return = parent::populateLocal($limit, $offset, $asc);
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $addressFactory = new KlaytnAddressFactory();
         $contractFactory = new KlaytnContractFactory(); //todo should be static

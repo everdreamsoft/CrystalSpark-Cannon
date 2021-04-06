@@ -42,10 +42,10 @@ class GenericEventFactory extends BlockchainEventFactory
 
     }
 
-    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC')
+    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
 
-        $return = parent::populateLocal($limit, $offset, $asc);
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $addressFactory = new GenericAddressFactory();
         $contractFactory = new GenericContractFactory(); //todo should be static

@@ -136,9 +136,10 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC')
+    public function populateLocal($limit = 10000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
-        $output = parent::populateLocal($limit, $offset, $asc);
+
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $this->getTriplets();
         $this->joinFactory(self::METADATASOLVER_VERB,self::getSolverData());

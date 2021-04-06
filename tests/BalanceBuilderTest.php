@@ -37,6 +37,8 @@ final class BalanceBuilderTest extends TestCase
     public function testBalanceBuilding()
     {
 
+        $time = time();
+
 
         $counter = 0;
         \CsCannon\Tests\TestManager::initTestDatagraph();
@@ -63,7 +65,7 @@ final class BalanceBuilderTest extends TestCase
         $block5 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,5);
         $block6 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,6);
 
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$mintAddress,$addressA,$contractA,'fooTx','10000000',$block1,$t1,1);
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$mintAddress,$addressA,$contractA,'fooTx',$time++,$block1,$t1,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
 
 
@@ -81,7 +83,7 @@ final class BalanceBuilderTest extends TestCase
 
 
         //A send token 1 to B
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressA,$addressB,$contractA,"fooTx$counter",'10000000',$block2,$t1,1);
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressA,$addressB,$contractA,"fooTx$counter",$time++,$block2,$t1,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
         $valid2 = $event->subjectConcept ;
 
@@ -89,8 +91,8 @@ final class BalanceBuilderTest extends TestCase
 
 
 
-        //A double spend to C
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressA,$addressC,$contractA,"fooTx$counter",'10000000',$block2,$t1,1);
+        //A double spend to C TX 3
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressA,$addressC,$contractA,"fooTx$counter",$time++,$block2,$t1,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
         $invalid1 = $event->subjectConcept ;
         $counter++ ;
@@ -98,7 +100,7 @@ final class BalanceBuilderTest extends TestCase
 
 
         //A mint token 2
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$mintAddress,$addressA,$contractA,"fooTx$counter",'10000000',$block3,$t2,1);
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$mintAddress,$addressA,$contractA,"fooTx$counter",$time++,$block3,$t2,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
         $valid3 = $event->subjectConcept ;
         $counter++ ;
@@ -106,7 +108,7 @@ final class BalanceBuilderTest extends TestCase
 
 
         //A send token 2 to C
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressA,$addressC,$contractA,"fooTx$counter",'10000000',$block4,$t2,1);
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressA,$addressC,$contractA,"fooTx$counter",$time++,$block4,$t2,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
         $valid4 = $event->subjectConcept ;
         $counter++ ;
@@ -114,7 +116,7 @@ final class BalanceBuilderTest extends TestCase
 
 
         //C send token 2 back to A
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressC,$addressA,$contractA,"fooTx$counter",'10000000',$block5,$t2,1);
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressC,$addressA,$contractA,"fooTx$counter",$time++,$block5,$t2,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
         $valid5 = $event->subjectConcept ;
         $counter++ ;
@@ -122,7 +124,7 @@ final class BalanceBuilderTest extends TestCase
 
 
         //C send token 2 to B double spend
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressC,$addressB,$contractA,"fooTx$counter",'10000000',$block6,$t2,1);
+        $event = $rmrkEventFactory->create($kusamaBlockchain,$addressC,$addressB,$contractA,"fooTx$counter",$time++,$block6,$t2,1);
         $event->setBrotherEntity(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_PENDING,[]);
         $invalid2 = $event->subjectConcept ;
         $counter++ ;
@@ -135,10 +137,12 @@ final class BalanceBuilderTest extends TestCase
 
 
 
+
         $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
         $rmrkEventFactory->setFilter(\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VERB,\CsCannon\Tools\BalanceBuilder::PROCESS_STATUS_VALID);
 
         $rmrkEventFactory->populateLocal();
+
         $this->assertEquals($rmrkEventFactory->getEntities()[$valid2->idConcept]->subjectConcept,$valid2);
         $this->assertEquals($rmrkEventFactory->getEntities()[$valid3->idConcept]->subjectConcept,$valid3);
         $this->assertEquals($rmrkEventFactory->getEntities()[$valid4->idConcept]->subjectConcept,$valid4);
@@ -272,7 +276,7 @@ final class BalanceBuilderTest extends TestCase
         $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
         $block1 =  $blockchainBlockFactory->getOrCreateFromRef($blockchainBlockFactory::INDEX_SHORTNAME,1);
 
-        for($i=0;$i<100;$i++) {
+        for($i=0;$i<1000;$i++) {
 
 
             $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => $i]);
@@ -290,6 +294,18 @@ final class BalanceBuilderTest extends TestCase
 
 
          $this->assertEquals(1,1);
+
+    }
+
+    public function testABetterBalanceBuilder(){
+
+
+
+        $kusamaBlockchain = new \CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain();
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
+
+       $blockchainBlockFactory->populateLocal();
+        print_r($blockchainBlockFactory->dumpMeta());
 
     }
 
