@@ -60,12 +60,14 @@ class MetadataProbeFactory extends CSEntityFactory
         return 'probe-'.$collection->getId().'-'.$contract->getId() ;
 }
 
-    public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC')
+    public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
+
+
         $assetCollectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $blockchainContractFactory = new GenericContractFactory();
         $assetCollectionFactory->populateLocal();
-        $populated = parent::populateLocal($limit, $offset, $asc);
+        $populated = parent::populateLocal($limit, $offset, $asc,$sortByRef, $numberSort);
         $this->populateBrotherEntities();
         $this->joinFactory(self::BIND_COLLECTION,$assetCollectionFactory);
         $this->joinFactory(self::BIND_CONTRACT,$blockchainContractFactory);

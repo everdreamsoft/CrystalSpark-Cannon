@@ -229,6 +229,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
             'name'=>'name',
             'description'=>'description',
             'imageUrl'=>'image',
+            'creationTimestmap'=>'creationTimestamp',
 
 
         );
