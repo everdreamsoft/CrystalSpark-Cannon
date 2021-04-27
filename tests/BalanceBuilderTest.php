@@ -297,17 +297,7 @@ final class BalanceBuilderTest extends TestCase
 
     }
 
-    public function testABetterBalanceBuilder(){
 
-
-
-        $kusamaBlockchain = new \CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain();
-        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($kusamaBlockchain);
-
-       $blockchainBlockFactory->populateLocal();
-        print_r($blockchainBlockFactory->dumpMeta());
-
-    }
 
 
 

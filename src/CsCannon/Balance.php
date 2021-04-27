@@ -334,7 +334,7 @@ class Balance
         $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
         $factory->setFilter(self::LINKED_ADDRESS,$this->address);
 
-        $factory->populateLocal();
+        $factory->populateLocal(100000);
 
         $contractFactory = $this->address->getBlockchain()->getContractFactory();
         $factory->joinFactory(self::ON_CONTRACT,$contractFactory);
