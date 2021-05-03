@@ -22,7 +22,7 @@ class BlockchainContractFactory extends EntityFactory
 const TOKENID = 'tokenId';
 public static $file = 'blockchainContractFile';
 protected static $isa = null;
-protected static $className = 'CsCannon\Blockchains\BlockchainContract';
+protected static $className = 'CsCannon\Blockchains\Generic\GenericContract';
 public const  MAIN_IDENTIFIER = 'id';
 public  const JOIN_COLLECTION = 'inCollection';
 public  const JOIN_ASSET = 'joinAsset';
