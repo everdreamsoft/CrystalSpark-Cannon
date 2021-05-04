@@ -230,6 +230,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
                 'description' => 'description',
                 'imageUrl' => 'image',
                 'creationTimestamp' => 'creationTimestamp',
+                'creationBlock' => 'creationBlock',
 
             );
         }
