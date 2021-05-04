@@ -218,24 +218,25 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function getDisplay($a,$b=null,$c=null,DisplayType $displayType=null){
+    public function getDisplay($a,$todisplay=null,$assetVocabulary=null,DisplayType $displayType=null){
 
 
         //There is an issue here there is unclarity between the vocabulary. In fact vocabulary is to map foreign to local
         // we should be able to translate also the Keys into something else than local shortname
 
+        if (!$assetVocabulary) {
+            $assetVocabulary = array('collectionId' => 'id',
+                'name' => 'name',
+                'description' => 'description',
+                'imageUrl' => 'image',
+                'creationTimestamp' => 'creationTimestamp',
 
-        $assetVocabulary = array('collectionId'=>'id',
-            'name'=>'name',
-            'description'=>'description',
-            'imageUrl'=>'image',
-            'creationTimestamp'=>'creationTimestamp',
+            );
+        }
 
-
-        );
-
-
-        $todisplay = array_keys($assetVocabulary);
+        if (!$todisplay) {
+            $todisplay = array_keys($assetVocabulary);
+        }
 
         return parent::getDisplay('array',$todisplay,$assetVocabulary,$displayType);
 
