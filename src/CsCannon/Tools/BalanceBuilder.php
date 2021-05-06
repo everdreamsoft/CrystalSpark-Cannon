@@ -59,9 +59,8 @@ class BalanceBuilder
                     $token = $event->getSpecifier();
                     $newBalance = self::getAddressBalance($event->getDestinationAddress());
                     $newBalance->addContractToken($event->getBlockchainContract(),$token,$quantity);
-                    //$newBalance->saveToDatagraph();
-                    $somethingToCommit = true ;
 
+                    $somethingToCommit = true ;
 
                     $oldBalance = self::getAddressBalance($event->getSourceAddress());
                     $oldBalancePreviousQuantity = $oldBalance->getQuantityForContractToken($contract,$token);
@@ -82,10 +81,6 @@ class BalanceBuilder
 
                     $verbose ? print_r(" Invalid".PHP_EOL) : false ;
                 }
-
-
-
-
             }
         }
         if ($somethingToCommit) {
@@ -106,8 +101,6 @@ class BalanceBuilder
         if (!isset(self::$bufferBalance[$address->getAddress()])){
 
             self::$bufferBalance[$address->getAddress()] = $address->getBalance(1000000);
-
-
         }
 
         return  self::$bufferBalance[$address->getAddress()];
@@ -126,20 +119,16 @@ class BalanceBuilder
 
     }
 
-    private static function hasSendError(BlockchainEvent $event):?string{
+    protected static function hasSendError(BlockchainEvent $event):?string{
 
         $nullAddress = BlockchainAddressFactory::NULL_ADDRESS ;
-
-
         $contract = $event->getBlockchainContract();
         $quantity = $event->getQuantity();
         $token = $event->getSpecifier();
         $actualBalance = self::getAddressBalance($event->getSourceAddress());
         $sourceAddressBalance = self::getAddressBalance($event->getSourceAddress());
 
-
         $quantityOwned = $sourceAddressBalance->getQuantityForContractToken($contract, $token);
-
 
         if ($nullAddress != $event->getSourceAddress()->getAddress()){
 
@@ -150,10 +139,7 @@ class BalanceBuilder
             return 'not enough quantity for sender' ;
         }
 
-
         return null ;
-
-
 
     }
 
