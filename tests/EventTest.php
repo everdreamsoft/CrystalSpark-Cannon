@@ -9,7 +9,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainBlock;
+use CsCannon\Blockchains\BlockchainEventFactory;
 use PHPUnit\Framework\TestCase;
 
 
@@ -119,7 +121,7 @@ final class EventTest extends TestCase
     }
 
 
-    public function xtestSaveOrder()
+    public function testSaveOrder()
     {
 
         ini_set('display_errors', 1);
@@ -157,31 +159,25 @@ final class EventTest extends TestCase
             1,
             "testTx",
             111111,
-            1,
-            1,
             $currentBlock,
-            $tokenId = $Erc721
+            $Erc721_buy,
+            $Erc721_sell
+
 
 
         );
 
         $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainEvent::class,$event);
+       $factory = new \CsCannon\Blockchains\Klaytn\KlaytnEventFactory();
+       $factory->populateLocal();
 
+      $event =  $factory->first(Blockchain::$txidConceptName,"testTx");
 
+      $getSellPrice = $event->getBrotherReference(BlockchainEventFactory::ORDER_SELL_CONTRACT,null,
+          BlockchainEventFactory::SELL_PRICE);
 
-
-
-        $event2 = $eventFactory->create(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain(),
-            $addressEntity,
-            $addressEntity,
-            $contractFactory->get('anotherFooContract',true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init()),
-            'fooTX EWRC 20',
-            "123343555",
-            $currentBlock,
-            $tokenId = $erc20,
-            $quantity = self::ERC20_QUANTITY
-
-        );
+      $sellPriceOfOne = end($getSellPrice);
+      print_r($getSellPrice);
 
 
 
