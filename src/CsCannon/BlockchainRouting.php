@@ -39,6 +39,7 @@ class BlockchainRouting
      * @var Blockchain[]
      */
     public static $hotPluggedBlockchain = [] ;
+    public static $supportedChains = [] ;
 
     /**
      * get supported blockchains by the framework

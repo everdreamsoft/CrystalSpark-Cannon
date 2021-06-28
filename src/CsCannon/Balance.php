@@ -314,15 +314,10 @@ class Balance
 
     public function getLocalFactory():EntityFactory{
 
-
-
         $factory = new EntityFactory('balanceItem','balanceFile',SandraManager::getSandra());
         $factory->setFilter(self::LINKED_ADDRESS,$this->address);
 
-
-
         return $factory ;
-
 
     }
 

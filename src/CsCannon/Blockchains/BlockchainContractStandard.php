@@ -107,8 +107,6 @@ abstract class BlockchainContractStandard extends Entity
         if (is_null($localEntity) or $localEntity->system->instanceId != SandraManager::getSandra()->instanceId) {
 
 
-
-
             static::$entityClassArray[static::class] = $standardFactory->getOrCreateFromRef('class_name', static::class);
 
             $localEntity =  static::$entityClassArray[static::class];
