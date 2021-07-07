@@ -59,34 +59,7 @@ class BlockchainOrder extends BlockchainEvent
 
         $this->blockchain = $this->getBlockchain();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             //kusama specifics ? (WHen a an order match a specific spend
-
-
-
-
-
 
     }
 
@@ -172,7 +145,6 @@ class BlockchainOrder extends BlockchainEvent
     {
         $toSellQuantity = $this->getReference(BlockchainOrderFactory::REMAINING_SELL) ?? null;
 
-
         $toSellQuantity = !is_null($toSellQuantity) ? $toSellQuantity->refValue : $this->getReference(BlockchainOrderFactory::SELL_PRICE)->refValue;
 
         return $toSellQuantity;
@@ -208,7 +180,7 @@ class BlockchainOrder extends BlockchainEvent
      */
     public function getTotal(): string
     {
-        $total = $order->getReference(BlockchainOrderFactory::REMAINING_TOTAL) ?? null;
+        $total = $this->getReference(BlockchainOrderFactory::REMAINING_TOTAL) ?? null;
         $total= !is_null($total) ? $total->refValue : $this->getReference(BlockchainOrderFactory::BUY_TOTAL)->refValue;
         return $total ;
     }
@@ -228,10 +200,14 @@ class BlockchainOrder extends BlockchainEvent
      */
     public function getBuyDestination(): ?BlockchainAddress
     {
+        /** @var BlockchainAddress[] $buyDestination */
         $buyDestination = $this->getJoinedEntities(BlockchainOrderFactory::BUY_DESTINATION) ?? null;
-        if (!$buyDestination) return $buyDestination ;
-        $buyDestination = end($buyDestination);
-        return $buyDestination ;
+
+        return is_null($buyDestination) ? null : end($buyDestination);
+
+//        if (is_null($buyDestination)) return null ;
+//        $buyDestination = end($buyDestination);
+//        return $buyDestination ;
     }
 
 
@@ -351,15 +327,13 @@ class BlockchainOrder extends BlockchainEvent
         /** @var BlockchainContractStandard $standard */
 
         if (isset($standards)){
-            /** @var BlockchainContractStandard $instance */
             $instance = $standards::init();
             $instance->setTokenPath($tokenData);
             return  $instance ;
 
         }
         else {
-            $contractStandard = UnknownStandard::init();
-            return  $contractStandard ;
+            return UnknownStandard::init();
 
         }
 

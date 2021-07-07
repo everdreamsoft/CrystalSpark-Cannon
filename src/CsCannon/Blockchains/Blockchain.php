@@ -27,6 +27,7 @@ abstract class Blockchain
     public  $contractFactory ;
     public  $eventFactory ;
     public  $blockFactory ;
+    public $orderFactory;
     public static $network = array("null"=>array("explorer_tx"=>'null'));
 
     /**
@@ -58,6 +59,11 @@ abstract class Blockchain
 
        return new BlockchainBlockFactory($this);
 
+    }
+
+    public function getOrderFactory()
+    {
+        return $this->orderFactory;
     }
 
     public function getMainCurrencyTicker():string

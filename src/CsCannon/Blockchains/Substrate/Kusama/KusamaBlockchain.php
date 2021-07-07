@@ -4,6 +4,7 @@ namespace CsCannon\Blockchains\Substrate\Kusama;
 
 use CsCannon\Blockchains\Blockchain;
 
+use CsCannon\Blockchains\Substrate\RMRK\RmrkBlockchainOrderProcess;
 use CsCannon\Blockchains\Substrate\RMRK\RmrkContractFactory;
 use CsCannon\Blockchains\Substrate\SubstrateAddressFactory;
 use CsCannon\Blockchains\Substrate\SubstrateBlockchain;
@@ -20,10 +21,11 @@ class KusamaBlockchain extends SubstrateBlockchain
     public function __construct()
     {
 
-
+        $this->orderFactory = new RmrkBlockchainOrderProcess();
         $this->contractFactory = new RmrkContractFactory();     //careful with this
         $this->eventFactory = new KusamaEventFactory();
         $this->addressFactory = new KusamaAddressFactory();
+        $this->mainSourceCurrencyTicker = 'KSM';
 
     }
 

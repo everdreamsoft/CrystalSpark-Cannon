@@ -2,20 +2,8 @@
 
 namespace CsCannon\Blockchains;
 
-use App\Models\BlockchainOrder;
-use App\Models\KusamaCryptoContract;
-use App\Services\BlockchainOrderService;
 use CsCannon\BlockchainRouting;
-use CsCannon\Blockchains\Blockchain;
-use CsCannon\Blockchains\BlockchainAddress;
-use CsCannon\Blockchains\BlockchainBlock;
-use CsCannon\Blockchains\BlockchainContract;
-use CsCannon\Blockchains\BlockchainContractStandard;
-use CsCannon\Blockchains\BlockchainToken;
-use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
-use CsCannon\Blockchains\Substrate\RMRK\RmrkContractFactory;
 use CsCannon\BlockchainStandardFactory;
-use CsCannon\CSEntityFactory;
 use Exception;
 use SandraCore\Entity;
 use SandraCore\System;
@@ -58,7 +46,6 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     const MATCH_BUY_QUANTITY = "matchBuyQuantity";
     const MATCH_SELL_QUANTITY = "matchSellQuantity";
 
-    // TODO triplet
     const STATUS = "status";
     const CLOSE = "close";
 
@@ -68,38 +55,34 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
     public function __construct(Blockchain $blockchain)
     {
-
-        $this->blockchain = $blockchain  ;
+        $this->blockchain = $blockchain;
         return parent::__construct();
     }
 
 
     /**
-     * @param Blockchain $blockchain
-     * @param bool $asSandraEntity
-     * @param string $filter
-     * @return Entity[]|BlockchainOrder[]
+     * @return BlockchainOrder[]
      */
-    private static function getAllEntities(Blockchain $blockchain, bool $asSandraEntity = true, $filter = ""): array
+    private function getAllEntities(): array
     {
-        $orders = new BlockchainOrderFactory();
-        $populate = self::populateAll($blockchain, $orders, $filter);
+        $this->populateLocal();
 
-        $allOrders = $populate->getEntities();
-
-        if($asSandraEntity){
-            return $allOrders;
-        }
-
-        $blockchainOrders = [];
-        foreach ($allOrders as $order){
-            $blockchainOrders[] = new BlockchainOrder($order);
-        }
+        /** @var BlockchainOrder[] $blockchainOrders */
+        $blockchainOrders = $this->getEntities();
 
         return $blockchainOrders;
     }
 
-    public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC', $sortByRef = null, $numberSort = false)
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     * @param string $asc
+     * @param null $sortByRef
+     * @param false $numberSort
+     * @return Entity[]
+     */
+    public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC', $sortByRef = null, $numberSort = false): array
     {
         $populated =  parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
         $blockchain = $this->blockchain ;
@@ -120,63 +103,14 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
     }
 
-    public function matchPopulate(){
-
-        $matchOrderFactory = new BlockchainOrderFactory();
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, clone $blockchain->getAddressFactory());
-        $matchOrderFactory->joinPopulate();
-
-    }
-
-
-    /**
-     * @param Blockchain $blockchain
-     * @param BlockchainOrderFactory $factory
-     * @param string $filter
-     * @return BlockchainOrderFactory
-     */
-    private static function populateAll(Blockchain $blockchain, BlockchainOrderFactory $factory, $filter = ""): BlockchainOrderFactory
-    {
-        /** @var $sandra System */
-        $sandra = App('Sandra')->getSandra();
-
-//        if($filter != ""){
-//            $factory->setFilter($filter);
-//        }
-
-        // TODO get variable, not strings
-//        $factory->setFilter(BlockchainOrderFactory::MATCH_WITH);
-
-        $matchOrderFactory = new BlockchainOrderFactory();
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, clone $blockchain->getAddressFactory());
-
-        $factory->populateLocal();
-        $factory->populateBrotherEntities(BlockchainOrderFactory::MATCH_WITH);
-        $factory->joinFactory(BlockchainOrderFactory::MATCH_WITH, $matchOrderFactory);
-        $factory->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $blockchain->getAddressFactory());
-        $factory->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($sandra));
-        $factory->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($sandra));
-        $factory->joinFactory(BlockchainOrderFactory::EVENT_BLOCK, $blockchain->getBlockFactory());
-        $factory->joinFactory(BlockchainOrderFactory::ORDER_BUY_CONTRACT, $blockchain->getContractFactory());
-        $factory->joinFactory(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $blockchain->getContractFactory());
-        $factory->joinFactory(BlockchainOrderFactory::BUY_DESTINATION, $blockchain->getAddressFactory());
-//        self::populateAll($blockchain, $matchOrderFactory);
-        $factory->joinPopulate();
-
-        $matchOrderFactory->joinPopulate();
-
-        return $factory;
-    }
-
 
     /**
      * @param Entity $order
      * @param System|null $sandra
      * @return Blockchain|null
      */
-    public static function getBlockchainFromOrder(Entity $order, System $sandra = null): ?Blockchain
+    public function getBlockchainFromOrder(Entity $order, System $sandra = null): ?Blockchain
     {
-
         $conceptTriplets = $order->subjectConcept->getConceptTriplets();
         $conceptId = $conceptTriplets[$sandra->systemConcept->get(BlockchainOrderFactory::ON_BLOCKCHAIN)] ?? null;
         $lastId = end($conceptId);
@@ -191,27 +125,28 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param bool $needMatchedOrders
      * @return array
      */
-    public static function getMatchedOrUnmatched(Blockchain $blockchain, bool $needMatchedOrders): array
+    public function getMatchedOrUnmatched(Blockchain $blockchain, bool $needMatchedOrders): array
     {
 
-        $allOrders = self::getAllEntities($blockchain, false);
-        $ordersOnChain = array_filter($allOrders, [new BlockchainOrderService($blockchain), 'filterSameChain']);
+        $allOrders = $this->getAllEntities();
+        $ordersOnChain = array_filter($allOrders, [$this, 'filterSameChain']);
 
         $ordersForView = [];
 
         foreach ($ordersOnChain as $order){
 
-            $matchEntity = $order->getOrder()->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
+            $matchEntity = $order->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
 
             if($needMatchedOrders && $matchEntity){
                 $ordersForView[] = $order;
             }else if(!$needMatchedOrders && !$matchEntity){
                 $ordersForView[] = $order;
             }
+
         }
 
-        $orderService = new BlockchainOrderService($blockchain);
-        return $orderService->makeViewFromOrders($ordersForView, $blockchain, $needMatchedOrders);
+        $orderProcess = $this->blockchain->getOrderFactory();
+        return $orderProcess->makeViewFromOrders($ordersForView, $needMatchedOrders);
     }
 
 
@@ -220,24 +155,30 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param Blockchain $blockchain
      * @return array
      */
-    public static function viewAllOrdersOnChain(Blockchain $blockchain): array
+    public function viewAllOrdersOnChain(Blockchain $blockchain): array
     {
-        $allOrders = self::getAllEntities($blockchain, false);
+        $allOrders = $this->getAllEntities();
 
-        $ordersOnChain = array_filter($allOrders, [new BlockchainOrderService($blockchain), 'filterSameChain']);
+        $ordersOnChain = array_filter($allOrders, [$this, 'filterSameChain']);
 
         $chainOrders = [];
 
         foreach ($ordersOnChain as $order){
 
+            $isClose = $order->getReference(BlockchainOrderFactory::STATUS)->refValue;
+
+            if(!is_null($isClose) || $isClose == BlockchainOrderFactory::CLOSE){
+                $chain[BlockchainOrderFactory::STATUS] = $isClose;
+            }
+
             $chain['source'] = $order->getSource()->getAddress();
 
             $chain['order_type'] = $order->getBuyDestination() ? 'BUY' : 'LIST';
 
-            $chain['to_sell']['contract'] = $order->getContractToSellId();
+            $chain['to_sell']['contract'] = $order->getContractToSell()->getReference('id')->refValue;
             $chain['to_sell']['quantity'] = $order->getContractToSellQuantity();
 
-            $chain['to_buy']['contract'] = $order->getContractToBuyId();
+            $chain['to_buy']['contract'] = $order->getContractToBuy()->getReference('id')->refValue;
             $chain['to_buy']['quantity'] = $order->getContractToBuyQuantity();
             $chain['to_buy']['destination'] = $order->getBuyDestination() ? $order->getBuyDestination()->getAddress() : null;
 
@@ -266,11 +207,13 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         // TODO make abstract MainChainToken for cryptos in CsCannon
         // and replace != "KSM" by instanceof MainChainToken
 
-        $needleBuyContractId = $needleOrder->getContractToBuyId();
-        $needleSellContractId = $needleOrder->getContractToSellId();
 
+        $needleBuyContractId = $needleOrder->getContractToBuy()->getReference('id')->refValue;
+        $needleSellContractId = $needleOrder->getContractToSell()->getReference('id')->refValue;
 
-        if(strtoupper($needleBuyContractId) != "KSM"){
+        $currency = $needleOrder->getBlockchain()->getMainCurrencyTicker();
+
+        if(strtoupper($needleBuyContractId) != $currency){
 
             try{
                 $eventFactory->create(
@@ -303,7 +246,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
         }
 
-        if(strtoupper($needleSellContractId) != "KSM"){
+        if(strtoupper($needleSellContractId) != $currency){
 
             try{
                 $eventFactory->create(
@@ -343,10 +286,10 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param Blockchain $blockchain
      * @return Entity[]
      */
-    public static function deleteAll(Blockchain $blockchain): array
+    public function deleteAll(Blockchain $blockchain): array
     {
 
-        $entities = self::getAllEntities($blockchain);
+        $entities = $this->getAllEntities();
 
         if(count($entities) == 0){
             return $entities;
@@ -360,29 +303,39 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     }
 
 
+//    /**
+//     * @param Blockchain $blockchain
+//     * @return array
+//     */
+//    public function makeMatchOrders(Blockchain $blockchain): array
+//    {
+//
+//        $allOrders = $this->getAllEntities();
+//
+//
+//        $orderService = new BlockchainOrderService($blockchain);
+//        $matches = $orderService->getMatchesOrders($allOrders);
+//        /** @var BlockchainOrder[] $matches */
+//
+//        $matches = $this->getAllEntities();
+//
+//        $response = $orderService->makeViewFromOrders($matches, $blockchain, true);
+//
+//
+//        return $response;
+//
+//    }
+
+
+
     /**
-     * @param Blockchain $blockchain
-     * @return array
+     * @param BlockchainOrder $order
+     * @return BlockchainOrder|null
      */
-    public static function makeMatchOrders(Blockchain $blockchain): array
+    public function filterSameChain(BlockchainOrder $order): ?BlockchainOrder
     {
-
-        $allOrders = self::getAllEntities($blockchain, false);
-
-        $orderService = new BlockchainOrderService($blockchain);
-        $matches = $orderService->getMatchesOrders($allOrders);
-        /** @var BlockchainOrder[] $matches */
-
-        $matches = self::getAllEntities($blockchain, false);
-
-        $response = $orderService->makeViewFromOrders($matches, $blockchain, true);
-
-
-        return $response;
-
+        return ($order->getBlockchain()::NAME == $this->blockchain::NAME) ? $order : null;
     }
-
-
 
 
 }
