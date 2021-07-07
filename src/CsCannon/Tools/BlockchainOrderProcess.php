@@ -11,9 +11,9 @@ class BlockchainOrderProcess
 
     public $blockchain;
 
-    public function __construct(Blockchain $blockchain){
+    public function __construct(Blockchain $blockchain)
+    {
         $this->blockchain = $blockchain;
     }
-
 
 }

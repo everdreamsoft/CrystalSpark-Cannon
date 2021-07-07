@@ -10,7 +10,6 @@ use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
-use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\Tools\BlockchainOrderProcess;
 use Exception;
 use SandraCore\Entity;
@@ -19,10 +18,10 @@ use SandraCore\Entity;
 class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 {
 
-    public function __construct(){
-        parent::__construct(new KusamaBlockchain());
+    public function __construct(Blockchain $blockchain)
+    {
+        parent::__construct($blockchain);
     }
-
 
     /**
      * @param BlockchainOrder[] $orders

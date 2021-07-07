@@ -21,7 +21,7 @@ class KusamaBlockchain extends SubstrateBlockchain
     public function __construct()
     {
 
-        $this->orderFactory = new RmrkBlockchainOrderProcess();
+        $this->orderProcess = new RmrkBlockchainOrderProcess($this);
         $this->contractFactory = new RmrkContractFactory();     //careful with this
         $this->eventFactory = new KusamaEventFactory();
         $this->addressFactory = new KusamaAddressFactory();

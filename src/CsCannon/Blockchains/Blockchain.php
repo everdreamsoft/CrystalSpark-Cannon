@@ -27,7 +27,7 @@ abstract class Blockchain
     public  $contractFactory ;
     public  $eventFactory ;
     public  $blockFactory ;
-    public $orderFactory;
+    public $orderProcess;
     public static $network = array("null"=>array("explorer_tx"=>'null'));
 
     /**
