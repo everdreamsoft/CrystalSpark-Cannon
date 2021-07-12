@@ -31,26 +31,9 @@ class BlockchainOrder extends BlockchainEvent
 {
 
     private $blockchain;
-    private $order;
 
     private $contractToSell;
     private $contractToSellId;
-    private $contractToSellQuantity;
-
-    private $contractToBuy;
-    private $contractToBuyId;
-    private $contractToBuyQuantity;
-
-    private $total;
-
-    private $source;
-    private $buyDestination;
-
-    private $block;
-    private $txId;
-
-    private $tokenSell;
-    private $tokenBuy;
 
     public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
@@ -181,8 +164,7 @@ class BlockchainOrder extends BlockchainEvent
     public function getTotal(): string
     {
         $total = $this->getReference(BlockchainOrderFactory::REMAINING_TOTAL) ?? null;
-        $total= !is_null($total) ? $total->refValue : $this->getReference(BlockchainOrderFactory::BUY_TOTAL)->refValue;
-        return $total ;
+        return !is_null($total) ? $total->refValue : $this->getReference(BlockchainOrderFactory::BUY_TOTAL)->refValue;
     }
 
     /**
@@ -204,10 +186,6 @@ class BlockchainOrder extends BlockchainEvent
         $buyDestination = $this->getJoinedEntities(BlockchainOrderFactory::BUY_DESTINATION) ?? null;
 
         return is_null($buyDestination) ? null : end($buyDestination);
-
-//        if (is_null($buyDestination)) return null ;
-//        $buyDestination = end($buyDestination);
-//        return $buyDestination ;
     }
 
 

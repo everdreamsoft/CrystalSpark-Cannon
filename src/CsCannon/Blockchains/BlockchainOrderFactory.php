@@ -3,6 +3,7 @@
 namespace CsCannon\Blockchains;
 
 use CsCannon\BlockchainRouting;
+use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\BlockchainStandardFactory;
 use Exception;
 use SandraCore\Entity;
@@ -63,14 +64,13 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     /**
      * @return BlockchainOrder[]
      */
-    private function getAllEntities(): array
+    public function getAllEntitiesOnChain(): array
     {
+        // TODO: filter in populate for chain
         $this->populateLocal();
+        $allEntities = $this->getEntities();
 
-        /** @var BlockchainOrder[] $blockchainOrders */
-        $blockchainOrders = $this->getEntities();
-
-        return $blockchainOrders;
+        return array_filter($allEntities, [$this, 'filterSameChain']);
     }
 
 
@@ -127,8 +127,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      */
     public function getMatchedOrUnmatched(Blockchain $blockchain, bool $needMatchedOrders): array
     {
-
-        $allOrders = $this->getAllEntities();
+        $this->populateLocal();
+        $allOrders = $this->getEntities();
         $ordersOnChain = array_filter($allOrders, [$this, 'filterSameChain']);
 
         $ordersForView = [];
@@ -157,7 +157,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      */
     public function viewAllOrdersOnChain(Blockchain $blockchain): array
     {
-        $allOrders = $this->getAllEntities();
+        $this->populateLocal();
+        $allOrders = $this->getEntities();
 
         $ordersOnChain = array_filter($allOrders, [$this, 'filterSameChain']);
 
@@ -173,7 +174,9 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
             $chain['source'] = $order->getSource()->getAddress();
 
-            $chain['order_type'] = $order->getBuyDestination() ? 'BUY' : 'LIST';
+            if($blockchain::NAME === KusamaBlockchain::NAME){
+                $chain['order_type'] = $order->getBuyDestination() ? 'BUY' : 'LIST';
+            }
 
             $chain['to_sell']['contract'] = $order->getContractToSell()->getReference('id')->refValue;
             $chain['to_sell']['quantity'] = $order->getContractToSellQuantity();
@@ -288,8 +291,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      */
     public function deleteAll(Blockchain $blockchain): array
     {
-
-        $entities = $this->getAllEntities();
+        $this->populateLocal();
+        $entities = $this->getEntities();
 
         if(count($entities) == 0){
             return $entities;
