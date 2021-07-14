@@ -22,7 +22,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
 
     /**
-     * @return array
+     * @return BlockchainOrder[]
      */
     public function getAllMatches(): array
     {
@@ -84,8 +84,8 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 $needleContractToBuyId = $needleMatch->getContractToBuy()->getReference('id')->refValue;
                 $matchContractToBuyId = $matchOrder->getContractToBuy()->getReference('id')->refValue;
 
-                $needleContractToSellId = $needleMatch->getReference('id')->refValue;
-                $matchContractToSellId = $matchOrder->getReference('id')->refValue;
+                $needleContractToSellId = $needleMatch->getContractToSell()->getReference('id')->refValue;
+                $matchContractToSellId = $matchOrder->getContractToSell()->getReference('id')->refValue;
 
                 if($needleContractToBuyId === $matchContractToSellId && $needleContractToSellId === $matchContractToBuyId){
                     // check Contract ID

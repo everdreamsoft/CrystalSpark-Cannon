@@ -12,6 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainEventFactory;
+use CsCannon\Blockchains\BlockchainOrder;
 use PHPUnit\Framework\TestCase;
 
 
@@ -121,6 +122,7 @@ final class EventTest extends TestCase
     }
 
 
+
     public function testSaveOrder()
     {
 
@@ -147,6 +149,8 @@ final class EventTest extends TestCase
         $addressEntity = $addressFactory->get($testAddress,1);
 
         $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory($blockhain);
+
+        /** @var BlockchainBlock $currentBlock */
         $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
 
 
@@ -170,7 +174,7 @@ final class EventTest extends TestCase
         $blockchainOrderFactory->populateLocal();
         $events = $blockchainOrderFactory->getEntities();
         $event = end($events);
-        /** @var \CsCannon\Blockchains\BlockchainOrder $event */
+        /** @var BlockchainOrder $event */
 
             $this->assertEquals($event->getTxId(),'testTx');
             $this->assertEquals(1,$event->getContractToBuyQuantity());
@@ -240,7 +244,12 @@ final class EventTest extends TestCase
 
 
 
+    public function testRmrkProcessOrder()
+    {
 
+
+
+    }
 
 
 

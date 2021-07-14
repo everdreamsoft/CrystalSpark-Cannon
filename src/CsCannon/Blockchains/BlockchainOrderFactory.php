@@ -5,6 +5,7 @@ namespace CsCannon\Blockchains;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\BlockchainStandardFactory;
+use CsCannon\CSEntityFactory;
 use Exception;
 use SandraCore\Entity;
 use SandraCore\System;
@@ -87,9 +88,18 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         $populated =  parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
         $blockchain = $this->blockchain ;
 
+        $matchOrderFactory = new BlockchainOrderFactory($blockchain);
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, clone $blockchain->getAddressFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($this->system));
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($this->system));
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_BLOCK, clone $blockchain->getBlockFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::ORDER_BUY_CONTRACT, clone $blockchain->getContractFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::ORDER_SELL_CONTRACT, clone $blockchain->getContractFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::BUY_DESTINATION, clone $blockchain->getAddressFactory());
+
+
         $this->populateBrotherEntities(BlockchainOrderFactory::MATCH_WITH);
-
-
+        $this->joinFactory(BlockchainOrderFactory::MATCH_WITH, $matchOrderFactory);
         $this->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $blockchain->getAddressFactory());
         $this->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($this->system));
         $this->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($this->system));
@@ -98,6 +108,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         $this->joinFactory(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $blockchain->getContractFactory());
         $this->joinFactory(BlockchainOrderFactory::BUY_DESTINATION, $blockchain->getAddressFactory());
         $this->joinPopulate();
+        $matchOrderFactory->joinPopulate();
+
 
         return $populated ;
 
@@ -207,10 +219,6 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         $blockchain = $needleOrder->getBlockchain();
         $eventFactory = $blockchain->getEventFactory();
 
-        // TODO make abstract MainChainToken for cryptos in CsCannon
-        // and replace != "KSM" by instanceof MainChainToken
-
-
         $needleBuyContractId = $needleOrder->getContractToBuy()->getReference('id')->refValue;
         $needleSellContractId = $needleOrder->getContractToSell()->getReference('id')->refValue;
 
@@ -219,17 +227,17 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         if(strtoupper($needleBuyContractId) != $currency){
 
             try{
-                $eventFactory->create(
-                    $blockchain,
-                    $needleOrder->getSource(),
-                    $matchOrder->getSource(),
-                    $needleOrder->getContractToBuy(),
-                    $needleOrder->getTxId(),
-                    $needleOrder->getBlock()->getTimestamp(),
-                    $needleOrder->getBlock(),
-                    $needleOrder->getTokenBuy(),
-                    $needleOrder->getContractToBuyQuantity()
-                );
+//                $eventFactory->create(
+//                    $blockchain,
+//                    $needleOrder->getSource(),
+//                    $matchOrder->getSource(),
+//                    $needleOrder->getContractToBuy(),
+//                    $needleOrder->getTxId(),
+//                    $needleOrder->getBlock()->getTimestamp(),
+//                    $needleOrder->getBlock(),
+//                    $needleOrder->getTokenBuy(),
+//                    $needleOrder->getContractToBuyQuantity()
+//                );
 
                 $eventFactory->create(
                     $blockchain,
@@ -264,17 +272,17 @@ class BlockchainOrderFactory extends BlockchainEventFactory
                     $needleOrder->getContractToSellQuantity()
                 );
 
-                $eventFactory->create(
-                    $blockchain,
-                    $matchOrder->getSource(),
-                    $needleOrder->getSource(),
-                    $matchOrder->getContractToBuy(),
-                    $matchOrder->getTxId(),
-                    $matchOrder->getBlock()->getTimestamp(),
-                    $matchOrder->getBlock(),
-                    $matchOrder->getTokenBuy(),
-                    $matchOrder->getContractToBuyQuantity()
-                );
+//                $eventFactory->create(
+//                    $blockchain,
+//                    $matchOrder->getSource(),
+//                    $needleOrder->getSource(),
+//                    $matchOrder->getContractToBuy(),
+//                    $matchOrder->getTxId(),
+//                    $matchOrder->getBlock()->getTimestamp(),
+//                    $matchOrder->getBlock(),
+//                    $matchOrder->getTokenBuy(),
+//                    $matchOrder->getContractToBuyQuantity()
+//                );
 
             }catch(Exception $e){
                 throw $e;

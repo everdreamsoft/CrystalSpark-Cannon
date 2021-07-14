@@ -43,7 +43,7 @@ class BlockchainOrderProcess
 //    }
 
     /**
-     * @return array
+     * @return BlockchainOrder[]
      */
     public function getAllMatches(): array
     {
@@ -142,15 +142,17 @@ class BlockchainOrderProcess
             $needleOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $needleOrder->getContractToSellQuantity() - $initialBuyQuantity);
             $needleOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $needleOrder->getContractToBuyQuantity() * $needleOrder->getContractToSellQuantity());
 
+            if($matchOrder->getTotal() == '0'){
+                $matchOrder->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+            }
+            if($needleOrder->getTotal() == '0'){
+                $needleOrder->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+            }
+
             $matchQuantity[BlockchainOrderFactory::MATCH_BUY_QUANTITY] = $initialBuyQuantity;
             $matchQuantity[BlockchainOrderFactory::MATCH_SELL_QUANTITY] = $initialSellQuantity;
 
             $matchOrder->setBrotherEntity(BlockchainOrderFactory::MATCH_WITH, $needleOrder, $matchQuantity);
-
-
-            if($matchOrder->getTotal() == '0'){
-                $matchOrder->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
-            }
 
             try{
                 BlockchainOrderFactory::makeEventFromMatches($matchOrder, $needleOrder);
