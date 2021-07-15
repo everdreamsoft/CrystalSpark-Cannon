@@ -59,7 +59,7 @@ class BlockchainOrder extends BlockchainEvent
     }
 
     /**
-     * @return BlockchainContractStandard
+     * @return BlockchainContractStandard|null
      */
     public function getTokenSell(): ?BlockchainContractStandard
     {
@@ -79,7 +79,7 @@ class BlockchainOrder extends BlockchainEvent
     }
 
     /**
-     * @return BlockchainContractStandard
+     * @return BlockchainContractStandard|null
      */
     public function getTokenBuy(): ?BlockchainContractStandard
     {
@@ -134,16 +134,14 @@ class BlockchainOrder extends BlockchainEvent
     }
 
     /**
-     * @return BlockchainContract
+     * @return BlockchainContract|null
      */
     public function getContractToBuy(): ?BlockchainContract
     {
 
         $contractToBuy = $this->getJoinedEntities(BlockchainOrderFactory::ORDER_BUY_CONTRACT);
         if (!$contractToBuy) return null ;
-        $contractToBuy = end($contractToBuy);
-
-        return $contractToBuy ;
+        return end($contractToBuy);
     }
 
 
@@ -154,8 +152,7 @@ class BlockchainOrder extends BlockchainEvent
     public function getContractToBuyQuantity(): string
     {
         $toBuyQuantity = $this->getReference(BlockchainOrderFactory::REMAINING_BUY) ?? null;
-        $toBuyQuantity = !is_null($toBuyQuantity) ? $toBuyQuantity->refValue : $this->getReference(BlockchainOrderFactory::BUY_AMOUNT)->refValue;
-        return $toBuyQuantity ;
+        return !is_null($toBuyQuantity) ? $toBuyQuantity->refValue : $this->getReference(BlockchainOrderFactory::BUY_AMOUNT)->refValue;
     }
 
     /**
@@ -173,12 +170,11 @@ class BlockchainOrder extends BlockchainEvent
     public function getSource(): BlockchainAddress
     {
         $source = $this->getJoinedEntities(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS);
-        $source = end($source);
-        return $source ;
+        return end($source);
     }
 
     /**
-     * @return BlockchainAddress
+     * @return BlockchainAddress|null
      */
     public function getBuyDestination(): ?BlockchainAddress
     {

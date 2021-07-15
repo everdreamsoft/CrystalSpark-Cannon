@@ -75,6 +75,30 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     }
 
 
+
+    public function populateWithMatch(): static
+    {
+        $blockchain = $this->blockchain;
+
+        $matchOrderFactory = new BlockchainOrderFactory($blockchain);
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, clone $blockchain->getAddressFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($this->system));
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($this->system));
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_BLOCK, clone $blockchain->getBlockFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::ORDER_BUY_CONTRACT, clone $blockchain->getContractFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::ORDER_SELL_CONTRACT, clone $blockchain->getContractFactory());
+        $matchOrderFactory->joinFactory(BlockchainOrderFactory::BUY_DESTINATION, clone $blockchain->getAddressFactory());
+
+        $this->populateBrotherEntities(BlockchainOrderFactory::MATCH_WITH);
+        $this->joinFactory(BlockchainOrderFactory::MATCH_WITH, $matchOrderFactory);
+        $this->populateLocal();
+
+        $matchOrderFactory->joinPopulate();
+
+        return $this;
+    }
+
+
     /**
      * @param int $limit
      * @param int $offset
@@ -88,28 +112,14 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         $populated =  parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
         $blockchain = $this->blockchain ;
 
-        $matchOrderFactory = new BlockchainOrderFactory($blockchain);
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, clone $blockchain->getAddressFactory());
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($this->system));
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($this->system));
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::EVENT_BLOCK, clone $blockchain->getBlockFactory());
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::ORDER_BUY_CONTRACT, clone $blockchain->getContractFactory());
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::ORDER_SELL_CONTRACT, clone $blockchain->getContractFactory());
-        $matchOrderFactory->joinFactory(BlockchainOrderFactory::BUY_DESTINATION, clone $blockchain->getAddressFactory());
-
-
         $this->populateBrotherEntities(BlockchainOrderFactory::MATCH_WITH);
-        $this->joinFactory(BlockchainOrderFactory::MATCH_WITH, $matchOrderFactory);
         $this->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $blockchain->getAddressFactory());
         $this->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($this->system));
         $this->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($this->system));
-        $this->joinFactory(BlockchainOrderFactory::EVENT_BLOCK, $blockchain->getBlockFactory());
         $this->joinFactory(BlockchainOrderFactory::ORDER_BUY_CONTRACT, $blockchain->getContractFactory());
         $this->joinFactory(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $blockchain->getContractFactory());
         $this->joinFactory(BlockchainOrderFactory::BUY_DESTINATION, $blockchain->getAddressFactory());
         $this->joinPopulate();
-        $matchOrderFactory->joinPopulate();
-
 
         return $populated ;
 
@@ -132,34 +142,34 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     }
 
 
-    /**
-     * @param Blockchain $blockchain
-     * @param bool $needMatchedOrders
-     * @return array
-     */
-    public function getMatchedOrUnmatched(Blockchain $blockchain, bool $needMatchedOrders): array
-    {
-        $this->populateLocal();
-        $allOrders = $this->getEntities();
-        $ordersOnChain = array_filter($allOrders, [$this, 'filterSameChain']);
-
-        $ordersForView = [];
-
-        foreach ($ordersOnChain as $order){
-
-            $matchEntity = $order->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
-
-            if($needMatchedOrders && $matchEntity){
-                $ordersForView[] = $order;
-            }else if(!$needMatchedOrders && !$matchEntity){
-                $ordersForView[] = $order;
-            }
-
-        }
-
-        $orderProcess = $this->blockchain->getOrderFactory();
-        return $orderProcess->makeViewFromOrders($ordersForView, $needMatchedOrders);
-    }
+//    /**
+//     * @param Blockchain $blockchain
+//     * @param bool $needMatchedOrders
+//     * @return array
+//     */
+//    public function getMatchedOrUnmatched(Blockchain $blockchain, bool $needMatchedOrders): array
+//    {
+//        $this->populateLocal();
+//        $allOrders = $this->getEntities();
+//        $ordersOnChain = array_filter($allOrders, [$this, 'filterSameChain']);
+//
+//        $ordersForView = [];
+//
+//        foreach ($ordersOnChain as $order){
+//
+//            $matchEntity = $order->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
+//
+//            if($needMatchedOrders && $matchEntity){
+//                $ordersForView[] = $order;
+//            }else if(!$needMatchedOrders && !$matchEntity){
+//                $ordersForView[] = $order;
+//            }
+//
+//        }
+//
+//        $orderProcess = $this->blockchain->getOrderFactory();
+//        return $orderProcess->makeViewFromOrders($ordersForView, $needMatchedOrders);
+//    }
 
 
 
@@ -227,18 +237,6 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         if(strtoupper($needleBuyContractId) != $currency){
 
             try{
-//                $eventFactory->create(
-//                    $blockchain,
-//                    $needleOrder->getSource(),
-//                    $matchOrder->getSource(),
-//                    $needleOrder->getContractToBuy(),
-//                    $needleOrder->getTxId(),
-//                    $needleOrder->getBlock()->getTimestamp(),
-//                    $needleOrder->getBlock(),
-//                    $needleOrder->getTokenBuy(),
-//                    $needleOrder->getContractToBuyQuantity()
-//                );
-
                 $eventFactory->create(
                     $blockchain,
                     $matchOrder->getSource(),
@@ -271,18 +269,6 @@ class BlockchainOrderFactory extends BlockchainEventFactory
                     $needleOrder->getTokenSell(),
                     $needleOrder->getContractToSellQuantity()
                 );
-
-//                $eventFactory->create(
-//                    $blockchain,
-//                    $matchOrder->getSource(),
-//                    $needleOrder->getSource(),
-//                    $matchOrder->getContractToBuy(),
-//                    $matchOrder->getTxId(),
-//                    $matchOrder->getBlock()->getTimestamp(),
-//                    $matchOrder->getBlock(),
-//                    $matchOrder->getTokenBuy(),
-//                    $matchOrder->getContractToBuyQuantity()
-//                );
 
             }catch(Exception $e){
                 throw $e;

@@ -1,19 +1,22 @@
 <?php
 
 use CsCannon\BlockchainRouting;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainBlockFactory;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
-use CsCannon\Blockchains\Substrate\Kusama\KusamaAddress;
-use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
+use SandraCore\Entity;
 
 class OrderTest extends TestCase
 {
+
+    private int $contractQuantity = 5;
+    private int $ksmQuantity = 3;
 
     public function testKusamaMatch()
     {
@@ -25,31 +28,27 @@ class OrderTest extends TestCase
 
         $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
 
-        $factory = new BlockchainOrderFactory($blockchain);
-
-        $addressFactory = $blockchain->getAddressFactory();
-        /** @var BlockchainAddress $firstAddress */
-        $firstAddress = $addressFactory->createNew(['myFirstKusamaAddress']);
-        /** @var BlockchainAddress $secondAddress */
-        $secondAddress = $addressFactory->createNew(['mySecondKusamaAddress']);
-
-        $this->createOrder('contractSell', '00000SELL', 5, 'buyContract', '00000BUY', 3, 'txTestSell', 11122233, $factory, $firstAddress);
-        $this->createOrder('buyContract', '00000BUY', 10, 'contractSell', '00000SELL', 5, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
-
-//        $orderFactory = new BlockchainOrderFactory($blockchain);
-//        $orderFactory->populateLocal();
-
-        $orderProcess = $blockchain->getOrderProcess();
-        $matches = $orderProcess->getAllMatches();
+        $this->makeKusamaMatchOrders();
 
         $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orderFactory->populateLocal();
+        $orderFactory->populateWithMatch();
+
+        $matchedOrders = $orderFactory->getEntities();
+
+        $this->assertNotEmpty($matchedOrders);
+
+        $matches = [];
+
+        foreach ($matchedOrders as $matchOrder){
+            $joined = $matchOrder->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
+            if(!is_null($joined)){
+                $matches[] = $matchOrder;
+            }
+        }
 
         $this->assertNotEmpty($matches);
-
-        $lastMatch = end($matches);
         /** @var BlockchainOrder $match */
-        $match = end($lastMatch);
+        $match = end($matches);
 
         $isClose = $match->getReference(BlockchainOrderFactory::STATUS);
         $this->assertNotNull($isClose);
@@ -62,27 +61,93 @@ class OrderTest extends TestCase
         $eventFactory->populateLocal();
         $events = $eventFactory->getEntities();
 
-        $this->assertCount(2, $events);
+        $this->assertCount(1, $events);
 
-        $brother = $match->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
-        $this->assertNotNull($brother);
 
-        $joinedEntity = $match->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
-        print_r($joinedEntity);
+        /** @var Entity[] $brothers */
+        $brothers = $match->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
+        $this->assertNotNull($brothers);
 
-        // TODO MATCH_WITH
+        $brother = end($brothers);
+
+        $matchQuantity = $brother->getReference(BlockchainOrderFactory::MATCH_BUY_QUANTITY)->refValue;
+        $this->assertEquals($this->contractQuantity, $matchQuantity);
+
+        $matchKsm = $brother->getReference(BlockchainOrderFactory::MATCH_SELL_QUANTITY)->refValue;
+        $this->assertEquals($this->ksmQuantity, $matchKsm);
+
+
+
+        $matchedOrders = $match->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
+        $this->assertNotNull($matchedOrders);
+
+        /** @var BlockchainOrder $orderMatched */
+        $orderMatched = end($matchedOrders);
+
+        $remainingTotal = $orderMatched->getTotal();
+        $this->assertEquals(0, $remainingTotal);
 
     }
 
 
-    private function createOrder(string $contractToSell, string $snToSell, int $sellAmount, string $contractToBuy, string $snToBuy, int $buyAmount, string $txHash, int $timestamp, BlockchainOrderFactory $blockchainOrderFactory, BlockchainAddress $source, BlockchainAddress $buyDestination = null): BlockchainOrder
+
+    public function testViewOrders()
     {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        TestManager::initTestDatagraph();
+
         $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+
+        $this->makeKusamaMatchOrders();
+
+        $orderFactory = new BlockchainOrderFactory($blockchain);
+        $orderFactory->populateWithMatch();
+        $view = $orderFactory->viewAllOrdersOnChain($blockchain);
+
+
+    }
+
+
+
+
+    private function makeKusamaMatchOrders()
+    {
+
+        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+
+        $factory = new BlockchainOrderFactory($blockchain);
+
+        $addressFactory = $blockchain->getAddressFactory();
+        /** @var BlockchainAddress $firstAddress */
+        $firstAddress = $addressFactory->createNew(['myFirstKusamaAddress']);
+        /** @var BlockchainAddress $secondAddress */
+        $secondAddress = $addressFactory->createNew(['mySecondKusamaAddress']);
+
+        $this->createOrder($blockchain, 'contractSell', '00000SELL', $this->contractQuantity, 'KSM', null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'KSM', null, $this->ksmQuantity, 'contractSell', '00000SELL', $this->contractQuantity, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
+
+        $orderProcess = $blockchain->getOrderProcess();
+        $orderProcess->getAllMatches();
+    }
+
+
+
+    private function createOrder(Blockchain $blockchain, string $contractToSell, $snToSell, int $sellAmount, string $contractToBuy, $snToBuy, int $buyAmount, string $txHash, int $timestamp, BlockchainOrderFactory $blockchainOrderFactory, BlockchainAddress $source, BlockchainAddress $buyDestination = null): BlockchainOrder
+    {
 
         $buyContract = $blockchain->getContractFactory()::getContract($contractToBuy,true, RmrkContractStandard::getEntity());
         $sellContract = $blockchain->getContractFactory()::getContract($contractToSell,true, RmrkContractStandard::getEntity());
-        $tokenBuy = RmrkContractStandard::init(['sn' => $snToBuy]);
-        $tokenSale = RmrkContractStandard::init(['sn' => $snToSell]);
+
+        if(!is_null($snToBuy)){
+            $snToBuy = RmrkContractStandard::init(['sn' => $snToBuy]);
+        }
+
+        if(!is_null($snToSell)){
+            $snToSell = RmrkContractStandard::init(['sn' => $snToSell]);
+        }
 
         $blockchainBlockFactory = new BlockchainBlockFactory($blockchain);
 
@@ -100,8 +165,8 @@ class OrderTest extends TestCase
             $txHash,
             $timestamp,
             $currentBlock,
-            $tokenBuy,
-            $tokenSale,
+            $snToBuy,
+            $snToSell,
             $buyDestination
         );
     }
