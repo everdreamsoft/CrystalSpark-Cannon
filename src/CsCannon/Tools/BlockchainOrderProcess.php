@@ -8,6 +8,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainContract;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
@@ -182,6 +183,7 @@ class BlockchainOrderProcess
         foreach ($orders as $order){
 
             $contractToBuyId = $order->getContractToBuy()->getReference('id')->refValue;
+            $orderStatus = $order->getReference(BlockchainOrderFactory::STATUS);
 
             $matchArray['source'] = $order->getSource()->getAddress();
             $matchArray['contract_buy'] = $contractToBuyId;
@@ -189,6 +191,7 @@ class BlockchainOrderProcess
             $matchArray['remaining_total'] = $order->getTotal();
             $matchArray['block'] = $order->getBlock()->getId();
             $matchArray['txid'] = $order->getTxId();
+            $matchArray['status'] = is_null($orderStatus) ? "open" : $orderStatus->refValue;
 
             if($order->getBlockchain()::NAME === KusamaBlockchain::NAME){
                 $matchArray['order_type'] = $order->getBuyDestination() ? 'BUY' : 'LIST';
@@ -205,6 +208,7 @@ class BlockchainOrderProcess
 
                 for($i = 0; $i<count($matchedOrders); $i++){
 
+                    /** @var BlockchainOrder $matchedOrder */
                     $matchedOrder = $matchedOrders[$i];
 
                     $brothersKeys = array_keys($brothers);
@@ -224,16 +228,16 @@ class BlockchainOrderProcess
                     $quantityBuyMatch = $brother->getReference(BlockchainOrderFactory::MATCH_BUY_QUANTITY)->refValue ?? null;
                     $matchWith[$i]['match_buy_quantity'] = $quantityBuyMatch;
 
-                    $tokensBuy = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::TOKEN_BUY);
-                    /** @var BlockchainContract $tokenBuy */
-                    $tokenBuy = end($tokensBuy);
 
-                    if(!($tokenBuy instanceof RmrkContractStandard)){
-                        $token = $tokenBuy->getId();
+                    $tokensBuy = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::TOKEN_BUY) ?? null;
+                    if(!is_null($tokensBuy)){
+                        $tokenBuy = $matchedOrder->getTokenBuy()->getDisplayStructure();
                     }else{
-                        $token = $this->blockchain->getMainCurrencyTicker();
+                        $tokenBuy = $this->blockchain->getMainCurrencyTicker();
                     }
-                    $matchWith[$i]['token_buy'] = $token;
+
+                    $matchWith[$i]['token_buy'] = $tokenBuy;
+
 
                     $contractsSell = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::ORDER_SELL_CONTRACT);
                     /** @var BlockchainContract $contractSell */
@@ -244,16 +248,16 @@ class BlockchainOrderProcess
                     $quantitySellMatch = $brother->getReference(BlockchainOrderFactory::MATCH_SELL_QUANTITY)->refValue ?? null;
                     $matchWith[$i]['match_sell_quantity'] = $quantitySellMatch;
 
-                    $tokensSell = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::TOKEN_SELL);
-                    /** @var BlockchainContract $tokenBuy */
-                    $tokenSell = end($tokensSell);
 
-                    if(!($tokenSell instanceof RmrkContractStandard)){
-                        $token = $tokenSell->getId();
+                    $tokensSell = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::TOKEN_SELL) ?? null;
+                    if(!is_null($tokensSell)){
+                        $tokenSell = $matchedOrder->getTokenSell()->getDisplayStructure();
                     }else{
-                        $token = $this->blockchain->getMainCurrencyTicker();
+                        $tokenSell = $this->blockchain->getMainCurrencyTicker();
                     }
-                    $matchWith[$i]['token_sell'] = $token;
+
+                    $matchWith[$i]['token_sell'] = $tokenSell;
+
 
                     $sellRemainingQuantity = $matchedOrder->getReference(BlockchainOrderFactory::REMAINING_SELL)->refValue ?? null;
                     if(is_null($sellRemainingQuantity)) $sellRemainingQuantity = $matchedOrder->getReference(BlockchainOrderFactory::SELL_PRICE)->refValue ?? null;

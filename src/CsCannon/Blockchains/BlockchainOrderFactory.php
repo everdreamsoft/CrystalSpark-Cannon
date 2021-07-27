@@ -51,8 +51,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     const STATUS = "status";
     const CLOSE = "close";
 
-    const TOKEN_BUY = "tokenBuy";
-    const TOKEN_SELL = "tokenSell";
+//    const TOKEN_BUY = "tokenBuy";
+//    const TOKEN_SELL = "tokenSell";
 
 
     public function __construct(Blockchain $blockchain)

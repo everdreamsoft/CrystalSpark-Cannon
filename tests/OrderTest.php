@@ -18,6 +18,10 @@ class OrderTest extends TestCase
     private int $contractQuantity = 5;
     private int $ksmQuantity = 3;
 
+    private string $firstAddress = 'myFirstKusamaAddress';
+    private string $secondAddress = 'mySecondKusamaAddress';
+    private string $snSell = '00000SELL';
+
     public function testKusamaMatch()
     {
         ini_set('display_errors', 1);
@@ -105,9 +109,39 @@ class OrderTest extends TestCase
 
         $orderFactory = new BlockchainOrderFactory($blockchain);
         $orderFactory->populateWithMatch();
-        $view = $orderFactory->viewAllOrdersOnChain($blockchain);
+
+        /** @var BlockchainOrder[] $matches */
+        $matches = $orderFactory->getEntities();
+
+        $orderProcess = $blockchain->getOrderProcess();
+
+        $view = $orderProcess->makeViewFromOrders($matches, true);
+
+        $this->assertIsArray($view);
+        $this->assertNotEmpty($view);
+
+        $firstOrder = $view[0];
+
+        $this->assertEquals(strtolower($this->firstAddress), $firstOrder['source']);
+        $this->assertEquals($blockchain->getMainCurrencyTicker(), $firstOrder['contract_buy']);
+        $this->assertEquals(BlockchainOrderFactory::CLOSE, $firstOrder['status']);
+
+        $matchedOrder = $view[1];
+
+        $this->assertEquals(strtolower($this->secondAddress), $matchedOrder['source']);
+        $this->assertEquals(BlockchainOrderFactory::CLOSE, $matchedOrder['status']);
+        $this->assertEquals("BUY", $matchedOrder['order_type']);
+        $this->assertIsArray($matchedOrder['match_with']);
+
+        $matchWith = $matchedOrder['match_with'][0];
+
+        $this->assertArrayHasKey('token_sell', $matchWith);
+        $this->assertEquals("sn-".$this->snSell, $matchWith['token_sell']);
+        $this->assertArrayHasKey('source', $matchWith);
+        $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
 
 
+//        print_r($view);
     }
 
 
@@ -121,16 +155,15 @@ class OrderTest extends TestCase
         $factory = new BlockchainOrderFactory($blockchain);
 
         $addressFactory = $blockchain->getAddressFactory();
-        /** @var BlockchainAddress $firstAddress */
-        $firstAddress = $addressFactory->createNew(['myFirstKusamaAddress']);
-        /** @var BlockchainAddress $secondAddress */
-        $secondAddress = $addressFactory->createNew(['mySecondKusamaAddress']);
 
-        $this->createOrder($blockchain, 'contractSell', '00000SELL', $this->contractQuantity, 'KSM', null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
-        $this->createOrder($blockchain, 'KSM', null, $this->ksmQuantity, 'contractSell', '00000SELL', $this->contractQuantity, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
+        $firstAddress = $addressFactory->get($this->firstAddress, true);
+        $secondAddress = $addressFactory->get($this->secondAddress, true);
+
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, 'KSM', null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'KSM', null, $this->ksmQuantity, 'contractSell', $this->snSell, $this->contractQuantity, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
 
         $orderProcess = $blockchain->getOrderProcess();
-        $orderProcess->getAllMatches();
+        return $orderProcess->getAllMatches();
     }
 
 
