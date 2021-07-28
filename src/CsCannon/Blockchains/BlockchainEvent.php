@@ -105,6 +105,7 @@ class BlockchainEvent extends Entity implements Displayable
     public function getBlockchainContract():?BlockchainContract{
 
         $contract= $this->getJoinedEntities(BlockchainEventFactory::EVENT_CONTRACT);
+        if (!$contract) return null ;
         $contract = reset($contract); //take the first destination
         /** @var Entity $source */
 
