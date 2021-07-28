@@ -23,7 +23,7 @@ use SandraCore\System;
 class BlockchainOrderFactory extends BlockchainEventFactory
 {
 
-    public static $isa = "BlockchainOrder";
+    public static $isa = "blockchainOrder";
     public static $file = "blockchainOrderFile";
     protected static  $className = 'CsCannon\Blockchains\BlockchainOrder' ;
 
