@@ -42,7 +42,7 @@ class BlockchainOrder extends BlockchainEvent
 
         $this->blockchain = $this->getBlockchain();
 
-            //kusama specifics ? (WHen a an order match a specific spend
+        //kusama specifics ? (WHen a an order match a specific spend
 
     }
 
@@ -72,9 +72,10 @@ class BlockchainOrder extends BlockchainEvent
         if (!is_null($brotherEntArray)) {
             $tokenDataEntity  = end($brotherEntArray);
             $tokenData = $tokenDataEntity->entityRefs;
+            $tokenSell->setTokenPath($tokenData);
         }
 
-        $tokenSell->setTokenPath($tokenData);
+
         return $tokenSell ;
     }
 
@@ -91,9 +92,10 @@ class BlockchainOrder extends BlockchainEvent
         if (!is_null($brotherEntArray)) {
             $tokenDataEntity  = end($brotherEntArray);
             $tokenData = $tokenDataEntity->entityRefs;
+            $tokenBuy->setTokenPath($tokenData);
         }
 
-        $tokenBuy->setTokenPath($tokenData);
+
 
 
         return $tokenBuy ;

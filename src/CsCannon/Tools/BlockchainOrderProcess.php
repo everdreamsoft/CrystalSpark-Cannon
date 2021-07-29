@@ -183,11 +183,14 @@ class BlockchainOrderProcess
         foreach ($orders as $order){
 
             $contractToBuyId = $order->getContractToBuy()->getReference('id')->refValue;
+            $contractToSellId = $order->getContractToSell()->getReference('id')->refValue;
             $orderStatus = $order->getReference(BlockchainOrderFactory::STATUS);
 
             $matchArray['source'] = $order->getSource()->getAddress();
             $matchArray['contract_buy'] = $contractToBuyId;
-            $matchArray['remaining_quantity'] = $order->getContractToBuyQuantity();
+            $matchArray['remaining_buy_quantity'] = $order->getContractToBuyQuantity();
+            $matchArray['contract_sell'] = $contractToSellId;
+            $matchArray['remaining_sell_quantity'] = $order->getContractToSellQuantity();
             $matchArray['remaining_total'] = $order->getTotal();
             $matchArray['block'] = $order->getBlock()->getId();
             $matchArray['txid'] = $order->getTxId();
@@ -203,6 +206,7 @@ class BlockchainOrderProcess
             $matchedOrders = $order->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
 
             $matchWith = [];
+
 
             if($withMatch && $matchedOrders && $brothers){
 
@@ -229,7 +233,7 @@ class BlockchainOrderProcess
                     $matchWith[$i]['match_buy_quantity'] = $quantityBuyMatch;
 
 
-                    $tokensBuy = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::TOKEN_BUY) ?? null;
+                    $tokensBuy = $matchedOrder->getBrotherEntity(BlockchainOrderFactory::TOKEN_BUY) ?? null;
                     if(!is_null($tokensBuy)){
                         $tokenBuy = $matchedOrder->getTokenBuy()->getDisplayStructure();
                     }else{
@@ -249,7 +253,7 @@ class BlockchainOrderProcess
                     $matchWith[$i]['match_sell_quantity'] = $quantitySellMatch;
 
 
-                    $tokensSell = $matchedOrder->getJoinedEntities(BlockchainOrderFactory::TOKEN_SELL) ?? null;
+                    $tokensSell = $matchedOrder->getBrotherEntity(BlockchainOrderFactory::TOKEN_SELL) ?? null;
                     if(!is_null($tokensSell)){
                         $tokenSell = $matchedOrder->getTokenSell()->getDisplayStructure();
                     }else{

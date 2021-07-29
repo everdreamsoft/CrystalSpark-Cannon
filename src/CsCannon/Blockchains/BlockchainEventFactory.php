@@ -201,6 +201,22 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         return parent::createNew($dataArray, $triplets,$autocommit);
     }
 
+    /**
+     * @param Blockchain $blockchain
+     * @param BlockchainAddress $sourceAddressConcept
+     * @param BlockchainContract $buyContract
+     * @param BlockchainContract $sellContract
+     * @param $buyAmount
+     * @param $sellPrice
+     * @param $buyTotal
+     * @param $txid
+     * @param $timestamp
+     * @param BlockchainBlock $block
+     * @param BlockchainContractStandard|null $tokenBuy
+     * @param BlockchainContractStandard|null $tokenSell
+     * @param BlockchainAddress|null $buyDestination
+     * @return BlockchainOrder
+     */
     public function createOrder(Blockchain $blockchain,
                                 BlockchainAddress $sourceAddressConcept,
                                 BlockchainContract $buyContract,
@@ -257,11 +273,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         }
 
 
-
-
         return parent::createNew($dataArray, $triplets);
-
-
 
     }
 

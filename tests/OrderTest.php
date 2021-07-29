@@ -123,8 +123,8 @@ class OrderTest extends TestCase
         $firstOrder = $view[0];
 
         $this->assertEquals(strtolower($this->firstAddress), $firstOrder['source']);
-        $this->assertEquals($blockchain->getMainCurrencyTicker(), $firstOrder['contract_buy']);
         $this->assertEquals(BlockchainOrderFactory::CLOSE, $firstOrder['status']);
+        $this->assertEquals($blockchain->getMainCurrencyTicker(), $firstOrder['contract_buy']);
 
         $matchedOrder = $view[1];
 
@@ -141,9 +141,33 @@ class OrderTest extends TestCase
         $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
 
 
-//        print_r($view);
+        print_r($view);
     }
 
+
+
+    public function testBalance()
+    {
+
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        TestManager::initTestDatagraph();
+
+        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+
+//        $this->makeKusamaMatchOrders();
+
+        $orderFactory = new BlockchainOrderFactory($blockchain);
+        $orderFactory->populateWithMatch();
+
+        /** @var BlockchainOrder[] $matches */
+        $matches = $orderFactory->getEntities();
+
+        print_r(count($matches));
+
+    }
 
 
 
