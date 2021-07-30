@@ -1,6 +1,9 @@
 <?php
 
 namespace CsCannon\Blockchains;
+
+
+use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\Orb;
 
@@ -24,28 +27,184 @@ use Matrix\Exception;
 use SandraCore\Entity;
 use SandraCore\System;
 
-class BlockchainEvent extends Entity implements Displayable
+class BlockchainOrder extends BlockchainEvent
 {
 
-    protected $name ;
-    protected static $isa ;
-    protected static $file ;
-    public $displayManager ;
+    private $blockchain;
 
-    const DISPLAY_TXID = 'txId';
-    const DISPLAY_VALID = 'validity';
-    const DISPLAY_SOURCE_ADDRESS = 'source';
-    const DISPLAY_DESTINATION_ADDRESS = 'destination';
-    const DISPLAY_CONTRACT = 'contract';
-    const DISPLAY_QUANTITY = 'quantity';
-    const DISPLAY_ADAPTED_QUANTITY = 'adaptedQuantity';
-    const DISPLAY_TIMESTAMP = 'timestamp';
-    const DISPLAY_TIMESTAMP_LEGACY = 'legacy';
-    const DISPLAY_BLOCKCHAIN = 'blockchain';
-    const DISPLAY_BLOCKCHAIN_NETWORK = 'network_name';
-    const DISPLAY_BLOCK_ID = 'blockHeight';
-    const BLOCKCHAIN_EVENT_TYPE_VERB = 'blockchainEventType';
-    public $eventType = 'order';
+    private $contractToSell;
+    private $contractToSellId;
+
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
+    {
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+
+
+        $this->blockchain = $this->getBlockchain();
+
+        //kusama specifics ? (WHen a an order match a specific spend
+
+    }
+
+    public function getBlockchain():Blockchain{
+
+        $conceptTriplets = $this->subjectConcept->getConceptTriplets();
+        $conceptId = $conceptTriplets[$this->system->systemConcept->get(BlockchainOrderFactory::ON_BLOCKCHAIN)] ?? null;
+        $lastId = end($conceptId);
+        $blockchainName = $this->system->systemConcept->getSCS($lastId);
+
+        return BlockchainRouting::getBlockchainFromName($blockchainName);
+
+
+    }
+
+    /**
+     * @return BlockchainContractStandard|null
+     */
+    public function getTokenSell(): ?BlockchainContractStandard
+    {
+        $tokenSell = $this->getJoinedEntities(BlockchainOrderFactory::TOKEN_SELL);
+        $tokenSell = end($tokenSell);
+        /** @var BlockchainContractStandard $tokenSell */
+
+        $brotherEntArray = $this->getBrotherEntity(BlockchainEventFactory::TOKEN_SELL);
+
+        if (!is_null($brotherEntArray)) {
+            $tokenDataEntity  = end($brotherEntArray);
+            $tokenData = $tokenDataEntity->entityRefs;
+            $tokenSell->setTokenPath($tokenData);
+        }
+
+
+        return $tokenSell ;
+    }
+
+    /**
+     * @return BlockchainContractStandard|null
+     */
+    public function getTokenBuy(): ?BlockchainContractStandard
+    {
+        $tokenBuy = $this->getJoinedEntities(BlockchainOrderFactory::TOKEN_BUY);
+        $tokenBuy = end($tokenBuy);
+
+        $brotherEntArray = $this->getBrotherEntity(BlockchainEventFactory::TOKEN_BUY);
+
+        if (!is_null($brotherEntArray)) {
+            $tokenDataEntity  = end($brotherEntArray);
+            $tokenData = $tokenDataEntity->entityRefs;
+            $tokenBuy->setTokenPath($tokenData);
+        }
+
+
+
+
+        return $tokenBuy ;
+    }
+
+
+
+
+
+    /**
+     * @return BlockchainContract
+     */
+    public function getContractToSell(): BlockchainContract
+    {
+        $contractToSell = $this->getJoinedEntities(BlockchainOrderFactory::ORDER_SELL_CONTRACT);
+        $this->contractToSell = end($contractToSell);
+        return $this->contractToSell ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContractToSellId(): string
+    {
+        return $this->contractToSellId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContractToSellQuantity(): string
+    {
+        $toSellQuantity = $this->getReference(BlockchainOrderFactory::REMAINING_SELL) ?? null;
+
+        $toSellQuantity = !is_null($toSellQuantity) ? $toSellQuantity->refValue : $this->getReference(BlockchainOrderFactory::SELL_PRICE)->refValue;
+
+        return $toSellQuantity;
+    }
+
+    /**
+     * @return BlockchainContract|null
+     */
+    public function getContractToBuy(): ?BlockchainContract
+    {
+
+        $contractToBuy = $this->getJoinedEntities(BlockchainOrderFactory::ORDER_BUY_CONTRACT);
+        if (!$contractToBuy) return null ;
+        return end($contractToBuy);
+    }
+
+
+
+    /**
+     * @return string
+     */
+    public function getContractToBuyQuantity(): string
+    {
+        $toBuyQuantity = $this->getReference(BlockchainOrderFactory::REMAINING_BUY) ?? null;
+        return !is_null($toBuyQuantity) ? $toBuyQuantity->refValue : $this->getReference(BlockchainOrderFactory::BUY_AMOUNT)->refValue;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTotal(): string
+    {
+        $total = $this->getReference(BlockchainOrderFactory::REMAINING_TOTAL) ?? null;
+        return !is_null($total) ? $total->refValue : $this->getReference(BlockchainOrderFactory::BUY_TOTAL)->refValue;
+    }
+
+    /**
+     * @return BlockchainAddress
+     */
+    public function getSource(): BlockchainAddress
+    {
+        $source = $this->getJoinedEntities(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS);
+        return end($source);
+    }
+
+    /**
+     * @return BlockchainAddress|null
+     */
+    public function getBuyDestination(): ?BlockchainAddress
+    {
+        /** @var BlockchainAddress[] $buyDestination */
+        $buyDestination = $this->getJoinedEntities(BlockchainOrderFactory::BUY_DESTINATION) ?? null;
+
+        return is_null($buyDestination) ? null : end($buyDestination);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -119,12 +278,7 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getTxId():?string{
 
-
-        return $this->get(Blockchain::$txidConceptName);
-
-    }
 
     public function getSpecifier(){
 
@@ -149,15 +303,13 @@ class BlockchainEvent extends Entity implements Displayable
         /** @var BlockchainContractStandard $standard */
 
         if (isset($standards)){
-            /** @var BlockchainContractStandard $instance */
             $instance = $standards::init();
             $instance->setTokenPath($tokenData);
             return  $instance ;
 
         }
         else {
-            $contractStandard = UnknownStandard::init();
-            return  $contractStandard ;
+            return UnknownStandard::init();
 
         }
 
@@ -174,12 +326,7 @@ class BlockchainEvent extends Entity implements Displayable
         $this->data[$name] = $value;
     }
 
-    public function getBlock():BlockchainBlock
-    {
-        $block = $this->getJoinedEntities(BlockchainEventFactory::EVENT_BLOCK);
-        $block = end($block);
-        return $block ;
-    }
+
 
     public function getBlockTimestamp()
     {

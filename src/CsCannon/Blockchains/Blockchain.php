@@ -10,6 +10,8 @@ namespace CsCannon\Blockchains;
 
 
 
+use CsCannon\Tools\BlockchainOrderProcess;
+
 abstract class Blockchain
 {
 
@@ -27,6 +29,7 @@ abstract class Blockchain
     public  $contractFactory ;
     public  $eventFactory ;
     public  $blockFactory ;
+    public $orderProcess;
     public static $network = array("null"=>array("explorer_tx"=>'null'));
 
     /**
@@ -58,6 +61,11 @@ abstract class Blockchain
 
        return new BlockchainBlockFactory($this);
 
+    }
+
+    public function getOrderProcess(): BlockchainOrderProcess
+    {
+        return $this->orderProcess;
     }
 
     public function getMainCurrencyTicker():string

@@ -14,6 +14,7 @@ use CsCannon\BlockchainStandardFactory;
 use CsCannon\MetadataSolverFactory;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
+use CsCannon\Tools\BlockchainOrderProcess;
 use SandraCore\Entity;
 use SandraCore\Reference;
 use SandraCore\System;
@@ -107,8 +108,6 @@ abstract class BlockchainContractStandard extends Entity
         if (is_null($localEntity) or $localEntity->system->instanceId != SandraManager::getSandra()->instanceId) {
 
 
-
-
             static::$entityClassArray[static::class] = $standardFactory->getOrCreateFromRef('class_name', static::class);
 
             $localEntity =  static::$entityClassArray[static::class];
@@ -165,6 +164,22 @@ abstract class BlockchainContractStandard extends Entity
         }
 
         return $standard;
+
+
+    }
+
+
+    /**
+     *
+     * When we want to process manually the blockchain order process.
+     * Return an processor object
+     *
+     * @return BlockchainOrderProcess
+     */
+    public static function getOrderProcessor():BlockchainOrderProcess
+    {
+
+        return new BlockchainOrderProcess();
 
 
     }

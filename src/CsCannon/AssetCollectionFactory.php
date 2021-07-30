@@ -12,6 +12,7 @@ namespace CsCannon;
 use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\AssetSolvers\DefaultEthereumSolver;
 use CsCannon\AssetSolvers\LocalSolver;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainToken;
 use CsCannon\Blockchains\BlockchainTokenFactory;
@@ -184,8 +185,6 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
     }
-
-
 
 
 
