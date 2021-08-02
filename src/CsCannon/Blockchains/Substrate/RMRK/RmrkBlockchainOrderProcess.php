@@ -6,6 +6,7 @@ namespace CsCannon\Blockchains\Substrate\RMRK;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Tools\BlockchainOrderProcess;
 use Exception;
 
@@ -79,7 +80,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             $isClose = $matchOrder->getReference(BlockchainOrderFactory::STATUS);
 
             // check if orders don't have 'close' status
-            if(is_null($isClose) || $isClose->refValue != BlockchainOrderFactory::CLOSE){
+            if(is_null($isClose)){
 
                 $needleContractToBuyId = $needleMatch->getContractToBuy()->getReference('id')->refValue;
                 $matchContractToBuyId = $matchOrder->getContractToBuy()->getReference('id')->refValue;
@@ -87,19 +88,22 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 $needleContractToSellId = $needleMatch->getContractToSell()->getReference('id')->refValue;
                 $matchContractToSellId = $matchOrder->getContractToSell()->getReference('id')->refValue;
 
-                if($needleContractToBuyId === $matchContractToSellId && $needleContractToSellId === $matchContractToBuyId){
-                    // check Contract ID
 
-                    if($needleMatch->getContractToSellQuantity() >= $matchOrder->getContractToBuyQuantity() && $matchOrder->getContractToSellQuantity() >= $needleMatch->getContractToBuyQuantity()){
-                        // Check quantities
+                if($this->checkKusamaBalance($matchOrder)){
+                    if($needleContractToBuyId === $matchContractToSellId && $needleContractToSellId === $matchContractToBuyId){
+                        // check Contract ID
 
-                        try{
-                            $this->sendMatchAndUpdate($matchOrder, $needleMatch);
-                        }catch(Exception $e){
-                            throw $e;
+                        if($needleMatch->getContractToSellQuantity() >= $matchOrder->getContractToBuyQuantity() && $matchOrder->getContractToSellQuantity() >= $needleMatch->getContractToBuyQuantity()){
+                            // Check quantities
+
+                            try{
+                                $this->sendMatchAndUpdate($matchOrder, $needleMatch);
+                            }catch(Exception $e){
+                                throw $e;
+                            }
+
+                            $matches[] = $matchOrder;
                         }
-
-                        $matches[] = $matchOrder;
                     }
                 }
 
@@ -109,6 +113,28 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
         return $matches;
     }
 
+
+    /**
+     * @param BlockchainOrder $order
+     * @return bool
+     */
+    public function checkKusamaBalance(BlockchainOrder $order): bool
+    {
+        $sourceAddress = $order->getSourceAddress();
+        $addressBalance = DatagraphSource::getBalance($sourceAddress, null, null);
+
+        $contractToSell = $order->getContractToSell() ?? null;
+        $contractToSellId = $contractToSell->getReference("id");
+        $ticker = $order->getBlockchain()->getMainCurrencyTicker();
+
+        // if contractToSell is not Ksm, return balance != 0
+        if(!is_null($contractToSellId) && $contractToSellId->refValue != $ticker){
+            $tokenBalance = $addressBalance->getQuantityForContractToken($contractToSell, $order->getTokenSell());
+            return $tokenBalance != 0;
+        }
+
+        return true;
+    }
 
 
 

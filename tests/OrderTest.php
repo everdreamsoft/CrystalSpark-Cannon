@@ -8,6 +8,7 @@ use CsCannon\Blockchains\BlockchainBlockFactory;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
+use CsCannon\Blockchains\Substrate\RMRK\RmrkBlockchainOrderProcess;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
 use SandraCore\Entity;
@@ -139,35 +140,36 @@ class OrderTest extends TestCase
         $this->assertEquals("sn-".$this->snSell, $matchWith['token_sell']);
         $this->assertArrayHasKey('source', $matchWith);
         $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
-
-
-        print_r($view);
     }
 
 
 
-    public function testBalance()
-    {
 
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
+//    public function testCheckKusamaBalance()
+//    {
+//        ini_set('display_errors', 1);
+//        ini_set('display_startup_errors', 1);
+//        error_reporting(E_ALL);
+//
+//        TestManager::initTestDatagraph();
+//
+//        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+//
+//        $firstAddress = $blockchain->getAddressFactory()->get($this->firstAddress, true);
+//
+//        $factory = new BlockchainOrderFactory($blockchain);
+//
+//        $order = $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, 'KSM', null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
+//
+//        $factory->populateLocal();
+//
+//        /** @var RmrkBlockchainOrderProcess $orderProcess */
+//        $orderProcess = $blockchain->getOrderProcess();
+//        $balance = $orderProcess->checkKusamaBalance($order);
+//
+//        $this->assertTrue($balance);
+//    }
 
-        TestManager::initTestDatagraph();
-
-        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
-
-//        $this->makeKusamaMatchOrders();
-
-        $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orderFactory->populateWithMatch();
-
-        /** @var BlockchainOrder[] $matches */
-        $matches = $orderFactory->getEntities();
-
-        print_r(count($matches));
-
-    }
 
 
 
@@ -204,6 +206,10 @@ class OrderTest extends TestCase
 
         if(!is_null($snToSell)){
             $snToSell = RmrkContractStandard::init(['sn' => $snToSell]);
+
+            $firstBalance = \CsCannon\Blockchains\DataSource\DatagraphSource::getBalance($source, null, null);
+            $firstBalance->addContractToken($sellContract, $snToSell, $this->contractQuantity);
+            $firstBalance->saveToDatagraph();
         }
 
         $blockchainBlockFactory = new BlockchainBlockFactory($blockchain);

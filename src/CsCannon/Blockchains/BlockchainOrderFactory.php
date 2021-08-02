@@ -50,6 +50,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
     const STATUS = "status";
     const CLOSE = "close";
+    const NOBALANCE = "insufficientBalance";
 
 //    const TOKEN_BUY = "tokenBuy";
 //    const TOKEN_SELL = "tokenSell";
