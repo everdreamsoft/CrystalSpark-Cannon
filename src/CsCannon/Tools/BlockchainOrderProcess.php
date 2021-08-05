@@ -135,9 +135,12 @@ class BlockchainOrderProcess
             $initialBuyQuantity = $matchOrder->getContractToBuyQuantity();
             $initialSellQuantity = $matchOrder->getContractToSellQuantity();
 
-            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_BUY, $matchOrder->getContractToBuyQuantity() - $needleOrder->getContractToSellQuantity());
-            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $matchOrder->getContractToSellQuantity() - $needleOrder->getContractToBuyQuantity());
-            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $matchOrder->getContractToBuyQuantity() * $matchOrder->getContractToSellQuantity());
+            $matchRemainingBuy = $matchOrder->getContractToBuyQuantity() - $needleOrder->getContractToSellQuantity();
+            $matchRemainingSell = $matchOrder->getContractToSellQuantity() - $needleOrder->getContractToBuyQuantity();
+
+            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_BUY, $matchRemainingBuy);
+            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $matchRemainingSell);
+            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $matchRemainingBuy * $matchRemainingSell);
 
             $remainingBuy = $needleOrder->getContractToBuyQuantity() - $initialSellQuantity;
             $remainingSell = $needleOrder->getContractToSellQuantity() - $initialBuyQuantity;

@@ -105,6 +105,8 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                             $matches[] = $matchOrder;
                         }
                     }
+                }else{
+                    $matchOrder->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::NOBALANCE);
                 }
 
             }
