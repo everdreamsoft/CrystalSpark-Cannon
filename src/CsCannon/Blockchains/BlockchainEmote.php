@@ -4,11 +4,12 @@ namespace CsCannon\Blockchains;
 
 use SandraCore\Entity;
 use SandraCore\Reference;
+use SandraCore\System;
 
 class BlockchainEmote extends Entity
 {
 
-    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, \SandraCore\System $system)
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
         parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
     }
@@ -69,8 +70,18 @@ class BlockchainEmote extends Entity
      */
     public function getTargetToken(): ?BlockchainContractStandard
     {
-        $targetTokens = $this->getJoinedEntities(BlockchainEmoteFactory::TARGET_TOKEN);
-        return is_null($targetTokens) ? null : end($targetTokens);
+        $targetToken = $this->getJoinedEntities(BlockchainEmoteFactory::TARGET_TOKEN);
+        $targetToken = end($targetToken);
+
+        $brotherEntArray = $this->getBrotherEntity(BlockchainEmoteFactory::TARGET_TOKEN);
+
+        if (!is_null($brotherEntArray)) {
+            $tokenDataEntity  = end($brotherEntArray);
+            $tokenData = $tokenDataEntity->entityRefs;
+            $targetToken->setTokenPath($tokenData);
+        }
+
+        return $targetToken;
     }
 
 }

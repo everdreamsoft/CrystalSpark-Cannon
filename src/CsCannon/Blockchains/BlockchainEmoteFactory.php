@@ -2,11 +2,11 @@
 
 namespace CsCannon\Blockchains;
 
-use CsCannon\Blockchains\Blockchain;
 use CsCannon\BlockchainStandardFactory;
 use CsCannon\Displayable;
 use CsCannon\SandraManager;
 use CsCannon\TokenPathToAssetFactory;
+use SandraCore\Entity;
 use SandraCore\EntityFactory;
 use SandraCore\System;
 
@@ -16,12 +16,13 @@ class BlockchainEmoteFactory extends EntityFactory
     public static $isa = 'emoteEvent';
     public static $file = 'emoteEventFile';
 
-    protected static $className = BlockchainEmote::class;
+    protected static $className = 'CsCannon\Blockchains\BlockchainEmote';
+//        BlockchainEmote::class;
 
     private $blockchain;
     private $referenceToFound;
 
-    const SN = "code";
+    const SN = "sn";
     const EMOTE_ID = "emoteId";
     const EMOTE_SOURCE_ADDRESS = 'source';
     const EVENT_BLOCK_TIME = 'timestamp';
@@ -39,6 +40,7 @@ class BlockchainEmoteFactory extends EntityFactory
         parent::__construct(static::$isa, static::$file, SandraManager::getSandra());
 
         $this->blockchain = $blockchain;
+        $this->generatedEntityClass = static::$className;
     }
 
 
@@ -70,9 +72,9 @@ class BlockchainEmoteFactory extends EntityFactory
             $contractId = $contractRefId->refValue;
         }
 
-        $tokenRef = $token->getReference('code');
-        if(!is_null($tokenRef)){
-            $tokenId = $tokenRef->refValue;
+        $tokenRef = $token->getSpecifierData();
+        if(!empty($tokenRef)){
+            $tokenId = $tokenRef['sn'];
         }
 
         if($tokenId && $contractId){
@@ -80,9 +82,9 @@ class BlockchainEmoteFactory extends EntityFactory
             $dataArray[self::EMOTE_ID] = $emoteId;
         }
 
-        $dataArray[self::EMOTE_ID] = $unicode;
+        $dataArray[self::EMOTE_UNICODE] = $unicode;
         $dataArray[self::EVENT_BLOCK_TIME] = strval($timestamp);
-//        $dataArray['txHash'] ??
+        $dataArray[Blockchain::$txidConceptName] = $txHash;
 
         $triplets[self::EMOTE_BLOCK] = $block;
         $triplets[self::ON_BLOCKCHAIN] = $this->blockchain::NAME;
@@ -90,12 +92,10 @@ class BlockchainEmoteFactory extends EntityFactory
         $triplets[self::TARGET_CONTRACT] = $contract;
 
         $structure = $token->getSpecifierData();
-        $triplets[self::TARGET_TOKEN] = array($token->subjectConcept->idConcept => $structure['sn']);
+        $triplets[self::TARGET_TOKEN] = array($token->subjectConcept->idConcept => $structure);
 
-        /** @var BlockchainEmote $emote */
-        $emote = parent::createNew($dataArray, $triplets);
 
-        return $emote;
+        return parent::createNew($dataArray, $triplets);
     }
 
 
@@ -112,11 +112,12 @@ class BlockchainEmoteFactory extends EntityFactory
         $populated =  parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
         $blockchain = $this->blockchain ;
 
-        parent::populateLocal();
         $this->joinFactory(self::EMOTE_SOURCE_ADDRESS, $blockchain->getAddressFactory());
         $this->joinFactory(self::TARGET_CONTRACT, $blockchain->getContractFactory());
         $this->joinFactory(self::TARGET_TOKEN, new BlockchainStandardFactory($this->system));
         $this->joinPopulate();
+        $this->populateBrotherEntities();
+        $this->getTriplets();
 
         return $populated;
     }
@@ -184,7 +185,7 @@ class BlockchainEmoteFactory extends EntityFactory
      * @param BlockchainEmote[] $emotes
      * @return BlockchainEmote[]
      */
-    private function activeEmotes(array $emotes): array
+    public function activeEmotes(array $emotes): array
     {
         $isActive = count($emotes) == 1 || count($emotes) % 2 != 0;
 
@@ -269,15 +270,21 @@ class BlockchainEmoteFactory extends EntityFactory
         $referencesFound = [];
         foreach ($emotes as $emote){
 
-            if($verb != ''){
-                $entitiesNeeded = $emote->getJoinedEntities($verb);
-                $entityNeeded = end($entitiesNeeded);
-            }else{
-                $entityNeeded = $emote;
-            }
+            if($ref == BlockchainEmoteFactory::SN && $verb == BlockchainEmoteFactory::TARGET_TOKEN){
 
-            /** @var string $reference */
-            $reference = $entityNeeded->getReference($ref)->refValue ?? null;
+                $reference = $emote->getTargetToken()->getDisplayStructure();
+
+            }else{
+                if($verb != ''){
+                    $entitiesNeeded = $emote->getJoinedEntities($verb);
+                    $entityNeeded = end($entitiesNeeded);
+                }else{
+                    $entityNeeded = $emote;
+                }
+
+                /** @var string $reference */
+                $reference = $entityNeeded->getReference($ref)->refValue ?? null;
+            }
 
             if(!is_null($reference) && !in_array($ref, $referencesFound)){
                 $this->referenceToFound = $reference;
@@ -310,10 +317,7 @@ class BlockchainEmoteFactory extends EntityFactory
      */
     private function filterEmotesBySn(BlockchainEmote $emote): bool
     {
-        $tokens = $emote->getJoinedEntities(BlockchainEmoteFactory::TARGET_TOKEN);
-        $token = end($tokens);
-        $sn = $token->getReference(BlockchainEmoteFactory::SN)->refValue ?? null;
-
+        $sn = $emote->getTargetToken()->getDisplayStructure();
         return $this->referenceToFound == $sn;
     }
 
