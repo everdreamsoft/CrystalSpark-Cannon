@@ -7,8 +7,8 @@ use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainBlockFactory;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
-use CsCannon\Blockchains\Substrate\RMRK\RmrkBlockchainOrderProcess;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
 use SandraCore\Entity;
@@ -140,6 +140,7 @@ class OrderTest extends TestCase
         $this->assertEquals("sn-".$this->snSell, $matchWith['token_sell']);
         $this->assertArrayHasKey('source', $matchWith);
         $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
+
     }
 
 
@@ -207,7 +208,7 @@ class OrderTest extends TestCase
         if(!is_null($snToSell)){
             $snToSell = RmrkContractStandard::init(['sn' => $snToSell]);
 
-            $firstBalance = \CsCannon\Blockchains\DataSource\DatagraphSource::getBalance($source, null, null);
+            $firstBalance = DatagraphSource::getBalance($source, null, null);
             $firstBalance->addContractToken($sellContract, $snToSell, $this->contractQuantity);
             $firstBalance->saveToDatagraph();
         }
