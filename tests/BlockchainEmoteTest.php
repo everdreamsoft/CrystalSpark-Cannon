@@ -43,10 +43,10 @@ class BlockchainEmoteTest extends TestCase
         $blockchain = BlockchainRouting::getBlockchainFromName($blockchainName);
         $emoteFactory = new BlockchainEmoteFactory($blockchain);
 
-        $address = $blockchain->getAddressFactory()->get($source);
+        $address = $blockchain->getAddressFactory()->get($source,true);
         $token = RmrkContractStandard::init(['sn' => $sn]);
 
-        $contract = $blockchain->getContractFactory()->get($contractId);
+        $contract = $blockchain->getContractFactory()->get($contractId,true);
         $blockFactory = new BlockchainBlockFactory($blockchain);
 
         /** @var BlockchainBlock $block */
