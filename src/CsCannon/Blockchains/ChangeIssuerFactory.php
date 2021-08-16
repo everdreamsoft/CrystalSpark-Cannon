@@ -2,16 +2,23 @@
 
 namespace CsCannon\Blockchains;
 
+use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
+use CsCannon\SandraManager;
 use Exception;
+use SandraCore\Entity;
+use SandraCore\EntityFactory;
 
-class ChangeIssuerFactory extends BlockchainEventFactory
+
+class ChangeIssuerFactory extends EntityFactory
 {
 
-    public static $isa = 'changeIssuerEvent';
-    public static $file = 'changeIssuerEventFile';
+    public static string $isa = 'changeIssuer';
+    public static string $file = 'changeIssuerFile';
 
-    protected static $className = ChangeIssuer::class;
+    protected static string $className = 'CsCannon\Blockchains\ChangeIssuer';
+
+    public Blockchain $blockchain;
 
     const EVENT_SOURCE_ADDRESS = 'source';
     const EVENT_BLOCK_TIME = 'timestamp';
@@ -25,8 +32,9 @@ class ChangeIssuerFactory extends BlockchainEventFactory
 
     public function __construct(Blockchain $blockchain)
     {
+        parent::__construct(static::$isa, static::$file, SandraManager::getSandra());
+        $this->generatedEntityClass = static::$className;
         $this->blockchain = $blockchain;
-        return parent::__construct();
     }
 
 
@@ -45,10 +53,54 @@ class ChangeIssuerFactory extends BlockchainEventFactory
     /**
      * @return ChangeIssuer[]
      */
+    public function getEntities():array
+    {
+        return parent::getEntities();
+    }
+
+
+    /**
+     * @param Blockchain $blockchain
+     * @param BlockchainAddress $source
+     * @param BlockchainAddress $newIssuer
+     * @param BlockchainBlock $block
+     * @param string $collectionId
+     * @param string $txId
+     * @param string $timestamp
+     * @return Entity
+     */
+    public function createChangeIssuer(
+        Blockchain $blockchain,
+        BlockchainAddress $source,
+        BlockchainAddress $newIssuer,
+        BlockchainBlock $block,
+        string $collectionId,
+        string $txId,
+        string $timestamp
+    ): Entity
+    {
+
+        $dataArray[self::COLLECTION_ID] = $collectionId;
+        $dataArray[Blockchain::$txidConceptName] = $txId;
+        $dataArray[self::EVENT_BLOCK_TIME] = $timestamp;
+
+        $triplets[self::ON_BLOCKCHAIN] = $blockchain::NAME;
+
+        $triplets[self::EVENT_BLOCK] = $block;
+        $triplets[self::EVENT_SOURCE_ADDRESS] = $source;
+        $triplets[self::NEW_ISSUER] = $newIssuer;
+
+        return parent::createNew($dataArray, $triplets);
+    }
+
+
+
+    /**
+     * @return ChangeIssuer[]
+     */
     public function reassignCollections(): array
     {
         $this->populateLocal();
-        /** @var ChangeIssuer[] $changeIssuers */
         $changeIssuers = $this->getEntities();
 
         $collectionFactory = new AssetCollectionFactory($this->system);
@@ -66,12 +118,9 @@ class ChangeIssuerFactory extends BlockchainEventFactory
             if(!is_null($collectionId)){
 
                 $collToReassign = $collectionFactory->get($collectionId);
-                $newIssuers = $change->getNewIssuer();
+                $newIssuer = $change->getNewIssuer();
 
-                if(!is_null($newIssuers)){
-
-                    /** @var BlockchainAddress $newIssuer */
-                    $newIssuer = end($newIssuers);
+                if(!is_null($newIssuer)){
 
                     try{
                         $collToReassign->setOwner($newIssuer);
