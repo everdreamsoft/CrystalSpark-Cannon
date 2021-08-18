@@ -104,6 +104,7 @@ class ChangeIssuerFactory extends EntityFactory
         $changeIssuers = $this->getEntities();
 
         $collectionFactory = new AssetCollectionFactory($this->system);
+        $collectionFactory->populateLocal();
 
         foreach ($changeIssuers as $change){
 
@@ -115,9 +116,24 @@ class ChangeIssuerFactory extends EntityFactory
 
             $collectionId = $change->getCollectionId();
 
-            if(!is_null($collectionId)){
+            if(is_null($collectionId)){
+                continue;
+            }
 
-                $collToReassign = $collectionFactory->get($collectionId);
+            $collToReassign = $collectionFactory->get($collectionId);
+
+            $actualOwner = $change->getSourceAddress();
+            /** @var BlockchainAddress[] $lastOwners */
+            $lastOwners = $collToReassign->getOwners();
+
+            if(is_null($lastOwners)){
+               continue;
+            }
+
+            $lastOwner = end($lastOwners);
+
+            if($lastOwner->getAddress() == $actualOwner->getAddress()){
+
                 $newIssuer = $change->getNewIssuer();
 
                 if(!is_null($newIssuer)){

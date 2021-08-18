@@ -33,6 +33,16 @@ class ChangeIssuer extends Entity
 
 
     /**
+     * @return BlockchainAddress|null
+     */
+    public function getSourceAddress(): ?BlockchainAddress
+    {
+        $address = $this->getJoinedEntities(ChangeIssuerFactory::EVENT_SOURCE_ADDRESS);
+        return is_null($address) ? null : end($address);
+    }
+
+
+    /**
      * @return bool
      */
     public function isAlreadyReassigned(): bool
