@@ -31,10 +31,10 @@ class BalanceBuilder
 
     private static $bufferBalance = [];
 
-    public static function buildBalance(BlockchainEventFactory $eventFactory,$verbose = false)
+    public static function buildBalance(BlockchainEventFactory $eventFactory,$verbose = false,$maxprocess = 5000)
     {
 
-        $maxProcess = 10000 ;
+        $maxProcess = $maxprocess ;
         self::$bufferBalance = [];
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
@@ -92,7 +92,7 @@ class BalanceBuilder
             }
         }
         $verbose ? print_r(" Save buffer".PHP_EOL) : false ;
-        self::saveBalanceBuffer();
+        self::saveBalanceBuffer($verbose);
         $verbose ? print_r(" Buffer saved".PHP_EOL) : false ;
     }
 
@@ -107,9 +107,11 @@ class BalanceBuilder
 
     }
 
-    private static function saveBalanceBuffer(){
+    private static function saveBalanceBuffer($verbose =false){
 
+        $verbose ? print_r(" there are ".count(self::$bufferBalance).PHP_EOL) : false ;
         foreach (self::$bufferBalance as $balance){
+
 
             $balance->saveToDatagraph();
 
