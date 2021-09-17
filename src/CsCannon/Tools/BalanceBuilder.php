@@ -109,10 +109,10 @@ class BalanceBuilder
 
     private static function saveBalanceBuffer($verbose =false){
 
-        $verbose ? print_r(" there are ".count(self::$bufferBalance).PHP_EOL) : false ;
-        foreach (self::$bufferBalance as $balance){
+        $verbose ? print_r(" there are ".count(self::$bufferBalance) .'address in the buffer'.PHP_EOL) : false ;
+        foreach (self::$bufferBalance as $address => $balance){
 
-
+            $verbose ? print_r(" processing $address ".PHP_EOL) : false ;
             $balance->saveToDatagraph();
 
         }
