@@ -115,6 +115,7 @@ class BalanceBuilder
         $verbose ? print_r(" there are ".count(self::$bufferBalance) .'address in the buffer'.PHP_EOL) : false ;
         foreach (self::$bufferBalance as $address => $balance){
 
+            if ($address== BlockchainAddressFactory::NULL_ADDRESS) continue ;
             $verbose ? print_r(" processing $address ".PHP_EOL) : false ;
             $balance->saveToDatagraph();
 
