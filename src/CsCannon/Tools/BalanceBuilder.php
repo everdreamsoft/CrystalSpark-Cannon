@@ -41,6 +41,7 @@ class BalanceBuilder
         $eventFactory->populateLocal($maxProcess, 0, 'ASC',BlockchainEventFactory::EVENT_BLOCK_TIME,true);
         $count = 0 ;
         $somethingToCommit = false ;
+        $nullAddress = BlockchainAddressFactory::NULL_ADDRESS ;
 
         foreach ($eventFactory->getEntities() as $event) {
             /** @var BlockchainEvent $event */
@@ -54,6 +55,7 @@ class BalanceBuilder
                 $count++;
 
                 if (!$error){
+
                     $contract = $event->getBlockchainContract();
                     $quantity = $event->getQuantity();
                     $token = $event->getSpecifier();
@@ -61,10 +63,11 @@ class BalanceBuilder
                     $newBalance->addContractToken($event->getBlockchainContract(),$token,$quantity);
 
                     $somethingToCommit = true ;
-
-                    $oldBalance = self::getAddressBalance($event->getSourceAddress());
-                    $oldBalancePreviousQuantity = $oldBalance->getQuantityForContractToken($contract,$token);
-                    $oldBalance->addContractToken($contract,$token,$oldBalancePreviousQuantity-$quantity);
+                    if ($nullAddress != $event->getSourceAddress()) { // we are updting balance only if sender is not mint address
+                        $oldBalance = self::getAddressBalance($event->getSourceAddress());
+                        $oldBalancePreviousQuantity = $oldBalance->getQuantityForContractToken($contract, $token);
+                        $oldBalance->addContractToken($contract, $token, $oldBalancePreviousQuantity - $quantity);
+                    }
                     // $oldBalance->saveToDatagraph();
 
                     $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,false);

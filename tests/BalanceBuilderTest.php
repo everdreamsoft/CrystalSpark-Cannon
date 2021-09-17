@@ -166,33 +166,7 @@ final class BalanceBuilderTest extends TestCase
 
     }
 
-    public function testBalanceBuildingRMRK(){
-        $kusamaBlockchain = new \CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain();
-        $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
-        \CsCannon\Tools\BalanceBuilder::resetBalanceBuilder($rmrkEventFactory);
 
-        $contractA = \CsCannon\Blockchains\Substrate\RMRK\RmrkContractFactory::getContract('c1',true,\CsCannon\Blockchains\Interfaces\RmrkContractStandard::getEntity());
-
-        $fooCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
-        $collection = $fooCollectionFactory->create("my foo collection",["maxSupply"=>'2'],LocalSolver::getEntity());
-
-
-        $contractA->bindToCollection($collection);
-
-        $t1 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => 4]);
-        $t2 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => 5]);
-        $t3 = \CsCannon\Blockchains\Interfaces\RmrkContractStandard::init(['sn' => 6]);
-
-        // we mint one more time
-        $event = $rmrkEventFactory->create($kusamaBlockchain,$mintAddress,$addressA,$contractA,'fooTx',$time++,$block1,$t1,1);
-
-
-
-        $rmrkEventFactory = new \CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory();
-        \CsCannon\Tools\RmrkBalanceBuilder::buildBalance($rmrkEventFactory);
-
-
-    }
 
 
 
