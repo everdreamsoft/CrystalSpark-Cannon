@@ -188,53 +188,7 @@ final class EventTest extends TestCase
 
 
 
-         //$this->assertEquals($testAddress,$event->getBuyDestination()->getAddress());
 
-//
-
-//
-
-//
-//        $contractFactory = new \CsCannon\Blockchains\Klaytn\KlaytnContractFactory();
-//        $contract = $contractFactory->get($testContract,true, \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init());
-//        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain());
-//        $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
-//
-//        $Erc721_buy =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
-//        $Erc721_sell =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init();
-//        $erc20 =  \CsCannon\Blockchains\Ethereum\Interfaces\ERC20::init();
-//        $Erc721_buy->setTokenId('2');
-//        $Erc721_sell->setTokenId('1');
-//
-//        $eventFactory = new \CsCannon\Blockchains\Klaytn\KlaytnEventFactory();
-//        $event = $eventFactory->createOrder(new \CsCannon\Blockchains\Klaytn\KlaytnBlockchain(),
-//            $addressEntity,
-//            $contract,
-//            $contract,
-//            1,
-//            1,
-//            1,
-//            "testTx",
-//            111111,
-//            $currentBlock,
-//            $Erc721_buy,
-//            $Erc721_sell
-//
-//
-//
-//        );
-//
-//        $this->assertInstanceOf(\CsCannon\Blockchains\BlockchainEvent::class,$event);
-//       $factory = new \CsCannon\Blockchains\Klaytn\KlaytnEventFactory();
-//       $factory->populateLocal();
-//
-//      $event =  $factory->first(Blockchain::$txidConceptName,"testTx");
-//
-//      $getSellPrice = $event->getBrotherReference(BlockchainEventFactory::ORDER_SELL_CONTRACT,null,
-//          BlockchainEventFactory::SELL_PRICE);
-//
-//      $sellPriceOfOne = end($getSellPrice);
-//      print_r($getSellPrice);
 
 
 
@@ -244,12 +198,7 @@ final class EventTest extends TestCase
 
 
 
-    public function testRmrkProcessOrder()
-    {
 
-
-
-    }
 
 
 

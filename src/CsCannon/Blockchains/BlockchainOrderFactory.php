@@ -77,7 +77,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
 
 
-    public function populateWithMatch(): static
+    public function populateWithMatch()
     {
         $blockchain = $this->blockchain;
 

@@ -139,36 +139,6 @@ class OrderTest extends TestCase
         $this->assertArrayHasKey('source', $matchWith);
         $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
 
-    }
-
-
-
-
-//    public function testCheckKusamaBalance()
-//    {
-//        ini_set('display_errors', 1);
-//        ini_set('display_startup_errors', 1);
-//        error_reporting(E_ALL);
-//
-//        TestManager::initTestDatagraph();
-//
-//        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
-//
-//        $firstAddress = $blockchain->getAddressFactory()->get($this->firstAddress, true);
-//
-//        $factory = new BlockchainOrderFactory($blockchain);
-//
-//        $order = $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, 'KSM', null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
-//
-//        $factory->populateLocal();
-//
-//        /** @var RmrkBlockchainOrderProcess $orderProcess */
-//        $orderProcess = $blockchain->getOrderProcess();
-//        $balance = $orderProcess->checkKusamaBalance($order);
-//
-//        $this->assertTrue($balance);
-//    }
-
 
 
 
