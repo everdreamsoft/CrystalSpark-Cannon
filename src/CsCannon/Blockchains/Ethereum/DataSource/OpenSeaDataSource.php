@@ -173,6 +173,7 @@ class OpenSeaDataSource extends BlockchainDataSource
     {
 
         $contractFilter = '';
+        if ($limit>50 )$limit = 50 ;
 
         if (!empty($blockchainContracts)){
 
@@ -183,7 +184,7 @@ class OpenSeaDataSource extends BlockchainDataSource
         }
 
 
-        $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_by=current_price&order_direction=a&limit=$limit&offset=$offset&owner=".$address->getAddress()
+        $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_direction=asc&limit=$limit&offset=$offset&owner=".$address->getAddress()
             .$contractFilter
             ,'assets',SandraManager::getSandra());
 
