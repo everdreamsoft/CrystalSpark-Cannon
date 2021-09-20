@@ -261,14 +261,14 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
         //does the contract has a token id ?
         if (!is_null($tokenBuy)){
-            $stucture = $tokenBuy->getSpecifierData();
-            $triplets[self::TOKEN_BUY] = array($tokenBuy->subjectConcept->idConcept=>$stucture);
+            $structure = $tokenBuy->getSpecifierData();
+            $triplets[self::TOKEN_BUY] = array($tokenBuy->subjectConcept->idConcept=>$structure);
 
         }
         //does the contract has a token id ?
         if (!is_null($tokenSell)){
-            $stucture = $tokenSell->getSpecifierData();
-            $triplets[self::TOKEN_SELL] = array($tokenSell->subjectConcept->idConcept=>$stucture);
+            $structure = $tokenSell->getSpecifierData();
+            $triplets[self::TOKEN_SELL] = array($tokenSell->subjectConcept->idConcept=>$structure);
 
         }
 
