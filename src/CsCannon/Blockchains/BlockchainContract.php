@@ -85,6 +85,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
         return $return ;
 
 
+
     }
 
     public function setStandard(BlockchainContractStandard $standard){

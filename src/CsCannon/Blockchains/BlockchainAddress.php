@@ -39,8 +39,8 @@ abstract class  BlockchainAddress extends Entity implements Displayable
      public function getBalance($limit=10000,$offset=0):Balance{
 
 
-         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
-         $collectionFactory->populateLocal();
+        // $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
+         //$collectionFactory->populateLocal();
 
 
 
