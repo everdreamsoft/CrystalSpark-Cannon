@@ -4,6 +4,7 @@ namespace CsCannon\Blockchains\Substrate\Kusama;
 
 use CsCannon\Blockchains\Blockchain;
 
+use CsCannon\Blockchains\Substrate\RMRK\RmrkBlockchainOrderProcess;
 use CsCannon\Blockchains\Substrate\RMRK\RmrkContractFactory;
 use CsCannon\Blockchains\Substrate\SubstrateAddressFactory;
 use CsCannon\Blockchains\Substrate\SubstrateBlockchain;
@@ -20,7 +21,7 @@ class WestendBlockchain extends SubstrateBlockchain
     public function __construct()
     {
 
-
+        $this->orderProcess = new RmrkBlockchainOrderProcess($this);
         $this->contractFactory = new RmrkContractFactory(WestendBlockchain::class);     //careful with this
         $this->eventFactory = new WestendEventFactory();
         $this->addressFactory = new WestendAddressFactory();
