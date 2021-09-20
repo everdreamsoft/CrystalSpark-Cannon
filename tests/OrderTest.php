@@ -135,9 +135,10 @@ class OrderTest extends TestCase
         $matchWith = $matchedOrder['match_with'][0];
 
         $this->assertArrayHasKey('token_sell', $matchWith);
-        $this->assertEquals("sn-".$this->snSell, $matchWith['token_sell']);
+        $this->assertEquals("sn-" . $this->snSell, $matchWith['token_sell']);
         $this->assertArrayHasKey('source', $matchWith);
         $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
+    }
 
 
 
