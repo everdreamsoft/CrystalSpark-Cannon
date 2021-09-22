@@ -90,13 +90,13 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
+
     public function getDestinationAddress(){
 
         $destination= $this->getJoinedEntities(BlockchainEventFactory::EVENT_DESTINATION_VERB);
         if (is_null($destination)) return null;
+        /** @var BlockchainAddress $destination */
         $destination = reset($destination); //take the first destination
-        /** @var BlockchainAddress $source */
-
 
         return $destination;
 

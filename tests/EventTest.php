@@ -244,12 +244,6 @@ final class EventTest extends TestCase
 
 
 
-    public function testRmrkProcessOrder()
-    {
-
-
-
-    }
 
 
 

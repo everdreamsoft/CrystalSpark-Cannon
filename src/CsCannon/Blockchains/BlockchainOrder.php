@@ -186,28 +186,23 @@ class BlockchainOrder extends BlockchainEvent
         return is_null($buyDestination) ? null : end($buyDestination);
     }
 
+    /**
+     * @return string|null
+     */
+    public function closeOrder(): ?string
+    {
+        $this->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+        return $this->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
+    }
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * @param BlockchainToken $token
+     */
     public function bindToToken(BlockchainToken $token){
 
         $this->setBrotherEntity(BlockchainTokenFactory::$joinAssetVerb,$token,null);
@@ -215,6 +210,9 @@ class BlockchainOrder extends BlockchainEvent
 
     }
 
+    /**
+     * @return array
+     */
     public function getBlockchainName():array{
 
         $sc = $this->system->systemConcept ;
