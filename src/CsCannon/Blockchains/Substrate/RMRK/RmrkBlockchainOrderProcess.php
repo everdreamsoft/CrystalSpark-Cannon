@@ -56,6 +56,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
             $factory = new BlockchainOrderFactory($this->blockchain);
             $factory->setFilter(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $contractToBuy);
+            $factory->setFilter(BlockchainOrderFactory::STATUS, 0, true);
             $factory->populateLocal();
 
             /** @var BlockchainOrder[] $sellOrders */
@@ -66,10 +67,6 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             }
 
             $sellOrder = end($sellOrders);
-            $isClose = $sellOrder->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
-            if($isClose == BlockchainOrderFactory::CLOSE){
-                return null;
-            }
 
             try{
                 $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder);

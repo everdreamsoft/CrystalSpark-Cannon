@@ -164,6 +164,18 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     }
 
 
+    /**
+     * @return BlockchainOrder[]
+     */
+    public function getClosedOrders(): array
+    {
+        $this->setFilter(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+        $this->populateLocal();
+        /** @var BlockchainOrder[] $orders */
+        $orders = $this->getEntities();
+        return $orders;
+    }
+
 
 
     /**
