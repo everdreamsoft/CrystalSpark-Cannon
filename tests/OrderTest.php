@@ -5,16 +5,13 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainBlockFactory;
-use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainOrder;
 use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
-use CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
 use SandraCore\Entity;
-
 
 class OrderTest extends TestCase
 {
@@ -25,70 +22,6 @@ class OrderTest extends TestCase
     private string $firstAddress = 'myFirstKusamaAddress';
     private string $secondAddress = 'mySecondKusamaAddress';
     private string $snSell = '00000SELL';
-
-
-
-    public function testMatchLastBuy()
-    {
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
-
-        TestManager::initTestDatagraph();
-
-        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
-
-        $addressFactory = $blockchain->getAddressFactory();
-        $factory = new BlockchainOrderFactory($blockchain);
-
-        $firstAddress = $addressFactory->get($this->firstAddress, true);
-        $secondAddress = $addressFactory->get($this->secondAddress, true);
-
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
-        $this->createOrder($blockchain, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'contractSell', $this->snSell, $this->contractQuantity, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
-
-        $orderProcess = $blockchain->getOrderProcess();
-        $matched = $orderProcess->makeMatchOneByOne();
-
-        $this->assertTrue($matched);
-
-        $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orderFactory->populateLocal();
-        /** @var BlockchainOrder[] $orders */
-        $orders = $orderFactory->getEntities();
-
-        $this->assertCount(2, $orders);
-
-        $eventFactory = new KusamaEventFactory();
-        $eventFactory->populateLocal();
-
-        /** @var BlockchainEvent[] $events */
-        $events = $eventFactory->getEntities();
-        $event = end($events);
-
-        $this->assertCount(1, $events);
-        $this->assertEquals(strtolower($this->firstAddress), $event->getSourceAddress()->getAddress());
-        $this->assertEquals(strtolower($this->secondAddress), $event->getDestinationAddress()->getAddress());
-
-        $firstStatus = '';
-
-        foreach ($orders as $order){
-
-            $status = $order->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
-            $this->assertNotNull($status);
-            $this->assertEquals(BlockchainOrderFactory::CLOSE, $status);
-
-            if($firstStatus == ''){
-                $firstStatus = $status;
-            }else{
-                $this->assertEquals($firstStatus, $status);
-            }
-
-        }
-
-    }
-
-
 
     public function testKusamaMatch()
     {
@@ -205,8 +138,6 @@ class OrderTest extends TestCase
         $this->assertEquals("sn-".$this->snSell, $matchWith['token_sell']);
         $this->assertArrayHasKey('source', $matchWith);
         $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
-
-    }
 
 
 

@@ -31,16 +31,17 @@ class BalanceBuilder
 
     private static $bufferBalance = [];
 
-    public static function buildBalance(BlockchainEventFactory $eventFactory,$verbose = false)
+    public static function buildBalance(BlockchainEventFactory $eventFactory,$verbose = false,$maxprocess = 5000)
     {
 
-        $maxProcess = 10000 ;
+        $maxProcess = $maxprocess ;
         self::$bufferBalance = [];
 
         $eventFactory->setFilter(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_PENDING);
         $eventFactory->populateLocal($maxProcess, 0, 'ASC',BlockchainEventFactory::EVENT_BLOCK_TIME,true);
         $count = 0 ;
         $somethingToCommit = false ;
+        $nullAddress = BlockchainAddressFactory::NULL_ADDRESS ;
 
         foreach ($eventFactory->getEntities() as $event) {
             /** @var BlockchainEvent $event */
@@ -54,6 +55,7 @@ class BalanceBuilder
                 $count++;
 
                 if (!$error){
+
                     $contract = $event->getBlockchainContract();
                     $quantity = $event->getQuantity();
                     $token = $event->getSpecifier();
@@ -61,10 +63,11 @@ class BalanceBuilder
                     $newBalance->addContractToken($event->getBlockchainContract(),$token,$quantity);
 
                     $somethingToCommit = true ;
-
-                    $oldBalance = self::getAddressBalance($event->getSourceAddress());
-                    $oldBalancePreviousQuantity = $oldBalance->getQuantityForContractToken($contract,$token);
-                    $oldBalance->addContractToken($contract,$token,$oldBalancePreviousQuantity-$quantity);
+                    if ($nullAddress != $event->getSourceAddress()) { // we are updting balance only if sender is not mint address
+                        $oldBalance = self::getAddressBalance($event->getSourceAddress());
+                        $oldBalancePreviousQuantity = $oldBalance->getQuantityForContractToken($contract, $token);
+                        $oldBalance->addContractToken($contract, $token, $oldBalancePreviousQuantity - $quantity);
+                    }
                     // $oldBalance->saveToDatagraph();
 
                     $event->createOrUpdateRef(static::PROCESS_STATUS_VERB,static::PROCESS_STATUS_VALID,false);
@@ -92,7 +95,7 @@ class BalanceBuilder
             }
         }
         $verbose ? print_r(" Save buffer".PHP_EOL) : false ;
-        self::saveBalanceBuffer();
+        self::saveBalanceBuffer($verbose);
         $verbose ? print_r(" Buffer saved".PHP_EOL) : false ;
     }
 
@@ -107,10 +110,13 @@ class BalanceBuilder
 
     }
 
-    private static function saveBalanceBuffer(){
+    private static function saveBalanceBuffer($verbose =false){
 
-        foreach (self::$bufferBalance as $balance){
+        $verbose ? print_r(" there are ".count(self::$bufferBalance) .'address in the buffer'.PHP_EOL) : false ;
+        foreach (self::$bufferBalance as $address => $balance){
 
+            if ($address== BlockchainAddressFactory::NULL_ADDRESS) continue ;
+            $verbose ? print_r(" processing $address ".PHP_EOL) : false ;
             $balance->saveToDatagraph();
 
         }

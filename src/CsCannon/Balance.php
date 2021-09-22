@@ -378,7 +378,7 @@ class Balance
 
     }
 
-    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate=null){
+    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate=null,$verbose=false){
 
 
 
