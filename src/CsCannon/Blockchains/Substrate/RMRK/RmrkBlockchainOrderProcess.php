@@ -42,6 +42,46 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
 
     /**
+     * @return bool|null
+     */
+    public function makeMatchOneByOne(): ?bool
+    {
+        $orderFactory = new BlockchainOrderFactory($this->blockchain);
+        /** @var BlockchainOrder $lastBuy */
+        $lastBuy = $orderFactory->getLastBuy();
+
+        if($lastBuy){
+
+            $contractToBuy = $lastBuy->getContractToBuy();
+
+            $factory = new BlockchainOrderFactory($this->blockchain);
+            $factory->setFilter(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $contractToBuy);
+            $factory->setFilter(BlockchainOrderFactory::STATUS, 0, true);
+            $factory->populateLocal();
+
+            /** @var BlockchainOrder[] $sellOrders */
+            $sellOrders = $factory->getEntities();
+
+            if(count($sellOrders) < 1){
+                return null;
+            }
+
+            $sellOrder = end($sellOrders);
+
+            try{
+                $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder);
+            }catch(Exception $e){
+                return null;
+            }
+
+            return $matchMaking;
+        }
+        return null;
+    }
+
+
+
+    /**
      * @param BlockchainOrder[] $orders
      * @param BlockchainOrder $needleMatch
      * @return array
@@ -62,6 +102,43 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
         }
 
         return $kusamaMatches;
+    }
+
+
+    /**
+     * @param BlockchainOrder $buyOrder
+     * @param BlockchainOrder $sellOrder
+     * @return bool
+     * @throws Exception
+     */
+    public function makeOneKusamaMatch(BlockchainOrder $buyOrder, BlockchainOrder $sellOrder): bool
+    {
+        $buyContractToBuyId = $buyOrder->getContractToBuy()->getReference('id')->refValue;
+        $sellContractToBuyId = $sellOrder->getContractToBuy()->getReference("id")->refValue;
+
+        $buyContractToSellId = $buyOrder->getContractToSell()->getReference('id')->refValue;
+        $sellContractToSellId = $sellOrder->getContractToSell()->getReference('id')->refValue;
+
+        $matched = false;
+
+        // One more checkout for contract's IDs
+        if($buyContractToBuyId === $sellContractToSellId && $buyContractToSellId === $sellContractToBuyId){
+            // Check quantities
+            if($sellOrder->getContractToSellQuantity() >= $buyOrder->getContractToBuyQuantity() && $buyOrder->getContractToSellQuantity() >= $sellOrder->getContractToBuyQuantity()){
+
+                try{
+                    $this->sendMatchAndUpdate($buyOrder, $sellOrder);
+                    $matched = true;
+                }catch(Exception $e){
+                    throw $e;
+                }
+            }
+        }
+
+        $sellOrder->closeOrder();
+        $buyOrder->closeOrder();
+
+        return $matched;
     }
 
 

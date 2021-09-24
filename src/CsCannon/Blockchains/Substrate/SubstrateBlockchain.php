@@ -4,6 +4,7 @@ namespace CsCannon\Blockchains\Substrate;
 
 use CsCannon\Blockchains\Blockchain;
 
+use CsCannon\Blockchains\Substrate\RMRK\RmrkBlockchainOrderProcess;
 use CsCannon\Blockchains\Substrate\SubstrateAddressFactory;
 use CsCannon\Blockchains\Substrate\SubstrateContractFactory;
 use CsCannon\Blockchains\Substrate\SubstrateEventFactory;

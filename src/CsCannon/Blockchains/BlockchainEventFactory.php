@@ -136,7 +136,6 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
 
 
-
         $this->getTriplets();
 
 
@@ -237,7 +236,6 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         $dataArray[self::SELL_PRICE] = $sellPrice ;
         $dataArray[self::BUY_TOTAL] = $buyTotal ;
         $dataArray[Blockchain::$txidConceptName] = $txid ;
-        $dataArray[Blockchain::$txidConceptName] = $txid ;
         $dataArray[self::EVENT_BLOCK_TIME] = $timestamp ;
 
 
@@ -276,6 +274,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         return parent::createNew($dataArray, $triplets);
 
     }
+
 
 
 

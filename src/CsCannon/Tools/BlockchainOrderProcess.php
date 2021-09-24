@@ -27,21 +27,8 @@ class BlockchainOrderProcess
         $this->blockchain = $blockchain;
     }
 
-    // TODO make exception for rmrk and override when specific to rmrk
 
 
-
-
-
-//    public function getMatchesOnChain(Blockchain $blockchain, BlockchainOrderFactory $factory)
-//    {
-//        $factory->populateLocal();
-//        $allEntities = $factory->getEntities();
-//
-//        $entitiesOnChain = array_filter($allEntities, [$factory, 'filterSameChain']);
-//
-//
-//    }
 
     /**
      * @return BlockchainOrder[]
@@ -86,6 +73,14 @@ class BlockchainOrderProcess
         }
 
     }
+
+
+
+    public function makeMatchOneByOne(): ?bool
+    {
+        return true;
+    }
+
 
 
     /**

@@ -32,10 +32,11 @@ class TestManager
 
 
 
-        // TestManagerPrivate::initTestDatagraph() ;
+//         TestManagerPrivate::initTestDatagraph() ;
         //return
 
         $sandraToFlush = new System('phpUnit_', true);
+//        $system = new System('gossip', false, "127.0.0.1", "control_center");
         \SandraCore\Setup::flushDatagraph($sandraToFlush);
         $sandraToFlush->destroy();
         $system = new System('phpUnit_',true);
@@ -58,20 +59,20 @@ class TestManager
         $defaultSandra  = SandraManager::getDefaultSandra();
         SandraManager::setSandra($defaultSandra);
 
-    foreach ($factoryArray as $factory){
+        foreach ($factoryArray as $factory){
 
-        /** @var EntityFactory $factory */
+            /** @var EntityFactory $factory */
 
-        $factoryClass = get_class($factory);
-        $factoryToCreateView = new $factoryClass($defaultSandra);
+            $factoryClass = get_class($factory);
+            $factoryToCreateView = new $factoryClass($defaultSandra);
 
-        $name = (new \ReflectionClass($factoryToCreateView))->getShortName();
-        /** @var EntityFactory $factoryToCreateView */
-        $factoryToCreateView->populateLocal();
-        $factoryToCreateView->createViewTable($name);
+            $name = (new \ReflectionClass($factoryToCreateView))->getShortName();
+            /** @var EntityFactory $factoryToCreateView */
+            $factoryToCreateView->populateLocal();
+            $factoryToCreateView->createViewTable($name);
 
 
-    }
+        }
 
     //Swith back to the default sandra
         SandraManager::setSandra($sandraTest);
