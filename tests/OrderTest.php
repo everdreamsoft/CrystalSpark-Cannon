@@ -50,15 +50,26 @@ class OrderTest extends TestCase
         $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
         $this->createOrder($blockchain, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'contractSell', $this->snSell, $this->contractQuantity, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
 
+        // check search without status and with buyDestination have only one result
+        $factory = new BlockchainOrderFactory($blockchain);
+        $factory->setFilter(BlockchainOrderFactory::STATUS, 0, true);
+        $factory->setFilter(BlockchainOrderFactory::BUY_DESTINATION);
+        $factory->populateLocal();
+        /** @var BlockchainOrder[] $orders */
+        $orders = $factory->getEntities();
+
+        $this->assertCount(1, $orders);
+
+
         $orderProcess = $blockchain->getOrderProcess();
         $orderProcess->makeMatchOneByOne();
 
-
+        // check the both orders have a status
         $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orders = $orderFactory->populateFromSearchResults(BlockchainOrderFactory::CLOSE, BlockchainOrderFactory::STATUS);
-//        $orderFactory->populateLocal();
+        $orderFactory->setFilter(BlockchainOrderFactory::STATUS);
+        $orderFactory->populateLocal();
         /** @var BlockchainOrder[] $orders */
-//        $orders = $orderFactory->getEntities();
+        $orders = $orderFactory->getEntities();
 
         $this->assertCount(2, $orders);
 
