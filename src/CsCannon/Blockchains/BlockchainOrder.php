@@ -186,13 +186,12 @@ class BlockchainOrder extends BlockchainEvent
         return is_null($buyDestination) ? null : end($buyDestination);
     }
 
-    /**
-     * @return string|null
-     */
-    public function closeOrder(): ?string
+
+    public function closeOrder()
     {
-        $this->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
-        return $this->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
+//        $this->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+//        return $this->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
+        $this->setBrotherEntity(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE, null, true, true);
     }
 
 

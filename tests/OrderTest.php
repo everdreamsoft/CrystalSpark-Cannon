@@ -11,8 +11,11 @@ use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaEventFactory;
+use CsCannon\SandraManager;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
+use SandraCore\Concept;
+use SandraCore\ConceptFactory;
 use SandraCore\Entity;
 
 
@@ -48,14 +51,14 @@ class OrderTest extends TestCase
         $this->createOrder($blockchain, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'contractSell', $this->snSell, $this->contractQuantity, "txTestBuy", 1112223345, $factory, $secondAddress, $firstAddress);
 
         $orderProcess = $blockchain->getOrderProcess();
-        $matched = $orderProcess->makeMatchOneByOne();
+        $orderProcess->makeMatchOneByOne();
 
-        $this->assertTrue($matched);
 
         $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orderFactory->populateLocal();
+        $orders = $orderFactory->populateFromSearchResults(BlockchainOrderFactory::CLOSE, BlockchainOrderFactory::STATUS);
+//        $orderFactory->populateLocal();
         /** @var BlockchainOrder[] $orders */
-        $orders = $orderFactory->getEntities();
+//        $orders = $orderFactory->getEntities();
 
         $this->assertCount(2, $orders);
 

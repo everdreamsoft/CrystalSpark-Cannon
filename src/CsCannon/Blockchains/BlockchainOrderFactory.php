@@ -105,6 +105,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         $blockchain = $this->blockchain ;
 
         $this->populateBrotherEntities(BlockchainOrderFactory::MATCH_WITH);
+        $this->populateBrotherEntities(BlockchainOrderFactory::STATUS);
         $this->joinFactory(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $blockchain->getAddressFactory());
         $this->joinFactory(BlockchainOrderFactory::TOKEN_BUY, new BlockchainStandardFactory($this->system));
         $this->joinFactory(BlockchainOrderFactory::TOKEN_SELL, new BlockchainStandardFactory($this->system));
@@ -123,8 +124,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      */
     public function getLastBuy(): BlockchainOrder|false
     {
-        $this->setFilter(self::BUY_DESTINATION);
         $this->setFilter(self::STATUS, 0, true);
+        $this->setFilter(self::BUY_DESTINATION);
         $this->populateLocal();
         /** @var BlockchainOrder[] $orders */
         $orders = $this->getEntities();
