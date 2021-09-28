@@ -127,7 +127,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             if($sellOrder->getContractToSellQuantity() >= $buyOrder->getContractToBuyQuantity() && $buyOrder->getContractToSellQuantity() >= $sellOrder->getContractToBuyQuantity()){
 
                 try{
-                    $this->sendMatchAndUpdate($buyOrder, $sellOrder);
+                    $this->sendMatchAndUpdate($sellOrder, $buyOrder);
                     $matched = true;
                 }catch(Exception $e){
                     throw $e;
