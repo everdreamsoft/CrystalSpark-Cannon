@@ -144,7 +144,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 try{
                     $verbose ? print_r( "We are matching the order") : false ;
 
-                    $this->sendMatchAndUpdate($buyOrder, $sellOrder);
+                    $this->sendMatchAndUpdate($sellOrder, $buyOrder);
 
                     $matched = true;
                     $verbose ? print_r( "Sucessfuly matched ") : false ;
