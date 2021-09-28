@@ -44,20 +44,32 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
     /**
      * @return bool|null
      */
-    public function makeMatchOneByOne(): ?bool
+    public function makeMatchOneByOne($verbose = false): ?bool
     {
+
+        $verbose ? print_r( "starting match order" ) : false ;
+
         $orderFactory = new BlockchainOrderFactory($this->blockchain);
         /** @var BlockchainOrder $lastBuy */
         $lastBuy = $orderFactory->getLastBuy();
 
+
+
         if($lastBuy){
 
+            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp())) : false ;
+            $verbose ? print_r( "order buy TX : ".$lastBuy->getTxId()) : false ;
+
             $contractToBuy = $lastBuy->getContractToBuy();
+
+            $sellerAddress = $lastBuy->getBuyDestination();
+
 
             $factory = new BlockchainOrderFactory($this->blockchain);
             $factory->setFilter(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $contractToBuy);
             $factory->setFilter(BlockchainOrderFactory::STATUS, 0, true);
-            $factory->populateLocal();
+            $factory->setFilter(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $sellerAddress);
+            $factory->populateLocal(1);
 
             /** @var BlockchainOrder[] $sellOrders */
             $sellOrders = $factory->getEntities();
@@ -68,8 +80,11 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
             $sellOrder = end($sellOrders);
 
+            $verbose ? print_r( "order sell match candidate TX : ".$lastBuy->getTxId()) : false ;
+            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp())) : false ;
+
             try{
-                $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder);
+                $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder,$verbose);
             }catch(Exception $e){
                 return null;
             }
@@ -111,7 +126,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
      * @return bool
      * @throws Exception
      */
-    public function makeOneKusamaMatch(BlockchainOrder $buyOrder, BlockchainOrder $sellOrder): bool
+    public function makeOneKusamaMatch(BlockchainOrder $buyOrder, BlockchainOrder $sellOrder,$verbose=true): bool
     {
         $buyContractToBuyId = $buyOrder->getContractToBuy()->getReference('id')->refValue;
         $sellContractToBuyId = $sellOrder->getContractToBuy()->getReference("id")->refValue;
@@ -127,14 +142,21 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             if($sellOrder->getContractToSellQuantity() >= $buyOrder->getContractToBuyQuantity() && $buyOrder->getContractToSellQuantity() >= $sellOrder->getContractToBuyQuantity()){
 
                 try{
-                    $this->sendMatchAndUpdate($sellOrder, $buyOrder);
+                    $verbose ? print_r( "We are matching the order") : false ;
+
+                    $this->sendMatchAndUpdate($buyOrder, $sellOrder);
+
                     $matched = true;
+                    $verbose ? print_r( "Sucessfuly matched ") : false ;
+
                 }catch(Exception $e){
                     throw $e;
                 }
             }
         }
 
+
+        $verbose ? print_r("closing buy and sell order") : false ;
         $sellOrder->closeOrder();
         $buyOrder->closeOrder();
 

@@ -122,7 +122,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     /**
      * @return BlockchainOrder|false
      */
-    public function getLastBuy(): BlockchainOrder|false
+    public function getLastBuy(): BlockchainOrder
     {
         $this->setFilter(self::STATUS, 0, true);
         $this->setFilter(self::BUY_DESTINATION);
