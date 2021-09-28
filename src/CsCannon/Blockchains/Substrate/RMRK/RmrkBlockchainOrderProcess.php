@@ -44,11 +44,16 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
     /**
      * @return bool|null
      */
-    public function makeMatchOneByOne(): ?bool
+    public function makeMatchOneByOne($verbose = false): ?bool
     {
+
+        $verbose ? print_r( "starting match order" ) : false ;
+
         $orderFactory = new BlockchainOrderFactory($this->blockchain);
         /** @var BlockchainOrder $lastBuy */
         $lastBuy = $orderFactory->getLastBuy();
+        $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp())) : false ;
+
 
         if($lastBuy){
 
