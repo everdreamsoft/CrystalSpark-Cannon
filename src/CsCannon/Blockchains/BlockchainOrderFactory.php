@@ -126,7 +126,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     {
         $this->setFilter(self::STATUS, 0, true);
         $this->setFilter(self::BUY_DESTINATION);
-        $this->populateLocal();
+        $this->populateLocal(1);
         /** @var BlockchainOrder[] $orders */
         $orders = $this->getEntities();
 
