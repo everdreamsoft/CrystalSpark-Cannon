@@ -54,7 +54,7 @@ class OrderTest extends TestCase
         $factory = new BlockchainOrderFactory($blockchain);
         $factory->setFilter(BlockchainOrderFactory::STATUS, 0, true);
         $factory->setFilter(BlockchainOrderFactory::BUY_DESTINATION);
-        $factory->populateLocal();
+        $factory->populateLocal(1);
         /** @var BlockchainOrder[] $orders */
         $orders = $factory->getEntities();
 
@@ -83,20 +83,22 @@ class OrderTest extends TestCase
         $this->assertCount(1, $events);
         $this->assertEquals(strtolower($this->firstAddress), $event->getSourceAddress()->getAddress());
         $this->assertEquals(strtolower($this->secondAddress), $event->getDestinationAddress()->getAddress());
+        $this->assertEquals('sn-'.$this->snSell, $event->getSpecifier()->getDisplayStructure());
 
         $firstStatus = '';
 
         foreach ($orders as $order){
 
-            $status = $order->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
-            $this->assertNotNull($status);
-            $this->assertEquals(BlockchainOrderFactory::CLOSE, $status);
-
-            if($firstStatus == ''){
-                $firstStatus = $status;
-            }else{
-                $this->assertEquals($firstStatus, $status);
-            }
+            // STATUS is brother entity
+//            $status = $order->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
+//            $this->assertNotNull($status);
+//            $this->assertEquals(BlockchainOrderFactory::CLOSE, $status);
+//
+//            if($firstStatus == ''){
+//                $firstStatus = $status;
+//            }else{
+//                $this->assertEquals($firstStatus, $status);
+//            }
 
         }
 
@@ -136,9 +138,9 @@ class OrderTest extends TestCase
         /** @var BlockchainOrder $match */
         $match = end($matches);
 
-        $isClose = $match->getReference(BlockchainOrderFactory::STATUS);
-        $this->assertNotNull($isClose);
-        $this->assertEquals(BlockchainOrderFactory::CLOSE, $isClose->refValue);
+//        $isClose = $match->getReference(BlockchainOrderFactory::STATUS);
+//        $this->assertNotNull($isClose);
+//        $this->assertEquals(BlockchainOrderFactory::CLOSE, $isClose->refValue);
 
         $remainingTotal = $match->getTotal();
         $this->assertEquals(0, $remainingTotal);

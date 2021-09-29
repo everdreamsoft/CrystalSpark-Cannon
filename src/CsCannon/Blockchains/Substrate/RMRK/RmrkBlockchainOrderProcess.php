@@ -75,6 +75,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             $sellOrders = $factory->getEntities();
 
             if(count($sellOrders) < 1){
+                $lastBuy->closeOrder();
                 return null;
             }
 
