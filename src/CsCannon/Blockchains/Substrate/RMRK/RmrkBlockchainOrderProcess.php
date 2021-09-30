@@ -81,15 +81,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
             $sellOrder = end($sellOrders);
 
-            if($verbose && $sellOrder->getTokenBuy()){
-                print_r("BUY TOKEN ".$sellOrder->getTokenBuy()->getDisplayStructure().PHP_EOL);
-            }
-
-            if($verbose && $sellOrder->getTokenSell()){
-                print_r("SELL TOKEN ".$sellOrder->getTokenSell()->getDisplayStructure().PHP_EOL);
-            }
-
-            $verbose ? print_r( "order sell match candidate TX : ".$lastBuy->getTxId().PHP_EOL) : false ;
+            $verbose ? print_r( "order sell match candidate TX : ".$sellOrder->getTxId().PHP_EOL) : false ;
             $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp()).PHP_EOL) : false ;
 
             try{
