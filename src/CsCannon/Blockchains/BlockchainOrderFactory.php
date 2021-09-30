@@ -243,10 +243,8 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         try{
             $sellOrder->getTokenSell()->getDisplayStructure();
             $token = $sellOrder->getTokenSell();
-//            print_r("sell token : ".$sellOrder->getTokenSell()->getSpecifierData().PHP_EOL);
         }catch(Exception $e){
             print_r("inversed tokens".PHP_EOL);
-//            print_r("buy token : ".$sellOrder->getTokenBuy()->getSpecifierData().PHP_EOL);
             $token = $sellOrder->getTokenBuy();
         }
 

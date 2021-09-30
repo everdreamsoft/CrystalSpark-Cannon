@@ -9,6 +9,7 @@ use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Tools\BlockchainOrderProcess;
 use Exception;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 
 
 class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
@@ -55,8 +56,8 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
         if($lastBuy){
 
-            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp())) : false ;
-            $verbose ? print_r( "order buy TX : ".$lastBuy->getTxId()) : false ;
+            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp()).PHP_EOL) : false ;
+            $verbose ? print_r( "order buy TX : ".$lastBuy->getTxId().PHP_EOL) : false ;
 
             $contractToBuy = $lastBuy->getContractToBuy();
 
@@ -88,8 +89,8 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 print_r("SELL TOKEN ".$sellOrder->getTokenSell()->getDisplayStructure().PHP_EOL);
             }
 
-            $verbose ? print_r( "order sell match candidate TX : ".$lastBuy->getTxId()) : false ;
-            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp())) : false ;
+            $verbose ? print_r( "order sell match candidate TX : ".$lastBuy->getTxId().PHP_EOL) : false ;
+            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp()).PHP_EOL) : false ;
 
             try{
                 $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder,$verbose);
@@ -131,10 +132,11 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
     /**
      * @param BlockchainOrder $buyOrder
      * @param BlockchainOrder $sellOrder
+     * @param bool $verbose
      * @return bool
      * @throws Exception
      */
-    public function makeOneKusamaMatch(BlockchainOrder $buyOrder, BlockchainOrder $sellOrder,$verbose=true): bool
+    public function makeOneKusamaMatch(BlockchainOrder $buyOrder, BlockchainOrder $sellOrder, $verbose=false): bool
     {
         $buyContractToBuyId = $buyOrder->getContractToBuy()->getReference('id')->refValue;
         $sellContractToBuyId = $sellOrder->getContractToBuy()->getReference("id")->refValue;
@@ -150,12 +152,12 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             if($sellOrder->getContractToSellQuantity() >= $buyOrder->getContractToBuyQuantity() && $buyOrder->getContractToSellQuantity() >= $sellOrder->getContractToBuyQuantity()){
 
                 try{
-                    $verbose ? print_r( "We are matching the order") : false ;
+                    $verbose ? print_r( "We are matching the order".PHP_EOL) : false ;
 
                     $this->sendMatchAndUpdate($sellOrder, $buyOrder);
 
                     $matched = true;
-                    $verbose ? print_r( "Sucessfuly matched ") : false ;
+                    $verbose ? print_r( "Sucessfuly matched ".PHP_EOL) : false ;
 
                 }catch(Exception $e){
                     throw $e;
