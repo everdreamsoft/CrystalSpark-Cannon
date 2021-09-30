@@ -225,29 +225,29 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
 
     /**
-     * @param BlockchainOrder $matchOrder
-     * @param BlockchainOrder $needleOrder
+     * @param BlockchainOrder $sellOrder
+     * @param BlockchainOrder $buyOrder
      * @throws Exception
      */
-    public static function makeEventFromMatches(BlockchainOrder $matchOrder, BlockchainOrder $needleOrder)
+    public static function makeEventFromMatches(BlockchainOrder $sellOrder, BlockchainOrder $buyOrder)
     {
 
-        $blockchain = $needleOrder->getBlockchain();
+        $blockchain = $buyOrder->getBlockchain();
         $eventFactory = $blockchain->getEventFactory();
 
-        $needleBuyContractId = $needleOrder->getContractToBuy()->getReference('id')->refValue;
-        $needleSellContractId = $needleOrder->getContractToSell()->getReference('id')->refValue;
+        $needleBuyContractId = $buyOrder->getContractToBuy()->getReference('id')->refValue;
+        $needleSellContractId = $buyOrder->getContractToSell()->getReference('id')->refValue;
 
-        $currency = $needleOrder->getBlockchain()->getMainCurrencyTicker();
+        $currency = $buyOrder->getBlockchain()->getMainCurrencyTicker();
 
         try{
-            $matchOrder->getTokenSell()->getDisplayStructure();
-            $token = $matchOrder->getTokenSell();
-            print_r("sell token : ".$matchOrder->getTokenSell()->getSpecifierData());
+            $sellOrder->getTokenSell()->getDisplayStructure();
+            $token = $sellOrder->getTokenSell();
+//            print_r("sell token : ".$sellOrder->getTokenSell()->getSpecifierData().PHP_EOL);
         }catch(Exception $e){
             print_r("inversed tokens".PHP_EOL);
-            print_r("buy token : ".$matchOrder->getTokenBuy()->getSpecifierData());
-            $token = $matchOrder->getTokenBuy();
+//            print_r("buy token : ".$sellOrder->getTokenBuy()->getSpecifierData().PHP_EOL);
+            $token = $sellOrder->getTokenBuy();
         }
 
         if(strtoupper($needleBuyContractId) != $currency){
@@ -255,14 +255,14 @@ class BlockchainOrderFactory extends BlockchainEventFactory
             try{
                 $eventFactory->create(
                     $blockchain,
-                    $matchOrder->getSource(),
-                    $needleOrder->getSource(),
-                    $matchOrder->getContractToSell(),
-                    $matchOrder->getTxId(),
-                    $matchOrder->getBlock()->getTimestamp(),
-                    $matchOrder->getBlock(),
+                    $sellOrder->getSource(),
+                    $buyOrder->getSource(),
+                    $sellOrder->getContractToSell(),
+                    $sellOrder->getTxId(),
+                    $sellOrder->getBlock()->getTimestamp(),
+                    $sellOrder->getBlock(),
                     $token,
-                    $matchOrder->getContractToSellQuantity()
+                    $sellOrder->getContractToSellQuantity()
                 );
 
             }catch(Exception $e){
@@ -276,14 +276,14 @@ class BlockchainOrderFactory extends BlockchainEventFactory
             try{
                 $eventFactory->create(
                     $blockchain,
-                    $needleOrder->getSource(),
-                    $matchOrder->getSource(),
-                    $needleOrder->getContractToSell(),
-                    $needleOrder->getTxId(),
-                    $needleOrder->getBlock()->getTimestamp(),
-                    $needleOrder->getBlock(),
-                    $needleOrder->getTokenSell(),
-                    $needleOrder->getContractToSellQuantity()
+                    $buyOrder->getSource(),
+                    $sellOrder->getSource(),
+                    $buyOrder->getContractToSell(),
+                    $buyOrder->getTxId(),
+                    $buyOrder->getBlock()->getTimestamp(),
+                    $buyOrder->getBlock(),
+                    $buyOrder->getTokenSell(),
+                    $buyOrder->getContractToSellQuantity()
                 );
 
             }catch(Exception $e){

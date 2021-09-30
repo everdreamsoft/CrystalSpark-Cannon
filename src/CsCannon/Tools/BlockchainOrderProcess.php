@@ -14,6 +14,7 @@ use CsCannon\Blockchains\BlockchainOrderFactory;
 use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use Exception;
+use phpDocumentor\Reflection\Types\Boolean;
 use SandraCore\Entity;
 
 class BlockchainOrderProcess
@@ -33,7 +34,7 @@ class BlockchainOrderProcess
     /**
      * @return BlockchainOrder[]
      */
-    public function getAllMatches(): array
+    public function getAllMatches()
     {
         $factory = new BlockchainOrderFactory($this->blockchain);
         $orders = $factory->getAllEntitiesOnChain();
@@ -89,7 +90,7 @@ class BlockchainOrderProcess
      * @param bool $matchWithBuy
      * @return array
      */
-    private function matchMaker(array $orders, BlockchainOrder $orderToMatch, bool $matchWithBuy): array
+    private function matchMaker(array $orders, BlockchainOrder $orderToMatch, bool $matchWithBuy)
     {
 
         foreach ($orders as $order){
@@ -119,45 +120,45 @@ class BlockchainOrderProcess
 
 
     /**
-     * @param BlockchainOrder $matchOrder
-     * @param BlockchainOrder $needleOrder
+     * @param BlockchainOrder $sellOrder
+     * @param BlockchainOrder $buyOrder
      * @return bool
      * @throws Exception
      */
-    protected function sendMatchAndUpdate(BlockchainOrder $matchOrder, BlockchainOrder $needleOrder): bool
+    protected function sendMatchAndUpdate(BlockchainOrder $sellOrder, BlockchainOrder $buyOrder)
     {
         try{
-            $initialBuyQuantity = $matchOrder->getContractToBuyQuantity();
-            $initialSellQuantity = $matchOrder->getContractToSellQuantity();
+            $initialBuyQuantity = $sellOrder->getContractToBuyQuantity();
+            $initialSellQuantity = $sellOrder->getContractToSellQuantity();
 
-            $matchRemainingBuy = $matchOrder->getContractToBuyQuantity() - $needleOrder->getContractToSellQuantity();
-            $matchRemainingSell = $matchOrder->getContractToSellQuantity() - $needleOrder->getContractToBuyQuantity();
+            $matchRemainingBuy = $sellOrder->getContractToBuyQuantity() - $buyOrder->getContractToSellQuantity();
+            $matchRemainingSell = $sellOrder->getContractToSellQuantity() - $buyOrder->getContractToBuyQuantity();
 
-            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_BUY, $matchRemainingBuy);
-            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $matchRemainingSell);
-            $matchOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $matchRemainingBuy * $matchRemainingSell);
+            $sellOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_BUY, $matchRemainingBuy);
+            $sellOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $matchRemainingSell);
+            $sellOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $matchRemainingBuy * $matchRemainingSell);
 
-            $remainingBuy = $needleOrder->getContractToBuyQuantity() - $initialSellQuantity;
-            $remainingSell = $needleOrder->getContractToSellQuantity() - $initialBuyQuantity;
+            $remainingBuy = $buyOrder->getContractToBuyQuantity() - $initialSellQuantity;
+            $remainingSell = $buyOrder->getContractToSellQuantity() - $initialBuyQuantity;
 
-            $needleOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_BUY, $remainingBuy);
-            $needleOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $remainingSell);
-            $needleOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $remainingBuy * $remainingSell);
+            $buyOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_BUY, $remainingBuy);
+            $buyOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_SELL, $remainingSell);
+            $buyOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $remainingBuy * $remainingSell);
 
-            if($matchOrder->getTotal() == '0'){
-                $matchOrder->closeOrder();
+            if($sellOrder->getTotal() == '0'){
+                $sellOrder->closeOrder();
             }
-            if($needleOrder->getTotal() == '0'){
-                $needleOrder->closeOrder();
+            if($buyOrder->getTotal() == '0'){
+                $buyOrder->closeOrder();
             }
 
             $matchQuantity[BlockchainOrderFactory::MATCH_BUY_QUANTITY] = $initialBuyQuantity;
             $matchQuantity[BlockchainOrderFactory::MATCH_SELL_QUANTITY] = $initialSellQuantity;
 
-            $matchOrder->setBrotherEntity(BlockchainOrderFactory::MATCH_WITH, $needleOrder, $matchQuantity);
+            $sellOrder->setBrotherEntity(BlockchainOrderFactory::MATCH_WITH, $buyOrder, $matchQuantity);
 
             try{
-                BlockchainOrderFactory::makeEventFromMatches($matchOrder, $needleOrder);
+                BlockchainOrderFactory::makeEventFromMatches($sellOrder, $buyOrder);
             }catch(Exception $e){
                 throw $e;
             }
@@ -177,7 +178,7 @@ class BlockchainOrderProcess
      * @param bool $withMatch
      * @return array
      */
-    public function makeViewFromOrders(array $orders, bool $withMatch): array
+    public function makeViewFromOrders(array $orders, Boolean $withMatch)
     {
         $response = [];
         $matchArray = [];
@@ -297,7 +298,7 @@ class BlockchainOrderProcess
      * @param BlockchainOrder $order
      * @return bool
      */
-    private function filterBySellContract(BlockchainOrder $order): bool
+    private function filterBySellContract(BlockchainOrder $order)
     {
         $contractToSellId = $order->getContractToSell()->getReference('id')->refValue;
         return !is_null($contractToSellId) && $this->needleContractId === $contractToSellId;
@@ -309,7 +310,7 @@ class BlockchainOrderProcess
      * @param BlockchainOrder $order
      * @return bool
      */
-    private function filterByBuyContract(BlockchainOrder $order): bool
+    private function filterByBuyContract(BlockchainOrder $order)
     {
         $contractToSellId = $order->getContractToBuy()->getReference('id')->refValue;
         return !is_null($contractToSellId) && $this->needleContractId === $contractToSellId;

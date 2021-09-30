@@ -109,122 +109,122 @@ class OrderTest extends TestCase
 
 
 
-    public function testKusamaMatch()
-    {
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
-
-        TestManager::initTestDatagraph();
-
-        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
-
-        $this->makeKusamaMatchOrders();
-
-        $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orderFactory->populateWithMatch();
-
-        $matchedOrders = $orderFactory->getEntities();
-
-        $this->assertNotEmpty($matchedOrders);
-
-        $matches = [];
-
-        foreach ($matchedOrders as $matchOrder){
-            $joined = $matchOrder->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
-            if(!is_null($joined)){
-                $matches[] = $matchOrder;
-            }
-        }
-
-        $this->assertNotEmpty($matches);
-        /** @var BlockchainOrder $match */
-        $match = end($matches);
-
-//        $isClose = $match->getReference(BlockchainOrderFactory::STATUS);
-//        $this->assertNotNull($isClose);
-//        $this->assertEquals(BlockchainOrderFactory::CLOSE, $isClose->refValue);
-
-        $remainingTotal = $match->getTotal();
-        $this->assertEquals(0, $remainingTotal);
-
-        $eventFactory = $blockchain->getEventFactory();
-        $eventFactory->populateLocal();
-        $events = $eventFactory->getEntities();
-
-//        $this->assertCount(1, $events);
-
-
-        /** @var Entity[] $brothers */
-        $brothers = $match->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
-        $this->assertNotNull($brothers);
-
-        $brother = end($brothers);
-
-        $matchQuantity = $brother->getReference(BlockchainOrderFactory::MATCH_BUY_QUANTITY)->refValue;
-        $this->assertEquals($this->contractQuantity, $matchQuantity);
-
-        $matchKsm = $brother->getReference(BlockchainOrderFactory::MATCH_SELL_QUANTITY)->refValue;
-        $this->assertEquals($this->ksmQuantity, $matchKsm);
-
-        $matchedOrders = $match->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
-        $this->assertNotNull($matchedOrders);
-
-        /** @var BlockchainOrder $orderMatched */
-        $orderMatched = end($matchedOrders);
-
-        $remainingTotal = $orderMatched->getTotal();
-        $this->assertEquals(0, $remainingTotal);
-
-    }
-
-
-
-    public function testViewOrders()
-    {
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
-
-        TestManager::initTestDatagraph();
-
-        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
-
-        $this->makeKusamaMatchOrders();
-
-        $orderFactory = new BlockchainOrderFactory($blockchain);
-        $orderFactory->populateWithMatch();
-
-        /** @var BlockchainOrder[] $matches */
-        $matches = $orderFactory->getEntities();
-
-        $orderProcess = $blockchain->getOrderProcess();
-
-        $view = $orderProcess->makeViewFromOrders($matches, true);
-
-        $this->assertIsArray($view);
-        $this->assertNotEmpty($view);
-
-        $firstOrder = $view[0];
-
-        $this->assertEquals(strtolower($this->firstAddress), $firstOrder['source']);
-        $this->assertEquals(BlockchainOrderFactory::CLOSE, $firstOrder['status']);
-        $this->assertEquals($blockchain->getMainCurrencyTicker(), $firstOrder['contract_buy']);
-
-        $matchedOrder = $view[1];
-
-        $this->assertEquals(strtolower($this->secondAddress), $matchedOrder['source']);
-        $this->assertEquals(BlockchainOrderFactory::CLOSE, $matchedOrder['status']);
-        $this->assertEquals("BUY", $matchedOrder['order_type']);
-        $this->assertIsArray($matchedOrder['match_with']);
-
-        $matchWith = $matchedOrder['match_with'][0];
-
-        $this->assertArrayHasKey('token_sell', $matchWith);
-        $this->assertEquals("sn-" . $this->snSell, $matchWith['token_sell']);
-        $this->assertArrayHasKey('source', $matchWith);
-        $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
-    }
+//    public function testKusamaMatch()
+//    {
+//        ini_set('display_errors', 1);
+//        ini_set('display_startup_errors', 1);
+//        error_reporting(E_ALL);
+//
+//        TestManager::initTestDatagraph();
+//
+//        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+//
+//        $this->makeKusamaMatchOrders();
+//
+//        $orderFactory = new BlockchainOrderFactory($blockchain);
+//        $orderFactory->populateWithMatch();
+//
+//        $matchedOrders = $orderFactory->getEntities();
+//
+//        $this->assertNotEmpty($matchedOrders);
+//
+//        $matches = [];
+//
+//        foreach ($matchedOrders as $matchOrder){
+//            $joined = $matchOrder->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
+//            if(!is_null($joined)){
+//                $matches[] = $matchOrder;
+//            }
+//        }
+//
+//        $this->assertNotEmpty($matches);
+//        /** @var BlockchainOrder $match */
+//        $match = end($matches);
+//
+////        $isClose = $match->getReference(BlockchainOrderFactory::STATUS);
+////        $this->assertNotNull($isClose);
+////        $this->assertEquals(BlockchainOrderFactory::CLOSE, $isClose->refValue);
+//
+//        $remainingTotal = $match->getTotal();
+//        $this->assertEquals(0, $remainingTotal);
+//
+//        $eventFactory = $blockchain->getEventFactory();
+//        $eventFactory->populateLocal();
+//        $events = $eventFactory->getEntities();
+//
+////        $this->assertCount(1, $events);
+//
+//
+//        /** @var Entity[] $brothers */
+//        $brothers = $match->getBrotherEntity(BlockchainOrderFactory::MATCH_WITH);
+//        $this->assertNotNull($brothers);
+//
+//        $brother = end($brothers);
+//
+//        $matchQuantity = $brother->getReference(BlockchainOrderFactory::MATCH_BUY_QUANTITY)->refValue;
+//        $this->assertEquals($this->contractQuantity, $matchQuantity);
+//
+//        $matchKsm = $brother->getReference(BlockchainOrderFactory::MATCH_SELL_QUANTITY)->refValue;
+//        $this->assertEquals($this->ksmQuantity, $matchKsm);
+//
+//        $matchedOrders = $match->getJoinedEntities(BlockchainOrderFactory::MATCH_WITH);
+//        $this->assertNotNull($matchedOrders);
+//
+//        /** @var BlockchainOrder $orderMatched */
+//        $orderMatched = end($matchedOrders);
+//
+//        $remainingTotal = $orderMatched->getTotal();
+//        $this->assertEquals(0, $remainingTotal);
+//
+//    }
+//
+//
+//
+//    public function testViewOrders()
+//    {
+//        ini_set('display_errors', 1);
+//        ini_set('display_startup_errors', 1);
+//        error_reporting(E_ALL);
+//
+//        TestManager::initTestDatagraph();
+//
+//        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+//
+//        $this->makeKusamaMatchOrders();
+//
+//        $orderFactory = new BlockchainOrderFactory($blockchain);
+//        $orderFactory->populateWithMatch();
+//
+//        /** @var BlockchainOrder[] $matches */
+//        $matches = $orderFactory->getEntities();
+//
+//        $orderProcess = $blockchain->getOrderProcess();
+//
+//        $view = $orderProcess->makeViewFromOrders($matches, true);
+//
+//        $this->assertIsArray($view);
+//        $this->assertNotEmpty($view);
+//
+//        $firstOrder = $view[0];
+//
+//        $this->assertEquals(strtolower($this->firstAddress), $firstOrder['source']);
+//        $this->assertEquals(BlockchainOrderFactory::CLOSE, $firstOrder['status']);
+//        $this->assertEquals($blockchain->getMainCurrencyTicker(), $firstOrder['contract_buy']);
+//
+//        $matchedOrder = $view[1];
+//
+//        $this->assertEquals(strtolower($this->secondAddress), $matchedOrder['source']);
+//        $this->assertEquals(BlockchainOrderFactory::CLOSE, $matchedOrder['status']);
+//        $this->assertEquals("BUY", $matchedOrder['order_type']);
+//        $this->assertIsArray($matchedOrder['match_with']);
+//
+//        $matchWith = $matchedOrder['match_with'][0];
+//
+//        $this->assertArrayHasKey('token_sell', $matchWith);
+//        $this->assertEquals("sn-" . $this->snSell, $matchWith['token_sell']);
+//        $this->assertArrayHasKey('source', $matchWith);
+//        $this->assertEquals(strtolower($this->firstAddress), $matchWith['source']);
+//    }
 
 
 
