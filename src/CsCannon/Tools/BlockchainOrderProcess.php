@@ -76,7 +76,7 @@ class BlockchainOrderProcess
 
 
 
-    public function makeMatchOneByOne(): ?bool
+    public function makeMatchOneByOne()
     {
         return true;
     }
@@ -145,10 +145,10 @@ class BlockchainOrderProcess
             $needleOrder->createOrUpdateRef(BlockchainOrderFactory::REMAINING_TOTAL, $remainingBuy * $remainingSell);
 
             if($matchOrder->getTotal() == '0'){
-                $matchOrder->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+                $matchOrder->closeOrder();
             }
             if($needleOrder->getTotal() == '0'){
-                $needleOrder->createOrUpdateRef(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
+                $needleOrder->closeOrder();
             }
 
             $matchQuantity[BlockchainOrderFactory::MATCH_BUY_QUANTITY] = $initialBuyQuantity;

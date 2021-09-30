@@ -122,7 +122,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     /**
      * @return BlockchainOrder|false
      */
-    public function getLastBuy(): BlockchainOrder
+    public function getLastBuy()
     {
         $this->setFilter(self::STATUS, 0, true);
         $this->setFilter(self::BUY_DESTINATION);
@@ -139,7 +139,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     /**
      * @return BlockchainOrder[]
      */
-    public function getAllEntitiesOnChain(): array
+    public function getAllEntitiesOnChain()
     {
         $this->populateLocal();
         $allEntities = $this->getEntities();
@@ -154,7 +154,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param System|null $sandra
      * @return Blockchain|null
      */
-    public function getBlockchainFromOrder(Entity $order, System $sandra = null): ?Blockchain
+    public function getBlockchainFromOrder(Entity $order, System $sandra = null)
     {
         $conceptTriplets = $order->subjectConcept->getConceptTriplets();
         $conceptId = $conceptTriplets[$sandra->systemConcept->get(BlockchainOrderFactory::ON_BLOCKCHAIN)] ?? null;
@@ -168,7 +168,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     /**
      * @return BlockchainOrder[]
      */
-    public function getClosedOrders(): array
+    public function getClosedOrders()
     {
         $this->setFilter(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CLOSE);
         $this->populateLocal();
@@ -183,7 +183,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param Blockchain $blockchain
      * @return array
      */
-    public function viewAllOrdersOnChain(Blockchain $blockchain): array
+    public function viewAllOrdersOnChain(Blockchain $blockchain)
     {
         $this->populateLocal();
         $allOrders = $this->getEntities();
@@ -240,6 +240,16 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
         $currency = $needleOrder->getBlockchain()->getMainCurrencyTicker();
 
+        try{
+            $matchOrder->getTokenSell()->getDisplayStructure();
+            $token = $matchOrder->getTokenSell();
+            print_r("sell token : ".$matchOrder->getTokenSell()->getSpecifierData());
+        }catch(Exception $e){
+            print_r("inversed tokens".PHP_EOL);
+            print_r("buy token : ".$matchOrder->getTokenBuy()->getSpecifierData());
+            $token = $matchOrder->getTokenBuy();
+        }
+
         if(strtoupper($needleBuyContractId) != $currency){
 
             try{
@@ -251,7 +261,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
                     $matchOrder->getTxId(),
                     $matchOrder->getBlock()->getTimestamp(),
                     $matchOrder->getBlock(),
-                    $matchOrder->getTokenSell(),
+                    $token,
                     $matchOrder->getContractToSellQuantity()
                 );
 
@@ -289,7 +299,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param Blockchain $blockchain
      * @return Entity[]
      */
-    public function deleteAll(Blockchain $blockchain): array
+    public function deleteAll(Blockchain $blockchain)
     {
         $this->populateLocal();
         $entities = $this->getEntities();
@@ -311,7 +321,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param BlockchainOrder $order
      * @return BlockchainOrder|null
      */
-    public function filterSameChain(BlockchainOrder $order): ?BlockchainOrder
+    public function filterSameChain(BlockchainOrder $order)
     {
         return ($order->getBlockchain()::NAME == $this->blockchain::NAME) ? $order : null;
     }
