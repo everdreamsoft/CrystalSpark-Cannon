@@ -158,7 +158,7 @@ class BlockchainOrderProcess
             $sellOrder->setBrotherEntity(BlockchainOrderFactory::MATCH_WITH, $buyOrder, $matchQuantity);
 
             try{
-                BlockchainOrderFactory::makeEventFromMatches($sellOrder, $buyOrder);
+                BlockchainOrderFactory::makeEventFromMatches($sellOrder, $buyOrder, $initialSellQuantity);
             }catch(Exception $e){
                 throw $e;
             }

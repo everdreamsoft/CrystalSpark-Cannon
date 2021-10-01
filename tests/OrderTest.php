@@ -22,8 +22,8 @@ use SandraCore\Entity;
 class OrderTest extends TestCase
 {
 
-    private $contractQuantity = 5;
-    private $ksmQuantity = 3;
+    private $contractQuantity = 1;
+    private $ksmQuantity = 1;
 
     private $firstAddress = 'myFirstKusamaAddress';
     private $secondAddress = 'mySecondKusamaAddress';
