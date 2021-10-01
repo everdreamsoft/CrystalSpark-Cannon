@@ -87,7 +87,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             try{
                 $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder,$verbose);
             }catch(Exception $e){
-                return null;
+                return false;
             }
 
             return $matchMaking;
