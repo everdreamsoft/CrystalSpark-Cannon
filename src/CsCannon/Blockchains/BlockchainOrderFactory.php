@@ -270,25 +270,25 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
         }
 
-        if(strtoupper($needleSellContractId) != $currency){
-
-            try{
-                $eventFactory->create(
-                    $blockchain,
-                    $buyOrder->getSource(),
-                    $sellOrder->getSource(),
-                    $buyOrder->getContractToSell(),
-                    $buyOrder->getTxId(),
-                    $buyOrder->getBlock()->getTimestamp(),
-                    $buyOrder->getBlock(),
-                    $buyOrder->getTokenSell(),
-                    $buyOrder->getContractToSellQuantity()
-                );
-
-            }catch(Exception $e){
-                throw $e;
-            }
-        }
+//        if(strtoupper($needleSellContractId) != $currency){
+//
+//            try{
+//                $eventFactory->create(
+//                    $blockchain,
+//                    $buyOrder->getSource(),
+//                    $sellOrder->getSource(),
+//                    $buyOrder->getContractToSell(),
+//                    $buyOrder->getTxId(),
+//                    $buyOrder->getBlock()->getTimestamp(),
+//                    $buyOrder->getBlock(),
+//                    $buyOrder->getTokenSell(),
+//                    $buyOrder->getContractToSellQuantity()
+//                );
+//
+//            }catch(Exception $e){
+//                throw $e;
+//            }
+//        }
 
     }
 
