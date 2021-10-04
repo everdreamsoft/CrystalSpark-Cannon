@@ -71,7 +71,10 @@ class OrderTest extends TestCase
         /** @var BlockchainOrder[] $orders */
         $orders = $orderFactory->getEntities();
 
-//        $this->assertCount(2, $orders);
+        foreach ($orders as $order){
+            $status = $order->getBrotherEntity(BlockchainOrderFactory::STATUS);
+            $this->assertNotNull($status);
+        }
 
         $eventFactory = new KusamaEventFactory();
         $eventFactory->populateLocal();
@@ -87,26 +90,10 @@ class OrderTest extends TestCase
         $this->assertEquals(strtolower($this->firstAddress), $event->getSourceAddress()->getAddress());
         $this->assertEquals(strtolower($this->secondAddress), $event->getDestinationAddress()->getAddress());
         $this->assertEquals('sn-'.$this->snSell, $event->getSpecifier()->getDisplayStructure());
-
-        $firstStatus = '';
-
-        foreach ($orders as $order){
-
-            // STATUS is brother entity
-//            $status = $order->getReference(BlockchainOrderFactory::STATUS)->refValue ?? null;
-//            $this->assertNotNull($status);
-//            $this->assertEquals(BlockchainOrderFactory::CLOSE, $status);
-//
-//            if($firstStatus == ''){
-//                $firstStatus = $status;
-//            }else{
-//                $this->assertEquals($firstStatus, $status);
-//            }
-
-        }
-
     }
 
+
+// Massive orders treatment need to be updated for non kusama orders
 
 
 //    public function testKusamaMatch()
