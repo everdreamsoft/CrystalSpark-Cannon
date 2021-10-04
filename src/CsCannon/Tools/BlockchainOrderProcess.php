@@ -77,7 +77,7 @@ class BlockchainOrderProcess
 
 
 
-    public function makeMatchOneByOne()
+    public function makeMatchOneByOne(): ?bool
     {
         return true;
     }
@@ -158,7 +158,7 @@ class BlockchainOrderProcess
             $sellOrder->setBrotherEntity(BlockchainOrderFactory::MATCH_WITH, $buyOrder, $matchQuantity);
 
             try{
-                BlockchainOrderFactory::makeEventFromMatches($sellOrder, $buyOrder, $initialSellQuantity);
+                BlockchainOrderFactory::makeEventFromMatches($sellOrder, $buyOrder);
             }catch(Exception $e){
                 throw $e;
             }
