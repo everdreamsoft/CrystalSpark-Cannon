@@ -230,7 +230,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param int $quantitySell
      * @throws Exception
      */
-    public static function makeEventFromMatches(BlockchainOrder $sellOrder, BlockchainOrder $buyOrder, int $quantitySell)
+    public static function makeEventFromMatches(BlockchainOrder $sellOrder, BlockchainOrder $buyOrder, int $quantitySell = 1)
     {
 
         $blockchain = $buyOrder->getBlockchain();
