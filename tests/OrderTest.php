@@ -164,7 +164,7 @@ class OrderTest extends TestCase
         // Check if balance is correct after balance building
 
         BalanceBuilder::flagAllForValidation($blockchain->getEventFactory());
-        BalanceBuilder::buildBalance($blockchain->getEventFactory(), true, 5);
+        BalanceBuilder::buildBalance($blockchain->getEventFactory(), false, 1);
 
         // sender balance
         $senderBalance = DatagraphSource::getBalance($firstAddress, null, null);
