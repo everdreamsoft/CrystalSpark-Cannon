@@ -55,6 +55,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     const STATUS = "status";
     const CLOSE = "close";
     const NOBALANCE = "insufficientBalance";
+    const CANCELLED = "cancelled";
 
 //    const TOKEN_BUY = "tokenBuy";
 //    const TOKEN_SELL = "tokenSell";
@@ -134,6 +135,20 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     }
 
 
+    /**
+     * @param int $limit
+     * @param int $offset
+     * @return BlockchainOrder[]
+     */
+    public function getListsOnly(int $limit, int $offset)
+    {
+        $this->setFilter(self::BUY_DESTINATION, 0, true);
+        $this->setFilter(self::STATUS, 0 , true);
+        $this->populateLocal($limit, $offset);
+        /** @var BlockchainOrder[] $orders */
+        $orders = $this->getEntities();
+        return $orders;
+    }
 
 
     /**

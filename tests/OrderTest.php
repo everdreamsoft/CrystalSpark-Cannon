@@ -95,6 +95,49 @@ class OrderTest extends TestCase
 
 
 
+    public function testListCancellation()
+    {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        TestManager::initTestDatagraph();
+
+        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+
+        $addressFactory = $blockchain->getAddressFactory();
+        $factory = new BlockchainOrderFactory($blockchain);
+
+        $firstAddress = $addressFactory->get($this->firstAddress, true);
+
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress);
+
+        $orderProcess = $blockchain->getOrderProcess();
+        $cancelled = $orderProcess->cancelLists(2, 0, $blockchain);
+        $this->assertTrue($cancelled);
+
+        $orderfactory = new BlockchainOrderFactory($blockchain);
+        $orderfactory->populateLocal();
+        $orders = $orderfactory->getEntities();
+
+        $this->assertCount(2, $orders);
+
+        foreach ($orders as $order){
+            $status = $order->getBrotherEntity(BlockchainOrderFactory::STATUS);
+            $this->assertNotNull($status);
+        }
+
+        $newOrderFact = new BlockchainOrderFactory($blockchain);
+        $newOrderFact->setFilter(BlockchainOrderFactory::STATUS, 0, true);
+        $newOrderFact->populateLocal();
+        $orders = $newOrderFact->getEntities();
+
+        $this->assertCount(0, $orders);
+
+    }
+
+
 
     public function testOrdersTreatment()
     {

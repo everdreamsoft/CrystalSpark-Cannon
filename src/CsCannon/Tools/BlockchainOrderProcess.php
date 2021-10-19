@@ -79,9 +79,14 @@ class BlockchainOrderProcess
 
     public function makeMatchOneByOne(): ?bool
     {
-        return true;
+        return false;
     }
 
+
+    public function cancelLists(int $limit, int $offset, $blockchain): bool
+    {
+        return false;
+    }
 
 
     /**
