@@ -94,7 +94,7 @@ class OrderTest extends TestCase
     }
 
 
-    public function testLastListCancell()
+    public function testLastListCancel()
     {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
@@ -108,13 +108,44 @@ class OrderTest extends TestCase
         $firstAddress = $addressFactory->get($this->firstAddress, true);
 
         $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSells', 11122234, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'newContract', '00000CANCEL', $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestCancel', 11122235, $factory, $firstAddress);
 
-        $token = RmrkContractStandard::init(['sn' => $this->snSell]);
 
-        $entities = $factory->getLastListCancellation($token);
+        $orderProcess = $blockchain->getOrderProcess();
+        $result = $orderProcess->cancelLists($blockchain);
 
-        $this->assertNotNull($entities);
+        if($result){
+            $factory = new BlockchainOrderFactory($blockchain);
+            $factory->setFilter(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CANCELLED);
+            $factory->populateLocal();
+            $orders = $factory->getEntities();
+
+            $this->assertNotEmpty($orders);
+        }
+
+//        $factory = new BlockchainOrderFactory($blockchain);
+//        $entities = $factory->getLastListCancellation();
+//
+//        $this->assertNotNull($entities);
+//        $this->assertNotEmpty($entities);
+//
+//        $listToCancel = reset($entities);
+//
+//        $contract = $listToCancel->getContractToSell();
+//        $token = $listToCancel->getTokenSell();
+//        $source = $listToCancel->getSourceAddress();
+//
+//        $factory = new BlockchainOrderFactory($blockchain);
+//        $factory->setFilter(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $contract);
+//        $factory->setFilter(BlockchainEventFactory::TOKEN_SELL, $token);
+//        $factory->setFilter(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $source);
+//        $factory->populateLocal();
+//
+//        $lists = $factory->getEntities();
+//
+//        $this->assertNotEmpty($lists);
+
     }
 
 

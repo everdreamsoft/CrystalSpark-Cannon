@@ -15,6 +15,7 @@ use Exception;
 use SandraCore\CommonFunctions;
 use SandraCore\DatabaseAdapter;
 use SandraCore\Entity;
+use SandraCore\EntityFactory;
 use SandraCore\System;
 
 
@@ -137,47 +138,23 @@ class BlockchainOrderFactory extends BlockchainEventFactory
         return end($orders);
     }
 
-
-    public function getLastListCancellation($token)
+    /**
+     * @return BlockchainOrder[]
+     */
+    public function getLastListCancellation(): array
     {
-
-////        $this->setFilter(self::BUY_AMOUNT, "0");
-//        $orders = $this->populateFromSearchResults("0", self::BUY_AMOUNT);
-////        $orders = $this->populateLocal(1);
-////        $orders = $this->getEntities();
-//
-//        $quantities = [];
-//        foreach ($orders as $order){
-//            $quantity = $order->getReference(self::BUY_AMOUNT)->refValue ?? null;
-//            $quantities[] = $quantity;
-//        }
-//
-//        return $orders;
-
-       $contractFactory = $this->blockchain->getContractFactory();
-       $contract = $contractFactory::getContract($this->blockchain->getMainCurrencyTicker(), false, RmrkContractStandard::getEntity());
-
-       $this->entityReferenceContainer = BlockchainEventFactory::ORDER_BUY_CONTRACT;
-       $this->entityContainedIn = $contract->subjectConcept->idConcept;
-
-//       $conceptsArray = DatabaseAdapter::searchConcept(SandraManager::getSandra(), "0");
-//       $this->conceptArray = $conceptsArray;
-
-//        $this->setFilter(BlockchainOrderFactory::BUY_AMOUNT, "0");
-//        $orders = $this->populateLocal();
-//        /** @var BlockchainOrder[] $orders */
-//        $orders = $this->getEntities();
-        $orders = $this->populateFromSearchResults(0, BlockchainOrderFactory::BUY_AMOUNT);
-        $quantities = [];
-        foreach ($orders as $order){
-            $quantity = $order->getReference(BlockchainOrderFactory::BUY_AMOUNT)->refValue ?? null;
-            $quantities[] = $quantity;
-        }
-
-       $this->populateLocal();
-       $orders = $this->getEntities();
-
-       return $orders;
+//        $conceptsArray = DatabaseAdapter::searchConcept($this->system, "0", BlockchainOrderFactory::BUY_AMOUNT, $this->entityReferenceContainer, $this->entityContainedIn);
+//        if (!$conceptsArray) return array();
+//        $this->conceptArray = $conceptsArray;
+        $this->setFilter(BlockchainOrderFactory::STATUS, 0 , true);
+        $this->setFilter(BlockchainOrderFactory::BUY_DESTINATION, 0 , true);
+//        return $this->last(BlockchainOrderFactory::BUY_AMOUNT, "0");
+//        return $this->populateLocal(1);
+        return [$this->last(BlockchainOrderFactory::BUY_AMOUNT, "0")];
+        return $this->getEntities();
+//        $this->populateLocal(1, 0, 'DES', BlockchainOrderFactory::EVENT_BLOCK_TIME);
+//        $this->populateFromSearchResults("0", BlockchainOrderFactory::BUY_AMOUNT);
+//        return $this->populateLocal(1);
     }
 
 
@@ -385,6 +362,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     {
         return ($order->getBlockchain()::NAME == $this->blockchain::NAME) ? $order : null;
     }
+
 
 
 }
