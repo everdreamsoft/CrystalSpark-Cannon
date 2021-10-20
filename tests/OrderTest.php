@@ -94,6 +94,29 @@ class OrderTest extends TestCase
     }
 
 
+    public function testLastListCancell()
+    {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        TestManager::initTestDatagraph();
+
+        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+        $factory = new BlockchainOrderFactory($blockchain);
+        $addressFactory = $blockchain->getAddressFactory();
+        $firstAddress = $addressFactory->get($this->firstAddress, true);
+
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress);
+
+        $token = RmrkContractStandard::init(['sn' => $this->snSell]);
+
+        $entities = $factory->getLastListCancellation($token);
+
+        $this->assertNotNull($entities);
+    }
+
 
     public function testListCancellation()
     {

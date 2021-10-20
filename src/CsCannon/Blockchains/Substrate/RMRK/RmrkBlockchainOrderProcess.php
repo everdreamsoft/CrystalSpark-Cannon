@@ -186,6 +186,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
         return true;
     }
 
+
     /**
      * @param array $lists
      */

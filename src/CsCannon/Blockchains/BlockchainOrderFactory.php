@@ -5,12 +5,15 @@ namespace CsCannon\Blockchains;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Generic\GenericBlockchain;
 use CsCannon\Blockchains\Generic\GenericContract;
+use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaAddress;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\BlockchainStandardFactory;
 use CsCannon\CSEntityFactory;
+use CsCannon\SandraManager;
 use Exception;
 use SandraCore\CommonFunctions;
+use SandraCore\DatabaseAdapter;
 use SandraCore\Entity;
 use SandraCore\System;
 
@@ -133,6 +136,50 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
         return end($orders);
     }
+
+
+    public function getLastListCancellation($token)
+    {
+
+////        $this->setFilter(self::BUY_AMOUNT, "0");
+//        $orders = $this->populateFromSearchResults("0", self::BUY_AMOUNT);
+////        $orders = $this->populateLocal(1);
+////        $orders = $this->getEntities();
+//
+//        $quantities = [];
+//        foreach ($orders as $order){
+//            $quantity = $order->getReference(self::BUY_AMOUNT)->refValue ?? null;
+//            $quantities[] = $quantity;
+//        }
+//
+//        return $orders;
+
+       $contractFactory = $this->blockchain->getContractFactory();
+       $contract = $contractFactory::getContract($this->blockchain->getMainCurrencyTicker(), false, RmrkContractStandard::getEntity());
+
+       $this->entityReferenceContainer = BlockchainEventFactory::ORDER_BUY_CONTRACT;
+       $this->entityContainedIn = $contract->subjectConcept->idConcept;
+
+//       $conceptsArray = DatabaseAdapter::searchConcept(SandraManager::getSandra(), "0");
+//       $this->conceptArray = $conceptsArray;
+
+//        $this->setFilter(BlockchainOrderFactory::BUY_AMOUNT, "0");
+//        $orders = $this->populateLocal();
+//        /** @var BlockchainOrder[] $orders */
+//        $orders = $this->getEntities();
+        $orders = $this->populateFromSearchResults(0, BlockchainOrderFactory::BUY_AMOUNT);
+        $quantities = [];
+        foreach ($orders as $order){
+            $quantity = $order->getReference(BlockchainOrderFactory::BUY_AMOUNT)->refValue ?? null;
+            $quantities[] = $quantity;
+        }
+
+       $this->populateLocal();
+       $orders = $this->getEntities();
+
+       return $orders;
+    }
+
 
 
     /**
