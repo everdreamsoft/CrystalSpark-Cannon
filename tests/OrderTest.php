@@ -94,6 +94,41 @@ class OrderTest extends TestCase
     }
 
 
+    public function testLastListCancel()
+    {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        TestManager::initTestDatagraph();
+
+        $blockchain = BlockchainRouting::getBlockchainFromName('kusama');
+        $factory = new BlockchainOrderFactory($blockchain);
+        $addressFactory = $blockchain->getAddressFactory();
+        $firstAddress = $addressFactory->get($this->firstAddress, true);
+
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress, false);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSells', 11122234, $factory, $firstAddress, false);
+        $this->createOrder($blockchain, 'newContract', '00000CANCEL', $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestCancel', 11122235, $factory, $firstAddress, false);
+
+
+        $orderProcess = $blockchain->getOrderProcess();
+        $result = $orderProcess->listsCancellation($blockchain);
+
+        $this->assertTrue($result);
+
+        if($result){
+            $factory = new BlockchainOrderFactory($blockchain);
+            $factory->setFilter(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CANCELLED);
+            $factory->populateLocal();
+            $orders = $factory->getEntities();
+
+            $this->assertNotEmpty($orders);
+            $this->assertCount(2, $orders);
+        }
+
+    }
+
 
     public function testListCancellation()
     {
@@ -110,11 +145,11 @@ class OrderTest extends TestCase
 
         $firstAddress = $addressFactory->get($this->firstAddress, true);
 
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress);
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress, false);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress, false);
 
         $orderProcess = $blockchain->getOrderProcess();
-        $cancelled = $orderProcess->cancelLists(2, 0, $blockchain);
+        $cancelled = $orderProcess->cancelLists($blockchain);
         $this->assertTrue($cancelled);
 
         $orderfactory = new BlockchainOrderFactory($blockchain);
@@ -368,7 +403,7 @@ class OrderTest extends TestCase
 
 
 
-    private function createOrder(Blockchain $blockchain, string $contractToSell, $snToSell, int $sellAmount, string $contractToBuy, $snToBuy, int $buyAmount, string $txHash, int $timestamp, BlockchainOrderFactory $blockchainOrderFactory, BlockchainAddress $source, BlockchainAddress $buyDestination = null): BlockchainOrder
+    private function createOrder(Blockchain $blockchain, string $contractToSell, $snToSell, int $sellAmount, string $contractToBuy, $snToBuy, int $buyAmount, string $txHash, int $timestamp, BlockchainOrderFactory $blockchainOrderFactory, BlockchainAddress $source, BlockchainAddress $buyDestination = null, $updateBalance = true): BlockchainOrder
     {
 
         $buyContract = $blockchain->getContractFactory()::getContract($contractToBuy,true, RmrkContractStandard::getEntity());
@@ -381,9 +416,11 @@ class OrderTest extends TestCase
         if(!is_null($snToSell)){
             $snToSell = RmrkContractStandard::init(['sn' => $snToSell]);
 
-            $firstBalance = DatagraphSource::getBalance($source, null, null);
-            $firstBalance->addContractToken($sellContract, $snToSell, $this->contractQuantity);
-            $firstBalance->saveToDatagraph();
+            if($updateBalance){
+                $firstBalance = DatagraphSource::getBalance($source, null, null);
+                $firstBalance->addContractToken($sellContract, $snToSell, $this->contractQuantity);
+                $firstBalance->saveToDatagraph();
+            }
         }
 
         $blockchainBlockFactory = new BlockchainBlockFactory($blockchain);

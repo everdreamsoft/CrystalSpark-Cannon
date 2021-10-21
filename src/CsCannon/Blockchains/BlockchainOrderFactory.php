@@ -5,13 +5,17 @@ namespace CsCannon\Blockchains;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Generic\GenericBlockchain;
 use CsCannon\Blockchains\Generic\GenericContract;
+use CsCannon\Blockchains\Interfaces\RmrkContractStandard;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaAddress;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\BlockchainStandardFactory;
 use CsCannon\CSEntityFactory;
+use CsCannon\SandraManager;
 use Exception;
 use SandraCore\CommonFunctions;
+use SandraCore\DatabaseAdapter;
 use SandraCore\Entity;
+use SandraCore\EntityFactory;
 use SandraCore\System;
 
 
@@ -133,6 +137,23 @@ class BlockchainOrderFactory extends BlockchainEventFactory
 
         return end($orders);
     }
+
+    /**
+     * @return BlockchainOrder[]
+     */
+    public function getLastListCancellation(): array
+    {
+        $this->setFilter(BlockchainOrderFactory::STATUS, 0 , true);
+        $this->setFilter(BlockchainOrderFactory::BUY_DESTINATION, 0 , true);
+        $cancellations = $this->populateFromSearchResults("0", BlockchainOrderFactory::BUY_AMOUNT);
+
+        if(empty($cancellations)){
+            $cancellations = $this->populateFromSearchResults("0", BlockchainOrderFactory::SELL_PRICE);
+        }
+
+        return $cancellations;
+    }
+
 
 
     /**
@@ -338,6 +359,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
     {
         return ($order->getBlockchain()::NAME == $this->blockchain::NAME) ? $order : null;
     }
+
 
 
 }
