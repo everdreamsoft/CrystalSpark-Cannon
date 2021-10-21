@@ -143,18 +143,15 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      */
     public function getLastListCancellation(): array
     {
-//        $conceptsArray = DatabaseAdapter::searchConcept($this->system, "0", BlockchainOrderFactory::BUY_AMOUNT, $this->entityReferenceContainer, $this->entityContainedIn);
-//        if (!$conceptsArray) return array();
-//        $this->conceptArray = $conceptsArray;
         $this->setFilter(BlockchainOrderFactory::STATUS, 0 , true);
         $this->setFilter(BlockchainOrderFactory::BUY_DESTINATION, 0 , true);
-//        return $this->last(BlockchainOrderFactory::BUY_AMOUNT, "0");
-//        return $this->populateLocal(1);
-        return [$this->last(BlockchainOrderFactory::BUY_AMOUNT, "0")];
-        return $this->getEntities();
-//        $this->populateLocal(1, 0, 'DES', BlockchainOrderFactory::EVENT_BLOCK_TIME);
-//        $this->populateFromSearchResults("0", BlockchainOrderFactory::BUY_AMOUNT);
-//        return $this->populateLocal(1);
+        $cancellations = $this->populateFromSearchResults("0", BlockchainOrderFactory::BUY_AMOUNT);
+
+        if(empty($cancellations)){
+            $cancellations = $this->populateFromSearchResults("0", BlockchainOrderFactory::SELL_PRICE);
+        }
+
+        return $cancellations;
     }
 
 
