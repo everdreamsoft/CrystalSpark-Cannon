@@ -83,7 +83,12 @@ class BlockchainOrderProcess
     }
 
 
-    public function cancelLists($blockchain): bool
+    public function cancelLists($limit, $blockchain): bool
+    {
+        return false;
+    }
+
+    public function listsCancellation($blockchain): bool
     {
         return false;
     }
