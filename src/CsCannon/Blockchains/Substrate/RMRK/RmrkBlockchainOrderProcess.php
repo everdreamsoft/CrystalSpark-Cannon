@@ -121,8 +121,11 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
     }
 
 
-
-    public function listsCancellation($blockchain)
+    /**
+     * @param $blockchain
+     * @return bool
+     */
+    public function listsCancellation($blockchain): bool
     {
         $orderFactory = new BlockchainOrderFactory($blockchain);
         $lists = $orderFactory->getLastListCancellation();
@@ -173,21 +176,37 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
     }
 
 
-
     /**
+     * @param $limit
      * @param $blockchain
      * @return bool
      */
-    public function cancelLists($blockchain): bool
+    public function cancelLists($limit, $blockchain): bool
     {
         $orderFactory = new BlockchainOrderFactory($blockchain);
+//        $orderFactory->setFilter(BlockchainOrderFactory::STATUS, 0 , true);
+//        $orderFactory->setFilter(BlockchainOrderFactory::BUY_DESTINATION, 0 , true);
+//        $orderFactory->populateLocal($limit, $offset);
+
+//        $orders = $orderFactory->getEntities();
         $orders = $orderFactory->getLastListCancellation();
+
+
+        // TODO filter before populate in populateFromSearchResult
+        $orders = array_filter($orders, [$this, "filterIsList"]);
+        $orders = array_filter($orders, [$this, "filterStatus"]);
 
         if(empty($orders)){
             return false;
         }
 
+        $i = 0;
         foreach ($orders as $order){
+
+            if($i >= $limit){
+                return true;
+            }
+
             $sourceAddress = $order->getJoinedEntities(BlockchainEventFactory::EVENT_SOURCE_ADDRESS)?? null;
             /** @var BlockchainContract[] $contractSell */
             $contractSell = $order->getJoinedEntities(BlockchainOrderFactory::ORDER_SELL_CONTRACT)?? null;
@@ -198,6 +217,9 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 // get List data for search
                 $contractSell = reset($contractSell);
                 $sourceAddress = reset($sourceAddress);
+
+                print_r($contractSell->getReference(BlockchainContractFactory::MAIN_IDENTIFIER)->refValue ?? null);
+                print_r(PHP_EOL);
 
                 try{
                     $token = $order->getTokenSell();
@@ -211,21 +233,18 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
                 // Search all Lists with the same data (contract, source and token)
                 $newOrderFact = new BlockchainOrderFactory($blockchain);
-                $newOrderFact->setFilter(BlockchainOrderFactory::EVENT_SOURCE_ADDRESS, $sourceAddress);
+                $newOrderFact->setFilter(BlockchainOrderFactory::ON_BLOCKCHAIN, $blockchain::NAME);
+                $newOrderFact->setFilter(BlockchainEventFactory::EVENT_SOURCE_ADDRESS, $sourceAddress);
                 $newOrderFact->setFilter(BlockchainOrderFactory::STATUS, 0 , true);
                 $newOrderFact->setFilter(BlockchainOrderFactory::BUY_DESTINATION, 0 , true);
                 $newOrderFact->setFilter(BlockchainOrderFactory::ORDER_SELL_CONTRACT, $contractSell);
                 $newOrderFact->setFilter($tokenVerb, $token);
-                $newOrderFact->populateLocal(1000, 0, 'ASC', BlockchainOrderFactory::EVENT_BLOCK_TIME);
+                $newOrderFact->populateLocal();
 
                 /** @var BlockchainOrder[] $allLists */
                 $allLists = $newOrderFact->getEntities();
 
-
-                $quantities = [];
-                foreach ($allLists as $list){
-                    $quantities[] = $list->getContractToBuyQuantity();
-                }
+                print_r(count($allLists).PHP_EOL);
 
                 // verify if at least one list is a cancellation
                 $cancellationInArray = array_filter($allLists, [$this, "findListCancellation"]);
@@ -233,8 +252,11 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 // If there is a cancellation and if there is at least 2 Lists
                 if(!empty($cancellationInArray) && count($allLists) > 1){
                     $this->listCancellation(array_reverse($allLists));
+                }else{
+                    $order->setBrotherEntity(BlockchainOrderFactory::STATUS, BlockchainOrderFactory::CANCELLED, null, true, true);
                 }
             }
+            $i++;
         }
         return true;
     }
@@ -242,6 +264,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
     /**
      * @param array $lists
+     * @return array
      */
     private function listCancellation(array $lists)
     {
@@ -267,6 +290,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
                 $listsToCancel = [];
             }
         }
+        return $lists;
     }
 
 
@@ -420,6 +444,24 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             return 0;
         }
         return ($timestamp > $secondTimestamp) ? -1 : 1;
+    }
+
+    /**
+     * @param BlockchainOrder $order
+     * @return bool
+     */
+    public function filterStatus(BlockchainOrder $order): bool
+    {
+        return is_null($order->getBrotherEntity(BlockchainOrderFactory::STATUS));
+    }
+
+    /**
+     * @param BlockchainOrder $order
+     * @return bool
+     */
+    public function filterIsList(BlockchainOrder $order): bool
+    {
+        return is_null($order->getBuyDestination());
     }
 
 
