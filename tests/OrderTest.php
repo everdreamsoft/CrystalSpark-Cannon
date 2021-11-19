@@ -107,9 +107,9 @@ class OrderTest extends TestCase
         $addressFactory = $blockchain->getAddressFactory();
         $firstAddress = $addressFactory->get($this->firstAddress, true);
 
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress, false);
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSells', 11122234, $factory, $firstAddress, false);
-        $this->createOrder($blockchain, 'newContract', '00000CANCEL', $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestCancel', 11122235, $factory, $firstAddress, false);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress, null, false);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSells', 11122234, $factory, $firstAddress, null, false);
+        $this->createOrder($blockchain, 'newContract', '00000CANCEL', $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestCancel', 11122235, $factory, $firstAddress, null, false);
 
 
         $orderProcess = $blockchain->getOrderProcess();
@@ -145,11 +145,11 @@ class OrderTest extends TestCase
 
         $firstAddress = $addressFactory->get($this->firstAddress, true);
 
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress, false);
-        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress, false);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, $this->ksmQuantity, 'txTestSell', 11122233, $factory, $firstAddress, null, false);
+        $this->createOrder($blockchain, 'contractSell', $this->snSell, $this->contractQuantity, $blockchain->getMainCurrencyTicker(), null, 0, 'txTestSell', 11122234, $factory, $firstAddress, null, false);
 
         $orderProcess = $blockchain->getOrderProcess();
-        $cancelled = $orderProcess->cancelLists($blockchain);
+        $cancelled = $orderProcess->cancelLists(10, $blockchain);
         $this->assertTrue($cancelled);
 
         $orderfactory = new BlockchainOrderFactory($blockchain);
