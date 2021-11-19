@@ -90,13 +90,11 @@ public $blockchain ;
     public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
 
-        $return = $this->first(self::MAIN_IDENTIFIER,$identifier);
-        /** @var BlockchainContract $return */
-
-
+        $entity = null ;
 
         $identifierName = self::MAIN_IDENTIFIER;
-        $entity = $this->first($identifierName,$identifier);
+        $entities = $this->populateFromSearchResults($identifier,self::MAIN_IDENTIFIER);
+        if (count($entities)>0) $entity = reset($entities);
 
 
 
