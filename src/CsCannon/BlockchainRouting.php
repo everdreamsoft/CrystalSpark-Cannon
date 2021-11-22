@@ -5,6 +5,7 @@ namespace CsCannon;
 
 
 
+use CsCannon\Blockchains\Binance\BinanceBlockchain;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainAddressFactory;
@@ -56,7 +57,7 @@ class BlockchainRouting
         $supported[] = new UniqueBlockchain();
         $supported[] = new KusamaBlockchain();
         $supported[] = new WestendBlockchain();
-
+        $supported[] = new BinanceBlockchain();
 
         $supported = array_merge($supported,self::$hotPluggedBlockchain);
 
