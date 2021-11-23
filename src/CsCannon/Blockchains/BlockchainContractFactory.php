@@ -91,10 +91,16 @@ public $blockchain ;
     {
 
         $entity = null ;
-
         $identifierName = self::MAIN_IDENTIFIER;
-        $entities = $this->populateFromSearchResults($identifier,self::MAIN_IDENTIFIER);
-        if (count($entities)>0) $entity = reset($entities);
+
+        if ($this->populated == false ) {
+
+            $entities = $this->populateFromSearchResults($identifier, self::MAIN_IDENTIFIER);
+            if (count($entities) > 0) $entity = reset($entities);
+        }
+        else{
+            $entity = $this->first(self::MAIN_IDENTIFIER,$identifier);
+        }
 
 
 
