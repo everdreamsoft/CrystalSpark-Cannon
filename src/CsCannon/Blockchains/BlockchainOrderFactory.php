@@ -143,6 +143,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      */
     public function getLastListCancellation(): array
     {
+        $this->setFilter(BlockchainOrderFactory::ON_BLOCKCHAIN, $this->blockchain::NAME);
         $this->setFilter(BlockchainOrderFactory::STATUS, 0 , true);
         $this->setFilter(BlockchainOrderFactory::BUY_DESTINATION, 0 , true);
         $cancellations = $this->populateFromSearchResults("0", BlockchainOrderFactory::BUY_AMOUNT);
