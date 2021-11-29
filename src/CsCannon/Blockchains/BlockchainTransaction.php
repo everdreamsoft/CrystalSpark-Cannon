@@ -5,21 +5,9 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\BlockchainRouting;
 use SandraCore\Entity;
-use SandraCore\System;
 
 class BlockchainTransaction extends Entity
 {
-
-//    private Blockchain $blockchain;
-
-
-    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
-    {
-        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
-
-//        $this->blockchain = $this->getBlockchain();
-    }
-
 
     public function getBlockchain():Blockchain
     {
@@ -33,7 +21,7 @@ class BlockchainTransaction extends Entity
 
 
     /**
-     * @return BlockchainTransaction[]
+     * @return BlockchainEvent[]
      */
     public function getJoinedEvents(): array
     {

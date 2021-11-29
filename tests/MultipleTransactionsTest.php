@@ -1,8 +1,10 @@
 <?php
 
 use CsCannon\BlockchainRouting;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainBlockFactory;
+use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainTransaction;
 use CsCannon\Blockchains\BlockchainTransactionFactory;
@@ -41,6 +43,8 @@ class MultipleTransactionsTest extends TestCase
         $firstContract = $contractFactory::getContract('firstContract',true, RmrkContractStandard::getEntity());
         $secondContract = $contractFactory::getContract('secondContract',true, RmrkContractStandard::getEntity());
 
+        $timestamp = '0123456';
+
         $events = [];
 
         $events[] = $eventFactory->create(
@@ -49,7 +53,7 @@ class MultipleTransactionsTest extends TestCase
             $secondAddress,
             $firstContract,
             '0x123456-1',
-            '0123456',
+            $timestamp,
             $block
         );
 
@@ -59,7 +63,7 @@ class MultipleTransactionsTest extends TestCase
             $firstAddress,
             $secondContract,
             '0x123456-2',
-            '0123456',
+            $timestamp,
             $block
         );
 
@@ -68,7 +72,7 @@ class MultipleTransactionsTest extends TestCase
         $tx = $txFactory->createTransaction(
             $blockchain,
             '0x123456',
-            '0123456',
+            $timestamp,
             $block,
             $events
         );
@@ -79,13 +83,26 @@ class MultipleTransactionsTest extends TestCase
         /** @var BlockchainTransaction[] $txs */
         $txs = $newTxFactory->getEntities();
 
+        $this->assertNotEmpty($txs);
+
         $myTx = reset($txs);
 
         $txEvents = $myTx->getJoinedEvents();
 
         $this->assertNotEmpty($txEvents);
+        $this->assertCount(2, $txEvents);
 
-        $this->assertNotEmpty($txs);
+        foreach ($txEvents as $event){
+            $eventTimestamp = $event->getReference(BlockchainEventFactory::EVENT_BLOCK_TIME)->refValue ?? null;
+            $this->assertNotNull($eventTimestamp);
+            $this->assertEquals($timestamp, $eventTimestamp);
+
+            $txId = $event->getReference(Blockchain::$txidConceptName)->refValue ?? null;
+            $this->assertNotNull($txId);
+
+            $this->assertStringContainsString('0x123456', $txId);
+            $this->assertTrue($txId == '0x123456-1' || $txId == '0x123456-2');
+        }
 
     }
 }

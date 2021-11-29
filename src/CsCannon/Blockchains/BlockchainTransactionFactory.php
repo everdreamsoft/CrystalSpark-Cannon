@@ -15,7 +15,7 @@ class BlockchainTransactionFactory extends EntityFactory
     public static string $isa = 'blockchainTransaction';
     public static string $file = 'blockchainTransactionFile';
 
-    protected static string $className = 'CsCannon\Blockchains\blockchainTransaction';
+    protected static string $className = 'CsCannon\Blockchains\BlockchainTransaction';
 
     // brothers
     const ON_BLOCKCHAIN = 'onBlockchain';
@@ -30,7 +30,9 @@ class BlockchainTransactionFactory extends EntityFactory
 
     public function __construct(Blockchain $blockchain)
     {
-        parent::__construct(self::$isa, self::$file, SandraManager::getSandra());
+        parent::__construct(static::$isa, static::$file, SandraManager::getSandra());
+
+        $this->generatedEntityClass = static::$className;
 
         $this->blockchain = $blockchain;
     }
@@ -42,7 +44,7 @@ class BlockchainTransactionFactory extends EntityFactory
      * @param string $asc
      * @param null $sortByRef
      * @param false $numberSort
-     * @return array
+     * @return Entity[]
      */
     public function populateLocal($limit = 10000, $offset = 0, $asc = 'ASC', $sortByRef = null, $numberSort = false): array
     {
