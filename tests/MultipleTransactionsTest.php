@@ -73,9 +73,13 @@ class MultipleTransactionsTest extends TestCase
             $blockchain,
             '0x123456',
             $timestamp,
-            $block,
-            $events
+            $block
+//            $events
         );
+
+        foreach ($events as $event){
+            $tx->addEvent($event);
+        }
 
 
         $newTxFactory = new BlockchainTransactionFactory($blockchain);
@@ -87,7 +91,9 @@ class MultipleTransactionsTest extends TestCase
 
         $myTx = reset($txs);
 
-        $txEvents = $myTx->getJoinedEvents();
+        $txEvents = $myTx->getJoinedEntities(BlockchainTransactionFactory::JOINED_EVENT);
+
+//        $txEvents = $myTx->getJoinedEvents();
 
         $this->assertNotEmpty($txEvents);
         $this->assertCount(2, $txEvents);

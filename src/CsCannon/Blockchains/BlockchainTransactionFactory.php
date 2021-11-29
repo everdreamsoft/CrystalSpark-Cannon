@@ -3,12 +3,13 @@
 
 namespace CsCannon\Blockchains;
 
+use CsCannon\Displayable;
+use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
 use SandraCore\Entity;
 use SandraCore\EntityFactory;
-use SandraCore\System;
 
-class BlockchainTransactionFactory extends EntityFactory
+class BlockchainTransactionFactory extends EntityFactory implements Displayable
 {
     public Blockchain $blockchain;
 
@@ -27,6 +28,7 @@ class BlockchainTransactionFactory extends EntityFactory
     // joined
     const EVENT_BLOCK = 'onBlock';
     const JOINED_EVENTS = 'joinedEvents';
+    const JOINED_EVENT = 'joinedEvent';
 
     public function __construct(Blockchain $blockchain)
     {
@@ -50,7 +52,7 @@ class BlockchainTransactionFactory extends EntityFactory
     {
         $populated = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
-        $this->joinFactory(BlockchainTransactionFactory::JOINED_EVENTS, $this->blockchain->getEventFactory());
+        $this->joinFactory(BlockchainTransactionFactory::JOINED_EVENT, $this->blockchain->getEventFactory());
         $this->joinPopulate();
 
         return $populated;
@@ -62,7 +64,7 @@ class BlockchainTransactionFactory extends EntityFactory
      * @param string $txId
      * @param $timestamp
      * @param BlockchainBlock $block
-     * @param BlockchainEvent[] $events
+//     * @param BlockchainEvent[] $events
      * @param bool $autocommit
      * @return Entity
      */
@@ -71,7 +73,7 @@ class BlockchainTransactionFactory extends EntityFactory
         string $txId,
         $timestamp,
         BlockchainBlock $block,
-        array $events,
+//        array $events,
         bool $autocommit = true
     ): Entity
     {
@@ -80,9 +82,38 @@ class BlockchainTransactionFactory extends EntityFactory
 
         $triplets[self::ON_BLOCKCHAIN] = $blockchain::NAME;
         $triplets[self::EVENT_BLOCK] = $block;
-        $triplets[self::JOINED_EVENTS] = $events;
+//        $triplets[self::JOINED_EVENTS] = $events;
 
         return parent::createNew($dataArray, $triplets, $autocommit);
     }
 
+
+    /**
+     * @param DisplayManager $display
+     * @return array
+     */
+    public function returnArray(DisplayManager $display): array
+    {
+        $output = [];
+
+        foreach ($this->entityArray ?? [] as $txEntity){
+            /** @var BlockchainTransaction $txEntity */
+            $output[] = $txEntity->display()->return();
+        }
+
+        return $output;
+    }
+
+
+    /**
+     * @return DisplayManager
+     */
+    public function display(): DisplayManager
+    {
+        if(!isset($this->displayManager)){
+            $this->displayManager = new DisplayManager($this);
+        }
+
+        return $this->displayManager;
+    }
 }
