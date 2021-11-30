@@ -35,7 +35,6 @@ class BlockchainTransactionFactory extends EntityFactory implements Displayable
         parent::__construct(static::$isa, static::$file, SandraManager::getSandra());
 
         $this->generatedEntityClass = static::$className;
-
         $this->blockchain = $blockchain;
     }
 
@@ -53,6 +52,7 @@ class BlockchainTransactionFactory extends EntityFactory implements Displayable
         $populated = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $this->joinFactory(BlockchainTransactionFactory::JOINED_EVENT, $this->blockchain->getEventFactory());
+        $this->joinFactory(BlockchainTransactionFactory::EVENT_BLOCK, $this->blockchain->getBlockFactory());
         $this->joinPopulate();
 
         return $populated;

@@ -13,7 +13,6 @@ class BlockchainTransaction extends Entity implements Displayable
 
     public DisplayManager $displayManager ;
 
-
     const DISPLAY_TX = 'txId';
     const DISPLAY_TIMESTAMP = 'timestamp';
 
@@ -106,7 +105,8 @@ class BlockchainTransaction extends Entity implements Displayable
 
         $events = [];
         foreach ($this->getEvents() ?? [] as $event){
-            $events[] = $event->display()->return();
+            $eventDisplay = $event->display();
+            $events[] = $event->returnArray($eventDisplay);
         }
 
 //        $events = [];
