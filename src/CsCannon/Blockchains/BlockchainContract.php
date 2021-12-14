@@ -204,7 +204,7 @@ abstract class  BlockchainContract extends Entity Implements Displayable
 
     }
 
-    public function satoshiToValue(int $number):?float{
+    public function satoshiToValue(float $number):?float{
 
         if (!$this->decimals) return null ;
 
