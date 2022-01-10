@@ -172,6 +172,12 @@ class OpenSeaDataSource extends BlockchainDataSource
     public static function getBalanceForContract(BlockchainAddress $address, array $blockchainContracts, $limit, $offset): Balance
     {
 
+        $contractArray = array();
+        foreach ($blockchainContracts as $contract){
+
+            $contractList[] = $contract->getId();
+        }
+
         $contractFilter = '';
 
         if ($limit > 50 ) $limit  = 50 ;
@@ -181,7 +187,7 @@ class OpenSeaDataSource extends BlockchainDataSource
             foreach ($blockchainContracts as $blockchainContract) {
                 $contractFilter .= '&asset_contract_addresses='.$blockchainContract->getId();
 
-                }
+            }
         }
 
 
@@ -199,7 +205,7 @@ class OpenSeaDataSource extends BlockchainDataSource
         $foreignAdapter->populate();
 
         $contractFactory = new EthereumContractFactory();
-        $contractFactory->populateLocal();
+        $contractFactory->populateFromSearchResults($contractArray,BlockchainContractFactory::MAIN_IDENTIFIER);
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
@@ -220,37 +226,37 @@ class OpenSeaDataSource extends BlockchainDataSource
 
             if ($standard == "ERC721") $contractStandard =  ERC721::init();
 
-           /*
-            //on opensea one contract = 1 collection
-            if(!isset($collectionArray[$contractAddress])){
+            /*
+             //on opensea one contract = 1 collection
+             if(!isset($collectionArray[$contractAddress])){
 
-                $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
+                 $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
 
-                if (is_null($collection)){
+                 if (is_null($collection)){
 
-                    $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
-                    $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
+                     $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
+                     $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
 
-                }
-                $collectionArray[$contractAddress] = $collection;
+                 }
+                 $collectionArray[$contractAddress] = $collection;
 
-            }
+             }
 
-            $collection = $collectionArray[$contractAddress] ;
+             $collection = $collectionArray[$contractAddress] ;
 
-            if(!isset( $collectionContractsArray[$contractAddress])){
-                $contract['address'] = $contractAddress;
-                $collectionContractsArray[$contractAddress][] = $contract;
-            }
+             if(!isset( $collectionContractsArray[$contractAddress])){
+                 $contract['address'] = $contractAddress;
+                 $collectionContractsArray[$contractAddress][] = $contract;
+             }
 
 
-            //$contract['address'] = $contractAddress;
-            if(!isset($collectionAssetCount[$contractAddress])){
-                $collectionAssetCount[$contractAddress] = 0;
-            }
-            $collectionAssetCount[$contractAddress]++;
+             //$contract['address'] = $contractAddress;
+             if(!isset($collectionAssetCount[$contractAddress])){
+                 $collectionAssetCount[$contractAddress] = 0;
+             }
+             $collectionAssetCount[$contractAddress]++;
 
-            /** @var AssetCollection $collection */
+             /** @var AssetCollection $collection */
 
 
 
