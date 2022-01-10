@@ -4,7 +4,6 @@ use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainBlockFactory;
-use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainTransaction;
 use CsCannon\Blockchains\BlockchainTransactionFactory;
@@ -16,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 class MultipleTransactionsTest extends TestCase
 {
 
-    private $firstAddress = 'myFirstKusamaAddress';
-    private $secondAddress = 'mySecondKusamaAddress';
+    private string $firstAddress = 'myFirstKusamaAddress';
+    private string $secondAddress = 'mySecondKusamaAddress';
 
     public function testCreateEventsInTransaction()
     {

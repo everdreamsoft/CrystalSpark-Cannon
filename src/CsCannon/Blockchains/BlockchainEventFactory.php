@@ -44,6 +44,7 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     const BUY_AMOUNT = "buyAmount";
     const SELL_PRICE = "sellPrice";
     const BUY_TOTAL = "buyTotal";
+
     const ORDER_BUY_CONTRACT = "buyContract";
     const ORDER_SELL_CONTRACT = "sellContract";
     const BUY_DESTINATION = "buyDestination";
