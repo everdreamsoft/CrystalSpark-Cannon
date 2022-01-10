@@ -15,6 +15,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\DataSource\DatagraphSource;
+use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
 
 
 class FirstOasisAddress extends BlockchainAddress
@@ -32,7 +33,7 @@ class FirstOasisAddress extends BlockchainAddress
 
     public function getBlockchain(): Blockchain
     {
-        return FirstOasisBlockchain::getStatic();
+        return KlaytnBlockchain::getStatic();
     }
 
 
