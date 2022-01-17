@@ -187,7 +187,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
         $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_direction=asc&limit=$limit&offset=$offset&owner=".$address->getAddress()
             .$contractFilter
-            ,'assets',SandraManager::getSandra());
+            ,'assets',SandraManager::getSandra(),'X-API-KEY: 7f9609f1472b4fe1a6cbf8e375c8529b');
 
         $assetVocabulary = array('image_url'=>'image',
             'assetName'=>'assetName',
