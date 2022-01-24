@@ -24,7 +24,7 @@ class FirstOasisAddressFactory extends BlockchainAddressFactory
 
     public static function getBlockchain(){
 
-        return FirstOasisBlockchain::class ;
+        return KlaytnBlockchain::class ;
 
 
     }
