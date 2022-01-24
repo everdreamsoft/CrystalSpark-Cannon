@@ -7,6 +7,8 @@
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php'; // Autoload files using Composer autoload
+require __DIR__ . './DataSourceAbstract.php';
+
 
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +19,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class OpenSeaDataSource extends DataSourceAbstract
+class OpenSeaDataSourceTest extends DataSourceAbstract
 {
     private $contractToTest ;
 
