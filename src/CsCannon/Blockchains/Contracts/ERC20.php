@@ -1,11 +1,9 @@
 <?php
 
-namespace CsCannon\Blockchains\Binance\Interfaces;
+namespace CsCannon\Blockchains\Contracts;
 use CsCannon\AssetSolvers\DefaultBinanceSolver;
 use CsCannon\AssetSolvers\LocalSolver;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\Binance\BinanceContractFactory;
-use CsCannon\Blockchains\Binance\BinanceContractStandard;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
 use SandraCore\System;
 
@@ -15,7 +13,7 @@ use SandraCore\System;
  * Date: 15.11.2021
  * Time: 14:40
  */
-class ERC20 extends BinanceContractStandard
+class ERC20 extends BlockchainContractStandard
 {
 
     public $specificatorArray = null ;
@@ -31,12 +29,12 @@ class ERC20 extends BinanceContractStandard
 
     //ovveride the method to catch tokenId
     public function setTokenPath($tokenPath){
-       parent::setTokenPath($tokenPath);
+        parent::setTokenPath($tokenPath);
     }
 
     public function getStandardName()
     {
-       return "ERC20";
+        return "ERC20";
     }
 
     public function getSolver()
@@ -45,14 +43,14 @@ class ERC20 extends BinanceContractStandard
 
     public function resolveAsset(Orb $orb)
     {
-       $return = DefaultBinanceSolver::resolveAsset($orb,$this);
-       return $return ;
+        $return = DefaultBinanceSolver::resolveAsset($orb,$this);
+        return $return ;
     }
 
     public function getDisplayStructure()
     {
 
-       $return = null ;
+        $return = null ;
         return $return ;
     }
 

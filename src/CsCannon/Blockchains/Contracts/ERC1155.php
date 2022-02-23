@@ -1,21 +1,19 @@
 <?php
 
-namespace CsCannon\Blockchains\Binance\Interfaces;
+namespace CsCannon\Blockchains\Contracts;
 use CsCannon\AssetSolvers\DefaultBinanceSolver;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\Binance\BinanceContractFactory;
-use CsCannon\Blockchains\Binance\BinanceContractStandard;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
 use SandraCore\Reference;
 use SandraCore\System;
 
 /**
  * Created by EverdreamSoft.
- * User: Ranjit 
+ * User: Ranjit
  * Date: 15.11.2021
  * Time: 14:40
  */
-class ERC1155 extends BinanceContractStandard
+class ERC1155 extends BlockchainContractStandard
 {
 
     public $tokenId = null ;
@@ -62,13 +60,13 @@ class ERC1155 extends BinanceContractStandard
             $this->tokenId = $referenceConceptOrString;
         }
 
-       return parent::setTokenPath($tokenPath);
+        return parent::setTokenPath($tokenPath);
 
     }
 
     public function getStandardName()
     {
-       return "ERC1155";
+        return "ERC1155";
     }
 
     public static function init($tokenId=null)
@@ -94,14 +92,14 @@ class ERC1155 extends BinanceContractStandard
 
     public function resolveAsset(Orb $orb)
     {
-       $return = DefaultBinanceSolver::resolveAsset($orb,$this);
-       return $return ;
+        $return = DefaultBinanceSolver::resolveAsset($orb,$this);
+        return $return ;
     }
 
     public function getDisplayStructure()
     {
 
-       $return = 'tokenId-'.$this->specificatorData['tokenId'] ;
+        $return = 'tokenId-'.$this->specificatorData['tokenId'] ;
         return $return ;
     }
 

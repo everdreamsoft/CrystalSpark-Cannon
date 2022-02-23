@@ -1,10 +1,8 @@
 <?php
 
-namespace CsCannon\Blockchains\Binance\Interfaces;
+namespace CsCannon\Blockchains\Contracts;
 use CsCannon\AssetSolvers\DefaultBinanceSolver;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\Binance\BinanceContractFactory;
-use CsCannon\Blockchains\Binance\BinanceContractStandard;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
 use SandraCore\Reference;
 use SandraCore\System;
@@ -15,7 +13,7 @@ use SandraCore\System;
  * Date: 15.11.2021
  * Time: 14:40
  */
-class ERC721 extends BinanceContractStandard
+class ERC721 extends BlockchainContractStandard
 {
 
     public $tokenId = null ;
@@ -24,15 +22,12 @@ class ERC721 extends BinanceContractStandard
     public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
     {
         $this->solver = DefaultBinanceSolver::class ;
-
         parent::__construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget, $system);
     }
-
 
     public function setTokenId($tokenId)
     {
         return $this->setTokenPath(array('tokenId'=>$tokenId));
-
     }
 
     //ovveride the method to catch tokenId
@@ -42,38 +37,32 @@ class ERC721 extends BinanceContractStandard
 
         //we check if we got a raw value or a reference
         if (isset ($tokenPath[$tokenIdUnid])){
-
             $referenceConceptOrString = $tokenPath[$tokenIdUnid];
             if ($referenceConceptOrString instanceof Reference){
                 $referenceConceptOrString = $referenceConceptOrString->refValue;
             }
-
             $this->tokenId = $referenceConceptOrString;
         }
 
         if (isset ($tokenPath['tokenId'])){
-
             $referenceConceptOrString = $tokenPath['tokenId'];
             if ($referenceConceptOrString instanceof Reference){
                 $referenceConceptOrString = $referenceConceptOrString->refValue;
             }
-
             $this->tokenId = $referenceConceptOrString;
         }
 
-       return parent::setTokenPath($tokenPath);
+        return parent::setTokenPath($tokenPath);
 
     }
 
     public function getStandardName()
     {
-       return "ERC721";
+        return "ERC721";
     }
 
     public static function init($tokenId=null)
     {
-
-
         $directTokenId = null ;
         $tokenData = null ;
 
@@ -82,8 +71,8 @@ class ERC721 extends BinanceContractStandard
             $tokenData = null ; //we remove token data array
             $directTokenId = $tokenId ;
         }
-        if (is_array($tokenId)) $tokenData = $tokenId ;
 
+        if (is_array($tokenId)) $tokenData = $tokenId ;
 
         $return = parent::init($tokenData);
         if($directTokenId)  $return->setTokenId($directTokenId); // then we set token id afterwards
@@ -94,14 +83,13 @@ class ERC721 extends BinanceContractStandard
 
     public function resolveAsset(Orb $orb)
     {
-       $return = DefaultBinanceSolver::resolveAsset($orb,$this);
-       return $return ;
+        $return = DefaultBinanceSolver::resolveAsset($orb,$this);
+        return $return ;
     }
 
     public function getDisplayStructure()
     {
-
-       $return = 'tokenId-'.$this->specificatorData['tokenId'] ;
+        $return = 'tokenId-'.$this->specificatorData['tokenId'] ;
         return $return ;
     }
 
