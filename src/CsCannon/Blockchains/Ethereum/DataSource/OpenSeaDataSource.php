@@ -40,6 +40,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
     public $sandra ;
     public static $apiUrl = 'https://api.opensea.io/api/v1/';
+    public static $apiKey = '7f9609f1472b4fe1a6cbf8e375c8529b';
 
 
 
@@ -193,7 +194,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
         $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_direction=asc&limit=$limit&offset=$offset&owner=".$address->getAddress()
             .$contractFilter
-            ,'assets',SandraManager::getSandra(),'X-API-KEY: 7f9609f1472b4fe1a6cbf8e375c8529b');
+            ,'assets',SandraManager::getSandra(),'X-API-KEY: '.self::$apiKey);
 
         $assetVocabulary = array('image_url'=>'image',
             'assetName'=>'assetName',
@@ -290,6 +291,12 @@ class OpenSeaDataSource extends BlockchainDataSource
 
 
 
+
+    }
+
+    public static  function  setApiKey($key){
+
+        static::$apiKey = $key ;
 
     }
 
