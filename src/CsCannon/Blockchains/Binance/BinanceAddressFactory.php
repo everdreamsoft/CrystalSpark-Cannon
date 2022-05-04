@@ -15,7 +15,7 @@ class BinanceAddressFactory extends BlockchainAddressFactory
 {
 
     public static $isa = 'bscAddress';
-    public static $file = 'blockchainAddressFile';
+    public static $file = 'bscAddressFile';
     protected static $className = 'CsCannon\Blockchains\Binance\BinanceAddress' ;
 
     public function get($address,$autoCreate = false):BlockchainAddress{
