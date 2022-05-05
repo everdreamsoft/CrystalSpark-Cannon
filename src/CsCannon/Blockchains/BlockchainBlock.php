@@ -9,37 +9,33 @@
 namespace CsCannon\Blockchains;
 
 
-
-
-use CsCannon\Asset;
-use CsCannon\AssetCollectionFactory;
-use CsCannon\AssetFactory;
 use CsCannon\Token;
 use SandraCore\Entity;
-use SandraCore\ForeignEntityAdapter;
 
- class  BlockchainBlock extends Entity
+class  BlockchainBlock extends Entity
 {
 
-    public function getTimestamp(){
+    public function getTimestamp($chain = "")
+    {
 
-    return $this->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+        $timestamp = $this->get(BlockchainBlockFactory::getTimestampPrefix($chain) . BlockchainBlockFactory::BLOCK_TIMESTAMP);
 
+        if (!$timestamp) {
+            $timestamp = $this->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+        }
+
+        return $timestamp;
     }
 
-     public function getId(){
+    public function getId()
+    {
+        return $this->get(BlockchainBlockFactory::INDEX_SHORTNAME);
+    }
 
-         return $this->get(BlockchainBlockFactory::INDEX_SHORTNAME);
-
-     }
-
-     public function setTimestamp($timestamp){
-
-         return $this->createOrUpdateRef(BlockchainBlockFactory::BLOCK_TIMESTAMP,$timestamp);
-
-     }
+    public function setTimestamp($timestamp, $chain = "")
+    {
+        return $this->createOrUpdateRef(BlockchainBlockFactory::getTimestampPrefix($chain) . BlockchainBlockFactory::BLOCK_TIMESTAMP, $timestamp);
+    }
 
 
-
-
- }
+}
