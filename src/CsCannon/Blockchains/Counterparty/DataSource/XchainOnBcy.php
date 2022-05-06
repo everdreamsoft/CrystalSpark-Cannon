@@ -125,12 +125,12 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
     }
 
-    public static function getEventsFromTxHash(...$txHash):ForeignEntityAdapter{
+    public static function getEventsFromTxHash($txHashArray):ForeignEntityAdapter{
         $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
 
         $commaSeparated = '';
         $first = true ;
-        foreach ($txHash as $hasString){
+        foreach ($txHashArray as $hasString){
 
              $first ? $commaSeparated .= "$hasString" : $commaSeparated .= ",$hasString";
 
