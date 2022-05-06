@@ -127,19 +127,12 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
 
-          $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
-
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
         $blockFactory = new BlockchainBlockFactory(GenericBlockchain::getStatic());
         $this->joinFactory(self::EVENT_BLOCK,$blockFactory);
         $this->joinPopulate();
         $this->populateBrotherEntities();
-
-
-
         $this->getTriplets();
-
-
-
         return $return ;
     }
 
@@ -384,11 +377,10 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
     }
 
-
-
-
-
-
+    public function populateFromParent($limit = 1000, $offset = 0, $asc = 'DESC', $sortByRef = null, $numberSort = false)
+    {
+        parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
+    }
 
 
 }

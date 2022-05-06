@@ -40,7 +40,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
     public $sandra ;
     public static $apiUrl = 'https://api.opensea.io/api/v1/';
-    public static $apiKey = '7f9609f1472b4fe1a6cbf8e375c8529b';
+    public static $apiKey = '22a5822eb3c34abe8d12e575e0bc8a7c';
 
 
 

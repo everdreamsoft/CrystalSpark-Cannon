@@ -9,8 +9,10 @@
 namespace CsCannon\Blockchains\Binance;
 
 use CsCannon\Blockchains\Blockchain;
+use CsCannon\Blockchains\BlockchainBlockFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Binance\BinanceEvent;
+use CsCannon\Blockchains\Generic\GenericBlockchain;
 
 class BinanceEventFactory extends BlockchainEventFactory
 {
@@ -30,12 +32,19 @@ class BinanceEventFactory extends BlockchainEventFactory
 
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
-        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
+        $return = parent::populateFromParent($limit, $offset, $asc, $sortByRef, $numberSort);
+
         $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$this->addressFactory);
         $this->joinFactory(self::EVENT_DESTINATION_VERB,$this->addressFactory);
         $this->joinFactory(self::EVENT_CONTRACT,$this->contractFactory);
+
+        $blockFactory = new BlockchainBlockFactory(BinanceBlockchain::getStatic());
+        $this->joinFactory(self::EVENT_BLOCK,$blockFactory);
+
         $this->joinPopulate();
         $this->populateBrotherEntities(self::EVENT_CONTRACT);
+        $this->getTriplets();
+
         return $return ;
     }
 
