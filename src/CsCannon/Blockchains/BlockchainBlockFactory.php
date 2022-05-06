@@ -37,7 +37,7 @@ class BlockchainBlockFactory extends EntityFactory
 
     }
 
-    public function get($id): BlockchainBlock
+    public function get($id): ?BlockchainBlock
     {
         return $this->first(self::INDEX_SHORTNAME, $id);
     }

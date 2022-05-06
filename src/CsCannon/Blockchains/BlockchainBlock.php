@@ -37,5 +37,16 @@ class  BlockchainBlock extends Entity
         return $this->createOrUpdateRef(BlockchainBlockFactory::getTimestampPrefix($chain) . BlockchainBlockFactory::BLOCK_TIMESTAMP, $timestamp);
     }
 
+    public function getDefaultDisplay($blockchainList)
+    {
+        $displayArray[BlockchainBlockFactory::INDEX_SHORTNAME] = $this->get(BlockchainBlockFactory::INDEX_SHORTNAME);
+        $displayArray[BlockchainBlockFactory::BLOCK_TIMESTAMP] = $this->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+
+        foreach ($blockchainList as $chain) {
+            $displayArray[BlockchainBlockFactory::getTimestampPrefix($chain) . BlockchainBlockFactory::BLOCK_TIMESTAMP] = $this->get(BlockchainBlockFactory::getTimestampPrefix($chain) . BlockchainBlockFactory::BLOCK_TIMESTAMP);
+        }
+
+        return $displayArray;
+    }
 
 }
