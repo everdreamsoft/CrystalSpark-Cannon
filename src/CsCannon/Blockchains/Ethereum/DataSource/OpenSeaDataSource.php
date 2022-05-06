@@ -40,6 +40,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
     public $sandra ;
     public static $apiUrl = 'https://api.opensea.io/api/v1/';
+    public static $apiKey = '22a5822eb3c34abe8d12e575e0bc8a7c';
 
 
 
@@ -172,6 +173,12 @@ class OpenSeaDataSource extends BlockchainDataSource
     public static function getBalanceForContract(BlockchainAddress $address, array $blockchainContracts, $limit, $offset): Balance
     {
 
+        $contractArray = array();
+        foreach ($blockchainContracts as $contract){
+
+            $contractList[] = $contract->getId();
+        }
+
         $contractFilter = '';
 
         if ($limit > 50 ) $limit  = 50 ;
@@ -181,13 +188,13 @@ class OpenSeaDataSource extends BlockchainDataSource
             foreach ($blockchainContracts as $blockchainContract) {
                 $contractFilter .= '&asset_contract_addresses='.$blockchainContract->getId();
 
-                }
+            }
         }
 
 
         $foreignAdapter = new ForeignEntityAdapter(static::$apiUrl."assets/?format=json&order_direction=asc&limit=$limit&offset=$offset&owner=".$address->getAddress()
             .$contractFilter
-            ,'assets',SandraManager::getSandra());
+            ,'assets',SandraManager::getSandra(),'X-API-KEY: '.self::$apiKey);
 
         $assetVocabulary = array('image_url'=>'image',
             'assetName'=>'assetName',
@@ -220,37 +227,37 @@ class OpenSeaDataSource extends BlockchainDataSource
 
             if ($standard == "ERC721") $contractStandard =  ERC721::init();
 
-           /*
-            //on opensea one contract = 1 collection
-            if(!isset($collectionArray[$contractAddress])){
+            /*
+             //on opensea one contract = 1 collection
+             if(!isset($collectionArray[$contractAddress])){
 
-                $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
+                 $collection = $collectionFactory->first($collectionFactory->id,$contractAddress);
 
-                if (is_null($collection)){
+                 if (is_null($collection)){
 
-                    $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
-                    $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
+                     $contractEntity = $contractFactory->get($contractAddress,true,$contractStandard);
+                     $collection = $collectionFactory->createFromOpenSeaEntity($entity,$contractEntity);
 
-                }
-                $collectionArray[$contractAddress] = $collection;
+                 }
+                 $collectionArray[$contractAddress] = $collection;
 
-            }
+             }
 
-            $collection = $collectionArray[$contractAddress] ;
+             $collection = $collectionArray[$contractAddress] ;
 
-            if(!isset( $collectionContractsArray[$contractAddress])){
-                $contract['address'] = $contractAddress;
-                $collectionContractsArray[$contractAddress][] = $contract;
-            }
+             if(!isset( $collectionContractsArray[$contractAddress])){
+                 $contract['address'] = $contractAddress;
+                 $collectionContractsArray[$contractAddress][] = $contract;
+             }
 
 
-            //$contract['address'] = $contractAddress;
-            if(!isset($collectionAssetCount[$contractAddress])){
-                $collectionAssetCount[$contractAddress] = 0;
-            }
-            $collectionAssetCount[$contractAddress]++;
+             //$contract['address'] = $contractAddress;
+             if(!isset($collectionAssetCount[$contractAddress])){
+                 $collectionAssetCount[$contractAddress] = 0;
+             }
+             $collectionAssetCount[$contractAddress]++;
 
-            /** @var AssetCollection $collection */
+             /** @var AssetCollection $collection */
 
 
 
@@ -284,6 +291,12 @@ class OpenSeaDataSource extends BlockchainDataSource
 
 
 
+
+    }
+
+    public static  function  setApiKey($key){
+
+        static::$apiKey = $key ;
 
     }
 

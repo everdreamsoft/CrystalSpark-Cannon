@@ -24,6 +24,8 @@ class EthereumBlockchain extends Blockchain
 
     );
 
+    public static $blockchainConceptName = 'ethereum';
+
     public  $mainSourceCurrencyTicker = 'ETH' ;
 
     public function __construct()

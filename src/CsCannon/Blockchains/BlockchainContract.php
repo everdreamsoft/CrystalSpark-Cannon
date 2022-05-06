@@ -76,15 +76,9 @@ abstract class  BlockchainContract extends Entity Implements Displayable
     }
 
     public function getStandard():?BlockchainContractStandard{
-
-
-
         $return = $this->getJoinedEntities(BlockchainContractFactory::CONTRACT_STANDARD);
         if (is_array($return)) $return = end($return);
-
         return $return ;
-
-
     }
 
     public function setStandard(BlockchainContractStandard $standard){

@@ -105,6 +105,8 @@ class BlockchainEvent extends Entity implements Displayable
     public function getBlockchainContract():?BlockchainContract{
 
         $contract= $this->getJoinedEntities(BlockchainEventFactory::EVENT_CONTRACT);
+
+
         if (!$contract) return null ;
         $contract = reset($contract); //take the first destination
         /** @var Entity $source */
@@ -251,7 +253,12 @@ class BlockchainEvent extends Entity implements Displayable
         }
 
         $return[self::DISPLAY_BLOCKCHAIN] = $blockchain ;
+
+
         $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
+
+ 
+
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         try {
             $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();

@@ -8,8 +8,6 @@
 
 namespace CsCannon\Blockchains\Ethereum;
 
-
-
 use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
@@ -21,15 +19,8 @@ use SandraCore\ForeignEntityAdapter;
 
 class EthereumContract extends BlockchainContract
 {
-
     protected static $isa = 'ethContract';
-
     protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumContract' ;
-
-
-
-
-
 
     public function getBlockchain():Blockchain
     {
