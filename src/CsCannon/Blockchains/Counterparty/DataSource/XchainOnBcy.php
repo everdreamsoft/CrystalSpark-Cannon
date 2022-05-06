@@ -66,6 +66,11 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
 
         $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
+        return self::processEvents($resultArray);
+    }
+
+    private static function processEvents($resultArray){
+        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
         foreach ($resultArray as $result) {
 
             if (!($result['asset'])){
@@ -118,6 +123,17 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         $foreignEntityAdapter->addNewEtities($entityArray,array());
 
         return $foreignEntityAdapter ;
+
+    }
+
+    public static function getEventsFromTxHash(...$txHash){
+
+
+
+
+
+
+
     }
 
     public static function getExchanges($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
@@ -153,58 +169,9 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
 
         $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
-        foreach ($resultArray as $result) {
-
-            if (!($result['asset'])){
-
-                $result['asset'] ='NOASSET' ;
-                continue ;
-            }
-            //echo"asset :".$result['asset'] .PHP_EOL;
 
 
-            //add tracker
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
-
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['source_address'] ;
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['destination_address'] ;
-
-
-
-            $hash = $result['tx_hash'];
-
-            $quantity = $result['quantity'];
-            $transactionData = array("txHash" => "$hash",
-                "memo" => $result['memo'],
-                "quantity" => $quantity,
-                Blockchain::$txidConceptName => $hash,
-                BlockchainEventFactory::EVENT_SOURCE_ADDRESS => $result['source_address'],
-                BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB => $result['destination_address'],
-                "tokenId" => $result['asset'],
-                "blockIndex" => $result['block_index'],
-                BlockchainEventFactory::EVENT_BLOCK_TIME => $result['block_time'],
-                BlockchainImporter::TRACKER_BLOCKTIME => $result['block_time'],
-                BlockchainEventFactory::EVENT_CONTRACT => $result['asset'],
-
-
-            );
-            //add tracker
-            $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'] ;
-
-
-            //$transactionData[BlockchainImporter::TRACKER_BLOCKID][] =  $result['block_index'] ;
-
-
-            $transactionData = $transactionData + $trackedArray ;
-
-            $entityArray[] = $entity = new ForeignEntity($hash, $transactionData, $foreignEntityAdapter, $hash, SandraManager::getSandra());
-
-
-        }
-
-        $foreignEntityAdapter->addNewEtities($entityArray,array());
-
-        return $foreignEntityAdapter ;
+        return self::processEvents($resultArray);
     }
 
     public static function getContractMetaData($contract):ContractMetaData
