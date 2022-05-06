@@ -55,7 +55,7 @@ use SandraCore\ForeignEntityAdapter;
 
      }
 
-     public static function getEventsFromTxHash($txHashArray){
+     public static function getEventsFromTxHash($txHashArray):ForeignEntityAdapter{
 
          throw new \Exception('Unsupported function on datasource');
 
