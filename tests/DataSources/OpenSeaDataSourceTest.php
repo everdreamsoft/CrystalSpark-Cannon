@@ -28,6 +28,7 @@ class OpenSeaDataSourceTest extends DataSourceAbstract
 
        parent::loadTestCases();
 
+
        $ethereumContractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
         //we should have 2 tokens of this contract blockchain cutties
        $contractCuties = $ethereumContractFactory->get('0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe');
