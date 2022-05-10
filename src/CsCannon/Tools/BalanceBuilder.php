@@ -48,7 +48,7 @@ class BalanceBuilder
             if ($event->getDestinationAddress()) {
 
                 $error = static::hasSendError($event);
-                $verbose ? print_r( date(DATE_RFC2822,$event->getBlockTimestamp())) : false ;
+                $verbose ? print_r( date(DATE_RFC2822,$event->getBlockTimestamp($eventFactory->blockchain::NAME))) : false ;
                 $verbose ? print_r($event->get(Blockchain::$txidConceptName). " ".$event->get(BlockchainEventFactory::EVENT_BLOCK_TIME)) : false ;
                 //print_r($event->get(Blockchain::$txidConceptName). " ".$event->get(BlockchainEventFactory::EVENT_BLOCK_TIME)  .PHP_EOL);
                 // echo"looping once ".$count.PHP_EOL;

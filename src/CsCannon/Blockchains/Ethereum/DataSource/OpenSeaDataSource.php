@@ -206,7 +206,7 @@ class OpenSeaDataSource extends BlockchainDataSource
         $foreignAdapter->populate();
 
         $contractFactory = new EthereumContractFactory();
-        $contractFactory->populateLocal();
+        $contractFactory->populateFromSearchResults($contractArray,BlockchainContractFactory::MAIN_IDENTIFIER);
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();

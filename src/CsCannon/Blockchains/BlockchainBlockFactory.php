@@ -5,11 +5,7 @@ namespace CsCannon\Blockchains;
 
 use CsCannon\Blockchains\Generic\GenericBlockchain;
 use CsCannon\SandraManager;
-use SandraCore\CommonFunctions;
-use SandraCore\Entity;
 use SandraCore\EntityFactory;
-use SandraCore\ForeignEntity;
-use SandraCore\ForeignEntityAdapter;
 
 class BlockchainBlockFactory extends EntityFactory
 {
@@ -30,7 +26,7 @@ class BlockchainBlockFactory extends EntityFactory
             $blockIsa = $blockchain::$blockchainConceptName . 'Bloc';
         }
 
-        $this->isa = $blockIsa;
+
         $this->file = $blockchain::$blockchainConceptName . 'BlocFile';
         $this->entityIsa = $blockIsa;
 
@@ -41,7 +37,7 @@ class BlockchainBlockFactory extends EntityFactory
 
     }
 
-    public function get($id): BlockchainBlock
+    public function get($id): ?BlockchainBlock
     {
         return $this->first(self::INDEX_SHORTNAME, $id);
     }
@@ -50,6 +46,11 @@ class BlockchainBlockFactory extends EntityFactory
     {
         $blockFactory = new BlockchainBlockFactory($blockchain);
         return $blockFactory->getOrCreateFromRef(self::INDEX_SHORTNAME, $id);
+    }
+
+    public static function getTimestampPrefix($chain): string
+    {
+        return (strlen($chain) > 0) ? $chain . "-" : "";
     }
 
 

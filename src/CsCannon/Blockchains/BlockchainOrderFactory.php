@@ -293,7 +293,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
                     $buyOrder->getSource(),
                     $sellOrder->getContractToSell(),
                     $sellOrder->getTxId(),
-                    $sellOrder->getBlock()->getTimestamp(),
+                    $sellOrder->getBlock()->getTimestamp($blockchain::NAME),
                     $sellOrder->getBlock(),
                     $token,
                     $quantitySell

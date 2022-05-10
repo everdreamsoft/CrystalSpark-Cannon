@@ -58,7 +58,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
 
         if($lastBuy){
 
-            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp()).PHP_EOL) : false ;
+            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp($this->blockchain::NAME)).PHP_EOL) : false ;
             $verbose ? print_r( "order buy TX : ".$lastBuy->getTxId().PHP_EOL) : false ;
 
             $contractToBuy = $lastBuy->getContractToBuy();
@@ -82,7 +82,7 @@ class RmrkBlockchainOrderProcess extends BlockchainOrderProcess
             $sellOrder = end($sellOrders);
 
             $verbose ? print_r( "order sell match candidate TX : ".$sellOrder->getTxId().PHP_EOL) : false ;
-            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp()).PHP_EOL) : false ;
+            $verbose ? print_r( date(DATE_RFC2822,$lastBuy->getBlockTimestamp($this->blockchain::NAME)).PHP_EOL) : false ;
 
             try{
                 $matchMaking = $this->makeOneKusamaMatch($lastBuy, $sellOrder,$verbose);
