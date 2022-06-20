@@ -19,11 +19,13 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
+use CsCannon\BufferManager;
 use CsCannon\MetadataProbe;
 use CsCannon\MetadataProbeFactory;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
 use InnateSkills\LearnFromWeb\LearnFromWeb;
+use InnateSkills\SandraHealth\MemoryManagement;
 use SandraCore\EntityFactory;
 use SandraCore\ForeignConcept;
 use SandraCore\ForeignEntityAdapter;
@@ -36,25 +38,47 @@ class LocalSolver extends AssetSolver
      */
     private static $assetInCollections ;
     private static $probeCheckedArray ;
+    private static ?BufferManager $bufferManager = null  ;
 
     public static function getSolverIdentifier(){
 
         return "localSolver";
     }
 
+    public static function setBufferManager(BufferManager $bufferManager){
+
+       self::$bufferManager = $bufferManager ;
+
+    }
+
+
+
+
+
     public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array{
 
 
         $return = null ;
+
         //we get target collection
 
         if (!isset(self::$assetInCollections[$assetCollection->getId()])) {
 
-            $assetFactory = new AssetFactory();
-            $assetFactory->setFilter(0, $assetCollection);
-            $assetFactory->populateLocal();
-            $assetFactory->getTriplets();
-            $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
+            if (self::$bufferManager){
+
+                $assetFactory = self::$bufferManager->getBufferedAssetFactory();
+
+            }
+            else {
+
+                //this is suboptimal if we have a lot of assets
+                $assetFactory = new AssetFactory();
+                $assetFactory->setFilter(0, $assetCollection);
+                $assetFactory->populateLocal();
+                $assetFactory->getTriplets();
+                $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
+            }
+
             $entities = $assetFactory->entityArray ;
 
             self::$assetInCollections[$assetCollection->getId()] = $assetFactory ;
@@ -64,16 +88,13 @@ class LocalSolver extends AssetSolver
 
         $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
 
-        $assets = $assetCollectionList->getAssetsFromContract($contract,$specifier);
+        $assets = $assetCollectionList->getAssetsFromContract($contract,$specifier,self::$bufferManager);
 
         // prove is to heavy for now
         //self::probeMissingAssets($assetCollectionList->returnExplicitNoExistingId(),$assetCollection);
 
 
-
         return  $assets ;
-
-
 
     }
 
@@ -96,8 +117,7 @@ class LocalSolver extends AssetSolver
 
         self::$assetInCollections = null ;
         self::$probeCheckedArray = null ;
-
-
+        self::$bufferManager = null ;
 
     }
 

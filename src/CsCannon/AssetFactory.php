@@ -38,12 +38,6 @@ class AssetFactory extends \SandraCore\EntityFactory
 
 
 
-
-
-
-
-
-
     public function __construct(System $system = null)
     {
 
@@ -65,7 +59,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function getAssetsFromContract(BlockchainContract $contract, BlockchainContractStandard $specifier){
+    public function getAssetsFromContract(BlockchainContract $contract, BlockchainContractStandard $specifier, BufferManager $bufferManager=null){
 
 
         $localStorageStandard = $contract->getStandard();
@@ -102,13 +96,23 @@ class AssetFactory extends \SandraCore\EntityFactory
 
             }
             else {
+            //Explicit token to contract
+
+
 
                 //lt see if we have linked path
-                $tokenToAssetFactory = new TokenPathToAssetFactory($contract->system);
-                $tokenToAsset = $tokenToAssetFactory->get($specifier->getDisplayStructure());
-                $tokenToAssetFactory->getTriplets();
+                if (!$bufferManager) {
+                    $tokenToAssetFactory = new TokenPathToAssetFactory($contract->system);
+                    $tokenToAsset = $tokenToAssetFactory->get($specifier->getDisplayStructure());
+                    $tokenToAssetFactory->getTriplets();
 
-                $tokenToAssetFactory->populateBrotherEntities($contract);
+                    $tokenToAssetFactory->populateBrotherEntities($contract);
+                }else{
+                    $tokenToAssetFactory = $bufferManager->getBufferedTokenToAsset();
+                    $tokenToAsset = $tokenToAssetFactory->get($specifier->getDisplayStructure());
+                }
+
+
 
                 $assetsList = $tokenToAsset->subjectConcept->tripletArray[$contract->subjectConcept->idConcept] ?? array();
                 foreach ($assetsList  as $assetId) {

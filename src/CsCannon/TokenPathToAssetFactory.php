@@ -21,7 +21,7 @@ use SandraCore\System;
  *
  * Factory to get create join token path to specific assets. For example tokenId = 1 =>
  *
- * @method TokenPathToAssetFactory             createNew($dataArray, $linArray = null) : Entity()            Use the method create instead unless you know what you are doing
+ * @method TokenPathToAssetFactory             createNew($dataArray, $linArray = null,$autocommit = true) : Entity()            Use the method create instead unless you know what you are doing
 
  */
 
