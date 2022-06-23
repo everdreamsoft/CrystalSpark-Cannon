@@ -64,9 +64,9 @@ class LocalSolver extends AssetSolver
 
         if (!isset(self::$assetInCollections[$assetCollection->getId()])) {
 
-            if (self::$bufferManager){
+            if (self::$bufferManager && $contract->isExplicitTokenId()){
 
-                $assetFactory = self::$bufferManager->getBufferedAssetFactory();
+                $assetFactory = self::$bufferManager->getBufferedAssetFactory($contract);
 
             }
             else {
@@ -86,7 +86,13 @@ class LocalSolver extends AssetSolver
 
         }
 
+        //asset factory
         $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
+
+        //we need to get the correct asset factory
+        if (self::$bufferManager && $contract->isExplicitTokenId()){
+            $assetCollectionList = self::$bufferManager->getBufferedAssetFactory($contract);
+        }
 
         $assets = $assetCollectionList->getAssetsFromContract($contract,$specifier,self::$bufferManager);
 

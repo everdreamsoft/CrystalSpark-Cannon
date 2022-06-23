@@ -2,6 +2,7 @@
 
 namespace CsCannon\Blockchains;
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
+use CsCannon\BufferManager;
 use CsCannon\Orb;
 
 /**
@@ -236,6 +237,8 @@ class BlockchainEvent extends Entity implements Displayable
 
     public function returnArray($displayManager,$withOrbs=true)
     {
+
+
 
         $blockchains = $this->getBlockchainName();
         $blockchain = end($blockchains);

@@ -10,7 +10,7 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 class BufferManager
 {
 
-    private static $assetFactoryArray ;
+    private  $assetFactoryContractMap ;
     private TokenPathToAssetFactory $tokenToAssetFactory;
     private AssetFactory $assetFactory;
 
@@ -24,39 +24,56 @@ class BufferManager
      * @param BlockchainContract $contract
      * @param BlockchainContractStandard[] $specifiers
      */
-    public function loadAssetFactoryFromSpecifiers(BlockchainContract $contract, array $specifiers){
+    public function loadAssetFactoryFromSpecifiers(array $specifiers){
 
-        $this->tokenToAssetFactory = new TokenPathToAssetFactory($contract->system);
+        $this->tokenToAssetFactory = new TokenPathToAssetFactory(SandraManager::getSandra());
         $array = [];
         foreach ( $specifiers as $specifier){
-            $array[] = $specifier->subjectConcept->idConcept ;
+
+            $array[] = $specifier->getDisplayStructure() ;
+
         }
-        $this->tokenToAssetFactory->conceptManager->conceptArray = $array ;
-        $this->tokenToAssetFactory->populateLocal();
-        $this->tokenToAssetFactory->populateBrotherEntities();
+        $array = array_unique($array);
+
+        $this->tokenToAssetFactory->conceptArray = $array ;
+        print_r(count($array).PHP_EOL);
+        $this->tokenToAssetFactory->populateFromSearchResults($array);
+       // $this->tokenToAssetFactory->populateBrotherEntities();
 
         //$tokenToAssetFactory->createViewTable('Tokens');
 
 
-        $this->assetFactory = new AssetFactory();
-        $this->tokenToAssetFactory->joinFactory($contract,$this->assetFactory);
-        $this->tokenToAssetFactory->joinPopulate();
 
-
-        return $this->assetFactory ;
 
     }
 
-    public function getBufferedTokenToAsset():TokenPathToAssetFactory{
+    public function getBufferedTokenToAsset(BlockchainContract $contract):TokenPathToAssetFactory{
+
+        if (!isset($this->tokenToAssetFactory->joinedFactoryArray[$contract->subjectConcept->idConcept])) {
+
+            $this->getBufferedAssetFactory($contract);
+
+        }
 
         return $this->tokenToAssetFactory ;
 
 
     }
 
-    public function getBufferedAssetFactory():AssetFactory{
+    public function getBufferedAssetFactory(BlockchainContract $contract):AssetFactory{
 
-        return $this->assetFactory ;
+        if (isset($this->tokenToAssetFactory->joinedFactoryArray[$contract->subjectConcept->idConcept])) {
+
+           return $this->tokenToAssetFactory->joinedFactoryArray[$contract->subjectConcept->idConcept];
+
+        }
+
+
+        $this->assetFactory = new AssetFactory();
+        $this->tokenToAssetFactory->joinFactory($contract,$this->assetFactory);
+        $this->tokenToAssetFactory->joinPopulate();
+
+        return $this->tokenToAssetFactory->joinedFactoryArray[$contract->subjectConcept->idConcept];
 
 
     }
