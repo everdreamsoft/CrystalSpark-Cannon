@@ -283,7 +283,7 @@ final class OrbTest extends TestCase
         CsCannon\Tests\TestManager::initTestDatagraph();
 
         $maxContract = 1 ;
-        $eventToCreate = 12000 ;
+        $eventToCreate = 12 ;
 
 
         $testAddress = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
@@ -317,6 +317,7 @@ final class OrbTest extends TestCase
         for ($countContract=1;$countContract<=$maxContract;$countContract++){
             $contractBuild = $contractFactory->get("contract-$countContract-of-$maxContract",true,ERC721::getEntity());
             $contractBuild->bindToCollection($collectionEntity);
+            $contractBuild->setExplicitTokenId(1);
             $contractArray[] = $contractBuild ;
 
         }
