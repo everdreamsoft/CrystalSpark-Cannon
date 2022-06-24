@@ -12,18 +12,19 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon\Asset;
 use CsCannon\AssetSolvers\BooSolver;
 use CsCannon\AssetSolvers\LocalSolver;
+use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\EthereumEventFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC20;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Orb;
 use CsCannon\OrbFactory;
+use CsCannon\SandraManager;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
-
-
-
+use SandraCore\System;
 
 
 final class OrbTest extends TestCase
@@ -32,6 +33,7 @@ final class OrbTest extends TestCase
     public const COLLECTION_NAME = "My First CollectionForOrb" ;
     public const COLLECTION_CODE = "MyFirstCollectionForOrb" ;
     public const COLLECTION_CONTRACT = "myContractForOrb" ;
+    public const COLLECTION_CONTRACT_721 = "myContractForOrb721" ;
     public const COLLECTION_721 = "myContractForOrb721" ;
     public const ASSET_IMAGE_URL = "http://www.google.com" ;
 
@@ -250,7 +252,7 @@ final class OrbTest extends TestCase
             'fooTX EWRC 20',
             "123343555",
             $currentBlock,
-            $tokenId = $erc20,
+            $specifier = $erc20,
             $quantity = 10
 
         );
@@ -270,6 +272,177 @@ final class OrbTest extends TestCase
         $this->assertCount(1,$output[0]['orbs']);
         $this->assertEquals(self::ASSET_IMAGE_URL,$output[0]['orbs'][0]['asset'][\CsCannon\AssetFactory::IMAGE_URL]);
 
+
+
+    }
+
+
+    public function testSetBigData(){
+
+        ini_set('memory_limit','2048M');
+        CsCannon\Tests\TestManager::initTestDatagraph();
+
+        $maxContract = 1 ;
+        $eventToCreate = 12000 ;
+
+
+        $testAddress = \CsCannon\Tests\TestManager::ETHEREUM_TEST_ADDRESS;
+
+
+        $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
+
+        $addressEntity = $addressFactory->get($testAddress,1);
+
+        $contractFactory = new EthereumContractFactory();
+
+        $blockchainBlockFactory = new \CsCannon\Blockchains\BlockchainBlockFactory(new EthereumBlockchain());
+        $currentBlock = $blockchainBlockFactory->getOrCreateFromRef(\CsCannon\Blockchains\BlockchainBlockFactory::INDEX_SHORTNAME,1); //first block
+
+
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(\CsCannon\SandraManager::getSandra());
+        $collectionEntity = $assetCollectionFactory->getOrCreate(self::COLLECTION_721);
+
+        //create a contract
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+       // $contract = $contractFactory->get(self::COLLECTION_CONTRACT_721,true,ERC721::getEntity());
+        //$contract->bindToCollection($collectionEntity);
+
+        $ethereumBlockchain = new EthereumBlockchain();
+        $eventFactory = new EthereumEventFactory();
+        $assetFactory = new \CsCannon\AssetFactory($eventFactory->system);
+        $tokenToAssetFactory = new \CsCannon\TokenPathToAssetFactory($contractFactory->system);
+
+
+
+        for ($countContract=1;$countContract<=$maxContract;$countContract++){
+            $contractBuild = $contractFactory->get("contract-$countContract-of-$maxContract",true,ERC721::getEntity());
+            $contractBuild->bindToCollection($collectionEntity);
+            $contractArray[] = $contractBuild ;
+
+        }
+
+
+        for ($i=0;$i<$eventToCreate;$i++) {
+           foreach ($contractArray as $contract) {
+                $autocommit = true;
+                $Erc721 = \CsCannon\Blockchains\Ethereum\Interfaces\ERC721::init($i + 1);
+                $specifierArray[] = $Erc721;
+
+                $event2 = $eventFactory->create($ethereumBlockchain,
+                    $addressEntity,
+                    $addressEntity,
+                   $contract,
+                    $i,
+                    "123343555",
+                    $currentBlock,
+                    $Erc721,
+                    10 + $i,
+                    false
+
+
+                );
+
+
+            $assetFactory = new \CsCannon\AssetFactory(\CsCannon\SandraManager::getSandra());
+            $metaData = [\CsCannon\AssetFactory::IMAGE_URL => self::ASSET_IMAGE_URL,
+                \CsCannon\AssetFactory::METADATA_URL => self::ASSET_IMAGE_URL
+            ];
+
+
+
+
+
+            //$asset = $assetFactory->createNew([\CsCannon\AssetFactory::ID=>$i],[\CsCannon\AssetFactory::$collectionJoinVerb=>$collectionEntity],$autocommit);
+
+
+            $asset = $assetFactory->createNew([\CsCannon\AssetFactory::ID=>"$i-".$contract->getId()],[\CsCannon\AssetFactory::$collectionJoinVerb=>$collectionEntity],$autocommit);
+           // $asset->setJoinedEntity(\CsCannon\AssetFactory::$collectionJoinVerb,$collectionEntity,[],$autocommit);
+
+            $asset->setJoinedEntity(\CsCannon\AssetFactory::$tokenJoinVerb,$contract,[],$autocommit);
+            /** @var Asset $asset */
+            $asset->setImageUrl("http://mag.com/$i/".$contract->getId());
+
+
+            $tokenToAsset = $tokenToAssetFactory->getOrCreate($Erc721);
+            $asset->bindToContractWithMultipleSpecifiers($contract,array($tokenToAsset));
+           }
+
+        }
+
+        if (! $autocommit)
+        {
+        \SandraCore\DatabaseAdapter::commit();
+        }
+
+        $assetFactory = new \CsCannon\AssetFactory(SandraManager::getSandra());
+        $assetFactory->populateLocal(10);
+        $assetFactory->createViewTable("assets");
+
+        $contractFactory = new EthereumContractFactory();
+        $contractFactory->populateLocal(10);
+        $contractFactory->createViewTable("contracts");
+
+        $tokenToAssetFactory->createViewTable("tokens");
+
+
+        $this->assertEquals(1,1);
+    }
+
+    public function testReadBigData(){
+
+        $sandra = new System('phpUnit_', false);
+        SandraManager::setSandra($sandra);
+
+        $eventFactory = new EthereumEventFactory();
+        $eventFactory->populateLocal(500);
+        $tokenArray = array();
+        foreach ($eventFactory->getEntities() as $event){
+            /** @var \CsCannon\Blockchains\BlockchainEvent $event */
+            $tokenArray[] = $event->getSpecifier();
+
+
+        }
+
+        $allContracts = new EthereumContractFactory();
+        $allContracts->populateLocal();
+
+
+
+
+        //create a contract
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contracts = $allContracts->getEntities();
+
+        $contract = reset($contracts);
+
+
+        //$bufferManager = new \CsCannon\BufferManager();
+        //$bufferManager->loadAssetFactoryFromSpecifiers($tokenArray);
+        //LocalSolver::setBufferManager($bufferManager);
+
+
+
+
+
+        ini_set('memory_limit','512M');
+
+
+        $eventFactory->populateBrotherEntities();
+        /** @var \CsCannon\Blockchains\BlockchainEvent $event1 */
+        //print_r($event1->display()->return());
+
+        foreach($eventFactory->getEntities() as $event){
+
+          $output = $event->display()->return();
+          print_r($output);
+        }
+
+
+
+
+
+
+        $this->assertEquals(1,1);
 
 
     }

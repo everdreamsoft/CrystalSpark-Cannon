@@ -2,15 +2,18 @@
 
 namespace CsCannon\Blockchains;
 
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\BlockchainRouting;
 use CsCannon\Blockchains\Counterparty\XcpAddressFactory;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use CsCannon\Blockchains\Generic\GenericBlockchain;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
+use CsCannon\BufferManager;
 use CsCannon\DisplayManager;
 use CsCannon\SandraManager;
 use CsCannon\Displayable;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use phpDocumentor\Reflection\Types\Self_;
@@ -20,6 +23,15 @@ use SandraCore\EntityFactory;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
+
+/**
+ * Class BlockchainEventFactory
+ *
+ * Factory to get blockchain transaction events
+ *
+ * @method BlockchainEventFactory             getEntities() :         Return Events from factory
+
+ */
 
 class BlockchainEventFactory extends EntityFactory implements Displayable
 {
@@ -347,6 +359,17 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
     public function returnArray($displayManager){
 
         $output = array();
+
+
+        $tokenArray = array();
+        //preload specifier
+        foreach ($this->entityArray ? $this->entityArray : array() as $eventEntity){
+            $tokenArray[] = $eventEntity->getSpecifier();
+        }
+
+        $bufferManager = new BufferManager();
+        $bufferManager->loadAssetFactoryFromSpecifiers($tokenArray);
+       LocalSolver::setBufferManager($bufferManager);
 
         foreach ($this->entityArray ? $this->entityArray : array() as $eventEntity){
 
