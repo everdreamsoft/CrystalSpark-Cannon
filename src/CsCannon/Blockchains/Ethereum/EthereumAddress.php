@@ -35,9 +35,9 @@ class EthereumAddress extends BlockchainAddress
     protected static $isa = 'ethAddress';
     protected static $file = 'ethAddressFile';
     protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumAddress' ;
-    public static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
+    // public static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
 
-    //public static $defaultDataSource = '\CsCannon\Blockchains\DataSource\DatagraphSource';
+    public static $defaultDataSource = '\CsCannon\Blockchains\DataSource\DatagraphSource';
 
 
 
@@ -54,7 +54,7 @@ class EthereumAddress extends BlockchainAddress
     public function getDefaultDataSource(): BlockchainDataSource
     {
 
-       // return new DatagraphSource();
-       return  new OpenSeaImporter();
+       return new DatagraphSource();
+       // return  new OpenSeaImporter();
     }
 }
