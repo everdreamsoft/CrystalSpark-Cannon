@@ -36,7 +36,7 @@ class BufferManager
         $array = array_unique($array);
 
         $this->tokenToAssetFactory->conceptArray = $array ;
-        print_r(count($array).PHP_EOL);
+
         $this->tokenToAssetFactory->populateFromSearchResults($array);
        // $this->tokenToAssetFactory->populateBrotherEntities();
 
