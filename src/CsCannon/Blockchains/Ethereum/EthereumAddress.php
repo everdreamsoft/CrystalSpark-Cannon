@@ -20,6 +20,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Ethereum\EthereumToken;
@@ -34,8 +35,9 @@ class EthereumAddress extends BlockchainAddress
     protected static $isa = 'ethAddress';
     protected static $file = 'ethAddressFile';
     protected static  $className = 'CsCannon\Blockchains\Ethereum\EthereumAddress' ;
-    public static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
+    // public static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
 
+    public static $defaultDataSource = '\CsCannon\Blockchains\DataSource\DatagraphSource';
 
 
 
@@ -52,7 +54,7 @@ class EthereumAddress extends BlockchainAddress
     public function getDefaultDataSource(): BlockchainDataSource
     {
 
-
-       return  new OpenSeaImporter();
+       return new DatagraphSource();
+       // return  new OpenSeaImporter();
     }
 }

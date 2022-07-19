@@ -19,7 +19,7 @@ class BinanceBlockchain extends Blockchain
     public static $network = array("mainet"=>array("explorerTx"=>'https://bscscan.com/tx/'));
     public  $mainSourceCurrencyTicker = 'BNB' ;
 
-    public function __construct()
+   public function __construct()
     {
         $this->addressFactory = new BinanceAddressFactory();
         $this->contractFactory = new BinanceContractFactory();

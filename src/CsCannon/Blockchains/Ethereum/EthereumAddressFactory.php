@@ -19,7 +19,7 @@ class EthereumAddressFactory extends BlockchainAddressFactory
 {
 
     public static $isa = 'ethAddress';
-    public static $file = 'blockchainAddressFile';
+    public static $file = 'ethAddressFile';
     protected static $className = 'CsCannon\Blockchains\Ethereum\EthereumAddress' ;
 
     public function get($address,$autoCreate = false):BlockchainAddress{

@@ -2,6 +2,7 @@
 
 namespace CsCannon\Blockchains\Contracts;
 use CsCannon\AssetSolvers\DefaultBinanceSolver;
+use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
 use SandraCore\Reference;
@@ -21,7 +22,7 @@ class ERC1155 extends BlockchainContractStandard
 
     public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
     {
-        $this->solver = DefaultBinanceSolver::class ;
+        $this->solver = LocalSolver::class ;
 
         parent::__construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget, $system);
 

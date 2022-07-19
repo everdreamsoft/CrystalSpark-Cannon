@@ -1,9 +1,16 @@
 <?php
 
 namespace CsCannon\Blockchains;
+
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
-use CsCannon\BufferManager;
+use CsCannon\Displayable;
+use CsCannon\DisplayManager;
 use CsCannon\Orb;
+use CsCannon\OrbFactory;
+use CsCannon\SandraManager;
+use CsCannon\Tools\BalanceBuilder;
+use Matrix\Exception;
+use SandraCore\Entity;
 
 /**
  * Created by PhpStorm.
@@ -11,27 +18,13 @@ use CsCannon\Orb;
  * Date: 24.03.2019
  * Time: 14:42
  */
-
-
-
-use CsCannon\DisplayManager;
-
-
-use CsCannon\OrbFactory;
-use CsCannon\SandraManager;
-use CsCannon\Displayable;
-use CsCannon\Tools\BalanceBuilder;
-use Matrix\Exception;
-use SandraCore\Entity;
-use SandraCore\System;
-
 class BlockchainEvent extends Entity implements Displayable
 {
 
-    protected $name ;
-    protected static $isa ;
-    protected static $file ;
-    public $displayManager ;
+    protected $name;
+    protected static $isa;
+    protected static $file;
+    public $displayManager;
 
     const DISPLAY_TXID = 'txId';
     const DISPLAY_VALID = 'validity';
@@ -48,42 +41,45 @@ class BlockchainEvent extends Entity implements Displayable
     const BLOCKCHAIN_EVENT_TYPE_VERB = 'blockchainEventType';
 
 
+    public function bindToToken(BlockchainToken $token)
+    {
 
-    public function bindToToken(BlockchainToken $token){
-
-        $this->setBrotherEntity(BlockchainTokenFactory::$joinAssetVerb,$token,null);
+        $this->setBrotherEntity(BlockchainTokenFactory::$joinAssetVerb, $token, null);
 
 
     }
 
-    public function getBlockchainName():array{
+    public function getBlockchainName(): array
+    {
 
-        $sc = $this->system->systemConcept ;
+        $sc = $this->system->systemConcept;
 
         $blockchainsUnids = $this->subjectConcept->tripletArray[$sc->get(BlockchainEventFactory::ON_BLOCKCHAIN_EVENT)];
         $return = array();
 
-        foreach ($blockchainsUnids ?? array() as $blockchainUnid){
+        foreach ($blockchainsUnids ?? array() as $blockchainUnid) {
 
             $return[] = $sc->getSCS($blockchainUnid);
 
         }
 
-        return $return ;
+        return $return;
 
 
     }
 
-    public function getJoinedAssets(\CsCannon\Asset $asset){
+    public function getJoinedAssets(\CsCannon\Asset $asset)
+    {
 
         // $this->getJoined(BlockchainTokenFactory::$joinAssetVerb);
 
 
     }
 
-    public function getSourceAddress():?BlockchainAddress{
+    public function getSourceAddress(): ?BlockchainAddress
+    {
 
-        $source= $this->getJoinedEntities(BlockchainEventFactory::EVENT_SOURCE_ADDRESS);
+        $source = $this->getJoinedEntities(BlockchainEventFactory::EVENT_SOURCE_ADDRESS);
         if (is_null($source)) return null;
         $source = reset($source); //take the first source
         /** @var BlockchainAddress $source */
@@ -92,9 +88,10 @@ class BlockchainEvent extends Entity implements Displayable
     }
 
 
-    public function getDestinationAddress(){
+    public function getDestinationAddress()
+    {
 
-        $destination= $this->getJoinedEntities(BlockchainEventFactory::EVENT_DESTINATION_VERB);
+        $destination = $this->getJoinedEntities(BlockchainEventFactory::EVENT_DESTINATION_VERB);
         if (is_null($destination)) return null;
         /** @var BlockchainAddress $destination */
         $destination = reset($destination); //take the first destination
@@ -103,16 +100,17 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getBlockchainContract():?BlockchainContract{
+    public function getBlockchainContract(): ?BlockchainContract
+    {
 
-        $contract= $this->getJoinedEntities(BlockchainEventFactory::EVENT_CONTRACT);
-        if (!$contract) return null ;
+        $contract = $this->getJoinedEntities(BlockchainEventFactory::EVENT_CONTRACT);
+        if (!$contract) return null;
         $contract = reset($contract); //take the first destination
         /** @var Entity $source */
 
-        if (is_null($contract)){
+        if (is_null($contract)) {
 
-            SandraManager::dispatchError($this->system,4,3,"Event  has no contract",$this);
+            SandraManager::dispatchError($this->system, 4, 3, "Event  has no contract", $this);
         }
         //$fullContract = $contract->get(BlockchainAddressFactory::ADDRESS_SHORTNAME);
 
@@ -120,25 +118,27 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getTxId():?string{
+    public function getTxId(): ?string
+    {
 
 
         return $this->get(Blockchain::$txidConceptName);
 
     }
 
-    public function getSpecifier(){
+    public function getSpecifier()
+    {
 
         //$tokenData = $this->getBrotherRefwerence(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
         //if(!is_array($tokenData)) { return null ;}
         //;
-        $tokenData = null ;
+        $tokenData = null;
 
         $brotherEntArray = $this->getBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT);
 
 
         if (!is_null($brotherEntArray)) {
-            $tokenDataEntity  = end($brotherEntArray);
+            $tokenDataEntity = end($brotherEntArray);
             $tokenData = $tokenDataEntity->entityRefs;
 
         }
@@ -149,16 +149,15 @@ class BlockchainEvent extends Entity implements Displayable
 
         /** @var BlockchainContractStandard $standard */
 
-        if (isset($standards)){
+        if (isset($standards)) {
             /** @var BlockchainContractStandard $instance */
             $instance = $standards::init();
             $instance->setTokenPath($tokenData);
-            return  $instance ;
+            return $instance;
 
-        }
-        else {
+        } else {
             $contractStandard = UnknownStandard::init();
-            return  $contractStandard ;
+            return $contractStandard;
 
         }
 
@@ -168,29 +167,29 @@ class BlockchainEvent extends Entity implements Displayable
     }
 
 
-
     public function __set($name, $value)
     {
 
         $this->data[$name] = $value;
     }
 
-    public function getBlock():BlockchainBlock
+    public function getBlock(): BlockchainBlock
     {
         $block = $this->getJoinedEntities(BlockchainEventFactory::EVENT_BLOCK);
         $block = end($block);
-        return $block ;
+        return $block;
     }
 
-    public function getBlockTimestamp()
+    public function getBlockTimestamp($chain = "")
     {
-        return $this->getBlock()->get(BlockchainBlockFactory::BLOCK_TIMESTAMP);
+        $block = $this->getBlock();
+        return $block ? $block->getTimestamp($chain) : "";
     }
 
     public function setSourceContract(BlockchainContract $contract)
     {
 
-        $this->setBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT,$contract,null);
+        $this->setBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT, $contract, null);
     }
 
     public function getQuantity()
@@ -204,41 +203,38 @@ class BlockchainEvent extends Entity implements Displayable
         $valid = $this->getBrotherEntity(BalanceBuilder::PROCESS_STATUS_VERB);
 
         //no validity status
-        if (!$valid) return null ;
+        if (!$valid) return null;
 
         $valid = reset($valid);
 
         /** @var Entity $valid */
 
-        if($valid->targetConcept->getShortname() == BalanceBuilder::PROCESS_STATUS_VALID) return true ;
-        if($valid->targetConcept->getShortname() == BalanceBuilder::PROCESS_STATUS_INVALID) return false ;
+        if ($valid->targetConcept->getShortname() == BalanceBuilder::PROCESS_STATUS_VALID) return true;
+        if ($valid->targetConcept->getShortname() == BalanceBuilder::PROCESS_STATUS_INVALID) return false;
 
-        return null ;
+        return null;
 
     }
 
     public function getError()
     {
-        $valid = $this->isValid() ;
+        $valid = $this->isValid();
 
-        if ($valid === true or $valid === null) return null ;
+        if ($valid === true or $valid === null) return null;
 
-        if ($valid === false){
+        if ($valid === false) {
             $validEntity = $this->getBrotherEntity(BalanceBuilder::PROCESS_STATUS_VERB);
-            /**@var Entity $validEntity **/
+            /**@var Entity $validEntity * */
             $validEntity = reset($validEntity);
             return $validEntity->getReference(BalanceBuilder::PROCESSOR_ERROR)->refValue;
         }
 
 
-
     }
 
 
-    public function returnArray($displayManager,$withOrbs=true)
+    public function returnArray($displayManager, $withOrbs = true)
     {
-
-
 
         $blockchains = $this->getBlockchainName();
         $blockchain = end($blockchains);
@@ -246,51 +242,51 @@ class BlockchainEvent extends Entity implements Displayable
 
         $return[self::DISPLAY_TXID] = $this->get(Blockchain::$txidConceptName);
 
-        if ($this->isValid() !== null){
+        if ($this->isValid() !== null) {
             $return[self::DISPLAY_VALID] = $this->isValid() ? 'valid' : 'invalid';
             if ($this->isValid() === false) {
                 $return['error'] = $this->getError();
             }
         }
 
-        $return[self::DISPLAY_BLOCKCHAIN] = $blockchain ;
+        $return[self::DISPLAY_BLOCKCHAIN] = $blockchain;
         $return[self::DISPLAY_SOURCE_ADDRESS] = $this->getSourceAddress()->display()->return();
         $return[self::DISPLAY_DESTINATION_ADDRESS] = $this->getDestinationAddress()->display()->return();
         try {
             $return[self::DISPLAY_CONTRACT] = $this->getBlockchainContract()->display($this->getSpecifier())->return();
             $sp = $this->getSpecifier();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $return[self::DISPLAY_CONTRACT]['address'] = $this->getBlockchainContract()->display()->return();
             $return[self::DISPLAY_CONTRACT]['standard'] = $this->getBlockchainContract()->getStandard()->getStandardName();
-            $return[self::DISPLAY_CONTRACT]['error'] = "event failed to comply ".$e->getMessage();
+            $return[self::DISPLAY_CONTRACT]['error'] = "event failed to comply " . $e->getMessage();
             //  dd($return[self::DISPLAY_CONTRACT]);
 
         }
 
         //force this blockchain into contract
-        $return[self::DISPLAY_CONTRACT]['blockchain']= $blockchain ;
+        $return[self::DISPLAY_CONTRACT]['blockchain'] = $blockchain;
 
-        $return[self::DISPLAY_ADAPTED_QUANTITY] = NULL ;
+        $return[self::DISPLAY_ADAPTED_QUANTITY] = NULL;
         //does it have adapted quantity ?
-        if ($this->getBlockchainContract()->decimals){
+        if ($this->getBlockchainContract()->decimals) {
             $quantity = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
-            $adaptedQuantity = $quantity ;
-            if ($this->getBlockchainContract()->decimals > 0){
-                $adaptedQuantity = $quantity / pow(10,$this->getBlockchainContract()->decimals);
+            $adaptedQuantity = $quantity;
+            if ($this->getBlockchainContract()->decimals > 0) {
+                $adaptedQuantity = $quantity / pow(10, $this->getBlockchainContract()->decimals);
             }
-            $return[self::DISPLAY_ADAPTED_QUANTITY] = $adaptedQuantity ;
+            $return[self::DISPLAY_ADAPTED_QUANTITY] = $adaptedQuantity;
         }
 
         $return[self::DISPLAY_QUANTITY] = $this->get(BlockchainEventFactory::EVENT_QUANTITY);
 
-        $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp();
+        $return[self::DISPLAY_TIMESTAMP] = $this->getBlockTimestamp($blockchain);
         $return[self::DISPLAY_BLOCK_ID] = $this->getBlock()->getId();
 
         //autofixer if blocktime doens't exist for block
-        if (! $return[self::DISPLAY_TIMESTAMP]){ //blocktime not on block
-            if ($this->get(BlockchainEventFactory::EVENT_BLOCK_TIME) > 1){ //legacy blocktime exist
+        if (!$return[self::DISPLAY_TIMESTAMP]) { //blocktime not on block
+            if ($this->get(BlockchainEventFactory::EVENT_BLOCK_TIME) > 1) { //legacy blocktime exist
                 $block = $this->getBlock();
-                $block->setTimestamp($this->get(BlockchainEventFactory::EVENT_BLOCK_TIME));
+                $block->setTimestamp($this->get(BlockchainEventFactory::EVENT_BLOCK_TIME), $blockchain);
                 $return[self::DISPLAY_TIMESTAMP] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
             }
 
@@ -300,12 +296,12 @@ class BlockchainEvent extends Entity implements Displayable
         $return[self::DISPLAY_TIMESTAMP_LEGACY] = $this->get(BlockchainEventFactory::EVENT_BLOCK_TIME);
 
 
-        $contract =  $this->getBlockchainContract();
+        $contract = $this->getBlockchainContract();
         $collections = $contract->getCollections();
 
 
         //here we are building to much factories
-        if(is_array($collections) &&  $this->displayManager->params['withOrbs']) {
+        if (is_array($collections) && $this->displayManager->params['withOrbs']) {
             $orbFactory = new OrbFactory();
             $orbArray = $orbFactory->getOrbFromSpecifier($this->getSpecifier(), $contract, reset($collections));
 
@@ -313,25 +309,25 @@ class BlockchainEvent extends Entity implements Displayable
                 /**@var Orb $orb */
                 $orbArray = $orb->getAsset()->display()->return();
                 $orbArray['asset'] = $orb->getAsset()->display()->return();
-                $orbArray['imageUrl'] = $orb->getAsset()->imageUrl ;
+                $orbArray['imageUrl'] = $orb->getAsset()->imageUrl;
                 $orbArray['collection']['name'] = $orb->assetCollection->name;
                 $orbArray['collection']['id'] = $orb->assetCollection->getId();
-                $return['orbs'][] = $orbArray ; //legacy support
+                $return['orbs'][] = $orbArray; //legacy support
                 // $return['orbs'][] = $orb->getAsset()->display()->return();
 
             }
         }
 
-        return $return ;
+        return $return;
     }
 
-    public function display($withOrbs=true): DisplayManager
+    public function display($withOrbs = true): DisplayManager
     {
-        if (!isset($this->displayManager)){
+        if (!isset($this->displayManager)) {
             $this->displayManager = new DisplayManager($this);
         }
-        $this->displayManager->params['withOrbs'] = $withOrbs ;
+        $this->displayManager->params['withOrbs'] = $withOrbs;
 
-        return $this->displayManager ;
+        return $this->displayManager;
     }
 }
