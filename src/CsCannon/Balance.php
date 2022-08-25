@@ -242,8 +242,12 @@ class Balance
 
                 $orbDisplay['asset']['image'] = $asset->imageUrl ;
                 $orbDisplay['asset']['id'] = $asset->id ;
-                $asset->get('name') ? $orbDisplay['asset']['name'] = $asset->get('name') : null ;
-                $asset->get('description') ? $orbDisplay['asset']['description'] = $asset->get('description') : null ;
+
+                $orbDisplay['asset']['name'] = $asset->get('name') ?? null;
+                $orbDisplay['asset']['description'] = $asset->get('description') ?? null;
+
+//                $asset->get('name') ? $orbDisplay['asset']['name'] = $asset->get('name') : null ;
+//                $asset->get('description') ? $orbDisplay['asset']['description'] = $asset->get('description') : null ;
 
                 //hide orbs with 0 quantity
                 if ($quantity >= 0 or $displayZeroBalance == false){
