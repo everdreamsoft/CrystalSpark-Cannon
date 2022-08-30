@@ -106,7 +106,11 @@ class AssetFactory extends \SandraCore\EntityFactory
                     $tokenToAsset = $tokenToAssetFactory->get($specifier->getDisplayStructure());
                     $tokenToAssetFactory->getTriplets();
 
-                    $tokenToAssetFactory->populateBrotherEntities($contract);
+                    try{
+                        $tokenToAssetFactory->populateBrotherEntities($contract);
+                    }catch (\Exception $e){
+
+                    }
                 }else{
                     $tokenToAssetFactory = $bufferManager->getBufferedTokenToAsset($contract);
                     $tokenToAsset = $tokenToAssetFactory->get($specifier->getDisplayStructure());
