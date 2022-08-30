@@ -64,6 +64,7 @@ class BlockchainTransactionFactory extends EntityFactory implements Displayable
      * @param string $txId
      * @param $timestamp
      * @param BlockchainBlock $block
+//     * @param BlockchainEvent[] $events
      * @param bool $autocommit
      * @return Entity
      */
@@ -72,6 +73,7 @@ class BlockchainTransactionFactory extends EntityFactory implements Displayable
         string $txId,
         $timestamp,
         BlockchainBlock $block,
+//        array $events,
         bool $autocommit = true
     ): Entity
     {
@@ -80,6 +82,7 @@ class BlockchainTransactionFactory extends EntityFactory implements Displayable
 
         $triplets[self::ON_BLOCKCHAIN] = $blockchain::NAME;
         $triplets[self::EVENT_BLOCK] = $block;
+//        $triplets[self::JOINED_EVENTS] = $events;
 
         return parent::createNew($dataArray, $triplets, $autocommit);
     }

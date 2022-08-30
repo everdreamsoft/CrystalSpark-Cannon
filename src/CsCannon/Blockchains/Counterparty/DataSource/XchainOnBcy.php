@@ -207,18 +207,18 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         $first = true ;
         foreach ($txHashArray as $hasString){
 
-             $first ? $commaSeparated .= "$hasString" : $commaSeparated .= ",$hasString";
+            $first ? $commaSeparated .= "'$hasString'" : $commaSeparated .= ",'$hasString'";
 
-             $first = false ;
+            $first = false ;
         }
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
-        $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends 
+        $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends
 JOIN index_transactions ON sends.`tx_hash_id` = index_transactions.id
 JOIN index_addresses s ON sends.`source_id` = s.id
 JOIN index_addresses d ON sends.`destination_id` = d.id
 JOIN assets a  ON sends.`asset_id` = a.id
-JOIN blocks b  ON sends.`block_index` = b.`block_index` WHERE tx_hash IN ($commaSeparated)";
+JOIN blocks b  ON sends.`block_index` = b.`block_index` WHERE hash IN ($commaSeparated)";
         $pdo = $blockSucker->get();
 
          try {

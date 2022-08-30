@@ -20,6 +20,7 @@ use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEvent;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Ethereum\EthereumToken;
@@ -37,22 +38,14 @@ class EthereumAddress extends BlockchainAddress
     public static $defaultDataSource = 'CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter' ;
 
 
-
-
-
-
-
     public function getBlockchain(): Blockchain
     {
         return EthereumBlockchain::getStatic();
     }
 
-
-
     public function getDefaultDataSource(): BlockchainDataSource
     {
-
-
+       //return new DatagraphSource();
        return  new OpenSeaImporter();
     }
 }

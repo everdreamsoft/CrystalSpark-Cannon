@@ -26,7 +26,6 @@ use SandraCore\System;
 class AssetCollectionFactory extends \SandraCore\EntityFactory
 {
 
-
     protected static $isa = 'assetCollection' ;
     protected static $file = 'assetCollectionFile' ;
     protected static $className = 'CsCannon\AssetCollection' ;

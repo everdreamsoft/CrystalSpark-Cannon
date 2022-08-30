@@ -109,6 +109,12 @@ class BlockchainTransaction extends Entity implements Displayable
             $events[] = $event->returnArray($eventDisplay);
         }
 
+//        $events = [];
+//        foreach ($this->getJoinedEvents() ?? [] as $event){
+//            $eventDisplay = $event->display(false);
+//            $events[] = $event->returnArray($eventDisplay);
+//        }
+
         $return[self::DISPLAY_EVENTS] = $events;
 
         return $return;
