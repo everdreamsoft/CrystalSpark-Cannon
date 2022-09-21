@@ -32,7 +32,7 @@ class BinanceEventFactory extends BlockchainEventFactory
 
     public function populateLocal($limit = 1000, $offset = 0, $asc = 'DESC',$sortByRef = null, $numberSort = false)
     {
-        $return = parent::populateFromParent($limit, $offset, $asc, $sortByRef, $numberSort);
+        $return = parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
 
         $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$this->addressFactory);
         $this->joinFactory(self::EVENT_DESTINATION_VERB,$this->addressFactory);
