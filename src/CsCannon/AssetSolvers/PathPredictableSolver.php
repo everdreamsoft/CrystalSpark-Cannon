@@ -62,6 +62,10 @@ class PathPredictableSolver extends AssetSolver
                 $foreignAssetFactory = new ForeignEntityAdapter(null,null,SandraManager::getSandra());
                 $assetConcept = new ForeignConcept("".$specifier->getDisplayStructure(),SandraManager::getSandra());
 
+                if(is_null($solverData)){
+                    continue;
+                }
+
                 $imgUrl =  $solverData->get(Asset::IMAGE_URL);
                 $metadataUrl =  $solverData->get(Asset::METADATA_URL);
                 $fallbackImage =  $solverData->get(Asset::FALLBACK_IMAGE);
