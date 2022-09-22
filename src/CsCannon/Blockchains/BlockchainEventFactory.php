@@ -397,13 +397,8 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
         return $this->displayManager ;
 
-
     }
 
-    public function populateFromParent($limit = 1000, $offset = 0, $asc = 'DESC', $sortByRef = null, $numberSort = false)
-    {
-        parent::populateLocal($limit, $offset, $asc, $sortByRef, $numberSort);
-    }
 
 
 }
