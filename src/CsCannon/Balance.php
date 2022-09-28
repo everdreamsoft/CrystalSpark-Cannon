@@ -16,6 +16,7 @@ use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
+use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\Tests\Displayable;
 use SandraCore\Entity;
@@ -121,8 +122,20 @@ class Balance
                     $newToken['standard'] = $tokenObject->getStandardName();
                     $newToken['quantity'] = $token['quantity'];
 
-                    $newContract['tokens'][] = $newToken ;
+                    $adaptedQuantity = $token["adaptedQuantity"] ?? null;
 
+                    if(is_null($adaptedQuantity)){
+                        $contractFactory = new GenericContractFactory();
+                        $contract = $contractFactory->get($contractId);
+
+                        if(!is_null($contract)){
+                            $decimal = $contract->get(BlockchainContractFactory::DECIMALS);
+                            $adaptedQuantity = $decimal ?? intval($token['quantity']) / 10 ** intval($decimal);
+                        }
+                    }
+
+                    $newToken['adaptedQuantity'] = $adaptedQuantity;
+                    $newContract['tokens'][] = $newToken ;
                 }
                 $output[] = $newContract ;
             }
