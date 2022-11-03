@@ -173,12 +173,14 @@ class BlockDaemonDataSource extends BlockchainDataSource
 //            }
 //        }
 
+        $api_url = static::$apiUrl;
+        $api_key = static::$apiKey;
         $wallet_address = $address->getAddress();
         $foreignAdapter = new ForeignEntityAdapter(
-            static::$apiUrl."assets?wallet_address=$wallet_address&page_size=$limit&offset=$offset",
-            'assets',
+            "$api_url/assets?wallet_address=$wallet_address",
+            "data",
             SandraManager::getSandra(),
-            'Authorization: Bearer '.self::$apiKey
+            "Authorization: Bearer $api_key"
         );
 
         $assetVocabulary = array(
@@ -187,7 +189,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
             'name'=>'name',
         );
 
-        $foreignAdapter->flatSubEntity('asset_contract','contract');
+        // $foreignAdapter->flatSubEntity('contract_address','contract');
         $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
         $foreignAdapter->populate();
 
@@ -202,15 +204,16 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
         //BlockDaemon API ruleset
         foreach ($foreignAdapter->entityArray as $entity){
+            // Contract data
             /** @var ForeignEntity $entity */
-            $contractAddress = $entity->get('contract.address');
-            $standard = $entity->get('contract.schema_name');
+            $contractAddress = $entity->get('contract_address');
+            // $standard = $entity->get('contract.schema_name');
             $contractStandard =  UnknownStandard::init();
-
-            if ($standard == "ERC721") $contractStandard =  ERC721::init();
-
+            // if ($standard == "ERC721") $contractStandard =  ERC721::init();
             $ethContract = $contractFactory->get($contractAddress);
             $standard =  ERC721::init();
+
+            // Token data
             $standard->setTokenId($entity->get('token_id'));
             $balance->addContractToken($ethContract,$standard,1);
         }

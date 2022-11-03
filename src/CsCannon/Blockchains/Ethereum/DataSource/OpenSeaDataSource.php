@@ -181,7 +181,7 @@ class OpenSeaDataSource extends BlockchainDataSource
 
         $contractFilter = '';
 
-        if ($limit > 50 ) $limit  = 50 ;
+        if ($limit > 30 ) $limit  = 30 ;
 
         if (!empty($blockchainContracts)){
 

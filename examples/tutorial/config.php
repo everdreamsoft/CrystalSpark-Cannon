@@ -12,7 +12,8 @@ error_reporting(E_ALL);
 
 
 
-require_once __DIR__ . '/vendor/autoload.php'; // Autoload files using Composer autoload
+// require_once __DIR__ . '/vendor/autoload.php'; // Autoload files using Composer autoload
+require_once '../../../vendor/autoload.php'; // Autoload files using Composer autoload
 
 require_once 'commonFunctions.php'; // Don't forget to configure your database in config.php
 
