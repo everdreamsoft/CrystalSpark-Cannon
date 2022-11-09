@@ -203,6 +203,10 @@ class BlockDaemonDataSource extends BlockchainDataSource
             $result = json_decode($json,1);
             $data = $result["data"] ?? [];
 
+            if(is_null($result["meta"])){
+                $tokens["data"] = [];
+            }
+
             foreach ($data as $tokenData){
                 $tokens["data"][] = $tokenData;
                 $contract = $tokenData["contract_address"] ?? null;
