@@ -3,23 +3,21 @@
 namespace CsCannon\Blockchains\Ethereum\DataSource;
 
 
-use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\Balance;
-use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
-use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
-use CsCannon\Blockchains\BlockchainImporter;
+use CsCannon\Blockchains\Ethereum\EthereumContract;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\SandraManager;
+use Exception;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
-use SandraCore\PdoConnexionWrapper;
+use SandraCore\System;
 
 /**
  * Created by EverdreamSoft.
@@ -34,119 +32,53 @@ class BlockDaemonDataSource extends BlockchainDataSource
     public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/ethereum/mainnet';
     public static $apiKey = '39HnB9255yMUYt86LLuyqXbEnJKPMuWdHBiQSsx9zNnj2jTG';
 
+    private static array $contractMap = [];
+
 
 // TODO find out how to get events from BlockDaemon and where do we use it
-//
-    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter{
-//
-//
-//        $address = self::getAddressString($address);
-//
-//        if ($batchMax=='')$batchMax = 1000;
-//        if ($offset=='')$offset = 0;
-//
-//        if (!is_null($address)) $addressFilter = "&account_address=$address";
-//
-//        $sandra =  SandraManager::getSandra();
-//        /** @var System $sandra */
+    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    {
+        // Probably not necessary anymore
+
+        if (empty($batchMax) || $batchMax > 100){
+            $batchMax = 100;
+        }
+
+        $address = self::getAddressString($address);
+        $addressFilter = "";
+        if (!is_null($address)){
+            $addressFilter = "&wallet_address=$address";
+        }
+
+        $contractFilter = "";
+        if(!is_null($contract)){
+            $contractFilter = "&contract_address=$contract";
+        }
+
+        $sandra =  SandraManager::getSandra();
+        /** @var System $sandra */
 //        $openSeaEvents =  static::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
-//
-//
-//
+        $blockDaemonEvents =  static::$apiUrl."events?event_type=transfer&page_size=$batchMax".$addressFilter.$contractFilter;
+
+        $result = self::gatherData(static::$apiUrl."/events?event_type=transfer&page_size=$batchMax".$addressFilter.$contractFilter);
+
         $formattedForeign = new ForeignEntityAdapter(null,null,SandraManager::getSandra());
-//
-//
-//
-//        $openSeaVocabulary = array(
-//            'id' => Blockchain::$provider_opensea_enventId,
-//            'transaction.timestamp' => 'timestamp',
-//            'transaction.from_account' => BlockchainEventFactory::EVENT_SOURCE_ADDRESS,
-//            'transaction.to_account' => BlockchainEventFactory::EVENT_DESTINATION_VERB,
-//            'transaction.transaction_hash' => Blockchain::$txidConceptName,
-//
-//
-//
-//        );
-//
-//        $entityArray = array();
-//
-//
-//
-//        $foreignEntityAdapter = new ForeignEntityAdapter($openSeaEvents,'asset_events',SandraManager::getSandra());
-//        $foreignEntityAdapter->flatSubEntity('transaction','transaction');
-//        $foreignEntityAdapter->flatSubEntity('asset','asset');
-//        $foreignEntityAdapter->flatSubEntity('transaction.from_account','AAA'); //doesn't work
-//        $foreignEntityAdapter->flatSubEntity('transaction.to_account','BBB'); //doesn't work
-//
-//
-//        $foreignEntityAdapter->adaptToLocalVocabulary($openSeaVocabulary);
-//        $foreignEntityAdapter->populate(100);
-//
-//
-//
-//        //dd($openSeaSynch->return2dArray());
-//        $display = '';
-//
-//        // dd($foreignEntityAdapter->return2dArray());
-//
-//        foreach ($foreignEntityAdapter->return2dArray() as $value){
-//
-//            if (!array_key_exists('f:asset.asset_contract', $value)) continue ;
-//
-//            $trackedArray = array();
-//
-//            $source =  $value[BlockchainEventFactory::EVENT_SOURCE_ADDRESS]['address'] ;
-//            $destination = $value[BlockchainEventFactory::EVENT_DESTINATION_VERB]['address'];
-//            $contract = $value['f:asset.asset_contract']['address'];
-//
-//
-//            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
-//            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] =$source ;
-//            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $destination;
-//
-//            $trackedArray[BlockchainImporter::TRACKER_CONTRACTIDS][] = $contract;
-//            // echo"$contract : contract ". $value['f:asset.asset_contract']['address'].PHP_EOL;
-//
-//
-//            //correct the format
-//            $value[BlockchainEventFactory::EVENT_SOURCE_ADDRESS] = $source ;
-//            $value[BlockchainEventFactory::EVENT_DESTINATION_VERB] = $destination ;
-//            $value[BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB ] =  $destination  ;
-//            $value[BlockchainEventFactory::EVENT_CONTRACT] =  $contract  ;
-//
-//            $value["blockIndex"] =  $value['f:transaction.block_number']  ;
-//            $value[BlockchainImporter::TRACKER_BLOCKTIME] =   strtotime($value['timestamp'])  ;
-//
-//            $value[BlockchainEventFactory::EVENT_BLOCK_TIME] =   date("U",strtotime($value['timestamp']));
-//            $value['timestamp'] = date("U",strtotime($value['timestamp']));
-//            $value[BlockchainContractFactory::CONTRACT_STANDARD] =   array('tokenId'=>$value['f:asset.token_id']) ;
-//            // $value[BlockchainStandardFactory::] =   array('tokenId'=>$value['f:asset.token_id']) ;
-//
-//            //todo add blocktime
-//
-//
-//
-//            $txHash = $value[Blockchain::$txidConceptName];
-//
-//            $other = $value ;
-//
-//            $transactionData = $trackedArray + $other ;
-//
-//            $entityArray[] = $entity = new ForeignEntity($txHash, $transactionData, $foreignEntityAdapter, $txHash,SandraManager::getSandra());
-//
-//        }
-//
-//
-//
-//
-//        $formattedForeign->addNewEtities($entityArray,array());
-//
+
+        $blockDaemonVocabulary = [
+            'id' => 'id',
+            'timestamp' => BlockchainEventFactory::EVENT_BLOCK_TIME,
+            'from_account' => BlockchainEventFactory::EVENT_SOURCE_ADDRESS,
+            'to_account' => BlockchainEventFactory::EVENT_DESTINATION_SIMPLE_VERB,
+            ''
+        ];
+
+
         return $formattedForeign ;
-//
-//
-//
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
         return self::getBalanceForContract($address,array(), $limit, $offset);
@@ -154,33 +86,35 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
     /**
      * @param BlockchainAddress $address
-     * @param BlockchainContract[] $blockchainContracts
+     * @param array $contract
      * @param $limit
      * @param $offset
      * @return Balance
+     * @throws Exception
      */
-    public static function getBalanceForContract(BlockchainAddress $address, array $contracts, $limit, $offset): Balance
+    public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset): Balance
     {
-        $contractArray = array();
-        $contractFilter = '';
+        if ( $limit > 100 ) $limit  = 100 ;
 
-        if ($limit > 100 ) $limit  = 100 ;
-
-//        TODO BlockDaemon doesn't support multiple contract filer
-//        if (!empty($contracts)){
-//            foreach ($contracts as $contract) {
-//                $contractFilter .= '&contract_address='.$contract->getId();
-//            }
-//        }
-
-        $api_url = static::$apiUrl;
-        $api_key = static::$apiKey;
         $wallet_address = $address->getAddress();
+        $tokens = [];
+
+        if(!empty($contracts)){
+            foreach ($contracts as $contract){
+                $data = self::gatherData(static::$apiUrl."/assets?wallet_address=$wallet_address&page_size=$limit?contract_address=".$contract->getId());
+                $tokens = array_merge($tokens, $data);
+            }
+        }
+
+        // Because of max limit = 100 / call on this api, have to call several times
+        $tokens = self::gatherData(static::$apiUrl."/assets?wallet_address=$wallet_address&page_size=$limit");
+
         $foreignAdapter = new ForeignEntityAdapter(
-            "$api_url/assets?wallet_address=$wallet_address",
+            "",
             "data",
             SandraManager::getSandra(),
-            "Authorization: Bearer $api_key"
+            null,
+            $tokens
         );
 
         $assetVocabulary = array(
@@ -194,7 +128,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         $foreignAdapter->populate();
 
         $contractFactory = new EthereumContractFactory();
-        $contractFactory->populateFromSearchResults($contractArray,BlockchainContractFactory::MAIN_IDENTIFIER);
+        $contractFactory->populateFromSearchResults(self::$contractMap,BlockchainContractFactory::MAIN_IDENTIFIER);
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
@@ -207,12 +141,11 @@ class BlockDaemonDataSource extends BlockchainDataSource
             // Contract data
             /** @var ForeignEntity $entity */
             $contractAddress = $entity->get('contract_address');
-            // $standard = $entity->get('contract.schema_name');
-            $contractStandard =  UnknownStandard::init();
-            // if ($standard == "ERC721") $contractStandard =  ERC721::init();
+            /** @var EthereumContract $ethContract */
             $ethContract = $contractFactory->get($contractAddress);
-            $standard =  ERC721::init();
 
+            $contractStandard =  UnknownStandard::init();
+            $standard =  ERC721::init();
             // Token data
             $standard->setTokenId($entity->get('token_id'));
             $balance->addContractToken($ethContract,$standard,1);
@@ -225,5 +158,64 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
     public static  function  setApiKey($key){
         static::$apiKey = $key ;
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    private static function gatherData(string $url) :array
+    {
+        $api_key = static::$apiKey;
+        $headerData = "Authorization: Bearer $api_key";
+
+        $apiToken = "";
+        $tokens = [];
+
+        do{
+            if (!empty($apiToken)){
+                if(strpos($url, "&page_token=")){
+                    $url = strstr($url, "&page_token=", true);
+                }
+                $url = $url."&page_token=$apiToken";
+            }
+
+            try {
+                $ch = curl_init();
+                if ($ch === false) {
+                    throw new Exception('failed to initialize');
+                }
+
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array($headerData));
+
+                $json = curl_exec($ch);
+                if ($json === false) {
+                    throw new Exception(curl_error($ch), curl_errno($ch));
+                }
+                curl_close($ch);
+            } catch(Exception $e) {
+                throw new Exception($e);
+            }
+
+            $result = json_decode($json,1);
+            $data = $result["data"] ?? [];
+
+            foreach ($data as $tokenData){
+                $tokens["data"][] = $tokenData;
+                $contract = $tokenData["contract_address"] ?? null;
+                if(!is_null($contract) && !in_array($contract, self::$contractMap)){
+                    self::$contractMap[] = $contract;
+                }
+            }
+
+            $apiToken = $result["meta"]["paging"]["next_page_token"] ?? "";
+            sleep(0.1);
+
+        }while(!empty($token));
+
+        return $tokens;
     }
 }
