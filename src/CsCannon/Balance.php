@@ -16,6 +16,7 @@ use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainToken;
+use CsCannon\Blockchains\Contracts\ERC721;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\Tests\Displayable;
@@ -124,7 +125,7 @@ class Balance
 
                     $adaptedQuantity = $token["adaptedQuantity"] ?? null;
 
-                    if(is_null($adaptedQuantity)){
+                    if($newToken['standard'] != "ERC721" && is_null($adaptedQuantity)){
                         $contractFactory = new GenericContractFactory();
                         $contract = $contractFactory->get($contractId);
 
