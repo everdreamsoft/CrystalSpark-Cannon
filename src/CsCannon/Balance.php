@@ -125,13 +125,17 @@ class Balance
 
                     $adaptedQuantity = $token["adaptedQuantity"] ?? null;
 
-                    if($newToken['standard'] != "ERC721" && is_null($adaptedQuantity)){
-                        $contractFactory = new GenericContractFactory();
-                        $contract = $contractFactory->get($contractId);
+                    if(is_null($adaptedQuantity)){
+                        if($newToken['standard'] == "ERC721"){
+                            $adaptedQuantity = 1;
+                        }else{
+                            $contractFactory = new GenericContractFactory();
+                            $contract = $contractFactory->get($contractId);
 
-                        if(!is_null($contract)){
-                            $decimal = $contract->get(BlockchainContractFactory::DECIMALS);
-                            $adaptedQuantity = $decimal ?? intval($token['quantity']) / 10 ** intval($decimal);
+                            if(!is_null($contract)){
+                                $decimal = $contract->get(BlockchainContractFactory::DECIMALS);
+                                $adaptedQuantity = $decimal ?? intval($token['quantity']) / 10 ** intval($decimal);
+                            }
                         }
                     }
 
