@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "everdreamsoft/sandra": "dev-sog_apiv2",
+        "everdreamsoft/sandra": "dev-sog_api",
       "ext-curl": "*",
         "ext-json": "*"
     },
