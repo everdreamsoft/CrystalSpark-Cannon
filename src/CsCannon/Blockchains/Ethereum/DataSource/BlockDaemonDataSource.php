@@ -142,7 +142,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
             /** @var ForeignEntity $entity */
             $contractAddress = $entity->get('contract_address');
             /** @var EthereumContract $ethContract */
-            $ethContract = $contractFactory->get($contractAddress);
+            $ethContract = $contractFactory->get($contractAddress, true);
 
             $contractStandard =  UnknownStandard::init();
             $standard =  ERC721::init();
