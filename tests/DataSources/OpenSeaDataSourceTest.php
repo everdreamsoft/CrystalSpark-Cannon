@@ -21,6 +21,8 @@ error_reporting(E_ALL);
 
 class OpenSeaDataSourceTest extends DataSourceAbstract
 {
+    // Deprecated Datasource
+
     private $contractToTest ;
 
     public function loadTestCases() {
@@ -53,27 +55,27 @@ class OpenSeaDataSourceTest extends DataSourceAbstract
         parent::__construct($name, $data, $dataName);
     }
 
-    public function testGetBalanceForContract()
-    {
-
-        $this->loadTestCases();
-
-        $address = $this->addressToBeChecked[0];
-        $address->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter());
-
-
-        $balance = $address->getBalanceForContract($this->contractToTest);
-
-        //we should have equal contract in the balance as the number of requested contracts
-        $this->assertCount(count($this->contractToTest),$balance->getContractMap());
-
-
-
-
-
-
-
-    }
+//    public function testGetBalanceForContract()
+//    {
+//
+//        $this->loadTestCases();
+//
+//        $address = $this->addressToBeChecked[0];
+//        $address->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\OpenSeaImporter());
+//
+//
+//        $balance = $address->getBalanceForContract($this->contractToTest);
+//
+//        //we should have equal contract in the balance as the number of requested contracts
+//        $this->assertCount(count($this->contractToTest),$balance->getContractMap());
+//
+//
+//
+//
+//
+//
+//
+//    }
 
 
 }
