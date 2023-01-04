@@ -126,44 +126,37 @@ class BlockchainEvent extends Entity implements Displayable
 
     }
 
-    public function getSpecifier()
+    public function getSpecifier(): BlockchainContractStandard
     {
-
-        //$tokenData = $this->getBrotherRefwerence(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
-        //if(!is_array($tokenData)) { return null ;}
-        //;
         $tokenData = null;
+        $tokenId = null;
 
         $brotherEntArray = $this->getBrotherEntity(BlockchainEventFactory::EVENT_CONTRACT);
 
 
         if (!is_null($brotherEntArray)) {
             $tokenDataEntity = end($brotherEntArray);
-            $tokenData = $tokenDataEntity->entityRefs;
 
+            $tokenId = $tokenDataEntity->get("tokenId") ?? null;
+            $tokenData = $tokenDataEntity->entityRefs ?? null;
         }
 
 
         $contract = $this->getBlockchainContract();
-        $standards = $contract->getStandard();
-
+//        $standards = $contract->getStandard();
+        $standards = $contract->getJoinedEntities(BlockchainContractFactory::CONTRACT_STANDARD);
         /** @var BlockchainContractStandard $standard */
+        $standard = end($standards);
 
-        if (isset($standards)) {
-            /** @var BlockchainContractStandard $instance */
-            $instance = $standards::init();
+        if (isset($standard)) {
+            if(!is_null($tokenId)){
+                return $standard::init($tokenId);
+            }
+            $instance = $standard::init();
             $instance->setTokenPath($tokenData);
             return $instance;
-
-        } else {
-            $contractStandard = UnknownStandard::init();
-            return $contractStandard;
-
         }
-
-
-        return null;
-
+        return UnknownStandard::init();
     }
 
 
