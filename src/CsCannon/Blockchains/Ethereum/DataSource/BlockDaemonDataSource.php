@@ -30,8 +30,9 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
     public $sandra;
     public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/ethereum/mainnet';
-    public static $apiKey = 'WHdH48fcHG94ZjKdOhOGUsDdPI1gCSdzqeBINxA8M9RQXzuz';
+//    public static $apiKey = 'WHdH48fcHG94ZjKdOhOGUsDdPI1gCSdzqeBINxA8M9RQXzuz';
     // public static $apiKey = '39HnB9255yMUYt86LLuyqXbEnJKPMuWdHBiQSsx9zNnj2jTG';
+     public static $apiKey = 'L5QCT3gssIXLMEmKuNSI2j3V4g2ahnquS3h7kChPWQrbKYij';
 
     private static array $contractMap = [];
 
