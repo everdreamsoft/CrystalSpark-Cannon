@@ -32,7 +32,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
     public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/ethereum/mainnet';
 //    public static $apiKey = 'WHdH48fcHG94ZjKdOhOGUsDdPI1gCSdzqeBINxA8M9RQXzuz';
     // public static $apiKey = '39HnB9255yMUYt86LLuyqXbEnJKPMuWdHBiQSsx9zNnj2jTG';
-     public static $apiKey = 'L5QCT3gssIXLMEmKuNSI2j3V4g2ahnquS3h7kChPWQrbKYij';
+    public static $apiKey = 'L5QCT3gssIXLMEmKuNSI2j3V4g2ahnquS3h7kChPWQrbKYij';
 
     private static array $contractMap = [];
 
@@ -84,6 +84,21 @@ class BlockDaemonDataSource extends BlockchainDataSource
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
         return self::getBalanceForContract($address, array(), $limit, $offset);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getTransactionStatus(string $blockchainName, string $txHash): ?string
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        if(!array_key_exists('status', $data)){
+            return null;
+        }
+        return $data['status'] ?? null;
     }
 
     /**
@@ -206,9 +221,9 @@ class BlockDaemonDataSource extends BlockchainDataSource
             }
 
             $result = json_decode($json, 1);
-            $data = $result["data"] ?? [];
 
-            if (is_null($result["meta"])) {
+            $data = $result["data"] ?? [];
+            if (!isset($result["meta"]) || is_null($result["meta"])) {
                 $tokens["data"] = [];
             }
 
@@ -225,5 +240,34 @@ class BlockDaemonDataSource extends BlockchainDataSource
         } while (!empty($token));
 
         return $tokens;
+    }
+
+
+    private static function simpleCall(string $url)
+    {
+        $api_key = static::$apiKey;
+        $headerData = "Authorization: Bearer $api_key";
+
+        try {
+            $ch = curl_init();
+            if ($ch === false) {
+                throw new Exception('Failed to initialize');
+            }
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array($headerData));
+
+            $json = curl_exec($ch);
+            if ($json === false) {
+                throw new Exception(curl_error($ch), curl_errno($ch));
+            }
+            curl_close($ch);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+
+        return json_decode($json, 1) ?? [];
     }
 }
