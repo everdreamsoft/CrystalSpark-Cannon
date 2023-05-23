@@ -22,7 +22,7 @@ use SandraCore\ForeignEntityAdapter;
 class BalanceAPISource extends BlockchainDataSource
 {
     // TODO - Change URL to production
-    public const URL = 'http://139.162.176.241:9010/';
+    public const URL = 'https://139.162.176.241/api/';
 
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
