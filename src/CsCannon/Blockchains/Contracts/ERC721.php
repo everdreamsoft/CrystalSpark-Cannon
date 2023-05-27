@@ -7,6 +7,7 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Orb;
 use SandraCore\Reference;
 use SandraCore\System;
+use function PHPUnit\Framework\isNull;
 
 /**
  * Created by EverdreamSoft.
@@ -76,7 +77,7 @@ class ERC721 extends BlockchainContractStandard
         if (is_array($tokenId)) $tokenData = $tokenId ;
 
         $return = parent::init($tokenData);
-        if($directTokenId)  $return->setTokenId($directTokenId); // then we set token id afterwards
+        if(!is_null($directTokenId))  $return->setTokenId($directTokenId); // then we set token id afterwards
 
         return $return ;
 
