@@ -87,6 +87,21 @@ class BlockDaemonDataSource extends BlockchainDataSource
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getTransactionStatus(string $blockchainName, string $txHash): ?string
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        if(!array_key_exists('status', $data)){
+            return null;
+        }
+        return $data['status'] ?? null;
+    }
+
+    /**
      * @param BlockchainAddress $address
      * @param array $contract
      * @param $limit
@@ -225,5 +240,33 @@ class BlockDaemonDataSource extends BlockchainDataSource
         } while (!empty($token));
 
         return $tokens;
+    }
+
+    private static function simpleCall(string $url)
+    {
+        $api_key = static::$apiKey;
+        $headerData = "Authorization: Bearer $api_key";
+
+        try {
+            $ch = curl_init();
+            if ($ch === false) {
+                throw new Exception('Failed to initialize');
+            }
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array($headerData));
+
+            $json = curl_exec($ch);
+            if ($json === false) {
+                throw new Exception(curl_error($ch), curl_errno($ch));
+            }
+            curl_close($ch);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+
+        return json_decode($json, 1) ?? [];
     }
 }
