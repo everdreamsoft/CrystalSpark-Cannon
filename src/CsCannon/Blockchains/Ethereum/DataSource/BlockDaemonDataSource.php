@@ -101,6 +101,20 @@ class BlockDaemonDataSource extends BlockchainDataSource
         return $data['status'] ?? null;
     }
 
+    public static function getTokenIdFromTx(string $blockchainName, string $txHash): ?array
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        if(!array_key_exists('status', $data)){
+            return null;
+        }
+
+        return $data ?? null;
+    }
+
+
     /**
      * @param BlockchainAddress $address
      * @param array $contract
