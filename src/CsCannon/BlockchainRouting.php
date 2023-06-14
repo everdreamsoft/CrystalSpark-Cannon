@@ -24,6 +24,7 @@ use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use CsCannon\Blockchains\Generic\GenericContract;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
+use CsCannon\Blockchains\Ordinal\OrdinalBlockchain;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\Blockchains\Substrate\Kusama\WestendBlockchain;
 use CsCannon\Blockchains\Substrate\Unique\UniqueBlockchain;
@@ -58,6 +59,7 @@ class BlockchainRouting
         $supported[] = new KusamaBlockchain();
         $supported[] = new WestendBlockchain();
         $supported[] = new BinanceBlockchain();
+        $supported[] = new OrdinalBlockchain();
 
         $supported = array_merge($supported,self::$hotPluggedBlockchain);
 
