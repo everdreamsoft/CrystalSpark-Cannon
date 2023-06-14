@@ -101,7 +101,7 @@ class ERC721 extends EthereumContractStandard
 
 
         $return = parent::init($tokenData);
-        if($directTokenId)  $return->setTokenId($directTokenId); // then we set token id afterwards
+        if(!is_null($directTokenId))  $return->setTokenId($directTokenId); // then we set token id afterwards
 
         return $return ;
 
