@@ -18,6 +18,7 @@ use Exception;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
+use stdClass;
 
 /**
  * Created by EverdreamSoft.
@@ -99,6 +100,39 @@ class BlockDaemonDataSource extends BlockchainDataSource
             return null;
         }
         return $data['status'] ?? null;
+    }
+
+    /**
+     * @param string $blockchainName
+     * @param string $txHash
+     *
+     * @return stdClass|null
+     * @throws Exception
+     */
+    public static function getTransactionDetails(string $blockchainName, string $txHash): ?stdClass
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        $result = new stdClass();
+        if(!array_key_exists('status', $data) || !array_key_exists('events', $data)){
+            return null;
+        }
+        $result->status = $data['status'];
+
+        foreach ($data['events'] ?? [] as $event){
+            if($event['type'] !== 'transfer'){
+                continue;
+            }
+
+            $result->hash = $event['transaction_id'] ?? null;
+            $result->src_address = $event['source'] ?? null;
+            $result->dst_address = $event['destination'] ?? null;
+            $result->contract = $event['meta']['contract'] ?? null;
+            break;
+        }
+        return $result;
     }
 
     public static function getTokenIdFromTx(string $blockchainName, string $txHash): ?array
