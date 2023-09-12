@@ -126,10 +126,18 @@ class BlockDaemonDataSource extends BlockchainDataSource
                 continue;
             }
 
+            // potential very big float witn scientific notation, convert it to gmp to calculate
+            // amount from BlockDaemon is raw
+            $gmpAmount = gmp_init(number_format($event['amount'], 0, '', ''));
+            $decimals = $event['decimals'];
+            // convert to adapted number
+            $res = gmp_div($gmpAmount, pow(10, $decimals));
+
             $result->hash = $event['transaction_id'] ?? null;
             $result->src_address = $event['source'] ?? null;
             $result->dst_address = $event['destination'] ?? null;
             $result->contract = $event['meta']['contract'] ?? null;
+            $result->quantity = gmp_intval($res);
             break;
         }
         return $result;
