@@ -138,6 +138,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
             $result->dst_address = $event['destination'] ?? null;
             $result->contract = $event['meta']['contract'] ?? null;
             $result->quantity = gmp_intval($res);
+            $result->time = $event['date'];
             break;
         }
         return $result;
