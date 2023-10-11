@@ -120,6 +120,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
             return null;
         }
         $result->status = $data['status'];
+        $result->confirmations = $data['confirmations'];
 
         foreach ($data['events'] ?? [] as $event){
             if($event['type'] !== 'transfer'){
