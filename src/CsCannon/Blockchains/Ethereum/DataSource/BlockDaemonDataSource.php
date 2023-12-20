@@ -171,7 +171,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
     {
         // TODO - Review this
         // This limit is 50 on docs here ( https://docs.blockdaemon.com/reference/listnftassets )
-        if ($limit > 100) $limit = 100;
+        if ($limit > 50) $limit = 50;
 
         $wallet_address = $address->getAddress();
         $tokens = [];
