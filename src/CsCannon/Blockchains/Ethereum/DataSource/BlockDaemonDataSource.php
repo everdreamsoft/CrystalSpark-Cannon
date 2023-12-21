@@ -179,7 +179,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         // TODO - Review these comments
         // Redundant call as $tokens variable is again reassigned in next statement
         // Corrected - url path here replaced ? in "?contract_address=" with "&contract_address="
-        if (!empty($contracts)) { // ? do we need this loop? if yes then replace $contract with $contracts, and also the logic has to be verified.
+        if (!empty($contracts)) {
             foreach ($contracts as $contract) {
                 $data = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit&contract_address=" . $contract->getId());
                 if (isset($tokens["data"]) && isset($data["data"])) {
