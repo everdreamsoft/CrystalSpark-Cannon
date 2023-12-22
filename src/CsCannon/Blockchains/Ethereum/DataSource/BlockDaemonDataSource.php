@@ -295,7 +295,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
             $result = json_decode($json, 1);
             $data = $result["data"] ?? [];
 
-            if (is_null($result["meta"])) {
+            if (empty($result["meta"])) {
                 $tokens["data"] = [];
             }
 
