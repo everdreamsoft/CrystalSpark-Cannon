@@ -32,138 +32,92 @@ use SandraCore\ForeignEntityAdapter;
 
 class LocalSolver extends AssetSolver
 {
+    private static $assetInCollections = [];
+    private static $probeCheckedArray = [];
+    private static ?BufferManager $bufferManager = null;
 
-    /**
-     * @var EntityFactory[]
-     */
-    private static $assetInCollections ;
-    private static $probeCheckedArray ;
-    private static ?BufferManager $bufferManager = null  ;
-
-    public static function getSolverIdentifier(){
-
+    public static function getSolverIdentifier()
+    {
         return "localSolver";
     }
 
-    public static function setBufferManager(BufferManager $bufferManager){
-
-       self::$bufferManager = $bufferManager ;
-
+    public static function setBufferManager(BufferManager $bufferManager)
+    {
+        self::$bufferManager = $bufferManager;
     }
 
-
-
-
-
-    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array{
-
-
-        $return = null ;
-
+    public static function resolveAsset(AssetCollection $assetCollection, BlockchainContractStandard $specifier, BlockchainContract $contract): ?array
+    {
         //we get target collection
-
         if (!isset(self::$assetInCollections[$assetCollection->getId()])) {
-
-            if (self::$bufferManager && $contract->isExplicitTokenId()){
-
-                $assetFactory = self::$bufferManager->getBufferedAssetFactory($contract);
-
-            }
-            else {
-
-                //this is suboptimal if we have a lot of assets
-                $assetFactory = new AssetFactory();
-                $assetFactory->setFilter(0, $assetCollection);
-                $assetFactory->populateLocal();
-                $assetFactory->getTriplets();
-                $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
-            }
-
-            $entities = $assetFactory->entityArray ;
+            $assetFactory = self::$bufferManager && $contract->isExplicitTokenId()
+                ? self::$bufferManager->getBufferedAssetFactory($contract)
+                : self::getAssetFactory($assetCollection);
 
             self::$assetInCollections[$assetCollection->getId()] = $assetFactory ;
-
-
         }
 
-        //asset factory
-        $assetCollectionList  = self::$assetInCollections[$assetCollection->getId()];
+        $assetCollectionList = (self::$bufferManager && $contract->isExplicitTokenId())
+            ? self::$bufferManager->getBufferedAssetFactory($contract)
+            : self::$assetInCollections[$assetCollection->getId()];
 
-        //we need to get the correct asset factory
-        if (self::$bufferManager && $contract->isExplicitTokenId()){
-            $assetCollectionList = self::$bufferManager->getBufferedAssetFactory($contract);
-        }
+        return $assetCollectionList->getAssetsFromContract($contract,$specifier,self::$bufferManager);
+    }
 
-        $assets = $assetCollectionList->getAssetsFromContract($contract,$specifier,self::$bufferManager);
+    private static function getAssetFactory(AssetCollection $assetCollection)
+    {
+        $assetFactory = new AssetFactory();
+        $assetFactory->setFilter(0, $assetCollection);
+        $assetFactory->populateLocal();
+        $assetFactory->getTriplets();
+        $assetFactory->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
 
-        // prove is to heavy for now
-        //self::probeMissingAssets($assetCollectionList->returnExplicitNoExistingId(),$assetCollection);
-
-
-        return  $assets ;
-
+        return $assetFactory;
     }
 
     public static function reloadCollectionItems(AssetCollection $assetCollection)
     {
         if (isset(self::$assetInCollections[$assetCollection->getId()])) {
-
             unset (self::$assetInCollections[$assetCollection->getId()]);
-
         }
     }
-
 
     protected static function updateSolver()
     {
         return ;
     }
 
-    public static function clean(){
-
-        self::$assetInCollections = null ;
-        self::$probeCheckedArray = null ;
-        self::$bufferManager = null ;
-
+    public static function clean()
+    {
+        self::$assetInCollections = null;
+        self::$probeCheckedArray = null;
+        self::$bufferManager = null;
     }
-
 
     protected static function probeMissingAssets($missingArray, AssetCollection $collection)
     {
-
-
         $probeFactory = new MetadataProbeFactory();
         $probeFactory->populateLocal();
         foreach ($missingArray ?? array() as $value){
+            foreach ($value as $dataArray){
+                $contract = $dataArray['contract']; /** @var BlockchainContract $contract */
+                $specifier = $dataArray['specifier'];/** @var BlockchainContractStandard $specifier */
 
-           foreach ($value as $dataArray){
-               $contract = $dataArray['contract']; /** @var BlockchainContract $contract */
-               $specifier = $dataArray['specifier'];/** @var BlockchainContractStandard $specifier */
-
-               if (!isset(self::$probeCheckedArray[$collection->getId().'-'.$specifier->getDisplayStructure()])){
-                   $probe = $probeFactory->get($collection,$contract);
-                   self::$probeCheckedArray[$collection->getId().'-'.$specifier->getDisplayStructure()] = $probe;
-
-               }
-               else{
-                   $probe = self::$probeCheckedArray[$collection->getId().'-'.$specifier->getDisplayStructure()];
-               }
-               /** @var MetadataProbe $probe */
-
-                if ($probe)
-               $probe->queue($specifier);
-
-
-
-
-           }
-
-
+                $probe = self::getOrCreateProbe($collection, $contract, $specifier, $probeFactory);
+                $probe->queue($specifier);
+            }
         }
-
     }
 
+    private static function getOrCreateProbe($collection, $contract, $specifier, $probeFactory)
+    {
+        $identifier = $collection->getId().'-'.$specifier->getDisplayStructure();
 
+        if (!isset(self::$probeCheckedArray[$identifier])) {
+            $probe = $probeFactory->get($collection,$contract);
+            self::$probeCheckedArray[$identifier] = $probe;
+        }
 
-
+        return self::$probeCheckedArray[$identifier];
+    }
 }
