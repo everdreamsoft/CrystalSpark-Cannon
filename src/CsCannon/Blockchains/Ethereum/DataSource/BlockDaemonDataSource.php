@@ -33,7 +33,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
     public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/ethereum/mainnet';
 //    public static $apiKey = 'WHdH48fcHG94ZjKdOhOGUsDdPI1gCSdzqeBINxA8M9RQXzuz';
     // public static $apiKey = '39HnB9255yMUYt86LLuyqXbEnJKPMuWdHBiQSsx9zNnj2jTG';
-     public static $apiKey = 'L5QCT3gssIXLMEmKuNSI2j3V4g2ahnquS3h7kChPWQrbKYij';
+    public static $apiKey = 'L5QCT3gssIXLMEmKuNSI2j3V4g2ahnquS3h7kChPWQrbKYij';
 
     private static array $contractMap = [];
 
@@ -58,10 +58,10 @@ class BlockDaemonDataSource extends BlockchainDataSource
             $contractFilter = "&contract_address=$contract";
         }
 
-        $sandra =  SandraManager::getSandra();
+        $sandra = SandraManager::getSandra();
         /** @var System $sandra */
         //        $openSeaEvents =  static::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
-        $blockDaemonEvents =  static::$apiUrl . "events?event_type=transfer&page_size=$batchMax" . $addressFilter . $contractFilter;
+        $blockDaemonEvents = static::$apiUrl . "events?event_type=transfer&page_size=$batchMax" . $addressFilter . $contractFilter;
 
         $result = self::gatherData(static::$apiUrl . "/events?event_type=transfer&page_size=$batchMax" . $addressFilter . $contractFilter);
 
@@ -96,7 +96,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
         $data = self::simpleCall($url);
 
-        if(!array_key_exists('status', $data)){
+        if (!array_key_exists('status', $data)) {
             return null;
         }
         return $data['status'] ?? null;
@@ -116,14 +116,14 @@ class BlockDaemonDataSource extends BlockchainDataSource
         $data = self::simpleCall($url);
 
         $result = new stdClass();
-        if(!array_key_exists('status', $data) || !array_key_exists('events', $data)){
+        if (!array_key_exists('status', $data) || !array_key_exists('events', $data)) {
             return null;
         }
         $result->status = $data['status'];
         $result->confirmations = $data['confirmations'];
 
-        foreach ($data['events'] ?? [] as $event){
-            if($event['type'] !== 'transfer'){
+        foreach ($data['events'] ?? [] as $event) {
+            if ($event['type'] !== 'transfer') {
                 continue;
             }
 
@@ -151,7 +151,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
         $data = self::simpleCall($url);
 
-        if(!array_key_exists('status', $data)){
+        if (!array_key_exists('status', $data)) {
             return null;
         }
 
@@ -169,20 +169,20 @@ class BlockDaemonDataSource extends BlockchainDataSource
      */
     public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset): Balance
     {
-        if ($limit > 100) $limit  = 100;
+
+        if ($limit > 100) $limit = 100;
 
         $wallet_address = $address->getAddress();
         $tokens = [];
 
         if (!empty($contracts)) {
             foreach ($contracts as $contract) {
-                $data = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit?contract_address=" . $contract->getId());
+                $data = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit&contract_address=" . $contract->getId());
                 $tokens = array_merge($tokens, $data);
             }
+        } else {
+            $tokens = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit");
         }
-
-        // Because of max limit = 100 / call on this api, have to call several times
-        $tokens = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit");
 
         $foreignAdapter = new ForeignEntityAdapter(
             "",
@@ -219,8 +219,8 @@ class BlockDaemonDataSource extends BlockchainDataSource
             /** @var EthereumContract $ethContract */
             $ethContract = $contractFactory->get($contractAddress);
 
-            $contractStandard =  UnknownStandard::init();
-            $standard =  ERC721::init();
+            $contractStandard = UnknownStandard::init();
+            $standard = ERC721::init();
             // Token data
             $standard->setTokenId($entity->get('token_id'));
             $balance->addContractToken($ethContract, $standard, 1);
@@ -233,7 +233,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
     {
     }
 
-    public static  function  setApiKey($key)
+    public static function setApiKey($key)
     {
         static::$apiKey = $key;
     }
@@ -281,7 +281,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
             $result = json_decode($json, 1);
             $data = $result["data"] ?? [];
 
-            if (is_null($result["meta"])) {
+            if (empty($result["meta"])) {
                 $tokens["data"] = [];
             }
 
@@ -295,7 +295,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
             $apiToken = $result["meta"]["paging"]["next_page_token"] ?? "";
             sleep(0.1);
-        } while (!empty($token));
+        } while (!empty($apiToken));
 
         return $tokens;
     }
