@@ -367,7 +367,12 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
             $tokenArray[] = $eventEntity->getSpecifier();
         }
 
-        $bufferManager = new BufferManager();
+        if (!isset (LocalSolver::$bufferManager)){
+            $bufferManager = new BufferManager();
+        }
+        else {
+            $bufferManager = LocalSolver::$bufferManager;
+        }
         $bufferManager->loadAssetFactoryFromSpecifiers($tokenArray);
        LocalSolver::setBufferManager($bufferManager);
 

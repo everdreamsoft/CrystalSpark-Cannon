@@ -80,6 +80,7 @@ class BufferManager
     }
 
     public function loadAssetsFromContracts(array $contracts) {
+        if (empty($contracts)) return;
 
         $this->assetFactoryForContracts = new AssetFactory();
         $this->assetFactoryForContracts->setFilter(0, $contracts);

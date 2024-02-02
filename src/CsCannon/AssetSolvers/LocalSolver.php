@@ -34,7 +34,7 @@ class LocalSolver extends AssetSolver
 {
     private static $assetInCollections = [];
     private static $probeCheckedArray = [];
-    private static ?BufferManager $bufferManager = null;
+    public static ?BufferManager $bufferManager = null;
 
     public static function getSolverIdentifier()
     {
