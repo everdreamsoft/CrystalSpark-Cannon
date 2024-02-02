@@ -189,7 +189,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
         //Id should be unique in collection
         $verifyFactory = new AssetFactory(SandraManager::getSandra());
-        $verifyFactory->populateLocal();
+        $verifyFactory->populateFromSearchResults($id,AssetFactory::ID);
         $verif = $verifyFactory->get($id);
 
         if (isset($verif)) {
