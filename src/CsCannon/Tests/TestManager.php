@@ -28,17 +28,19 @@ class TestManager
     public  const ETHEREUM_TOKEN_ID = '47225'; //contract address
 
 
-    public static function initTestDatagraph(){
+    public static function initTestDatagraph($flushing = true){
 
 
 
 //         TestManagerPrivate::initTestDatagraph() ;
         //return
 
-        $sandraToFlush = new System('phpUnit_', true);
+        if ($flushing) {
+            $sandraToFlush = new System('phpUnit_', true);
 //        $system = new System('gossip', false, "127.0.0.1", "control_center");
-        \SandraCore\Setup::flushDatagraph($sandraToFlush);
-        $sandraToFlush->destroy();
+            \SandraCore\Setup::flushDatagraph($sandraToFlush);
+            $sandraToFlush->destroy();
+        }
         $system = new System('phpUnit_',true);
         $system->registerStructure = true ;
 

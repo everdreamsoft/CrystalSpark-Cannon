@@ -15,6 +15,7 @@ use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\AssetSolvers\LocalSolver;
 use CsCannon\AssetSolvers\PathPredictableSolver;
 use CsCannon\Blockchains\BlockchainBlockFactory;
+use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\DataSource\DatagraphSource;
 use CsCannon\Blockchains\Ethereum\EthereumAddressFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
@@ -312,7 +313,58 @@ final class AssetSolverTest extends TestCase
       //  $myAsset->bindToContract()
 
 
+    }
 
+    public function testALotOfAssets(){
+
+        \CsCannon\Tests\TestManager::initTestDatagraph();
+        $sandra = SandraManager::getSandra();
+
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $assetFactory = new AssetFactory(SandraManager::getSandra());
+        $assetCollectionFactory = new \CsCannon\AssetCollectionFactory(SandraManager::getSandra());
+        $time = time();
+        $timeString = "_t:"."$time";
+
+        ini_set('memory_limit', '4G');
+
+        for ($i = 1; $i <= 1000; $i++) {
+            // Create collection
+            $collection = $assetCollectionFactory->create('collection_'.$i.$timeString, null, LocalSolver::getEntity());
+
+            // Create contract
+            $contract = $contractFactory->get('@account_'.$i.$timeString, true, CounterpartyAsset::getEntity());
+            $contract->bindToCollection($collection);
+
+            // Create asset
+            $asset = $assetFactory->create('asset_'.$i.$timeString, ["randomData" => 'data'], [$collection], [$contract]);
+            $totalContracts[] = $contract ;
+        }
+
+        $contractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
+        $contractFactory->populateLocal(10000);
+
+        //load asset factory from a contract list
+        $bufferManager = new \CsCannon\BufferManager();
+        $bufferManager->loadAssetsFromContracts($contractFactory->getEntities());
+        LocalSolver::setBufferManager($bufferManager);
+
+        $assetFactory = new AssetFactory();
+        $assetFactory->populateLocal();
+
+
+
+
+        // Test LocalSolver for all created assets
+        foreach ($assetFactory->getEntities() as $asset) {
+            $contractArray = $asset->getContracts();
+            foreach ($contractArray as $contract) {
+                $orbFactory = new OrbFactory();
+                $orbs = $orbFactory->getOrbsFromContractPath($contract, CounterpartyAsset::getEntity());
+                 $this->assertCount(1, $orbs, 'Asset '.$asset->get('id').' does not have an ORB in contract '.$contract->getId());
+            }
+
+        }
 
     }
 

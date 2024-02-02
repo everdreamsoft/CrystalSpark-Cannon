@@ -10,9 +10,10 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 class BufferManager
 {
 
-    private  $assetFactoryContractMap ;
+    private  AssetFactory $assetFactoryForContracts  ;
     private TokenPathToAssetFactory $tokenToAssetFactory;
     private AssetFactory $assetFactory;
+
 
 
 
@@ -77,6 +78,26 @@ class BufferManager
 
 
     }
+
+    public function loadAssetsFromContracts(array $contracts) {
+
+        $this->assetFactoryForContracts = new AssetFactory();
+        $this->assetFactoryForContracts->setFilter(0, $contracts);
+        $this->assetFactoryForContracts->populateLocal();
+        $this->assetFactoryForContracts->getTriplets();
+        $this->assetFactoryForContracts->populateBrotherEntities(AssetFactory::$tokenJoinVerb);
+
+    }
+
+    public function hasDirectContractToAssets():?AssetFactory
+    {
+        if ($this->assetFactoryForContracts) return $this->assetFactoryForContracts ;
+
+        return null;
+
+    }
+
+
 
 
 }

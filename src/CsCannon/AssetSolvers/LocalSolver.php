@@ -66,6 +66,12 @@ class LocalSolver extends AssetSolver
 
     private static function getAssetFactory(AssetCollection $assetCollection)
     {
+
+        if (self::$bufferManager && self::$bufferManager->hasDirectContractToAssets()){
+            return self::$bufferManager->hasDirectContractToAssets();
+        }
+
+        //Sub Optimal
         $assetFactory = new AssetFactory();
         $assetFactory->setFilter(0, $assetCollection);
         $assetFactory->populateLocal();
