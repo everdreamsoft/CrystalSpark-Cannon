@@ -202,9 +202,6 @@ class AssetFactory extends \SandraCore\EntityFactory
         return $this->forceCreate($id,  $metaData, $collections, $contracts);
 
 
-
-
-
     }
 
 
