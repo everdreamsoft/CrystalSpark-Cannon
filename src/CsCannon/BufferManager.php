@@ -10,9 +10,11 @@ use CsCannon\Blockchains\BlockchainContractStandard;
 class BufferManager
 {
 
-    private  AssetFactory $assetFactoryForContracts  ;
+    private  ?AssetFactory $assetFactoryForContracts = null  ;
     private TokenPathToAssetFactory $tokenToAssetFactory;
     private AssetFactory $assetFactory;
+
+
 
 
 
