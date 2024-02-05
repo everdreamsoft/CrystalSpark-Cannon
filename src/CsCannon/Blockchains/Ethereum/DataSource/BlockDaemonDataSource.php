@@ -161,13 +161,13 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
     /**
      * @param BlockchainAddress $address
-     * @param array $contract
+     * @param array $contracts
      * @param $limit
      * @param $offset
      * @return Balance
      * @throws Exception
      */
-    public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset): Balance
+    public static function getBalanceForContract(BlockchainAddress $address, array $contracts, $limit, $offset): Balance
     {
 
         if ($limit > 100) $limit = 100;
