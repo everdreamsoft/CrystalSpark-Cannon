@@ -38,14 +38,6 @@ class CounterpartyAsset extends BlockchainContractStandard
     {
         if ($contract != null) {
 
-            // Testing Start
-            XchainOnBcy::$dbHost = env('DB_HOST_XCP');
-            XchainOnBcy::$db = env('DB_DATABASE_XCP');
-            XchainOnBcy::$dbUser = env('DB_USERNAME_XCP');
-            XchainOnBcy::$dbpass = env('DB_PASSWORD_XCP');
-            return XchainOnBcy::getAssetBlockTime($contract->getId());
-            // Testing End
-
             $date = $contract->get("mintDateTime");
 
             if ($date) {
