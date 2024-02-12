@@ -1,12 +1,11 @@
 <?php
 
 namespace CsCannon\Blockchains\Counterparty\Interfaces;
+
 use CsCannon\AssetSolvers\BooSolver;
-use CsCannon\AssetSolvers\DefaultEthereumSolver;
-use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
-use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
-use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
+use CsCannon\Blockchains\Counterparty\DataSource\XchainOnBcy;
 use CsCannon\Orb;
 use SandraCore\System;
 
@@ -19,44 +18,69 @@ use SandraCore\System;
 class CounterpartyAsset extends BlockchainContractStandard
 {
 
-    public $tokenId = null ;
+    public $tokenId = null;
     public $specificatorArray = [];
 
-    public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
-        $this->solver = BooSolver::class ;
-
-        parent::__construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget, $system);
-
-
-
-
-
+        $this->solver = BooSolver::class;
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
     }
-
-
-
 
     public function setTokenId($tokenId)
     {
-        return ;
-
     }
 
-    //ovveride the method to catch tokenId
-    public function setTokenPath($tokenPath){
+    /**
+     * @throws \Exception
+     */
+    public function getTokenMintDate(BlockchainContract $contract = null): ?string
+    {
+        if ($contract != null) {
 
+            // Testing Start
+            XchainOnBcy::$dbHost = env('DB_HOST_XCP');
+            XchainOnBcy::$db = env('DB_DATABASE_XCP');
+            XchainOnBcy::$dbUser = env('DB_USERNAME_XCP');
+            XchainOnBcy::$dbpass = env('DB_PASSWORD_XCP');
+            return XchainOnBcy::getAssetBlockTime($contract->getId());
+            // Testing End
 
+            $date = $contract->get("mintDateTime");
 
-       parent::setTokenPath($tokenPath);
+            if ($date) {
+                return $date;
+            }
 
+            // In case mint date is not found, get it from the DB and save it as ref on XCP contract
+            XchainOnBcy::$dbHost = env('DB_HOST_XCP');
+            XchainOnBcy::$db = env('DB_DATABASE_XCP');
+            XchainOnBcy::$dbUser = env('DB_USERNAME_XCP');
+            XchainOnBcy::$dbpass = env('DB_PASSWORD_XCP');
+
+            $date = XchainOnBcy::getAssetBlockTime($contract->getId());
+
+            if ($date) {
+                $contract->createOrUpdateRef("mintDateTime", $date);
+            }
+
+            return $date;
+
+        }
+
+        return null;
     }
 
 
+    //override the method to catch tokenId
+    public function setTokenPath($tokenPath)
+    {
+        parent::setTokenPath($tokenPath);
+    }
 
     public function getStandardName()
     {
-       return "Counterparty Token";
+        return "Counterparty Token";
     }
 
     public function getSolver()
@@ -66,17 +90,13 @@ class CounterpartyAsset extends BlockchainContractStandard
 
     public function resolveAsset(Orb $orb)
     {
-
-       $return = BooSolver::resolveAsset($orb,$this);
-       return $return ;
+        $return = BooSolver::resolveAsset($orb, $this);
+        return $return;
     }
-
 
     public function getDisplayStructure()
     {
-
-        $return = null ;
-        return $return ;
+        return null;
     }
 
 

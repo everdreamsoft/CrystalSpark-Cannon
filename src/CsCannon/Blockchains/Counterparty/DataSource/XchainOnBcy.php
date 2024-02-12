@@ -12,6 +12,7 @@ use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\ContractMetaData;
 use CsCannon\SandraManager;
+use PDOException;
 use SandraCore\DatabaseAdapter;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
@@ -29,14 +30,41 @@ class XchainOnBcy extends BlockchainDataSource
 
     public static $dbHost, $db, $dbpass, $dbUser;
 
+    /**
+     * @throws \Exception
+     */
+    public static function getAssetBlockTime(string $asset)
+    {
+        if (empty($asset)) return null;
+
+        $connection = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
+
+        $sql = "select  FROM_UNIXTIME(b.block_time) as timestamp
+                from assets as a
+                left join blocks as b on b.block_index=a.block_index
+                where asset = ? order by FROM_UNIXTIME(b.block_time)";
+
+        $pdo = $connection->get();
+
+        try {
+            $pdoResult = $pdo->prepare($sql);
+            $pdoResult->bindValue(1, $asset);
+            $pdoResult->execute();
+        } catch (PDOException $exception) {
+            System::sandraException($exception);
+            return null;
+        }
+
+        return $pdoResult->fetchColumn();
+
+    }
+
     public static function getAssetsBlockTimes(array $assets)
     {
         if (empty($assets)) return [];
 
         // Creating asset placeholder for each asset
         $placeholders = implode(',', array_fill(0, count($assets), '?'));
-
-        $foreignEntityAdapter = new ForeignEntityAdapter(null, '', SandraManager::getSandra());
         $connection = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
 
         $sql = "select  asset, FROM_UNIXTIME(b.block_time) as timestamp
@@ -57,12 +85,10 @@ class XchainOnBcy extends BlockchainDataSource
             $pdoResult->execute();
         } catch (PDOException $exception) {
             System::sandraException($exception);
-            return $foreignEntityAdapter;
+            return null;
         }
 
-        $resultArray = $pdoResult->fetchAll(\PDO::FETCH_KEY_PAIR);
-
-        return $resultArray;
+        return $pdoResult->fetchAll(\PDO::FETCH_KEY_PAIR);
 
     }
 

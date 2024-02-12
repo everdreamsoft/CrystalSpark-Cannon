@@ -33,6 +33,10 @@ abstract class BlockchainContractStandard extends Entity
     public const  CS_CANNON_ANY = 'CsCannon_any';
 
 
+    public function getTokenMintDate(BlockchainContract $contract = null):?string
+    {
+        return null;
+    }
 
 
     public function verifyTokenPath($tokenPath){
@@ -123,14 +127,11 @@ abstract class BlockchainContractStandard extends Entity
 
     public static function init($data = null)
     {
-
         return static::getEntity($data);
-
     }
 
     public static function getJsonFromStandardArray($array)
     {
-
 
         $totalArray = array();
 
@@ -178,7 +179,6 @@ abstract class BlockchainContractStandard extends Entity
      */
     public static function getOrderProcessor():BlockchainOrderProcess
     {
-
         return new BlockchainOrderProcess();
 
 
