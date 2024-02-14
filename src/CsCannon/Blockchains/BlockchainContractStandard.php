@@ -9,15 +9,12 @@
 namespace CsCannon\Blockchains;
 
 
-use CsCannon\AssetSolvers\AssetSolver;
 use CsCannon\BlockchainStandardFactory;
-use CsCannon\MetadataSolverFactory;
 use CsCannon\Orb;
 use CsCannon\SandraManager;
 use CsCannon\Tools\BlockchainOrderProcess;
 use SandraCore\Entity;
 use SandraCore\Reference;
-use SandraCore\System;
 
 abstract class BlockchainContractStandard extends Entity
 {
@@ -25,87 +22,88 @@ abstract class BlockchainContractStandard extends Entity
 
     public $specificatorArray = array();
     public $specificatorData = array();
-    public abstract function resolveAsset(Orb $orb) ;
-    public abstract function getStandardName() ;
-    public abstract function getDisplayStructure() ;
-    public static $entityClassArray = null ;
+
+    public abstract function resolveAsset(Orb $orb);
+
+    public abstract function getStandardName();
+
+    public abstract function getDisplayStructure();
+
+    public static $entityClassArray = null;
     public const STANDARD_NAME_SHORTNAME = 'standardName';
     public const  CS_CANNON_ANY = 'CsCannon_any';
 
 
-    public function getTokenMintDate(BlockchainContract $contract = null):?string
+    public function getTokenMintDate(BlockchainContract $contract = null): ?string
     {
         return null;
     }
 
 
-    public function verifyTokenPath($tokenPath){
+    public function verifyTokenPath($tokenPath)
+    {
 
         try {
 
-            foreach ($this->specificatorArray ? $this->specificatorArray :array() as $key => $value) {
-
+            foreach ($this->specificatorArray ? $this->specificatorArray : array() as $key => $value) {
 
 
                 $pathItemUnid = $this->system->systemConcept->get($value);
 
 
-
-                if( !isset($tokenPath[$value]) and !isset($tokenPath[$pathItemUnid])) {
-                    throw new \Exception("" .$this->getStandardName() ." token require $value for contract ");
-
-
-
+                if (!isset($tokenPath[$value]) and !isset($tokenPath[$pathItemUnid])) {
+                    throw new \Exception("" . $this->getStandardName() . " token require $value for contract ");
 
 
                 }
 
-                if (isset($tokenPath[$pathItemUnid])) $pathValue = $tokenPath[$pathItemUnid] ;
-                if (isset($tokenPath[$value])) $pathValue = $tokenPath[$value] ;
+                if (isset($tokenPath[$pathItemUnid])) $pathValue = $tokenPath[$pathItemUnid];
+                if (isset($tokenPath[$value])) $pathValue = $tokenPath[$value];
 
-                if ($pathValue instanceof Reference){
+                if ($pathValue instanceof Reference) {
                     $pathValue = $pathValue->refValue;
                 }
 
 
-                $this->specificatorData[$value] = $pathValue ;
+                $this->specificatorData[$value] = $pathValue;
 
             }
-        }
-        catch (\Exception $e){
-          //  echo 'Caught exception: ',  $e->getMessage(), "\n";
-            throw $e ;
+        } catch (\Exception $e) {
+            //  echo 'Caught exception: ',  $e->getMessage(), "\n";
+            throw $e;
 
 
         }
 
-        return $this ;
+        return $this;
 
 
     }
 
-    public function setTokenPath($tokenPath){
+    public function setTokenPath($tokenPath)
+    {
 
         return $this->verifyTokenPath($tokenPath);
 
     }
 
-    public function getSpecifierData(){
+    public function getSpecifierData()
+    {
 
-        return $this->specificatorData ;
+        return $this->specificatorData;
 
     }
 
-    public static function getEntity($data=null):self
+    public static function getEntity($data = null): self
     {
 
         $sandra = SandraManager::getSandra();
 
-        $localEntity = null ;
+        $localEntity = null;
         $standardFactory = BlockchainStandardFactory::getStatic(SandraManager::getSandra());
 
-        if ($sandra->entityToClassStore(static::class,$standardFactory))
-            $localEntity = $sandra->entityToClassStore(static::class,$standardFactory) ;
+        if ($sandra->entityToClassStore(static::class, $standardFactory))
+            $localEntity = $sandra->entityToClassStore(static::class, $standardFactory);
         /** @var BlockchainContractStandard $localEntity */
 
 
@@ -114,12 +112,12 @@ abstract class BlockchainContractStandard extends Entity
 
             static::$entityClassArray[static::class] = $standardFactory->getOrCreateFromRef('class_name', static::class);
 
-            $localEntity =  static::$entityClassArray[static::class];
+            $localEntity = static::$entityClassArray[static::class];
 
         }
 
-        if($data) $localEntity->setTokenPath($data);
-        $newEntity = clone $localEntity ;
+        if ($data) $localEntity->setTokenPath($data);
+        $newEntity = clone $localEntity;
 
         return $newEntity;
 
@@ -135,17 +133,17 @@ abstract class BlockchainContractStandard extends Entity
 
         $totalArray = array();
 
-        foreach ($array as $standard){
+        foreach ($array as $standard) {
             /** @var \CsCannon\Blockchains\BlockchainContractStandard $standard */
             $standard->specificatorData['_class_'] = get_class($standard);
-            $totalArray[] = $standard->specificatorData ;
+            $totalArray[] = $standard->specificatorData;
 
 
         }
 
         $json = json_encode($totalArray);
 
-        return $json ;
+        return $json;
 
 
     }
@@ -153,10 +151,10 @@ abstract class BlockchainContractStandard extends Entity
     public static function getStandardsFromJson($json)
     {
 
-        $array = json_decode($json,1);
+        $array = json_decode($json, 1);
         $standard = [];
 
-        foreach ($array as $path){
+        foreach ($array as $path) {
 
             $class = $path['_class_'];
 
@@ -177,14 +175,12 @@ abstract class BlockchainContractStandard extends Entity
      *
      * @return BlockchainOrderProcess
      */
-    public static function getOrderProcessor():BlockchainOrderProcess
+    public static function getOrderProcessor(): BlockchainOrderProcess
     {
         return new BlockchainOrderProcess();
 
 
     }
-
-
 
 
 }

@@ -5,7 +5,6 @@ namespace CsCannon\Blockchains\Counterparty\Interfaces;
 use CsCannon\AssetSolvers\BooSolver;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
-use CsCannon\Blockchains\Counterparty\DataSource\XchainOnBcy;
 use CsCannon\Orb;
 use SandraCore\System;
 
@@ -38,22 +37,29 @@ class CounterpartyAsset extends BlockchainContractStandard
     {
         if ($contract != null) {
 
-            $date = $contract->get("mintDateTime");
+            return "12 12 2002";
+
+            $date = $contract->get("mintDatetime");
 
             if ($date) {
                 return $date;
             }
 
-            // In case mint date is not found, get it from the DB and save it as ref on XCP contract
-            XchainOnBcy::$dbHost = env('DB_HOST_XCP');
-            XchainOnBcy::$db = env('DB_DATABASE_XCP');
-            XchainOnBcy::$dbUser = env('DB_USERNAME_XCP');
-            XchainOnBcy::$dbpass = env('DB_PASSWORD_XCP');
 
-            $date = XchainOnBcy::getAssetBlockTime($contract->getId());
+            $dataSource = $contract->getDataSource();
+
+            if ($dataSource) {
+                $adapter = $dataSource->getMintDatetime($contract, "");
+                $list = $adapter->getEntities();
+                $entity = reset($list);
+                if (!$entity) {
+                    $date = null;
+                }
+                $date = $entity->get("timestamp");
+            }
 
             if ($date) {
-                $contract->createOrUpdateRef("mintDateTime", $date);
+                $contract->createOrUpdateRef("mintDatetime", $date);
             }
 
             return $date;

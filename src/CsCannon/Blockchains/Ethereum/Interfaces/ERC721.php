@@ -1,11 +1,12 @@
 <?php
 
 namespace CsCannon\Blockchains\Ethereum\Interfaces;
+
 use CsCannon\AssetSolvers\DefaultEthereumSolver;
-use CsCannon\Blockchains\BlockchainContractFactory;
-use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
+use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\Ethereum\EthereumContractStandard;
 use CsCannon\Orb;
+use SandraCore\Entity;
 use SandraCore\Reference;
 use SandraCore\System;
 
@@ -18,44 +19,73 @@ use SandraCore\System;
 class ERC721 extends EthereumContractStandard
 {
 
-    public $tokenId = null ;
+    public $tokenId = null;
     public $specificatorArray = ['tokenId'];
 
-    public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, System $system)
     {
-        $this->solver = DefaultEthereumSolver::class ;
+        $this->solver = DefaultEthereumSolver::class;
 
-        parent::__construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget, $system);
-
-
-
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
 
 
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function getTokenMintDate(BlockchainContract $contract = null): ?string
+    {
+        $this->factory->populateBrotherEntities("info", $contract->subjectConcept->idConcept);
+        $date = $this->getBrotherReference("info", $contract->subjectConcept->idConcept, "mintDatetime");
 
+        if ($date) {
+            return $date;
+        }
+
+        $dataSource = $contract->getDataSource();
+
+        if ($dataSource) {
+            $adapter = $dataSource->getMintDatetime($contract->getId(), $this->tokenId);
+            $list = $adapter->getEntities();
+            $entity = reset($list);
+            if (!$entity) {
+                $date = null;
+            } else
+                $date = $entity->get("timestamp");
+        }
+
+        if ($date) {
+            /** @var Entity $this */
+            $entity = $this->setBrotherEntity("info", $contract->subjectConcept->idConcept);
+            $entity->createOrUpdateRef("mintDatetime", $date);
+        }
+
+        return $date;
+
+    }
 
 
     public function setTokenId($tokenId)
     {
-        return $this->setTokenPath(array('tokenId'=>$tokenId));
+        return $this->setTokenPath(array('tokenId' => $tokenId));
 
     }
 
     //ovveride the method to catch tokenId
-    public function setTokenPath($tokenPath){
+    public function setTokenPath($tokenPath)
+    {
 
         $tokenIdUnid = $this->system->systemConcept->get('tokenId');
 
         //we check if we got a raw value or a reference
 
-        if (isset ($tokenPath[$tokenIdUnid])){
+        if (isset ($tokenPath[$tokenIdUnid])) {
 
             $referenceConceptOrString = $tokenPath[$tokenIdUnid];
-            if ($referenceConceptOrString instanceof Reference){
+            if ($referenceConceptOrString instanceof Reference) {
                 $referenceConceptOrString = $referenceConceptOrString->refValue;
             }
-
 
 
             $this->tokenId = $referenceConceptOrString;
@@ -63,10 +93,10 @@ class ERC721 extends EthereumContractStandard
 
         }
 
-        if (isset ($tokenPath['tokenId'])){
+        if (isset ($tokenPath['tokenId'])) {
 
             $referenceConceptOrString = $tokenPath['tokenId'];
-            if ($referenceConceptOrString instanceof Reference){
+            if ($referenceConceptOrString instanceof Reference) {
                 $referenceConceptOrString = $referenceConceptOrString->refValue;
             }
 
@@ -74,37 +104,35 @@ class ERC721 extends EthereumContractStandard
         }
 
 
-       return parent::setTokenPath($tokenPath);
+        return parent::setTokenPath($tokenPath);
 
     }
-
 
 
     public function getStandardName()
     {
-       return "ERC721";
+        return "ERC721";
     }
 
-    public static function init($tokenId=null)
+    public static function init($tokenId = null)
     {
 
 
-        $directTokenId = null ;
-        $tokenData = null ;
+        $directTokenId = null;
+        $tokenData = null;
 
         //if the user only send a string then he wants to init with the token id
-        if (is_string($tokenId) or is_int($tokenId)){
-            $tokenData = null ; //we remove token data array
-            $directTokenId = $tokenId ;
+        if (is_string($tokenId) or is_int($tokenId)) {
+            $tokenData = null; //we remove token data array
+            $directTokenId = $tokenId;
         }
-        if (is_array($tokenId)) $tokenData = $tokenId ;
+        if (is_array($tokenId)) $tokenData = $tokenId;
 
 
         $return = parent::init($tokenData);
-        if(!is_null($directTokenId))  $return->setTokenId($directTokenId); // then we set token id afterwards
+        if (!is_null($directTokenId)) $return->setTokenId($directTokenId); // then we set token id afterwards
 
-        return $return ;
-
+        return $return;
 
 
     }
@@ -112,16 +140,16 @@ class ERC721 extends EthereumContractStandard
     public function resolveAsset(Orb $orb)
     {
 
-       $return = DefaultEthereumSolver::resolveAsset($orb,$this);
-       return $return ;
+        $return = DefaultEthereumSolver::resolveAsset($orb, $this);
+        return $return;
     }
 
 
     public function getDisplayStructure()
     {
 
-       $return = 'tokenId-'.$this->specificatorData['tokenId'] ;
-        return $return ;
+        $return = 'tokenId-' . $this->specificatorData['tokenId'];
+        return $return;
     }
 
     public function getInterfaceAbi()
@@ -688,7 +716,7 @@ class ERC721 extends EthereumContractStandard
       \"type\": \"function\"
     }
   ]";
-        return $strJsonFileContents ;
+        return $strJsonFileContents;
     }
 
 

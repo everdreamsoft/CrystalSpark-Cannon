@@ -30,6 +30,11 @@ class XcpContract extends BlockchainContract
     public static $file = 'blockchainContractFile';
     public static  $className = 'CsCannon\Blockchains\Counterparty\XcpContract' ;
 
+    public function __construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system)
+    {
+        parent::__construct($sandraConcept, $sandraReferencesArray, $factory, $entityId, $conceptVerb, $conceptTarget, $system);
+        $this->tokenDetailsFactory = new XcpTokenDetailsFactory($system, $this);
+    }
 
     public function resolveMetaData (){
 
@@ -75,10 +80,7 @@ class XcpContract extends BlockchainContract
     }
 
     public function getStandard():?BlockchainContractStandard{
-
-
         parent::getStandard();
-
         return CounterpartyAsset::init();
     }
 

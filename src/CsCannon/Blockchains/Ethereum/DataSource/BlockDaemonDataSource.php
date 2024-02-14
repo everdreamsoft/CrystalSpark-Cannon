@@ -327,4 +327,30 @@ class BlockDaemonDataSource extends BlockchainDataSource
 
         return json_decode($json, 1) ?? [];
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function getMintDatetime($contract, $token): ForeignEntityAdapter
+    {
+        $assetDetailsUrl = self::$apiUrl . "/asset?contract_address=" . $contract . "&token_id=" . $token;
+
+        $sandra = SandraManager::getSandra();
+
+        $foreignAdapter = new ForeignEntityAdapter(
+            $assetDetailsUrl,
+            "",
+            $sandra,
+            "Authorization: Bearer " . self::$apiKey
+        );
+
+        $assetVocabulary = array(
+            'mint_date' => 'timestamp',
+        );
+
+        $foreignAdapter->adaptToLocalVocabulary($assetVocabulary);
+        $foreignAdapter->populate();
+
+        return $foreignAdapter;
+    }
 }
