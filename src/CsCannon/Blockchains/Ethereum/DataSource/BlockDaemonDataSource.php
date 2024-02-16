@@ -18,6 +18,7 @@ use Exception;
 use SandraCore\ForeignEntity;
 use SandraCore\ForeignEntityAdapter;
 use SandraCore\System;
+use stdClass;
 
 /**
  * Created by EverdreamSoft.
@@ -28,41 +29,38 @@ use SandraCore\System;
 class BlockDaemonDataSource extends BlockchainDataSource
 {
 
-    public $sandra ;
+    public $sandra;
     public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/ethereum/mainnet';
-    public static $apiKey = '39HnB9255yMUYt86LLuyqXbEnJKPMuWdHBiQSsx9zNnj2jTG';
+    private static $contractMap = [];
 
-    private static array $contractMap = [];
-
-
-// TODO find out how to get events from BlockDaemon and where do we use it
-    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    // TODO find out how to get events from BlockDaemon and where do we use it
+    public static function getEvents($contract = null, $batchMax = 1000, $offset = 0, $address = null): ForeignEntityAdapter
     {
         // Probably not necessary anymore
 
-        if (empty($batchMax) || $batchMax > 100){
+        if (empty($batchMax) || $batchMax > 100) {
             $batchMax = 100;
         }
 
         $address = self::getAddressString($address);
         $addressFilter = "";
-        if (!is_null($address)){
+        if (!is_null($address)) {
             $addressFilter = "&wallet_address=$address";
         }
 
         $contractFilter = "";
-        if(!is_null($contract)){
+        if (!is_null($contract)) {
             $contractFilter = "&contract_address=$contract";
         }
 
-        $sandra =  SandraManager::getSandra();
+        $sandra = SandraManager::getSandra();
         /** @var System $sandra */
-//        $openSeaEvents =  static::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
-        $blockDaemonEvents =  static::$apiUrl."events?event_type=transfer&page_size=$batchMax".$addressFilter.$contractFilter;
+        //        $openSeaEvents =  static::$apiUrl."events/?event_type=transfer&limit=$batchMax&offset=$offset".$addressFilter;
+        $blockDaemonEvents = static::$apiUrl . "events?event_type=transfer&page_size=$batchMax" . $addressFilter . $contractFilter;
 
-        $result = self::gatherData(static::$apiUrl."/events?event_type=transfer&page_size=$batchMax".$addressFilter.$contractFilter);
+        $result = self::gatherData(static::$apiUrl . "/events?event_type=transfer&page_size=$batchMax" . $addressFilter . $contractFilter);
 
-        $formattedForeign = new ForeignEntityAdapter(null,null,SandraManager::getSandra());
+        $formattedForeign = new ForeignEntityAdapter(null, null, SandraManager::getSandra());
 
         $blockDaemonVocabulary = [
             'id' => 'id',
@@ -73,7 +71,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         ];
 
 
-        return $formattedForeign ;
+        return $formattedForeign;
     }
 
     /**
@@ -81,33 +79,106 @@ class BlockDaemonDataSource extends BlockchainDataSource
      */
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
-        return self::getBalanceForContract($address,array(), $limit, $offset);
+        return self::getBalanceForContract($address, array(), $limit, $offset);
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getTransactionStatus(string $blockchainName, string $txHash): ?string
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        if (!array_key_exists('status', $data)) {
+            return null;
+        }
+        return $data['status'] ?? null;
+    }
+
+    /**
+     * @param string $blockchainName
+     * @param string $txHash
+     *
+     * @return stdClass|null
+     * @throws Exception
+     */
+    public static function getTransactionDetails(string $blockchainName, string $txHash): ?stdClass
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        $result = new stdClass();
+        if (!array_key_exists('status', $data) || !array_key_exists('events', $data)) {
+            return null;
+        }
+        $result->status = $data['status'];
+        $result->confirmations = $data['confirmations'];
+
+        foreach ($data['events'] ?? [] as $event) {
+            if ($event['type'] !== 'transfer') {
+                continue;
+            }
+
+            // potential very big float witn scientific notation, convert it to gmp to calculate
+            // amount from BlockDaemon is raw
+            $gmpAmount = gmp_init(number_format($event['amount'], 0, '', ''));
+            $decimals = $event['decimals'];
+            // convert to adapted number
+            $res = gmp_div($gmpAmount, pow(10, $decimals));
+
+            $result->hash = $event['transaction_id'] ?? null;
+            $result->src_address = $event['source'] ?? null;
+            $result->dst_address = $event['destination'] ?? null;
+            $result->contract = $event['meta']['contract'] ?? null;
+            $result->quantity = gmp_intval($res);
+            $result->time = $event['date'];
+            break;
+        }
+        return $result;
+    }
+
+    public static function getTokenIdFromTx(string $blockchainName, string $txHash): ?array
+    {
+        $blockchainName = strtolower($blockchainName);
+        $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";
+        $data = self::simpleCall($url);
+
+        if (!array_key_exists('status', $data)) {
+            return null;
+        }
+
+        return $data ?? null;
+    }
+
+
+    /**
      * @param BlockchainAddress $address
-     * @param array $contract
+     * @param array $contracts
      * @param $limit
      * @param $offset
      * @return Balance
      * @throws Exception
      */
-    public static function getBalanceForContract(BlockchainAddress $address, array $contract, $limit, $offset): Balance
+    public static function getBalanceForContract(BlockchainAddress $address, array $contracts, $limit, $offset): Balance
     {
-        if ( $limit > 100 ) $limit  = 100 ;
+
+        if ($limit > 100)
+            $limit = 100;
 
         $wallet_address = $address->getAddress();
         $tokens = [];
 
-        if(!empty($contracts)){
-            foreach ($contracts as $contract){
-                $data = self::gatherData(static::$apiUrl."/assets?wallet_address=$wallet_address&page_size=$limit?contract_address=".$contract->getId());
+        if (!empty($contracts)) {
+            foreach ($contracts as $contract) {
+                $data = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit&contract_address=" . $contract->getId());
                 $tokens = array_merge($tokens, $data);
             }
+        } else {
+            $tokens = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit");
         }
-
-        // Because of max limit = 100 / call on this api, have to call several times
-        $tokens = self::gatherData(static::$apiUrl."/assets?wallet_address=$wallet_address&page_size=$limit");
 
         $foreignAdapter = new ForeignEntityAdapter(
             "",
@@ -118,9 +189,9 @@ class BlockDaemonDataSource extends BlockchainDataSource
         );
 
         $assetVocabulary = array(
-            'image_url'=>'image',
-            'assetName'=>'assetName',
-            'name'=>'name',
+            'image_url' => 'image',
+            'assetName' => 'assetName',
+            'name' => 'name',
         );
 
         // $foreignAdapter->flatSubEntity('contract_address','contract');
@@ -128,7 +199,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         $foreignAdapter->populate();
 
         $contractFactory = new EthereumContractFactory();
-        $contractFactory->populateFromSearchResults(self::$contractMap,BlockchainContractFactory::MAIN_IDENTIFIER);
+        $contractFactory->populateFromSearchResults(self::$contractMap, BlockchainContractFactory::MAIN_IDENTIFIER);
 
         $collectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
         $collectionFactory->populateLocal();
@@ -137,46 +208,44 @@ class BlockDaemonDataSource extends BlockchainDataSource
         $balance = new Balance();
 
         //BlockDaemon API ruleset
-        foreach ($foreignAdapter->entityArray as $entity){
+        foreach ($foreignAdapter->entityArray as $entity) {
             // Contract data
             /** @var ForeignEntity $entity */
             $contractAddress = $entity->get('contract_address');
             /** @var EthereumContract $ethContract */
-            $ethContract = $contractFactory->get($contractAddress, true);
+            $ethContract = $contractFactory->get($contractAddress);
 
-            $standard =  ERC721::init();
+            $contractStandard = UnknownStandard::init();
+            $standard = ERC721::init();
             // Token data
             $standard->setTokenId($entity->get('token_id'));
-            $balance->addContractToken($ethContract,$standard,1);
+            $balance->addContractToken($ethContract, $standard, 1);
         }
-        $balance->address = $address ;
-        return $balance ;
+        $balance->address = $address;
+        return $balance;
     }
 
-    public function createCollectionFromOS($openseaEntity){}
-
-    public static  function  setApiKey($key){
-        static::$apiKey = $key ;
+    public function createCollectionFromOS($openseaEntity)
+    {
     }
-
 
     /**
      * @throws Exception
      */
-    private static function gatherData(string $url) :array
+    private static function gatherData(string $url): array
     {
-        $api_key = static::$apiKey;
+        $api_key = $_ENV['BLOCKDAEMON_API_KEY'];
         $headerData = "Authorization: Bearer $api_key";
 
         $apiToken = "";
         $tokens = [];
 
-        do{
-            if (!empty($apiToken)){
-                if(strpos($url, "&page_token=")){
+        do {
+            if (!empty($apiToken)) {
+                if (strpos($url, "&page_token=")) {
                     $url = strstr($url, "&page_token=", true);
                 }
-                $url = $url."&page_token=$apiToken";
+                $url = $url . "&page_token=$apiToken";
             }
 
             try {
@@ -195,30 +264,57 @@ class BlockDaemonDataSource extends BlockchainDataSource
                     throw new Exception(curl_error($ch), curl_errno($ch));
                 }
                 curl_close($ch);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 throw new Exception($e);
             }
 
-            $result = json_decode($json,1);
+            $result = json_decode($json, 1);
             $data = $result["data"] ?? [];
 
-            if(is_null($result["meta"])){
+            if (empty($result["meta"])) {
                 $tokens["data"] = [];
             }
 
-            foreach ($data as $tokenData){
+            foreach ($data as $tokenData) {
                 $tokens["data"][] = $tokenData;
                 $contract = $tokenData["contract_address"] ?? null;
-                if(!is_null($contract) && !in_array($contract, self::$contractMap)){
+                if (!is_null($contract) && !in_array($contract, self::$contractMap)) {
                     self::$contractMap[] = $contract;
                 }
             }
 
             $apiToken = $result["meta"]["paging"]["next_page_token"] ?? "";
             sleep(0.1);
-
-        }while(!empty($token));
+        } while (!empty($apiToken));
 
         return $tokens;
+    }
+
+    private static function simpleCall(string $url)
+    {
+        $api_key = $_ENV['BLOCKDAEMON_API_KEY'];
+        $headerData = "Authorization: Bearer $api_key";
+
+        try {
+            $ch = curl_init();
+            if ($ch === false) {
+                throw new Exception('Failed to initialize');
+            }
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array($headerData));
+
+            $json = curl_exec($ch);
+            if ($json === false) {
+                throw new Exception(curl_error($ch), curl_errno($ch));
+            }
+            curl_close($ch);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+
+        return json_decode($json, 1) ?? [];
     }
 }
