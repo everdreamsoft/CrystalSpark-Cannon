@@ -27,14 +27,38 @@ use SandraCore\System;
 class XchainOnBcy extends BlockchainDataSource
 {
 
+    public static $dbHost, $db, $dbpass, $dbUser;
 
-
-    public static $dbHost, $db, $dbpass, $dbUser ;
-
-
-    public static function getEventsFromTimestamp(string $timestamp, $contract=null, $batchMax=1000, $offset=0)
+    public static function getRawBalance(BlockchainAddress $address, $limit = 5000, $offset = 0): ForeignEntityAdapter
     {
-        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
+        $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
+        $sql = "SELECT * FROM `index_addresses` 
+                JOIN balances ON balances.address_id = index_addresses.id
+                JOIN assets ON balances.asset_id = assets.id
+                WHERE index_addresses.address = '" . $address->getAddress() . "'
+                AND balances.quantity > 0" . " limit " . $limit . " offset " . $offset;
+
+        $pdo = $blockSucker->get();
+
+        try {
+            $pdoResult = $pdo->prepare($sql);
+            $pdoResult->execute();
+        } catch
+        (PDOException $exception) {
+            System::sandraException($exception);
+            return [];
+        }
+
+        $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
+        $foreignAdapter = new ForeignEntityAdapter("", '', SandraManager::getSandra(), null, $resultArray);
+        $foreignAdapter->populate();
+
+        return $foreignAdapter;
+    }
+
+    public static function getEventsFromTimestamp(string $timestamp, $contract = null, $batchMax = 1000, $offset = 0)
+    {
+        $foreignEntityAdapter = new ForeignEntityAdapter(null, '', SandraManager::getSandra());
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
 
@@ -53,31 +77,31 @@ class XchainOnBcy extends BlockchainDataSource
         $pdo = $blockSucker->get();
         $entityArray = array();
 
-        try{
+        try {
             $pdoResult = $pdo->prepare($sql);
             $pdoResult->execute();
-        }catch(PDOException $exception){
+        } catch (PDOException $exception) {
             System::sandraException($exception);
             return $foreignEntityAdapter;
         }
 
         $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
 
-        if(empty($resultArray)){
+        if (empty($resultArray)) {
             $foreignEntityAdapter->entityArray = [];
             return $foreignEntityAdapter;
         }
 
         foreach ($resultArray as $result) {
 
-            if (!($result['asset'])){
-                $result['asset'] ='NOASSET' ;
-                continue ;
+            if (!($result['asset'])) {
+                $result['asset'] = 'NOASSET';
+                continue;
             }
 
             $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['source_address'] ;
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['destination_address'] ;
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['source_address'];
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['destination_address'];
 
             $hash = $result['tx_hash'];
 
@@ -96,23 +120,23 @@ class XchainOnBcy extends BlockchainDataSource
             );
 
             //add tracker
-            $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'] ;
-            $transactionData = $transactionData + $trackedArray ;
+            $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'];
+            $transactionData = $transactionData + $trackedArray;
 
             $entityArray[] = new ForeignEntity($hash, $transactionData, $foreignEntityAdapter, $hash, SandraManager::getSandra());
         }
 
-        $foreignEntityAdapter->addNewEtities($entityArray,array());
+        $foreignEntityAdapter->addNewEtities($entityArray, array());
 
-        return $foreignEntityAdapter ;
+        return $foreignEntityAdapter;
     }
 
 
-    public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    public static function getEvents($contract = null, $batchMax = 1000, $offset = 0, $address = null): ForeignEntityAdapter
     {
 
 
-        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
+        $foreignEntityAdapter = new ForeignEntityAdapter(null, '', SandraManager::getSandra());
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
         $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends 
@@ -142,15 +166,16 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         return self::processEvents($resultArray);
     }
 
-    private static function processEvents($resultArray){
-        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
+    private static function processEvents($resultArray)
+    {
+        $foreignEntityAdapter = new ForeignEntityAdapter(null, '', SandraManager::getSandra());
         $entityArray = array();
         foreach ($resultArray as $result) {
 
-            if (!($result['asset'])){
+            if (!($result['asset'])) {
 
-                $result['asset'] ='NOASSET' ;
-                continue ;
+                $result['asset'] = 'NOASSET';
+                continue;
             }
             //echo"asset :".$result['asset'] .PHP_EOL;
 
@@ -158,9 +183,8 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
             //add tracker
             $trackedArray[BlockchainImporter::TRACKER_ADDRESSES] = array();
 
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['source_address'] ;
-            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['destination_address'] ;
-
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['source_address'];
+            $trackedArray[BlockchainImporter::TRACKER_ADDRESSES][] = $result['destination_address'];
 
 
             $hash = $result['tx_hash'];
@@ -181,35 +205,36 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
             );
             //add tracker
-            $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'] ;
+            $transactionData[BlockchainImporter::TRACKER_CONTRACTIDS][] = $result['asset'];
 
 
             //$transactionData[BlockchainImporter::TRACKER_BLOCKID][] =  $result['block_index'] ;
 
 
-            $transactionData = $transactionData + $trackedArray ;
+            $transactionData = $transactionData + $trackedArray;
 
             $entityArray[] = $entity = new ForeignEntity($hash, $transactionData, $foreignEntityAdapter, $hash, SandraManager::getSandra());
 
 
         }
 
-        $foreignEntityAdapter->addNewEtities($entityArray,array());
+        $foreignEntityAdapter->addNewEtities($entityArray, array());
 
-        return $foreignEntityAdapter ;
+        return $foreignEntityAdapter;
 
     }
 
-    public static function getEventsFromTxHash($txHashArray):ForeignEntityAdapter{
-        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
+    public static function getEventsFromTxHash($txHashArray): ForeignEntityAdapter
+    {
+        $foreignEntityAdapter = new ForeignEntityAdapter(null, '', SandraManager::getSandra());
 
         $commaSeparated = '';
-        $first = true ;
-        foreach ($txHashArray as $hasString){
+        $first = true;
+        foreach ($txHashArray as $hasString) {
 
             $first ? $commaSeparated .= "'$hasString'" : $commaSeparated .= ",'$hasString'";
 
-            $first = false ;
+            $first = false;
         }
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
@@ -221,7 +246,7 @@ JOIN assets a  ON sends.`asset_id` = a.id
 JOIN blocks b  ON sends.`block_index` = b.`block_index` WHERE hash IN ($commaSeparated)";
         $pdo = $blockSucker->get();
 
-         try {
+        try {
             $pdoResult = $pdo->prepare($sql);
             $pdoResult->execute();
         } catch
@@ -238,11 +263,11 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index` WHERE hash IN ($commaSep
 
     }
 
-    public static function getExchanges($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
+    public static function getExchanges($contract = null, $batchMax = 1000, $offset = 0, $address = null): ForeignEntityAdapter
     {
 
 
-        $foreignEntityAdapter = new ForeignEntityAdapter(null,'',SandraManager::getSandra());
+        $foreignEntityAdapter = new ForeignEntityAdapter(null, '', SandraManager::getSandra());
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
         $sql = "SELECT sends.tx_index, b.block_time, sends.block_index, hash as tx_hash, s.address as source_address,  d.address as destination_address, a.asset as asset, `quantity`, memo FROM sends 
@@ -276,12 +301,11 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
         return self::processEvents($resultArray);
     }
 
-    public static function getContractMetaData($contract):ContractMetaData
+    public static function getContractMetaData($contract): ContractMetaData
 
     {
 
         $metadata = new ContractMetaData($contract);
-
 
 
         $blockSucker = new PdoConnexionWrapper(self::$dbHost, self::$db, self::$dbUser, self::$dbpass);
@@ -291,7 +315,7 @@ a.address as issuer_address,
 a2.address as owner_address FROM assets
          JOIN index_addresses as a on assets.issuer_id = a.id
           JOIN index_addresses as a2 on assets.owner_id = a2.id
-           WHERE assets.asset = '".$contract->getId()."'
+           WHERE assets.asset = '" . $contract->getId() . "'
          ";
         $pdo = $blockSucker->get();
 
@@ -308,26 +332,23 @@ a2.address as owner_address FROM assets
         }
 
 
-
-
         $resultArray = $pdoResult->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($resultArray as $result) {
-            $decimals = 0 ;
+            $decimals = 0;
             if ($result['divisible'] == 1) $decimals = 8;
 
             $array = array();
 
-            $metadata->setIsMutableSupply($result['locked']?0:1);
+            $metadata->setIsMutableSupply($result['locked'] ? 0 : 1);
             $metadata->setDecimals($decimals);
             $metadata->setInterface(CounterpartyAsset::init());
             $metadata->setTotalSupply($result['supply']);
             //echo"asset :".$result['asset'] .PHP_EOL;
 
 
-
         }
 
-        return $metadata ;
+        return $metadata;
     }
 
 
@@ -340,7 +361,6 @@ a2.address as owner_address FROM assets
         $offsetSql = '';
 
 
-
         if ($limit)
             $limitSQL = "LIMIT  $limit";
 
@@ -351,7 +371,7 @@ a2.address as owner_address FROM assets
         $sql = "SELECT * FROM `index_addresses` 
 JOIN balances ON balances.address_id = index_addresses.id
 JOIN assets ON balances.asset_id = assets.id
-WHERE index_addresses.address = '".$address->getAddress()."'
+WHERE index_addresses.address = '" . $address->getAddress() . "'
 AND balances.quantity > 0
          
          $limitSQL $offsetSql";
@@ -384,14 +404,14 @@ AND balances.quantity > 0
             }
 
             $contractNames[] = $result['asset'];
-            $balanceData[$result['asset']] = $result ;
+            $balanceData[$result['asset']] = $result;
 
 
         }
         //we preload the contractFactory
-        $counterPartyContractFactory  = new XcpContractFactory();
-        $preloadConcepts = DatabaseAdapter::searchConcept($counterPartyContractFactory->system,$contractNames,
-            XcpContractFactory::MAIN_IDENTIFIER,0,XcpContractFactory::$file);
+        $counterPartyContractFactory = new XcpContractFactory();
+        $preloadConcepts = DatabaseAdapter::searchConcept($counterPartyContractFactory->system, $contractNames,
+            XcpContractFactory::MAIN_IDENTIFIER, 0, XcpContractFactory::$file);
 
 
         //If we have existing counterparty contracts
@@ -401,31 +421,26 @@ AND balances.quantity > 0
         }
 
         $conterpartyAsset = CounterpartyAsset::init();
-        foreach ($balanceData as $contractName => $value){
+        foreach ($balanceData as $contractName => $value) {
 
-            $contract = $counterPartyContractFactory->get($contractName,true);
-            $balanceValue = $value['quantity'] ;
-           if ($value['divisible']) $contract->setDivisible();
+            $contract = $counterPartyContractFactory->get($contractName, true);
+            $balanceValue = $value['quantity'];
+            if ($value['divisible']) $contract->setDivisible();
 
 
-            $balance->addContractToken($contract,$conterpartyAsset,$balanceValue);
+            $balance->addContractToken($contract, $conterpartyAsset, $balanceValue);
         }
-
-
 
 
         //$balance->addContractToken($contract,$conterpartyAsset,$entity->get('balance'));
 
 
+        return $balance;
 
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/" . $address->getAddress(), 'data', SandraManager::getSandra());
 
-
-            return $balance ;
-
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
-
-        $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
-            'quantity'=>'balance'));
+        $foreignAdapter->adaptToLocalVocabulary(array('asset' => 'contractId',
+            'quantity' => 'balance'));
         $foreignAdapter->populate();
 
         //load all counterparty contracts onto memory
@@ -438,15 +453,14 @@ AND balances.quantity > 0
         foreach ($foreignAdapter->entityArray as $entity) {
 
             /** @var ForeignEntity $entity */
-            $contract = $cpContracts->get($entity->get('contractId'),true);
+            $contract = $cpContracts->get($entity->get('contractId'), true);
 
 
-            $balance->addContractToken($contract,$conterpartyAsset,$entity->get('balance'));
+            $balance->addContractToken($contract, $conterpartyAsset, $entity->get('balance'));
 
         }
 
         return $balance;
-
 
 
     }
