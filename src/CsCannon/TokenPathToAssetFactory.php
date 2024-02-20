@@ -9,10 +9,7 @@
 namespace CsCannon;
 
 
-use CsCannon\AssetSolvers\AssetSolver;
-use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
-use SandraCore\DatabaseAdapter;
 use SandraCore\EntityFactory;
 use SandraCore\System;
 
@@ -21,45 +18,49 @@ use SandraCore\System;
  *
  * Factory to get create join token path to specific assets. For example tokenId = 1 =>
  *
- * @method TokenPathToAssetFactory             createNew($dataArray, $linArray = null,$autocommit = true) : Entity()            Use the method create instead unless you know what you are doing
-
+ * @method TokenPathToAssetFactory             createNew($dataArray, $linArray = null, $autocommit = true) : Entity()            Use the method create instead unless you know what you are doing
  */
-
 class TokenPathToAssetFactory extends EntityFactory
 {
 
-    protected static $isa = 'tokenPath' ;
-    protected static $file = 'tokenPathFile' ;
+    protected static $isa = 'tokenPath';
+    protected static $file = 'tokenPathFile';
+
     const ID = 'code';
 
-    public function __construct(System $sandra){
+    const JOINED_INFO = "info";
+    const MINT_DATETIME_SHORTNAME = "mintDatetime";
 
-        parent::__construct(static::$isa,static::$file,$sandra);
+    public function __construct(System $sandra)
+    {
+
+        parent::__construct(static::$isa, static::$file, $sandra);
 
 
     }
 
-    public function get($identifierString){
+    public function get($identifierString)
+    {
 
 
-       return  $this->last(self::ID,$identifierString);
+        return $this->last(self::ID, $identifierString);
 
     }
 
 
-    public function getOrCreate(BlockchainContractStandard $standard){
+    public function getOrCreate(BlockchainContractStandard $standard)
+    {
 
         $result = $this->get($standard->getDisplayStructure());
         if ($result == null) $result = $this->create($standard);
 
-        return $result ;
+        return $result;
 
     }
 
 
-
-
-    public function create(BlockchainContractStandard $specifier,$autocommit = true){
+    public function create(BlockchainContractStandard $specifier, $autocommit = true)
+    {
 
         $sandra = SandraManager::getSandra();
 
@@ -69,17 +70,13 @@ class TokenPathToAssetFactory extends EntityFactory
         $displayStructure = $specifier->getDisplayStructure();
 
         $conceptForSearch = new TokenPathToAssetFactory($sandra);
-        $result = $conceptForSearch->getOrCreateFromRef($this::ID,$displayStructure);
-        $this->addNewEtities([$result->subjectConcept->idConcept=>$result],$conceptForSearch->sandraReferenceMap);
+        $result = $conceptForSearch->getOrCreateFromRef($this::ID, $displayStructure);
+        $this->addNewEtities([$result->subjectConcept->idConcept => $result], $conceptForSearch->sandraReferenceMap);
 
         return $result;
 
 
-
-
-
     }
-
 
 
 }
