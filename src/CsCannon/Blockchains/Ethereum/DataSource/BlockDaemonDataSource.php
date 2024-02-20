@@ -178,7 +178,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
         if (!empty($contracts)) {
             foreach ($contracts as $contract) {
                 $data = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit&contract_address=" . $contract->getId());
-                $tokens = array_merge($tokens, $data);
+                $tokens = array_merge_recursive($tokens, $data);
             }
         } else {
             $tokens = self::gatherData(static::$apiUrl . "/assets?wallet_address=$wallet_address&page_size=$limit");
