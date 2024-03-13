@@ -9,7 +9,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
+use App\Services\Factories\PoolAddressFactory;
+use CsCannon\AssetCollectionFactory;
+use CsCannon\AssetSolvers\PathPredictableSolver;
+use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Polygon\PolygonAddressFactory;
 use CsCannon\Blockchains\Polygon\PolygonBlockchain;
+use CsCannon\Blockchains\Polygon\PolygonContractFactory;
 use CsCannon\SandraManager;
 use CsCannon\Tests\TestManager;
 use PHPUnit\Framework\TestCase;
@@ -23,24 +29,85 @@ final class PolygonIntegrationTest extends TestCase
     {
         echo "Starting polygon integration tests, this will flush and create new phpunit_ env for testing...\n";
         TestManager::initTestDatagraph(true);
+        $this->activeChainValidations();
+        $this->contractValidations();
+        $this->addressValidations();
+    }
+
+
+    private function activeChainValidations()
+    {
+
+        echo "Validating polygon as an active blockchain \n";
 
         $this->chainCreation();
-        $chains = $this->validateChain();
+        $chains = $this->getChain();
 
         $this->assertCount(1, $chains, "Chain not created");
 
         /** @var Entity $polygon */
         $polygon = reset($chains);
 
+        $verb = SandraManager::getSandra()->conceptFactory->getConceptFromShortnameOrId("onBlockchain");
+        $this->assertNotNull($verb, "onBlockchain not found");
+        $this->assertNotEmpty($polygon->subjectConcept->tripletArray, "Triplet array empty");
+        $targetConcept = reset($polygon->subjectConcept->tripletArray[$verb->idConcept]);
+        $this->assertNotNull($targetConcept, "Target not found");
+        $target = SandraManager::getSandra()->systemConcept->getSCS(reset($polygon->subjectConcept->tripletArray[$verb->idConcept]));
+        $this->assertEquals(PolygonBlockchain::NAME, $target, "Invalid onblockchain link");
+        $this->assertEquals(PolygonBlockchain::NAME, $polygon->get("blockchain"), "Invalid blockchain ref");
 
-        $onBlockchain = $polygon->getBrotherEntity("onBlockchain");
+    }
 
+    private function contractValidations()
+    {
+
+        echo "Validating polygon as an contracts \n";
+
+        $this->contractCreation();
+        $contracts = $this->getContract();
+
+        $this->assertCount(1, $contracts, "Contract not created");
+
+        /** @var Entity $polygon */
+        $polygon = reset($contracts);
+
+        $verb = SandraManager::getSandra()->conceptFactory->getConceptFromShortnameOrId("onBlockchain");
+        $this->assertNotNull($verb, "onBlockchain not found");
+        $this->assertNotEmpty($polygon->subjectConcept->tripletArray, "Triplet array empty");
+        $targetConcept = reset($polygon->subjectConcept->tripletArray[$verb->idConcept]);
+        $this->assertNotNull($targetConcept, "Target not found");
+        $target = SandraManager::getSandra()->systemConcept->getSCS(reset($polygon->subjectConcept->tripletArray[$verb->idConcept]));
+        $this->assertEquals(PolygonBlockchain::NAME, $target, "Invalid onblockchain link");
+        $this->assertEquals("0x9CD2A10b03a5D0897ae8630DA11fC53E50A645Fc", $polygon->get("id"), "Invalid id");
+
+    }
+
+    private function addressValidations()
+    {
+
+        echo "Validating polygon as an addresses \n";
+
+        $this->addressCreation();
+        $addresses = $this->getAddress();
+        $this->assertCount(1, $addresses, "Contract not created");
+        /** @var Entity $polygon */
+        $polygon = reset($addresses);
+
+        $verb = SandraManager::getSandra()->conceptFactory->getConceptFromShortnameOrId("onBlockchain");
+        $this->assertNotNull($verb, "onBlockchain not found");
+        $this->assertNotEmpty($polygon->subjectConcept->tripletArray, "Triplet array empty");
+        $targetConcept = reset($polygon->subjectConcept->tripletArray[$verb->idConcept]);
+        $this->assertNotNull($targetConcept, "Target not found");
+        $target = SandraManager::getSandra()->systemConcept->getSCS(reset($polygon->subjectConcept->tripletArray[$verb->idConcept]));
+        $this->assertEquals(PolygonBlockchain::NAME, $target, "Invalid onblockchain link");
+        $this->assertEquals("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", $polygon->get("address"), "Invalid address");
 
     }
 
     private function chainCreation()
     {
-        echo "Adding polygon as an active blockchain \n";
+
         $activeBlockchainData = new EntityFactory('activeBlockchain', 'activeBlockchainFile', SandraManager::getSandra());
         $activeBlockchainData->populateLocal();
         $data['blockchain'] = PolygonBlockchain::NAME;
@@ -48,33 +115,50 @@ final class PolygonIntegrationTest extends TestCase
         $activeBlockchainData->createOrUpdateOnReference('blockchain', PolygonBlockchain::NAME, $data, ['onBlockchain' => PolygonBlockchain::NAME]);
     }
 
-    private function validateChain(): array
+    private function getChain(): array
     {
-        echo "Getting polygon as an active blockchain \n";
         $activeBlockchainData = new EntityFactory('activeBlockchain', 'activeBlockchainFile', SandraManager::getSandra());
         $activeBlockchainData->populateFromSearchResults(PolygonBlockchain::NAME, "blockchain");
-        $activeBlockchainData->populateBrotherEntities();
+        $activeBlockchainData->populateBrotherEntities("onBlockchain");
+        $activeBlockchainData->getTriplets();
         return $activeBlockchainData->getEntities();
     }
 
     private function contractCreation()
     {
-
+        $contractFactory = new PolygonContractFactory();
+        $contract = $contractFactory->get('0x9CD2A10b03a5D0897ae8630DA11fC53E50A645Fc', true, ERC721::init());
+        $assetCollectionFactory = new AssetCollectionFactory(SandraManager::getSandra());
+        $collectionEntity = $assetCollectionFactory->getOrCreate("polygonTestCollection");
+        $collectionEntity->setName("Matic Test Collection");
+        $collectionEntity->setDescription("We could update this text in the future");
+        $collectionEntity->setImageUrl("https://tokenpost.com/assets/uploads/20190502ac6b32835ae4c139a.png");
+        $collectionEntity->setSolver(PathPredictableSolver::getEntity('https://tokenpost.com/assets/uploads/20190502ac6b32835ae4c139a.png', 'https://matic.network/', 'https://tokenpost.com/assets/uploads/20190502ac6b32835ae4c139a.png'));
+        $contract->bindToCollection($collectionEntity);
     }
 
-    private function eventCreation()
+    private function getContract(): array
     {
-
+        $contractFactory = new PolygonContractFactory();
+        $contractFactory->populateFromSearchResults("0x9CD2A10b03a5D0897ae8630DA11fC53E50A645Fc", "id");
+        $contractFactory->populateBrotherEntities();
+        $contractFactory->getTriplets();
+        return $contractFactory->getEntities();
     }
 
     private function addressCreation()
     {
-
+        $addressFactory = new PolygonAddressFactory();
+        $addressFactory->get("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", true);
     }
 
-    public function testDataSource()
+    private function getAddress(): array
     {
-
+        $contractFactory = new PolygonAddressFactory();
+        $contractFactory->populateFromSearchResults("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", "address");
+        $contractFactory->populateBrotherEntities();
+        $contractFactory->getTriplets();
+        return $contractFactory->getEntities();
     }
 
 }
