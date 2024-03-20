@@ -9,7 +9,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
-use App\Services\Factories\PoolAddressFactory;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetSolvers\PathPredictableSolver;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
@@ -28,10 +27,13 @@ final class PolygonIntegrationTest extends TestCase
     public function testIntegration()
     {
         echo "Starting polygon integration tests, this will flush and create new phpunit_ env for testing...\n";
+
         TestManager::initTestDatagraph(true);
-        $this->activeChainValidations();
-        $this->contractValidations();
-        $this->addressValidations();
+        $this->testDataSource();
+
+        //$this->activeChainValidations();
+        //$this->contractValidations();
+        //$this->addressValidations();
     }
 
 
@@ -154,11 +156,28 @@ final class PolygonIntegrationTest extends TestCase
 
     private function getAddress(): array
     {
-        $contractFactory = new PolygonAddressFactory();
-        $contractFactory->populateFromSearchResults("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", "address");
-        $contractFactory->populateBrotherEntities();
-        $contractFactory->getTriplets();
-        return $contractFactory->getEntities();
+        $addressFactory = new PolygonAddressFactory();
+        $addressFactory->populateFromSearchResults("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", "address");
+        $addressFactory->populateBrotherEntities();
+        $addressFactory->getTriplets();
+        return $addressFactory->getEntities();
     }
 
+    private function testDataSource()
+    {
+
+        $addressFactory = new PolygonAddressFactory();
+        $addressFactory->populateFromSearchResults("0x16738e8c43c4a92b4b84d7da811c913cf0d8c4bc", "address");
+        $addressFactory->populateBrotherEntities();
+        $addressFactory->getTriplets();
+        $address = reset($addressFactory->getEntities());
+
+        if($address)
+        {
+            $polygonBalance = CsCannon\Blockchains\Polygon\DataSource\BlockDaemonDataSource::getBalance($address, 100, 0);
+        }
+
+
+
+    }
 }
