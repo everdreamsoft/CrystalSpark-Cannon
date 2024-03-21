@@ -12,6 +12,9 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetSolvers\PathPredictableSolver;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
+use CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource as PolygonAlchemyDataSource;
+use CsCannon\Blockchains\Polygon\DataSource\AlchemyPolygonNetwork;
+use CsCannon\Blockchains\Polygon\PolygonAddress;
 use CsCannon\Blockchains\Polygon\PolygonAddressFactory;
 use CsCannon\Blockchains\Polygon\PolygonBlockchain;
 use CsCannon\Blockchains\Polygon\PolygonContractFactory;
@@ -29,7 +32,13 @@ final class PolygonIntegrationTest extends TestCase
         echo "Starting polygon integration tests, this will flush and create new phpunit_ env for testing...\n";
 
         TestManager::initTestDatagraph(true);
-        $this->testDataSource();
+
+
+        $this->testTransactionDetails();
+
+//        $this->contractCreation();
+//        $this->addressCreation();
+//        $this->testDataSource();
 
         //$this->activeChainValidations();
         //$this->contractValidations();
@@ -151,13 +160,13 @@ final class PolygonIntegrationTest extends TestCase
     private function addressCreation()
     {
         $addressFactory = new PolygonAddressFactory();
-        $addressFactory->get("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", true);
+        $addressFactory->get("0x16738e8c43c4a92b4b84d7da811c913cf0d8c4bc", true);
     }
 
     private function getAddress(): array
     {
         $addressFactory = new PolygonAddressFactory();
-        $addressFactory->populateFromSearchResults("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", "address");
+        $addressFactory->populateFromSearchResults("0x16738e8c43c4a92b4b84d7da811c913cf0d8c4bc", "address");
         $addressFactory->populateBrotherEntities();
         $addressFactory->getTriplets();
         return $addressFactory->getEntities();
@@ -170,14 +179,29 @@ final class PolygonIntegrationTest extends TestCase
         $addressFactory->populateFromSearchResults("0x16738e8c43c4a92b4b84d7da811c913cf0d8c4bc", "address");
         $addressFactory->populateBrotherEntities();
         $addressFactory->getTriplets();
-        $address = reset($addressFactory->getEntities());
+        $entities = $addressFactory->getEntities();
+        $address = reset($entities);
 
-        if($address)
-        {
-            $polygonBalance = CsCannon\Blockchains\Polygon\DataSource\BlockDaemonDataSource::getBalance($address, 100, 0);
+        if ($address) {
+
+            $datasource = new PolygonAlchemyDataSource(AlchemyPolygonNetwork::MUMBAI);
+            PolygonAlchemyDataSource::setApiKey("2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK");
+
+            /** @var PolygonAddress $address */
+            $address->setDataSource($datasource);
+            $polygonBalance = $address->getBalance(1, 0);
         }
 
+        echo "";
 
+    }
 
+    /**
+     * @throws Exception
+     */
+    private function testTransactionDetails()
+    {
+      $detail =   \CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource::getTransactionDetails("0xaa0266921a0a71764175f1efb1663ddc105c21ce8d73b619a7b367b8dc249f5e");
+      echo "";
     }
 }

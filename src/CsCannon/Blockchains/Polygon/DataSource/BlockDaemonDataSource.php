@@ -30,7 +30,7 @@ use SandraCore\ForeignEntityAdapter;
 class BlockDaemonDataSource extends BlockchainDataSource
 {
 
-    public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/polygon/mainnet';
+    public static $apiUrl = 'https://svc.blockdaemon.com/nft/v1/polygon/testnet';
     public static $apiKey = 'L5QCT3gssIXLMEmKuNSI2j3V4g2ahnquS3h7kChPWQrbKYij';
 
     /**
