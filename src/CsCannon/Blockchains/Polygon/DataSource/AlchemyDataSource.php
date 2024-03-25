@@ -22,12 +22,15 @@ use SandraCore\ForeignEntityAdapter;
 class AlchemyDataSource extends BlockchainDataSource
 {
 
+    public static $NETWORK_MAINNET = "polygon-mainnet";
+    public static $NETWORK_MUMBAI = "polygon-mumbai";
+
     public static $apiKey = '2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK';
-    public static string $network = AlchemyPolygonNetwork::MUMBAI;
+    public static $network = "polygon-mumbai";
 
     public function __construct(string $network)
     {
-        AlchemyDataSource::$network = $network;
+        AlchemyDataSource::$network = $network ?? self::$NETWORK_MUMBAI;
     }
 
     /**
@@ -147,18 +150,10 @@ class AlchemyDataSource extends BlockchainDataSource
      */
     public static function getTransactionDetails(string $txHash): array
     {
-        $data = AlchemyRPC::getTransactionReceipt($txHash, AlchemyDataSource::$network, AlchemyDataSource::$apiKey);
-        $adapter = new ForeignEntityAdapter("", null, SandraManager::getSandra(), "", [$data["result"] ?? []]);
-        $adapter->populate();
-        return $adapter->getEntities();
+        throw new Exception("Not implemented");
+
     }
 
 }
 
-
-class AlchemyPolygonNetwork
-{
-    const MAINNET = "polygon-mainnet";
-    const MUMBAI = "polygon-mumbai";
-}
 

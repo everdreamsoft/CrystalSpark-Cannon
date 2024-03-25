@@ -22,7 +22,7 @@ class AlchemyRPC
                 $transactionHash
             ]
         );
-        return self::rpcCurl($url, $data);
+        return self::curl($url, $data);
     }
 
     public static function getTransactionReceipt($transactionHash, $network, $key)
@@ -36,10 +36,10 @@ class AlchemyRPC
                 $transactionHash
             ]
         );
-        return self::rpcCurl($url, $data);
+        return self::curl($url, $data);
     }
 
-    private static function rpcCurl($url, $data)
+    private static function curl($url, $data)
     {
         $ch = curl_init();
 

@@ -184,7 +184,7 @@ final class PolygonIntegrationTest extends TestCase
 
         if ($address) {
 
-            $datasource = new PolygonAlchemyDataSource(AlchemyPolygonNetwork::MUMBAI);
+            $datasource = new PolygonAlchemyDataSource(PolygonAlchemyDataSource::$NETWORK_MUMBAI);
             PolygonAlchemyDataSource::setApiKey("2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK");
 
             /** @var PolygonAddress $address */
@@ -201,7 +201,7 @@ final class PolygonIntegrationTest extends TestCase
      */
     private function testTransactionDetails()
     {
-      $detail =   \CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource::getTransactionDetails("0xaa0266921a0a71764175f1efb1663ddc105c21ce8d73b619a7b367b8dc249f5e");
-      echo "";
+        $detail = \CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource::getTransactionDetails("0xaa0266921a0a71764175f1efb1663ddc105c21ce8d73b619a7b367b8dc249f5e");
+        echo "";
     }
 }
