@@ -26,6 +26,7 @@ class AssetCollection extends \SandraCore\Entity
     public $name = 'name';
     public $imageUrl = 'imageUrl';
     public $description = 'description';
+    public $bannerImage = 'bannerImage';
 
     const SAMPLE_STORAGE = 'sampleStorage';
 
@@ -42,6 +43,7 @@ class AssetCollection extends \SandraCore\Entity
         $this->name = $this->get($this->name);
         $this->imageUrl = $this->get($this->imageUrl);
         $this->description = $this->get($this->description);
+        $this->bannerImage = $this->get($this->bannerImage);
 
         $this->createDisplay();
 
@@ -93,6 +95,7 @@ class AssetCollection extends \SandraCore\Entity
         $this->displayArray['name'] =  $this->get('name');
         $this->displayArray['description'] = $this->description ;
         $this->displayArray['imageUrl'] = $this->imageUrl ;
+        $this->displayArray['bannerImage'] = $this->bannerImage ;
     }
 
 

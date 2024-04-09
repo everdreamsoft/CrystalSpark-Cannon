@@ -52,7 +52,7 @@ public static function update($onlyIfOlderThanSec = null){
 
 
     static::updateSolver();
-    $now = mktime();
+    $now = time();
 
 
     $entity = self::getEntity();
