@@ -14,6 +14,7 @@ use CsCannon\Blockchains\BlockchainBlock;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainContractStandard;
+use CsCannon\Blockchains\Counterparty\XcpContract;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Interfaces\UnknownStandard;
 use CsCannon\Tests\Displayable;
@@ -235,8 +236,13 @@ class Balance
                 $orbDisplay['adaptedQuantity'] = $refinedQuantity;
                 $orbDisplay['decimals'] = $contract->metadata->getDecimals();
 
+
                 if (!$orbDisplay['decimals']) $contract->metadata->refreshData();
 
+                if ($contract instanceof XcpContract) {
+                    $orbDisplay['xcpPrice'] = $contract->getXcpPrice();
+                    $orbDisplay['btcPrice'] = $contract->getBtcPrice();
+                }
                 $orbDisplay['asset']['image'] = $asset->imageUrl;
                 $orbDisplay['asset']['id'] = $asset->id;
 

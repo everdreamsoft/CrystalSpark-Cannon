@@ -9,33 +9,32 @@
 namespace CsCannon\Blockchains\Counterparty;
 
 
-
 use CsCannon\Asset;
 use CsCannon\AssetCollection;
-use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetFactory;
-use CsCannon\Blockchains\Bitcoin\BitcoinAddress;
 use CsCannon\Blockchains\Blockchain;
-use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContract;
 use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainTokenFactory;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
-use SandraCore\ForeignEntityAdapter;
 
 class XcpContract extends BlockchainContract
 {
 
     public static $isa = 'xcpContract';
     public static $file = 'blockchainContractFile';
-    public static  $className = 'CsCannon\Blockchains\Counterparty\XcpContract' ;
+    public static $className = 'CsCannon\Blockchains\Counterparty\XcpContract';
 
 
-    public function resolveMetaData (){
+    private float $xcpPrice = 0;
+    private float $btcPrice = 0;
 
-        $collectionsArray=array();
+    public function resolveMetaData()
+    {
+
+        $collectionsArray = array();
         /** @var Asset $assetEntity */
-        $assetArray = $this->getJoinedEntities(BlockchainTokenFactory::$joinAssetVerb) ;
+        $assetArray = $this->getJoinedEntities(BlockchainTokenFactory::$joinAssetVerb);
 
         if (is_array($assetArray)) {
             foreach ($assetArray as $assetEntity) {
@@ -58,23 +57,20 @@ class XcpContract extends BlockchainContract
         }
 
 
-        if(is_array($assetArray)){
+        if (is_array($assetArray)) {
 
             $firstAsset = reset($assetArray);
-           return $firstAsset->getDisplayableCollection($collectionsArray);
+            return $firstAsset->getDisplayableCollection($collectionsArray);
 
-        }
-        else return array('image'=>'https://static.cryptorival.com/imgs/coins/counterparty.png');
-
-
-
+        } else return array('image' => 'https://static.cryptorival.com/imgs/coins/counterparty.png');
 
 
         return array();
 
     }
 
-    public function getStandard():?BlockchainContractStandard{
+    public function getStandard(): ?BlockchainContractStandard
+    {
 
 
         parent::getStandard();
@@ -85,11 +81,32 @@ class XcpContract extends BlockchainContract
 
     function getBlockchain(): Blockchain
     {
-        return  XcpBlockchain::getStatic();
+        return XcpBlockchain::getStatic();
     }
 
     function setDivisible()
     {
         return parent::setDivisibility(8);
     }
+
+    function setXcpPrice(float|int $val)
+    {
+        $this->xcpPrice = $val;
+    }
+
+    function getXcpPrice(): float|int
+    {
+        return $this->xcpPrice;
+    }
+
+    function setBtcPrice(float|int $val)
+    {
+        $this->btcPrice = $val;
+    }
+
+    function getBtcPrice(): float|int
+    {
+        return $this->btcPrice;
+    }
+
 }

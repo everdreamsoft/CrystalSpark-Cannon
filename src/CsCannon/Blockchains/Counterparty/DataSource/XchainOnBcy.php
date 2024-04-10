@@ -9,6 +9,7 @@ use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\BlockchainImporter;
 use CsCannon\Blockchains\Counterparty\Interfaces\CounterpartyAsset;
+use CsCannon\Blockchains\Counterparty\XcpContract;
 use CsCannon\Blockchains\Counterparty\XcpContractFactory;
 use CsCannon\ContractMetaData;
 use CsCannon\SandraManager;
@@ -423,8 +424,15 @@ AND balances.quantity > 0
         $conterpartyAsset = CounterpartyAsset::init();
         foreach ($balanceData as $contractName => $value) {
 
+            /** @var XcpContract $contract */
             $contract = $counterPartyContractFactory->get($contractName, true);
+
+            $contract->setXcpPrice($value['xcp_price'] ?? 0);
+            $contract->setBtcPrice($value['btc_price'] ?? 0);
+
             $balanceValue = $value['quantity'];
+
+
             if ($value['divisible']) $contract->setDivisible();
 
 
