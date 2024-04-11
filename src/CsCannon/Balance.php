@@ -67,6 +67,11 @@ class Balance
     }
 
 
+    public function setTokenBuild(bool $val)
+    {
+        $this->tokenBuild = $val;
+    }
+
     public function addContractToken(BlockchainContract $contract, BlockchainContractStandard $contractStandard, $quantity): self
     {
 
