@@ -3,8 +3,6 @@
 namespace CsCannon;
 
 
-
-
 use CsCannon\Blockchains\Binance\BinanceBlockchain;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainAddress;
@@ -14,9 +12,7 @@ use CsCannon\Blockchains\BlockchainContractFactory;
 use CsCannon\Blockchains\BlockchainEventFactory;
 use CsCannon\Blockchains\Counterparty\XcpBlockchain;
 use CsCannon\Blockchains\Ethereum\EthereumBlockchain;
-
 use CsCannon\Blockchains\Ethereum\GoerliEthereumBlockchain;
-use CsCannon\Blockchains\Ethereum\RopstenEthereumBlockchain;
 use CsCannon\Blockchains\Ethereum\Sidechains\Matic\MaticBlockchain;
 use CsCannon\Blockchains\FirstOasis\FirstOasisBlockchain;
 use CsCannon\Blockchains\Generic\GenericAddress;
@@ -24,6 +20,7 @@ use CsCannon\Blockchains\Generic\GenericAddressFactory;
 use CsCannon\Blockchains\Generic\GenericContract;
 use CsCannon\Blockchains\Generic\GenericContractFactory;
 use CsCannon\Blockchains\Klaytn\KlaytnBlockchain;
+use CsCannon\Blockchains\Polygon\PolygonBlockchain;
 use CsCannon\Blockchains\Substrate\Kusama\KusamaBlockchain;
 use CsCannon\Blockchains\Substrate\Kusama\WestendBlockchain;
 use CsCannon\Blockchains\Substrate\Unique\UniqueBlockchain;
@@ -39,8 +36,8 @@ class BlockchainRouting
     /**
      * @var Blockchain[]
      */
-    public static $hotPluggedBlockchain = [] ;
-    public static $supportedChains = [] ;
+    public static $hotPluggedBlockchain = [];
+    public static $supportedChains = [];
 
     /**
      * get supported blockchains by the framework
@@ -58,8 +55,9 @@ class BlockchainRouting
         $supported[] = new KusamaBlockchain();
         $supported[] = new WestendBlockchain();
         $supported[] = new BinanceBlockchain();
+        $supported[] = new PolygonBlockchain();
 
-        $supported = array_merge($supported,self::$hotPluggedBlockchain);
+        $supported = array_merge($supported, self::$hotPluggedBlockchain);
 
         return $supported;
 
@@ -75,7 +73,7 @@ class BlockchainRouting
             self::$hotPluggedBlockchain = $hotPlugged;
         }
 
-        return $blockchain ;
+        return $blockchain;
 
     }
 
@@ -180,7 +178,7 @@ class BlockchainRouting
             $blockchain = new EthereumBlockchain();
 
 
-        }  else if (substr($address, 0, 3) === "@f:") {
+        } else if (substr($address, 0, 3) === "@f:") {
 
             $blockchainList['fo'] = $address;
             $blockchain = new FirstOasisBlockchain();
@@ -308,9 +306,9 @@ class BlockchainRouting
 
 
             //address has no defined blockchain
-            if (!isset($address->subjectConcept->tripletArray[$systemConcept->get('is_a')])){
+            if (!isset($address->subjectConcept->tripletArray[$systemConcept->get('is_a')])) {
 
-               return  self::getBlockchainsFromAddress($address->getAddress());
+                return self::getBlockchainsFromAddress($address->getAddress());
             }
 
             $arrayOfBlockchainsIs_a__address = $address->subjectConcept->tripletArray[$systemConcept->get('is_a')];
@@ -368,48 +366,48 @@ class BlockchainRouting
     }
 
 
-    public static function searchConceptFromString($string,$sandra)
+    public static function searchConceptFromString($string, $sandra)
     {
 
         $return = array();
 
-        $concepts = DatabaseAdapter::searchConcept($sandra,$string, null);
+        $concepts = DatabaseAdapter::searchConcept($sandra, $string, null);
 
         foreach ($concepts ?? array() as $conceptId) {
 
             $concept = new Concept($conceptId, $sandra);
             $triplets = $concept->getConceptTriplets();
-            $return [] = self::getEntityFromTriplets($concept,$triplets, $sandra);
+            $return [] = self::getEntityFromTriplets($concept, $triplets, $sandra);
 
         }
 
-        return $return ;
+        return $return;
 
     }
 
-    private static function getEntityFromTriplets(Concept $concept,$array,System $sandra)
+    private static function getEntityFromTriplets(Concept $concept, $array, System $sandra)
     {
 
-       $sc =  $sandra->systemConcept;
+        $sc = $sandra->systemConcept;
 
-        $return = null ;
+        $return = null;
 
-        foreach ($array[$sc->get('contained_in_file')] ?? array() as $target){
+        foreach ($array[$sc->get('contained_in_file')] ?? array() as $target) {
 
-                //is it contract ?
-                    if ($target == $sc->get(BlockchainContractFactory::$file)) {
+            //is it contract ?
+            if ($target == $sc->get(BlockchainContractFactory::$file)) {
 
-                        $genericFactory = new GenericContractFactory();
-                        $genericFactory->conceptArray = [$concept->idConcept];
-                        $genericFactory->populateLocal();
-                    $allEntitties = $genericFactory->getEntities();
-                        $genericEntity = end($allEntitties);
-                        $blockchains = self::getBlockchainFromGenericContract($genericEntity);
-                    if (!isset($blockchains[0])) continue ;
-                        $blockchain = $blockchains[0];
-                        $correctChainContract = $blockchain->getContractFactory()->get($genericEntity->getId());
-                    $return = $correctChainContract ;
-                }
+                $genericFactory = new GenericContractFactory();
+                $genericFactory->conceptArray = [$concept->idConcept];
+                $genericFactory->populateLocal();
+                $allEntitties = $genericFactory->getEntities();
+                $genericEntity = end($allEntitties);
+                $blockchains = self::getBlockchainFromGenericContract($genericEntity);
+                if (!isset($blockchains[0])) continue;
+                $blockchain = $blockchains[0];
+                $correctChainContract = $blockchain->getContractFactory()->get($genericEntity->getId());
+                $return = $correctChainContract;
+            }
 
             //is it contract ?
             if ($target == $sc->get(BlockchainAddressFactory::$file)) {
@@ -420,18 +418,16 @@ class BlockchainRouting
                 $allEntitties = $genericFactory->getEntities();
                 $genericEntity = end($allEntitties);
                 $blockchains = self::getBlockchainFromGenericAddress($genericEntity);
-                if (!isset($blockchains[0])) continue ;
+                if (!isset($blockchains[0])) continue;
                 $blockchain = $blockchains[0];
                 $correctChainContract = $blockchain->getAddressFactory()->get($genericEntity->getAddress());
-                $return = $correctChainContract ;
+                $return = $correctChainContract;
             }
-
 
 
         }
 
-        return $return ;
-
+        return $return;
 
 
     }
