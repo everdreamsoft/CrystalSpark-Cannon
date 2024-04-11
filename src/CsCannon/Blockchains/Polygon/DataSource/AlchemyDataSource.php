@@ -22,15 +22,15 @@ use SandraCore\ForeignEntityAdapter;
 class AlchemyDataSource extends BlockchainDataSource
 {
 
-    public static $NETWORK_MAINNET = "polygon-mainnet";
-    public static $NETWORK_MUMBAI = "polygon-mumbai";
+    const NETWORK_MAINNET = "polygon-mainnet";
+    const NETWORK_MUMBAI = "polygon-mumbai";
 
     public static $apiKey = '2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK';
     public static $network = "polygon-mumbai";
 
     public function __construct(string $network)
     {
-        AlchemyDataSource::$network = $network ?? self::$NETWORK_MUMBAI;
+        AlchemyDataSource::$network = $network ?? self::NETWORK_MUMBAI;
     }
 
     /**

@@ -12,8 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use CsCannon\AssetCollectionFactory;
 use CsCannon\AssetSolvers\PathPredictableSolver;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
-use CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource as PolygonAlchemyDataSource;
-use CsCannon\Blockchains\Polygon\DataSource\AlchemyPolygonNetwork;
+use CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource;
 use CsCannon\Blockchains\Polygon\PolygonAddress;
 use CsCannon\Blockchains\Polygon\PolygonAddressFactory;
 use CsCannon\Blockchains\Polygon\PolygonBlockchain;
@@ -27,22 +26,20 @@ use SandraCore\EntityFactory;
 final class PolygonIntegrationTest extends TestCase
 {
 
+    /**
+     * @throws Exception
+     */
     public function testIntegration()
     {
         echo "Starting polygon integration tests, this will flush and create new phpunit_ env for testing...\n";
 
         TestManager::initTestDatagraph(true);
 
+        $this->activeChainValidations();
+        $this->contractValidations();
+        $this->addressValidations();
+        $this->testDataSource();
 
-        $this->testTransactionDetails();
-
-//        $this->contractCreation();
-//        $this->addressCreation();
-//        $this->testDataSource();
-
-        //$this->activeChainValidations();
-        //$this->contractValidations();
-        //$this->addressValidations();
     }
 
 
@@ -112,7 +109,7 @@ final class PolygonIntegrationTest extends TestCase
         $this->assertNotNull($targetConcept, "Target not found");
         $target = SandraManager::getSandra()->systemConcept->getSCS(reset($polygon->subjectConcept->tripletArray[$verb->idConcept]));
         $this->assertEquals(PolygonBlockchain::NAME, $target, "Invalid onblockchain link");
-        $this->assertEquals("0x7aD582F711A6bD5B9B50b2B18bC38A2Aa652d4C3", $polygon->get("address"), "Invalid address");
+        $this->assertEquals("0x16738e8c43c4a92b4b84d7da811c913cf0d8c4bc", $polygon->get("address"), "Invalid address");
 
     }
 
@@ -175,6 +172,8 @@ final class PolygonIntegrationTest extends TestCase
     private function testDataSource()
     {
 
+        echo "Validating polygon alchecmy datasource\n";
+
         $addressFactory = new PolygonAddressFactory();
         $addressFactory->populateFromSearchResults("0x16738e8c43c4a92b4b84d7da811c913cf0d8c4bc", "address");
         $addressFactory->populateBrotherEntities();
@@ -182,26 +181,24 @@ final class PolygonIntegrationTest extends TestCase
         $entities = $addressFactory->getEntities();
         $address = reset($entities);
 
+        $this->assertNotNull($address, "Address not found");
+
         if ($address) {
 
-            $datasource = new PolygonAlchemyDataSource(PolygonAlchemyDataSource::$NETWORK_MUMBAI);
-            PolygonAlchemyDataSource::setApiKey("2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK");
+            $datasource = new AlchemyDataSource(AlchemyDataSource::NETWORK_MUMBAI);
+            AlchemyDataSource::setApiKey("2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK");
 
             /** @var PolygonAddress $address */
             $address->setDataSource($datasource);
             $polygonBalance = $address->getBalance(1, 0);
+
+            $polygonBalance->getTokenBalanceArray();
+
+            $this->assertNotEmpty($polygonBalance->getTokenBalanceArray(), "Empty token balance array");
+            $this->assertNotNull($polygonBalance->getTokenBalanceArray()[0]["tokens"], "Tokens not found");
+
         }
 
-        echo "";
-
     }
 
-    /**
-     * @throws Exception
-     */
-    private function testTransactionDetails()
-    {
-        $detail = \CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource::getTransactionDetails("0xaa0266921a0a71764175f1efb1663ddc105c21ce8d73b619a7b367b8dc249f5e");
-        echo "";
-    }
 }
