@@ -16,7 +16,7 @@ use SandraCore\Concept;
 
 class InfuraProvider extends RpcProvider
 {
-    const HOST_URL = 'https://polygon-mumbai.infura.io/v3/';
+    const HOST_URL = 'https://polygon-mainnet.infura.io/v3/';
     public $requestPerSecond = 1;
 
     public function getHostUrl()
