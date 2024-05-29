@@ -28,11 +28,6 @@ class AlchemyDataSource extends BlockchainDataSource
     public static $apiKey = '2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK';
     public static $network = "polygon-mumbai";
 
-    public function __construct(string $network)
-    {
-        AlchemyDataSource::$network = $network ?? self::NETWORK_MUMBAI;
-    }
-
     /**
      * @param string $apiKey
      */
@@ -52,15 +47,15 @@ class AlchemyDataSource extends BlockchainDataSource
     /**
      * @throws Exception
      */
-    public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
+    public static function getBalance(BlockchainAddress $address, $limit, $offset, string $network = AlchemyDataSource::NETWORK_MUMBAI): Balance
     {
-        return self::getBalanceForContract($address, array(), $limit);
+        return self::getBalanceForContract($address, array(), $limit, null, $network);
     }
 
     /**
      * @throws Exception
      */
-    public static function getBalanceForContract(BlockchainAddress $address, array $contracts, $pageSize = 100, $pageKey = null): Balance
+    public static function getBalanceForContract(BlockchainAddress $address, array $contracts, $pageSize = 100, $pageKey = null, string $network = AlchemyDataSource::NETWORK_MUMBAI): Balance
     {
         $contractList = "";
         foreach ($contracts as $contract) {
@@ -68,7 +63,7 @@ class AlchemyDataSource extends BlockchainDataSource
         }
         $headers = "'accept': 'application/json'";
 
-        $url = "https://" . AlchemyDataSource::$network
+        $url = "https://" . $network
             . ".g.alchemy.com/nft/v2/" . AlchemyDataSource::$apiKey
             . "/getNFTs?"
             . "owner=" . $address->getAddress()
@@ -152,6 +147,59 @@ class AlchemyDataSource extends BlockchainDataSource
     {
         throw new Exception("Not implemented");
 
+    }
+
+    public static function getTransactionStatus(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MUMBAI): ?string
+    {
+
+        $url = "https://" . $network
+            . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
+
+        $headers = [
+            "Accept: application/json",
+            "Content-Type: application/json"
+        ];
+
+        $data = [
+            "id" => 1,
+            "jsonrpc" => "2.0",
+            "method" => "eth_getTransactionReceipt",
+            "params" => [
+                $txHash
+            ]
+        ];
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $response = curl_exec($ch);
+
+        if ($response === false) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            return null;
+        }
+
+        curl_close($ch);
+        $responseData = json_decode($response, true);
+
+        if (isset($responseData['error'])) {
+            return null;
+        }
+
+        if (isset($responseData['result']) && isset($responseData['result']['status'])) {
+            if ($responseData['result']['status'] === '0x1') {
+                return "true";
+            } else {
+                return "false";
+            }
+        } else {
+            return "false";
+        }
     }
 
 }
