@@ -191,6 +191,10 @@ class AlchemyDataSource extends BlockchainDataSource
             return null;
         }
 
+        if (isset($responseData['result']) && $responseData["result"] === null){
+            return null;
+        }
+
         if (isset($responseData['result']) && isset($responseData['result']['status'])) {
             if ($responseData['result']['status'] === '0x1') {
                 return "true";
@@ -198,7 +202,7 @@ class AlchemyDataSource extends BlockchainDataSource
                 return "false";
             }
         } else {
-            return "false";
+            return null;
         }
     }
 
