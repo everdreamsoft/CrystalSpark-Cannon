@@ -139,17 +139,68 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
+    public static function getTokenIdFromTx(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MUMBAI): ?array
+    {
+        $data = ["status" => "pending"];
+        $receipt = AlchemyDataSource::getTransactionReceipt($txHash, $network);
+
+        if ($receipt === null) {
+            return $data;
+        }
+
+        if (isset($receipt['status'])) {
+            if ($receipt['status'] === '0x1') {
+                $data['status'] = 'completed';
+            } else {
+                $data['status'] = 'failed';
+                return $data;
+            }
+        }
+
+        if (isset($receipt["logs"])) {
+            foreach ($receipt["logs"] as $log) {
+                try {
+                    $decodedLog = AlchemyDataSource::decodeTransferLog($log["topics"]);
+                    if ($decodedLog) {
+                        $data["transfers"][] = $decodedLog;
+                    }
+                } catch (Exception $e) {
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    public static function getTransactionStatus(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MUMBAI): ?string
+    {
+
+        $receipt = AlchemyDataSource::getTransactionReceipt($txHash, $network);
+
+        if ($receipt === null) {
+            return null;
+        }
+
+        if (isset($receipt['status'])) {
+            if ($receipt['status'] === '0x1') {
+                return "true";
+            } else {
+                return "false";
+            }
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @throws Exception
      */
-    public static function getTransactionDetails(string $txHash): array
+    public static function getTransactionDetails(string $blockchainName, string $txHash, string $network): ?stdClass
     {
         throw new Exception("Not implemented");
-
     }
 
-    public static function getTransactionStatus(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MUMBAI): ?string
+    private static function getTransactionReceipt(string $txHash, string $network): ?array
     {
 
         $url = "https://" . $network
@@ -191,19 +242,36 @@ class AlchemyDataSource extends BlockchainDataSource
             return null;
         }
 
-        if (isset($responseData['result']) && $responseData["result"] === null){
+        if (isset($responseData['result'])) {
+            return $responseData['result'];
+        }
+
+        return null;
+
+    }
+
+    private static function decodeTransferLog($topics): ?array
+    {
+
+        if ($topics == null) return null;
+
+        // Transfer event signature, we should use ABI here, but how do you get the ABI?? and how to decode, current ethereum plugins for php are
+        // compatible with php 7?
+        $transferEventSig = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+
+        if (strtolower($topics[0]) !== $transferEventSig) {
             return null;
         }
 
-        if (isset($responseData['result']) && isset($responseData['result']['status'])) {
-            if ($responseData['result']['status'] === '0x1') {
-                return "true";
-            } else {
-                return "false";
-            }
-        } else {
-            return null;
-        }
+        $from = '0x' . substr($topics[1], 26);
+        $to = '0x' . substr($topics[2], 26);
+        $tokenId = hexdec(substr($topics[3], 26));
+
+        return [
+            'from' => $from,
+            'to' => $to,
+            'tokenId' => $tokenId
+        ];
     }
 
 }
