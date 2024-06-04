@@ -266,7 +266,7 @@ class BlockchainOrder extends BlockchainEvent
     }
 
 
-    public function getSpecifier()
+    public function getSpecifier():BlockchainContractStandard
     {
 
         //$tokenData = $this->getBrotherRefwerence(BlockchainEventFactory::EVENT_CONTRACT,null,BlockchainContractFactory::TOKENID) ;
@@ -298,10 +298,6 @@ class BlockchainOrder extends BlockchainEvent
             return UnknownStandard::init();
 
         }
-
-
-        return null;
-
     }
 
 

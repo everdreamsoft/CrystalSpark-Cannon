@@ -19,13 +19,13 @@ class OrbFactory
     //public static  $orbMap, $contractMap, $collectionMap, $assetMap ;
 
 
-    public   $instanceOrbMap, $instanceContractMap, $instanceCollectionMap, $quantityMap ;
+    public $instanceOrbMap, $instanceContractMap, $instanceCollectionMap, $quantityMap;
 
     /**
      *
      * @var Asset[]
      */
-    public $instanceAssetMap   ;
+    public $instanceAssetMap;
 
     /**
      *
@@ -34,36 +34,38 @@ class OrbFactory
      * @param AssetCollection $assetCollection
      * @return Orb[]
      */
-    public function getOrbsInCollection(AssetCollection $assetCollection){
+    public function getOrbsInCollection(AssetCollection $assetCollection)
+    {
 
-        return $this->instanceCollectionMap[$assetCollection->getId()] ;
+        return $this->instanceCollectionMap[$assetCollection->getId()];
 
 
     }
 
-    public  function getOrbsFromContractPath(BlockchainContract $contract, $path,$quantity=null){
+    public function getOrbsFromContractPath(BlockchainContract $contract, $path, $quantity = null, $loadDefault = false): ?array
+    {
 
         //in order to know find relevant asset we need to get the collection list
-        $collectionArray = $contract->getCollections();
+        $collectionArray = $contract->getCollections($loadDefault);
 
-        if(!is_array($collectionArray)) return null ;
+        if (!is_array($collectionArray)) return null;
 
         $orbArray = array();
 
-        foreach ($collectionArray as $collection){
+        foreach ($collectionArray as $collection) {
             /** @var AssetCollection $collection */
-            if (!$collection instanceof AssetCollection) continue ;
+            if (!$collection instanceof AssetCollection) continue;
 
             //first we get the specifier
             $solvers = $collection->getSolvers();
             foreach ($solvers ? $solvers : array() as $solver) {
-                /** @var AssetSolver $solver  */
-                if (!$solver instanceof AssetSolver) continue ;
-                $assets = $solver::resolveAsset($collection,$path,$contract);
+                /** @var AssetSolver $solver */
+                if (!$solver instanceof AssetSolver) continue;
+                $assets = $solver::resolveAsset($collection, $path, $contract);
                 foreach ($assets ? $assets : array() as $asset) {
 
                     $orb = new Orb($contract, $path, $collection, $asset);
-                    self::mapOrb($orb, $this,$quantity);
+                    self::mapOrb($orb, $this, $quantity);
 
                     $orbArray[] = $orb;
                 }
@@ -72,31 +74,33 @@ class OrbFactory
 
         }
 
-        return $orbArray ;
+        return $orbArray;
 
 
     }
 
-    public function getOrbFromSpecifier(BlockchainContractStandard $specifier,BlockchainContract $contract,AssetCollection $collection){
+    public function getOrbFromSpecifier(BlockchainContractStandard $specifier, BlockchainContract $contract, AssetCollection $collection)
+    {
 
         //in order to know find relevant asset we need to get the collection list
-        $orbs =  $this->getOrbsFromContractPath($contract,$specifier);
-        return $orbs ;
+        $orbs = $this->getOrbsFromContractPath($contract, $specifier);
+        return $orbs;
     }
 
-    public function getOrbQuantity(Orb $orb){
+    public function getOrbQuantity(Orb $orb)
+    {
 
 
-       return $this->quantityMap[$orb->orbId];
+        return $this->quantityMap[$orb->orbId];
     }
 
-    public static function mapOrb(Orb $orb, OrbFactory $instance = null,$quantity = null){
+    public static function mapOrb(Orb $orb, OrbFactory $instance = null, $quantity = null)
+    {
 
         $contract = $orb->contract;
-        $collection = $orb->assetCollection ;
+        $collection = $orb->assetCollection;
 
         //$objectId = spl_object_hash($orb);
-
 
 
         //self::$orbMap[$orb->orbId] = $orb ;
@@ -106,10 +110,9 @@ class OrbFactory
         //   self::$assetMap[$orb->asset->id][$orb->orbId] = $orb;
 
 
-
         if ($instance) {
 
-            if($quantity)
+            if ($quantity)
                 $instance->quantityMap[$orb->orbId] = $quantity;
 
             $instance->instanceOrbMap[$orb->orbId] = $orb;
@@ -120,23 +123,22 @@ class OrbFactory
         }
 
 
-
-        return $orb ;
-
-
-    }
-
-    public static function generateOrbCode (Orb $orb){
-
-        return  $orb->contract->getId().$orb->tokenSpecifier->getDisplayStructure().$orb->assetCollection->getId();
+        return $orb;
 
 
     }
 
+    public static function generateOrbCode(Orb $orb)
+    {
 
-    public static function convertOrbsToCSV ($array){
+        return $orb->contract->getId() . $orb->tokenSpecifier->getDisplayStructure() . $orb->assetCollection->getId();
 
 
+    }
+
+
+    public static function convertOrbsToCSV($array)
+    {
 
 
     }
@@ -146,10 +148,11 @@ class OrbFactory
      * @param Asset $asset
      * @return Orb[]
      */
-    public  function getOrbsFromAsset (Asset $asset):array{
+    public function getOrbsFromAsset(Asset $asset): array
+    {
 
 
-        $map = $this->instanceAssetMap ;
+        $map = $this->instanceAssetMap;
         return $map[$asset->id] ?? array();
 
 

@@ -199,7 +199,7 @@ JOIN blocks b  ON sends.`block_index` = b.`block_index`
 
     public static function getContractMetaData($contract):ContractMetaData{
 
-        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/asset/".$contract->getId(),'$unique',SandraManager::getSandra());
+        $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/asset/".$contract->getId(),'$unique',SandraManager::getSandra(), "x-source:everdreamsoft");
         echo "https://xchain.io/api/asset/".$contract->getId();
 
         $foreignAdapter->adaptToLocalVocabulary(array('asset'=>'contractId',
