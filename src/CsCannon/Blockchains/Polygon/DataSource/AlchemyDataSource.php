@@ -21,6 +21,7 @@ use SandraCore\ForeignEntityAdapter;
  */
 class AlchemyDataSource extends BlockchainDataSource
 {
+    const NETWORK_ETH_MAIN = "eth-mainnet";
 
     const NETWORK_MAINNET = "polygon-mainnet";
     const NETWORK_MUMBAI = "polygon-mumbai";
@@ -199,6 +200,108 @@ class AlchemyDataSource extends BlockchainDataSource
     {
         throw new Exception("Not implemented");
     }
+
+    public static function getERC20Tokens(string $address, string $network)
+    {
+
+        $url = "https://" . $network
+            . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
+
+        $headers = [
+            "Accept: application/json",
+            "Content-Type: application/json"
+        ];
+
+        $data = [
+            "id" => 1,
+            "jsonrpc" => "2.0",
+            "method" => "alchemy_getTokenBalances",
+            "params" => [
+                $address,
+                "erc20"
+            ]
+        ];
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $response = curl_exec($ch);
+
+        if ($response === false) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            return null;
+        }
+
+        curl_close($ch);
+        $responseData = json_decode($response, true);
+
+        if (isset($responseData['error'])) {
+            return null;
+        }
+
+        if (isset($responseData['result'])) {
+            return $responseData['result'];
+        }
+
+        return null;
+
+    }
+
+    public static function getERC20ContractMetaData(string $contract, string $network)
+    {
+
+        $url = "https://" . $network
+            . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
+
+        $headers = [
+            "Accept: application/json",
+            "Content-Type: application/json"
+        ];
+
+        $data = [
+            "id" => 1,
+            "jsonrpc" => "2.0",
+            "method" => "alchemy_getTokenMetadata",
+            "params" => [
+                $contract
+            ]
+        ];
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $response = curl_exec($ch);
+
+        if ($response === false) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            return null;
+        }
+
+        curl_close($ch);
+        $responseData = json_decode($response, true);
+
+        if (isset($responseData['error'])) {
+            return null;
+        }
+
+        if (isset($responseData['result'])) {
+            return $responseData['result'];
+        }
+
+        return null;
+
+    }
+
 
     private static function getTransactionReceipt(string $txHash, string $network): ?array
     {
