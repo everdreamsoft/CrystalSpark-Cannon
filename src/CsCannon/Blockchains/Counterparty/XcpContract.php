@@ -89,22 +89,22 @@ class XcpContract extends BlockchainContract
         return parent::setDivisibility(8);
     }
 
-    function setXcpPrice(float|int $val)
+    function setXcpPrice(float $val)
     {
         $this->xcpPrice = $val;
     }
 
-    function getXcpPrice(): float|int
+    function getXcpPrice(): float
     {
         return $this->xcpPrice;
     }
 
-    function setBtcPrice(float|int $val)
+    function setBtcPrice(float $val)
     {
         $this->btcPrice = $val;
     }
 
-    function getBtcPrice(): float|int
+    function getBtcPrice(): float
     {
         return $this->btcPrice;
     }
