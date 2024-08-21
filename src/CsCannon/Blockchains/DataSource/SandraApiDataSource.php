@@ -40,7 +40,7 @@ class SandraApiDataSource extends BlockchainDataSource
      */
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
-        $url = self::URL . "/balance/" . $address->setAddress();
+        $url = self::URL . "/balance/" . $address->getAddress();
         $foreignAdapter = new ForeignEntityAdapter($url, "data", SandraManager::getSandra(), "", []);
 
         $data = $foreignAdapter->foreignRawArray["data"];
