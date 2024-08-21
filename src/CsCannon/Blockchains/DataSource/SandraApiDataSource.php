@@ -25,7 +25,7 @@ use SandraCore\ForeignEntityAdapter;
 class SandraApiDataSource extends BlockchainDataSource
 {
 
-    const URL = "http://localhost:3000/api";
+    const URL = "http://172.105.244.176:3009/api";
 
     /**
      * @throws Exception
@@ -38,9 +38,9 @@ class SandraApiDataSource extends BlockchainDataSource
     /**
      * @throws Exception
      */
-    public static function getBalance($address, $limit, $offset): Balance
+    public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
-        $url = self::URL . "/balance/" . $address;
+        $url = self::URL . "/balance/" . $address->setAddress();
         $foreignAdapter = new ForeignEntityAdapter($url, "data", SandraManager::getSandra(), "", []);
 
         $data = $foreignAdapter->foreignRawArray["data"];
