@@ -93,7 +93,7 @@ class OrbitalApiDataSource extends BlockchainDataSource
                 "contract" => $entity->get("asset"),
                 "chain" => "counterparty",
                 "token" => ["standard" => "Counterparty Token"],
-                "quantity" => $entity->get("quantity") ?? 0,
+                "adaptedQuantity" => $entity->get("quantity") ?? 0,
                 "btc_price" => $entity->get("btc_price") ?? 0,
                 "xcp_price" => $entity->get("xcp_price") ?? 0,
                 "asset" => [
