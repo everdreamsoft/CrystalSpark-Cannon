@@ -95,8 +95,8 @@ class OrbitalApiDataSource extends BlockchainDataSource
                 "token" => ["standard" => "Counterparty Token"],
                 "adaptedQuantity" => null, // Support already implemented logic for casa tookan server, quantity will be taken as adaptive quantity.
                 "quantity" => $entity->get("quantity") ?? 0,
-                "btc_price" => $entity->get("btc_price") ?? 0,
-                "xcp_price" => $entity->get("xcp_price") ?? 0,
+                "btcPrice" => $entity->get("btc_price") ?? 0,
+                "xcpPrice" => $entity->get("xcp_price") ?? 0,
                 "asset" => [
                     "image" => $entity->get("orb_image"),
                     "id" => $entity->get("asset"),
