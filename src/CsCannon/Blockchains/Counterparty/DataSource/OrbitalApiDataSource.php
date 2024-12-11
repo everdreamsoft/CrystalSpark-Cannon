@@ -81,7 +81,7 @@ class OrbitalApiDataSource extends BlockchainDataSource
             if (!isset($collections[$collectionId])) {
                 $collections[$collectionId] = [
                     "id" => $collectionId,
-                    "name" => $entity->get("collection_name"),
+                    "name" => $entity->get("collection_name") ?? "Counterparty",
                     "imageUrl" => $entity->get("collection_logo") ?? "",
                     "bannerImage" => $entity->get("collection_logo") ?? "",
                     "description" => $entity->get("collection_description") ?? "",
@@ -100,7 +100,7 @@ class OrbitalApiDataSource extends BlockchainDataSource
                 "asset" => [
                     "image" => $entity->get("orb_image"),
                     "id" => $entity->get("asset"),
-                    "name" => "",
+                    "name" => $entity->get("name") ?? $entity->get("asset"),
                     "description" => ""
                 ],
             ];
