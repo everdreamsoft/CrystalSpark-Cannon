@@ -82,9 +82,9 @@ class OrbitalApiDataSource extends BlockchainDataSource
                 $collections[$collectionId] = [
                     "id" => $collectionId,
                     "name" => $entity->get("collection_name") ?? "Counterparty",
-                    "imageUrl" => $entity->get("collection_logo") ?? "",
-                    "bannerImage" => $entity->get("collection_logo") ?? "",
-                    "description" => $entity->get("collection_description") ?? "",
+                    "imageUrl" => $entity->get("collection_logo") ?? "https://sandradev.everdreamsoft.com/images/orbcenter/eNCP/icon.png",
+                    "bannerImage" => $entity->get("collection_logo") ?? "https://sandradev.everdreamsoft.com/images/orbcenter/eNCP/icon.png",
+                    "description" => $entity->get("collection_description") ?? "Counterparty asset collection",
                     "orbs" => []
                 ];
             }
