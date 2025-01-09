@@ -24,8 +24,8 @@ class TestManager
 
 
     public  const ETHEREUM_TEST_ADDRESS = '0xcB4472348cBd828dEAa5bc360aEcdcFC87332C79';
-    public  const ETHEREUM_TOKEN_AVAIL = '0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe'; //contract address
-    public  const ETHEREUM_TOKEN_ID = '47225'; //contract address
+    public  const ETHEREUM_TOKEN_AVAIL = '0x06012c8cf97bead5deae237070f9587f8e7a266d'; //contract address
+    public  const ETHEREUM_TOKEN_ID = '390158'; //contract address
 
 
     public static function initTestDatagraph($flushing = true){

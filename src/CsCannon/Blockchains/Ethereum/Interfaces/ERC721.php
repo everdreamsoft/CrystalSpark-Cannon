@@ -20,6 +20,7 @@ class ERC721 extends EthereumContractStandard
 
     public $tokenId = null ;
     public $specificatorArray = ['tokenId'];
+    public $solver = DefaultEthereumSolver::class;
 
     public function __construct($sandraConcept,$sandraReferencesArray,$factory,$entityId,$conceptVerb,$conceptTarget,System $system)
     {

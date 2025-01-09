@@ -207,6 +207,8 @@ final class OrbTest extends TestCase
         $assetFactory->populateLocal();
         $orbs = $myOrbFactory->getOrbsFromContractPath($contract,ERC20::getEntity());
 
+        //die(print_r($orbs));
+
         $this->assertInstanceOf(Orb::class,$orbs[0],"Orb couldn't be retreived");
 
         //we look if the local asset solver works

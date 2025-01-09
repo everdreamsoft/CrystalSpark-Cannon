@@ -70,6 +70,7 @@ final class EthAddressTest extends TestCase
         $addressFactory = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressFactoryControl = CsCannon\BlockchainRouting::getAddressFactory($testAddress);
         $addressEntity = $addressFactory->get($testAddress);
+        $addressEntity->setDataSource(new \CsCannon\Blockchains\Ethereum\DataSource\AlchemyDataSource());
 
 
         $balanceObject = $addressEntity->getBalance();
