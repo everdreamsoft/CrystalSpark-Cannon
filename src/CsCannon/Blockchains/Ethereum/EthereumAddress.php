@@ -13,6 +13,7 @@ namespace CsCannon\Blockchains\Ethereum;
 use CsCannon\Blockchains\Blockchain;
 use CsCannon\Blockchains\BlockchainDataSource;
 use CsCannon\Blockchains\BlockchainAddress;
+use CsCannon\Blockchains\Ethereum\DataSource\AlchemyDataSource;
 use CsCannon\Blockchains\Ethereum\DataSource\BlockDaemonDataSource;
 
 class EthereumAddress extends BlockchainAddress
@@ -33,6 +34,6 @@ class EthereumAddress extends BlockchainAddress
     {
        //return new DatagraphSource();
 //       return  new OpenSeaImporter();
-       return new BlockDaemonDataSource();
+       return new AlchemyDataSource();
     }
 }
