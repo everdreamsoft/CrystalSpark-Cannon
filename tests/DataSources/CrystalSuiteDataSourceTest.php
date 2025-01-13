@@ -19,6 +19,7 @@ error_reporting(E_ALL);
 class CrystalSuiteDataSourceTest extends DataSourceAbstract
 {
     private $contractToTest ;
+    private $expectedTokens;
 
     public function loadTestCases() {
 
@@ -27,15 +28,15 @@ class CrystalSuiteDataSourceTest extends DataSourceAbstract
 
        $ethereumContractFactory = new \CsCannon\Blockchains\Ethereum\EthereumContractFactory();
         //we should have 2 tokens of this contract blockchain cutties
-       $contractCuties = $ethereumContractFactory->get('0xd73be539d6b2076bab83ca6ba62dfe189abc6bbe');
+        // CryptoKitties, 1 token OK
+        $this->contractToTest[] = $ethereumContractFactory->get('0x06012c8cf97bead5deae237070f9587f8e7a266d');
+        $this->expectedTokens["0x06012c8cf97bead5deae237070f9587f8e7a266d"][] = "390158";
 
-        //we should have 2 tokens of this contract
-        $contract = $ethereumContractFactory->get('0xf5b0a3efb8e8e4c201e2a935f110eaaf3ffecb8d');
-
-
-       $this->contractToTest[] = $contractCuties;
-       $this->contractToTest[] = $contract;
-
+        // Gods unchained 3 tokens OK
+        $this->contractToTest[] = $ethereumContractFactory->get('0x0e3a2a1f2146d86a604adc220b4967a898d7fe07');
+        $this->expectedTokens["0x0e3a2a1f2146d86a604adc220b4967a898d7fe07"][] = "61979547";
+        $this->expectedTokens["0x0e3a2a1f2146d86a604adc220b4967a898d7fe07"][] = "61979546";
+        $this->expectedTokens["0x0e3a2a1f2146d86a604adc220b4967a898d7fe07"][] = "49808568";
 
 
     }

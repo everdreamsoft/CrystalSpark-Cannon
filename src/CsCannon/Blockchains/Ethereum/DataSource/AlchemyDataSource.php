@@ -5,7 +5,9 @@ namespace CsCannon\Blockchains\Ethereum\DataSource;
 use CsCannon\Balance;
 use CsCannon\Blockchains\BlockchainAddress;
 use CsCannon\Blockchains\BlockchainContractFactory;
+use CsCannon\Blockchains\BlockchainContractStandard;
 use CsCannon\Blockchains\BlockchainDataSource;
+use CsCannon\Blockchains\Contracts\ERC20;
 use CsCannon\Blockchains\Ethereum\EthereumContract;
 use CsCannon\Blockchains\Ethereum\EthereumContractFactory;
 use CsCannon\Blockchains\Ethereum\Interfaces\ERC721;
@@ -201,9 +203,10 @@ class AlchemyDataSource extends BlockchainDataSource
     /**
      * @throws Exception
      */
-    public static function getTransactionDetails(string $blockchainName, string $txHash, string $network): ?stdClass
+    public static function getTransactionDetails(string $blockchainName, string $txHash, $network = AlchemyDataSource::NETWORK_ETH_MAIN)
     {
-        throw new Exception("Not implemented");
+        $response = self::getTransactionReceipt($txHash,$network);
+
     }
 
     public static function getERC20Tokens(string $address, string $network)
@@ -307,10 +310,52 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
+    public static function getDecodedTransaction($hash, $network, ?BlockchainContractStandard $standard = null, $decimals = 8){
 
-    private static function getTransactionReceipt(string $txHash, string $network): ?array
+
+        $transaction = self::getTransactionReceipt($hash,$network);
+
+        if (!$transaction) {
+            return null;
+        }
+
+        $transferSig = strtolower('0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef');
+        $transferLog = null;
+
+        foreach ($transaction['logs'] as $log) {
+            if (strtolower($log['topics'][0]) === $transferSig) {
+                $transferLog = $log;
+                break;
+            }
+        }
+
+        if (!$transferLog) {
+            return null;
+        }
+
+        // Parse ERC20 transfer data
+        $fromAddress = '0x' . substr($transferLog['topics'][1], 26);
+        $toAddress = '0x' . substr($transferLog['topics'][2], 26);
+        $amountHex = $transferLog['data'];
+        $rawAmount = gmp_init($amountHex, 16);
+        
+        // Convert amount based on decimals
+        $adjustedAmount = gmp_div($rawAmount, gmp_pow(10, $decimals));
+        $quantity = gmp_strval($adjustedAmount);
+
+        $result = new \stdClass();
+        $result->hash = $transaction['transactionHash'] ?? null;
+        $result->src_address = $fromAddress;
+        $result->dst_address = $toAddress;
+        $result->contract = $transferLog['address'];
+        $result->quantity = gmp_intval($adjustedAmount);
+        $result->time = time(); // Should be replaced with actual block timestamp
+
+        return $result;
+    }
+
+    private static function getTransactionReceipt(string $txHash, string $network)
     {
-
         $url = "https://" . $network
             . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
 
@@ -337,6 +382,8 @@ class AlchemyDataSource extends BlockchainDataSource
 
         $response = curl_exec($ch);
 
+
+
         if ($response === false) {
             $error = curl_error($ch);
             curl_close($ch);
@@ -344,18 +391,14 @@ class AlchemyDataSource extends BlockchainDataSource
         }
 
         curl_close($ch);
-        $responseData = json_decode($response, true);
 
-        if (isset($responseData['error'])) {
+        $responseData = json_decode($response, true);
+        
+        if (!$responseData || !isset($responseData['result'])) {
             return null;
         }
 
-        if (isset($responseData['result'])) {
-            return $responseData['result'];
-        }
-
-        return null;
-
+        return $responseData['result'];
     }
 
     private static function decodeTransferLog($topics): ?array
