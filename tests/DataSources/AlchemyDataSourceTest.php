@@ -105,14 +105,28 @@ class AlchemyDataSourceTest extends DataSourceAbstract
         $details = AlchemyDataSource::getDecodedTransaction($txHash, AlchemyDataSource::NETWORK_ETH_MAIN, $erc20, $expectedData['decimals']);
 
 
-
-        
         $this->assertNotNull($details);
         $this->assertEquals(strtolower($expectedData['src_address']), strtolower($details->src_address));
         $this->assertEquals(strtolower($expectedData['dst_address']), strtolower($details->dst_address)); 
         $this->assertEquals($expectedData['quantity'], $details->quantity);
         $this->assertEquals(strtolower($expectedData['contract']), strtolower($details->contract));
     }
+
+
+
+    }
+
+    public function testGetTransactionStatus(){
+        $this->loadTestCases();
+        $erc20 = ERC20::init();
+        foreach ($this->txToBeChecked as $txHash => $expectedData) {
+            $details = AlchemyDataSource::getTransactionStatus('eth',$txHash, AlchemyDataSource::NETWORK_ETH_MAIN);
+            $details = \CsCannon\Blockchains\Polygon\DataSource\AlchemyDataSource::getTransactionStatus('eth',$txHash, AlchemyDataSource::NETWORK_ETH_MAIN);
+
+
+            $this->assertEquals('true', $details);
+
+        }
 
 
 

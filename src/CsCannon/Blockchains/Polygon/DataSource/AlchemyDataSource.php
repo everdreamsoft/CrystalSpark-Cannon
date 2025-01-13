@@ -173,6 +173,7 @@ class AlchemyDataSource extends BlockchainDataSource
         return $data;
     }
 
+    //solidification 2025 this fuction should be deprecated as $blockchainName is not used. It's kept for backwards compatibility
     public static function getTransactionStatus(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MUMBAI): ?string
     {
 
