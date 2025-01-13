@@ -53,9 +53,19 @@ class AlchemyDataSourceTest extends DataSourceAbstract
                 'quantity' => 47000,
                 'contract' => '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
                  'decimals' => '6' // USDC has 6 deceimals
-            ]
+            ],
+
         ];
     }
+    /* Failed transaction
+     *  '0xd6b4496575531167c8d434c51aac39cfa24bfbfaae98295ff44481b63175700f' => [ // a failed transaction
+                'src_address' => 'x',
+                'dst_address' => 'x',
+                'quantity' => 47000,
+                'contract' => 'x',
+                 'decimals' => '6' // USDC has 6 deceimals
+            ]
+     */
 
     public function testGetBalanceForContract()
     {
@@ -93,6 +103,8 @@ class AlchemyDataSourceTest extends DataSourceAbstract
         $erc20 = ERC20::init();
     foreach ($this->txToBeChecked as $txHash => $expectedData) {
         $details = AlchemyDataSource::getDecodedTransaction($txHash, AlchemyDataSource::NETWORK_ETH_MAIN, $erc20, $expectedData['decimals']);
+
+
 
         
         $this->assertNotNull($details);

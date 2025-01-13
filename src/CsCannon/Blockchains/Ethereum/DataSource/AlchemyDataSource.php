@@ -310,9 +310,40 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
+    private static function getLatestBlockNumber(string $network): ?string
+    {
+        $url = "https://" . $network . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
+
+        $headers = [
+            "Accept: application/json",
+            "Content-Type: application/json"
+        ];
+
+        $data = [
+            "id" => 1,
+            "jsonrpc" => "2.0",
+            "method" => "eth_blockNumber",
+            "params" => []
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            return null;
+        }
+
+        $responseData = json_decode($response, true);
+        return $responseData['result'] ?? null;
+    }
+
     public static function getDecodedTransaction($hash, $network, ?BlockchainContractStandard $standard = null, $decimals = 8){
-
-
         $transaction = self::getTransactionReceipt($hash,$network);
 
         if (!$transaction) {
@@ -350,6 +381,17 @@ class AlchemyDataSource extends BlockchainDataSource
         $result->contract = $transferLog['address'];
         $result->quantity = gmp_intval($adjustedAmount);
         $result->time = time(); // Should be replaced with actual block timestamp
+
+        // Calculate confirmations
+        $latestBlock = self::getLatestBlockNumber($network);
+        $transactionBlock = $transaction['blockNumber'];
+        if ($latestBlock && $transactionBlock) {
+            $latestBlockDec = hexdec($latestBlock);
+            $transactionBlockDec = hexdec($transactionBlock);
+            $result->confirmations = $latestBlockDec - $transactionBlockDec;
+        } else {
+            $result->confirmations = 0;
+        }
 
         return $result;
     }
