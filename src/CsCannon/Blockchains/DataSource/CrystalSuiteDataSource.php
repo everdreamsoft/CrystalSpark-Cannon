@@ -34,9 +34,8 @@ use SandraCore\PdoConnexionWrapper;
 class CrystalSuiteDataSource extends BlockchainDataSource
 {
 
-
-
-    public const URL = 'https://baster.bitcrystals.com/api/v1/';
+    public const URL = 'https://baster.everdreamsoft.com/api/v1/';
+    protected static $name = 'CrystalSuite' ;
 
 
     public static function getEvents($contract=null,$batchMax=1000,$offset=0,$address=null):ForeignEntityAdapter
@@ -47,17 +46,12 @@ class CrystalSuiteDataSource extends BlockchainDataSource
 
         $foreignAdapter = new ForeignEntityAdapter("https://xchain.io/api/balances/".$address->getAddress(),'data',SandraManager::getSandra());
 
-        //$foreignEntityAdapter->addNewEtities($entityArray,array());
-
         return $foreignAdapter ;
     }
 
 
     public static function getBalance(BlockchainAddress $address, $limit, $offset): Balance
     {
-
-
-
         $foreignAdapter = new ForeignEntityAdapter(static::URL . 'tokens/balances/' . $address->getAddress(), 'data', SandraManager::getSandra());
         // $foreignAdapter->flatSubEntity('tokens','token');
 

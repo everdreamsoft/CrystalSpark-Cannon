@@ -109,7 +109,7 @@ class BlockDaemonDataSource extends BlockchainDataSource
      * @return stdClass|null
      * @throws Exception
      */
-    public static function getTransactionDetails(string $blockchainName, string $txHash): ?stdClass
+    public static function getTransactionDetails(string $blockchainName, string $txHash, $network): ?stdClass
     {
         $blockchainName = strtolower($blockchainName);
         $url = "https://svc.blockdaemon.com/universal/v1/$blockchainName/mainnet/tx/$txHash";

@@ -29,6 +29,7 @@ class XchainOnBcy extends BlockchainDataSource
 {
 
     public static $dbHost, $db, $dbpass, $dbUser;
+    protected static $name = 'XchainOnBCY' ;
 
     public static function getRawBalance(BlockchainAddress $address, $limit = 5000, $offset = 0): ForeignEntityAdapter
     {

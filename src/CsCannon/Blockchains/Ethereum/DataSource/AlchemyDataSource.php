@@ -32,7 +32,7 @@ class AlchemyDataSource extends BlockchainDataSource
     const NETWORK_ETH_MAIN = "eth-mainnet";
     const NETWORK_POLYGON_MAIN = "polygon-mainnet";
     const NETWORK_MUMBAI = "polygon-mumbai";
-
+    protected static $name = 'Alchemy' ;
 
 
 
@@ -58,7 +58,7 @@ class AlchemyDataSource extends BlockchainDataSource
     /**
      * @throws Exception
      */
-    public static function getBalance(BlockchainAddress $address, $limit, $offset, string $network = AlchemyDataSource::NETWORK_ETH_MAIN): Balance
+    public static function getBalance(BlockchainAddress $address, $limit, $offset, string $network = AlchemyDataSource::NETWORK_MAINNET): Balance
     {
         return self::getBalanceForContract($address, array(), $limit, null, $network);
     }
@@ -152,7 +152,7 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
-    public static function getTokenIdFromTx(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_ETH_MAIN): ?array
+    public static function getTokenIdFromTx(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MAINNET): ?array
     {
         $data = ["status" => "pending"];
         $receipt = AlchemyDataSource::getTransactionReceipt($txHash, $network);
@@ -186,7 +186,7 @@ class AlchemyDataSource extends BlockchainDataSource
     }
 
     //solidification 2025 this fuction should be deprecated as $blockchainName is not used. It's kept for backwards compatibility
-    public static function getTransactionStatus(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_ETH_MAIN): ?string
+    public static function getTransactionStatus(string $blockchainName, string $txHash, string $network = AlchemyDataSource::NETWORK_MAINNET): ?string
     {
 
         $receipt = AlchemyDataSource::getTransactionReceipt($txHash, $network);
@@ -215,7 +215,7 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
-    public static function getERC20Tokens(string $address, string $network)
+    public static function getERC20Tokens(string $address, string $network = AlchemyDataSource::NETWORK_ETH_MAIN)
     {
 
         $url = "https://" . $network
@@ -266,7 +266,7 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
-    public static function getERC20ContractMetaData(string $contract, string $network)
+    public static function getERC20ContractMetaData(string $contract, string $network = AlchemyDataSource::NETWORK_ETH_MAIN)
     {
 
         $url = "https://" . $network

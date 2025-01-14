@@ -112,8 +112,6 @@ class AlchemyDataSourceTest extends DataSourceAbstract
         $this->assertEquals(strtolower($expectedData['contract']), strtolower($details->contract));
     }
 
-
-
     }
 
     public function testGetTransactionStatus(){
@@ -127,9 +125,15 @@ class AlchemyDataSourceTest extends DataSourceAbstract
             $this->assertEquals('true', $details);
 
         }
-
-
-
+        
     }
+
+    public function testGetName()
+    {
+        $name = AlchemyDataSource::getName();
+        $this->assertEquals('Alchemy', $name, 'DataSource name should be "Alchemy"');
+    }
+
+    
 
 }

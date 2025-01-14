@@ -25,6 +25,7 @@ class AlchemyDataSource extends BlockchainDataSource
 
     const NETWORK_MAINNET = "polygon-mainnet";
     const NETWORK_MUMBAI = "polygon-mumbai";
+    protected static $name = 'Alchemy' ;
 
     public static $apiKey = '2U3ERhEqMX2qjwpNjadYJTCCDWgQRCiK';
     public static $network = "polygon-mumbai";
@@ -197,7 +198,7 @@ class AlchemyDataSource extends BlockchainDataSource
     /**
      * @throws Exception
      */
-    public static function getTransactionDetails(string $blockchainName, string $txHash, string $network): ?stdClass
+    public static function getTransactionDetails(string $blockchainName, string $txHash,  $network): ?stdClass
     {
         throw new Exception("Not implemented");
     }

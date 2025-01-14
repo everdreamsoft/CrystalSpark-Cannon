@@ -13,6 +13,7 @@ use CsCannon\AssetCollection;
 use CsCannon\AssetCollectionFactory;
 use CsCannon\Balance;
 use CsCannon\ContractMetaData;
+use Exception;
 use SandraCore\ForeignEntityAdapter;
 
  abstract class BlockchainDataSource
@@ -20,6 +21,7 @@ use SandraCore\ForeignEntityAdapter;
 
 
     protected static $localCollections = null ;
+    protected static $name = 'GenericDataSource' ;
 
 
      public static function initWithCollection(AssetCollectionFactory $localCollections = null)
@@ -89,6 +91,46 @@ use SandraCore\ForeignEntityAdapter;
          //this should be abstract but for the moment we keep like that
 
 
+     }
+
+     public static function getName(): string {
+
+         return static::$name ;
+     }
+
+
+     /** THey should be abstract this needs to be revamped */
+     public static function getTransactionDetails(string $blockchainName, string $txHash, $network)
+     {
+         throw new Exception("Not implemented");
+         return null ;
+
+     }
+
+     public static function getERC20Tokens(string $address, string $network)
+     {
+
+         throw new Exception("Not implemented");
+         return null;
+
+     }
+
+     public static function getERC20ContractMetaData(string $contract, string $network)
+     {
+         throw new Exception("Not implemented");
+         return null;
+
+     }
+
+     private static function getLatestBlockNumber(string $network): ?string
+     {
+         throw new Exception("Not implemented");
+       return null ;
+     }
+
+     public static function getDecodedTransaction($hash, $network, ?BlockchainContractStandard $standard = null, $decimals = 8){
+         throw new Exception("Not implemented");
+         return null ;
      }
 
 }
