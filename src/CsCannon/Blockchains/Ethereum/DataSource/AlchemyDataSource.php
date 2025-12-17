@@ -209,7 +209,7 @@ class AlchemyDataSource extends BlockchainDataSource
     /**
      * @throws Exception
      */
-    public static function getTransactionDetails(string $blockchainName, string $txHash, $network = AlchemyDataSource::NETWORK_ETH_MAIN)
+    public static function getTransactionDetails(string $blockchainName, string $txHash, $network = AlchemyDataSource::NETWORK_MAINNET)
     {
         $response = self::getTransactionReceipt($txHash,$network);
 
@@ -316,7 +316,7 @@ class AlchemyDataSource extends BlockchainDataSource
 
     }
 
-    private static function getLatestBlockNumber(string $network): ?string
+    private static function getLatestBlockNumber(string $network = AlchemyDataSource::NETWORK_MAINNET): ?string
     {
         $url = "https://" . $network . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
 
@@ -349,7 +349,7 @@ class AlchemyDataSource extends BlockchainDataSource
         return $responseData['result'] ?? null;
     }
 
-    public static function getDecodedTransaction($hash, $network, ?BlockchainContractStandard $standard = null, $decimals = 8){
+    public static function getDecodedTransaction($hash, $network = AlchemyDataSource::NETWORK_MAINNET, ?BlockchainContractStandard $standard = null, $decimals = 8){
         $transaction = self::getTransactionReceipt($hash,$network);
 
         if (!$transaction) {
@@ -375,7 +375,7 @@ class AlchemyDataSource extends BlockchainDataSource
         $toAddress = '0x' . substr($transferLog['topics'][2], 26);
         $amountHex = $transferLog['data'];
         $rawAmount = gmp_init($amountHex, 16);
-        
+
         // Convert amount based on decimals
         $adjustedAmount = gmp_div($rawAmount, gmp_pow(10, $decimals));
         $quantity = gmp_strval($adjustedAmount);
@@ -402,7 +402,7 @@ class AlchemyDataSource extends BlockchainDataSource
         return $result;
     }
 
-    private static function getTransactionReceipt(string $txHash, string $network)
+    private static function getTransactionReceipt(string $txHash, string $network = AlchemyDataSource::NETWORK_MAINNET)
     {
         $url = "https://" . $network
             . ".g.alchemy.com/v2/" . AlchemyDataSource::$apiKey;
