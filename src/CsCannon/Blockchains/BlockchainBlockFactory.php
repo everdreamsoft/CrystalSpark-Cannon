@@ -21,13 +21,15 @@ class BlockchainBlockFactory extends EntityFactory
     public function __construct(Blockchain $blockchain)
     {
 
+        $base = $blockchain::blockConceptBase();
+
         $blockIsa = null;
         if (!($blockchain instanceof GenericBlockchain)) {
-            $blockIsa = $blockchain::$blockchainConceptName . 'Bloc';
+            $blockIsa = $base . 'Bloc';
         }
 
 
-        $this->file = $blockchain::$blockchainConceptName . 'BlocFile';
+        $this->file = $base . 'BlocFile';
         $this->entityIsa = $blockIsa;
 
 

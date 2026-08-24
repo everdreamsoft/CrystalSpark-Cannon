@@ -48,7 +48,7 @@ class Balance
     private $tokenBuild;
 
 
-    public function __construct(BlockchainAddress $addressEntity = null)
+    public function __construct(?BlockchainAddress $addressEntity = null)
     {
 
         $this->address = $addressEntity;
@@ -331,7 +331,7 @@ class Balance
 
     }
 
-    public function loadFromDatagraph(array $onlyContracts = null)
+    public function loadFromDatagraph(?array $onlyContracts = null)
     {
 
 
@@ -383,7 +383,7 @@ class Balance
 
     }
 
-    public function saveToDatagraph(BlockchainBlock $lastBlockUpdate = null, $verbose = false)
+    public function saveToDatagraph(?BlockchainBlock $lastBlockUpdate = null, $verbose = false)
     {
 
 

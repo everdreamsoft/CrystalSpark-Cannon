@@ -27,7 +27,7 @@ class BinanceContractFactory extends BlockchainContractFactory
         return parent::__construct();
     }
 
-    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    public function get($identifier,$autoCreate=false,?BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
         //in binance we transform it lowercase
         $identifier = strtolower($identifier);

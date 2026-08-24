@@ -163,14 +163,15 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
 
     public function create(Blockchain $blockchain,
                            BlockchainAddress $sourceAddressConcept,
-                           BlockchainAddress $destinationAddressConcept,
+                           ?BlockchainAddress $destinationAddressConcept,
                            BlockchainContract $contract,
                            $txid,
                            $timestamp,
                            BlockchainBlock $block,
-                           BlockchainContractStandard $token = null,
+                           ?BlockchainContractStandard $token = null,
                            $quantity = 1,
-                            $autocommit=true
+                            $autocommit=true,
+                           ?string $eventType = null
 
     )
     {
@@ -182,7 +183,16 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
         /** @var BlockchainContractFactory $contractFactory */
 
         $triplets[self::EVENT_SOURCE_ADDRESS] = $sourceAddressConcept ;
-        $triplets[self::EVENT_DESTINATION_VERB] = $destinationAddressConcept ;
+        if (!is_null($destinationAddressConcept)) {
+            $triplets[self::EVENT_DESTINATION_VERB] = $destinationAddressConcept ;
+        }
+
+        // Type the event (send, issuance, dispense...). Historically only
+        // orders were typed; untyped transfers cannot be told apart without
+        // re-reading the chain, so callers can now qualify every event.
+        if (!is_null($eventType)) {
+            $triplets[self::EVENT_TYPE] = $eventType ;
+        }
 
         $triplets[self::ON_BLOCKCHAIN_EVENT] = $blockchain::NAME ;
         $triplets[self::EVENT_BLOCK] = $block ;
@@ -231,10 +241,13 @@ class BlockchainEventFactory extends EntityFactory implements Displayable
                            $txid,
                            $timestamp,
                            BlockchainBlock $block,
-                           BlockchainContractStandard $tokenBuy = null,
-                           BlockchainContractStandard $tokenSell = null,
-                            BlockchainAddress $buyDestination = null
-                           ):BlockchainOrder{
+                           ?BlockchainContractStandard $tokenBuy = null,
+                           ?BlockchainContractStandard $tokenSell = null,
+                            ?BlockchainAddress $buyDestination = null
+                           ):BlockchainEvent{
+        // Return type was BlockchainOrder, but createNew() instantiates the
+        // factory's generated class (XcpEvent on Counterparty) — the old
+        // signature made createOrder unusable from any subclass factory.
 
 
         $dataArray[self::BUY_AMOUNT] = $buyAmount ;

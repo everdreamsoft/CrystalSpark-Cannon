@@ -94,7 +94,7 @@ class OrbFactory
         return $this->quantityMap[$orb->orbId];
     }
 
-    public static function mapOrb(Orb $orb, OrbFactory $instance = null, $quantity = null)
+    public static function mapOrb(Orb $orb, ?OrbFactory $instance = null, $quantity = null)
     {
 
         $contract = $orb->contract;

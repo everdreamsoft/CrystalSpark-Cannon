@@ -62,6 +62,9 @@ class XcpEventFactory extends BlockchainEventFactory
         $this->joinFactory(self::EVENT_SOURCE_ADDRESS,$this->addressFactory);
         $this->joinFactory(self::EVENT_DESTINATION_VERB,$this->addressFactory);
         $this->joinFactory(self::EVENT_CONTRACT,$this->contractFactory);
+        // Without this join getBlock() crashes on every event: the block
+        // factory was never attached even though EVENT_BLOCK triplets exist.
+        $this->joinFactory(self::EVENT_BLOCK,new \CsCannon\Blockchains\BlockchainBlockFactory(new XcpBlockchain()));
 
         $this->joinPopulate();
 
