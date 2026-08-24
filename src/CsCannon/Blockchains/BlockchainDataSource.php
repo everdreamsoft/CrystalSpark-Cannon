@@ -24,7 +24,7 @@ use SandraCore\ForeignEntityAdapter;
     protected static $name = 'GenericDataSource' ;
 
 
-     public static function initWithCollection(AssetCollectionFactory $localCollections = null)
+     public static function initWithCollection(?AssetCollectionFactory $localCollections = null)
      {
 
          self::$localCollections = $localCollections ;
@@ -41,7 +41,7 @@ use SandraCore\ForeignEntityAdapter;
 
      }
 
-     public static function getLocalCollection(AssetCollectionFactory $localCollections = null)
+     public static function getLocalCollection(?AssetCollectionFactory $localCollections = null)
      {
 
          self::$localCollections = $localCollections ;

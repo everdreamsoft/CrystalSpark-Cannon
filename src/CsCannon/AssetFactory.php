@@ -39,7 +39,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
 
 
-    public function __construct(System $system = null)
+    public function __construct(?System $system = null)
     {
 
 
@@ -60,7 +60,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function getAssetsFromContract(BlockchainContract $contract, BlockchainContractStandard $specifier, BufferManager $bufferManager=null){
+    public function getAssetsFromContract(BlockchainContract $contract, BlockchainContractStandard $specifier, ?BufferManager $bufferManager=null){
 
 
         $localStorageStandard = $contract->getStandard();
@@ -154,7 +154,7 @@ class AssetFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function getOrCreate($id, Array $metaData,array $collections=null,array $contracts=null){
+    public function getOrCreate($id, Array $metaData,?array $collections=null,?array $contracts=null){
 
         //Id should be unique in collection
         $verifyFactory = new AssetFactory(SandraManager::getSandra());
@@ -185,7 +185,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     }
 
 
-    public function create($id, Array $metaData,array $collections=null,array $contracts=null):Asset{
+    public function create($id, Array $metaData,?array $collections=null,?array $contracts=null):Asset{
 
         //Id should be unique in collection
         $verifyFactory = new AssetFactory(SandraManager::getSandra());
@@ -205,7 +205,7 @@ class AssetFactory extends \SandraCore\EntityFactory
     }
 
 
-    private function forceCreate($id, Array $metaData,array $collections=null,array $contracts=null):Asset{
+    private function forceCreate($id, Array $metaData,?array $collections=null,?array $contracts=null):Asset{
 
 
 

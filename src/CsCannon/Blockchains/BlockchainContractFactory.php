@@ -44,7 +44,7 @@ public $blockchain ;
 
     }
 
-    public static function getContract($identifier,$autocreate = false,BlockchainContractStandard $standard = null){
+    public static function getContract($identifier,$autocreate = false,?BlockchainContractStandard $standard = null){
 
         $factoryOfSelf = new static();
 
@@ -87,7 +87,7 @@ public $blockchain ;
 
     }
 
-    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    public function get($identifier,$autoCreate=false,?BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
 
         $entity = null ;

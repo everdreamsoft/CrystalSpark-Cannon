@@ -162,7 +162,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
 
 
-    public function getOrCreate($collectionId, AssetSolver $assetSolver = null):AssetCollection{
+    public function getOrCreate($collectionId, ?AssetSolver $assetSolver = null):AssetCollection{
 
         if ($assetSolver == null){
 
@@ -216,7 +216,7 @@ class AssetCollectionFactory extends \SandraCore\EntityFactory
 
     }
 
-    public function getDisplay($a,$todisplay=null,$assetVocabulary=null,DisplayType $displayType=null){
+    public function getDisplay($a,$todisplay=null,$assetVocabulary=null,?DisplayType $displayType=null){
 
 
         //There is an issue here there is unclarity between the vocabulary. In fact vocabulary is to map foreign to local

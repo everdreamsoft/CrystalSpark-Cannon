@@ -190,7 +190,7 @@ class BlockchainOrderFactory extends BlockchainEventFactory
      * @param System|null $sandra
      * @return Blockchain|null
      */
-    public function getBlockchainFromOrder(Entity $order, System $sandra = null)
+    public function getBlockchainFromOrder(Entity $order, ?System $sandra = null)
     {
         $conceptTriplets = $order->subjectConcept->getConceptTriplets();
         $conceptId = $conceptTriplets[$sandra->systemConcept->get(BlockchainOrderFactory::ON_BLOCKCHAIN)] ?? null;

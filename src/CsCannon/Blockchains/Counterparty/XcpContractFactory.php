@@ -34,7 +34,7 @@ class XcpContractFactory extends BlockchainContractFactory
     }
 
 
-    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    public function get($identifier,$autoCreate=false,?BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
 
         //for counterparty we force counterparty contract standard

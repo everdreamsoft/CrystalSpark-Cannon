@@ -26,7 +26,7 @@ class EthereumContractFactory extends BlockchainContractFactory
         return parent::__construct();
     }
 
-    public function get($identifier,$autoCreate=false,BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    public function get($identifier,$autoCreate=false,?BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
         //in ethereum we transform it lowercase
         $identifier = strtolower($identifier);

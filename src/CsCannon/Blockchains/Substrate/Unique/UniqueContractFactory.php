@@ -24,7 +24,7 @@ class UniqueContractFactory extends SubstrateContractFactory
         return $return ;
     }
 
-    public function get($identifier, $autoCreate=false, BlockchainContractStandard $contractStandard = null):?BlockchainContract
+    public function get($identifier, $autoCreate=false, ?BlockchainContractStandard $contractStandard = null):?BlockchainContract
     {
         return parent::get($identifier, $autoCreate, $contractStandard);
     }
