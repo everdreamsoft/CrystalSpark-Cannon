@@ -273,9 +273,16 @@ class BlockDaemonDataSource extends BlockchainDataSource
                 if ($json === false) {
                     throw new Exception(curl_error($ch), curl_errno($ch));
                 }
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
             } catch (Exception $e) {
                 throw new Exception($e);
+            }
+
+            // An error page has no "data": without this check it read as an empty wallet
+            // (the NFT API was removed: every call answered 404 and every pool looked empty).
+            if ($httpCode !== 200) {
+                throw new Exception("BlockDaemon answered HTTP $httpCode for $url");
             }
 
             $result = json_decode($json, 1);

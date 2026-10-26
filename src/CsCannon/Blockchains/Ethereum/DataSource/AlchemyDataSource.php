@@ -123,28 +123,23 @@ class AlchemyDataSource extends BlockchainDataSource
             return $balance;
         }
 
-        $contractFactory = new EthereumContractFactory();
-        $contractFactory->populateFromSearchResults($contractsFound, BlockchainContractFactory::MAIN_IDENTIFIER);
+        // Resolve each contract once: a lookup per token meant one database round trip per NFT,
+        // several minutes for a pool holding a few hundred cards.
+        $contracts = [];
+        foreach ($contractsFound as $contractAddress) {
+            $contractFactory = new EthereumContractFactory();
+            $contracts[strtolower($contractAddress)] = $contractFactory->get($contractAddress);
+        }
 
         foreach ($tokensEntities as $token) {
-            $contractFactory = new EthereumContractFactory();
-            $tokenContractAddress = $token->get("contract");
-
             /** @var EthereumContract $contract */
-            $contract = $contractFactory->get($tokenContractAddress);
+            $contract = $contracts[strtolower((string)$token->get("contract"))] ?? null;
             if ($contract) {
-                $hexTokenId = $token->get('tokenId');
-                $quantity = $token->get('quantity');
-                $cleanHexString = substr($hexTokenId, 2);
-
-                try {
-                    $tokenId = hexdec($cleanHexString);
-                } catch (Exception $exception) {
-                    $tokenId = $cleanHexString;
-                }
+                $tokenId = self::hexToDecimalString((string)$token->get('tokenId'));
+                if ($tokenId === null) continue;
 
                 $standard = ERC721::init($tokenId);
-                $balance->addContractToken($contract, $standard, $quantity);
+                $balance->addContractToken($contract, $standard, $token->get('quantity'));
             }
         }
 
@@ -475,6 +470,35 @@ class AlchemyDataSource extends BlockchainDataSource
         ];
     }
 
+    /**
+     * Convert a hex token id ("0x1a") to a decimal string.
+     * hexdec() turns ids above PHP_INT_MAX into floats, which ERC721::init() silently drops.
+     */
+    public static function hexToDecimalString(string $hex): ?string
+    {
+        $hex = strtolower(preg_replace('/^0x/i', '', trim($hex)));
+        if ($hex === '' || !ctype_xdigit($hex)) return null;
+
+        $hex = ltrim($hex, '0');
+        if ($hex === '') return '0';
+        if (strlen($hex) <= 15) return (string)hexdec($hex);
+
+        if (function_exists('gmp_init')) return gmp_strval(gmp_init($hex, 16), 10);
+
+        // base-16 to base-10 long arithmetic on a digit array
+        $decimal = [0];
+        foreach (str_split($hex) as $char) {
+            $carry = hexdec($char);
+            for ($i = 0; $i < count($decimal); $i++) {
+                $value = $decimal[$i] * 16 + $carry;
+                $decimal[$i] = $value % 10;
+                $carry = intdiv($value, 10);
+            }
+            while ($carry > 0) {
+                $decimal[] = $carry % 10;
+                $carry = intdiv($carry, 10);
+            }
+        }
+        return implode('', array_reverse($decimal));
+    }
 }
-
-
